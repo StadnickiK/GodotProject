@@ -19,10 +19,6 @@
 [node name="World" type="Spatial"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0117841, -0.0183463, -0.00334907 )
 
-[node name="MultiMeshInstance" type="MultiMeshInstance" parent="."]
-
-[node name="MeshInstance" type="MeshInstance" parent="MultiMeshInstance"]
-
 [node name="Target" type="RigidBody" parent="." groups=[
 "Player",
 ]]
@@ -69,5 +65,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 gravity_scale = 0.0
 
 [node name="Ship" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.266, 1, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.266, 1, -5.16772 )
 gravity_scale = 0.0
+
+[node name="Ship2" parent="." instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.266, 1, 10.5953 )
+gravity_scale = 0.0
+[connection signal="SelectTarget" from="Ship" to="WorldCursorControl" method="_SelectTarget"]
+[connection signal="SelectUnit" from="Ship" to="WorldCursorControl" method="_SelectUnit"]
+[connection signal="SelectTarget" from="Ship2" to="WorldCursorControl" method="_SelectTarget"]
+[connection signal="SelectUnit" from="Ship2" to="WorldCursorControl" method="_SelectUnit"]

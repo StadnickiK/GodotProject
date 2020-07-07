@@ -9,7 +9,7 @@ public class KinematicCube : KinematicBody
     KinematicCube self = null;
     Select selectNode;
 
-  public TargetManager targetManager { get; set; } = new TargetManager();
+  //public TargetManager targetManager { get; set; } = new TargetManager();
 
 	private void LookFollow(PhysicsDirectBodyState state, Transform currentTransform, Vector3 targetPosition)
 	{
@@ -31,12 +31,12 @@ public class KinematicCube : KinematicBody
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
             GD.Print("LeftClick");
-            selectNode.SelectUnit((KinematicCube)self);
+            //selectNode.SelectUnit((KinematicCube)self);
             //s.SelectedUnits.Add((KinematicCube)self);
             break;
           case ButtonList.Right:
             GD.Print("RightClick");
-            selectNode.AddTarget(self);
+            //selectNode.AddTarget(self);
             break;
         }
       } 
@@ -55,10 +55,6 @@ public override void _Process(float delta)
         //Translation = targetDir;   // translation = position
         //RotationDegrees = new Vector3(0,Transform.origin.AngleTo(targetPosition),0);
         //Transform.SetLookAt(curDir, ktargetPosition, upDir);
-        if(targetManager.HasTarget()){
-          GD.Print("Targeting");
-           LookAt(targetManager.currentTarget.GlobalTransform.origin,upDir);
-        }
         //GD.Print(targetPosition);
         var r = Rotation;
         r.x = 0;

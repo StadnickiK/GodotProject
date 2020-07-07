@@ -2,29 +2,36 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-    public class TargetManager{
+    public class TargetManager<T>{
 
-        public KinematicCube currentTarget = null;
-        List<KinematicCube> targets = new List<KinematicCube>();
+        public T currentTarget = default(T);
 
-        public bool HasTarget(){
-            if(currentTarget != null){
-                return true;
-            }
-            return false;
+        private bool _hasTarget = false;
+        public bool HasTarget
+        {
+            get { return _hasTarget; }
         }
-        public void SetTarget(KinematicCube Target){
+
+        List<T> targets = new List<T>();
+
+        public void SetTarget(T Target){
+            _hasTarget = true;
             currentTarget = Target;
-            targets.Add(currentTarget);
             targets.Clear();
+            targets.Add(currentTarget);
         }
 
-        public void AddTarget(KinematicCube Target){
-            targets.Add(Target);
+        public void AddTarget(T Target){
+            if(!_hasTarget){
+                SetTarget(Target);
+            }else{
+                targets.Add(Target);
+            }
         }
 
         public void ClearTargets(){
-            currentTarget = null;
+            currentTarget = default(T);
             targets.Clear();
+            _hasTarget = false;
         }
     }

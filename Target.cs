@@ -35,7 +35,6 @@ public class Target : RigidBody
             x = 10;
             z = 0;
         }
-
 /*
         var bodies= GetCollidingBodies();
         if(bodies.Count != 0){

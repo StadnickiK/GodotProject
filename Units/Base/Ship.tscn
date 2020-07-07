@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Units/Base/MoveToPosition.cs" type="Script" id=1]
+[ext_resource path="res://Units/Base/Ship.cs" type="Script" id=1]
 
 [sub_resource type="CubeMesh" id=1]
 
@@ -15,3 +15,4 @@ material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
+[connection signal="input_event" from="." to="." method="_on_input_event"]

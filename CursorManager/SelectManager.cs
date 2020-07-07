@@ -2,35 +2,35 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SelectManager{
-    public KinematicCube MainSelectedUnit { get; set; }
-    public List<KinematicCube> SelectedUnits = new List<KinematicCube>();
+public class SelectManager<T>{
+    public T MainSelectedUnit { get; set; }
+    public List<T> SelectedUnits = new List<T>();
 
-    public void SelectUnit(KinematicCube unit){
+    public void SelectUnit(T unit){
         MainSelectedUnit = unit;
         SelectedUnits.Clear();
         AddSelectedUnit(unit);
-        GD.Print(unit.GetIndex());
     }
 
-    public void AddSelectedUnit(KinematicCube unit){
+    public void AddSelectedUnit(T unit){
         SelectedUnits.Add(unit);
     }
 
-    public void AddSelectedUnits(List<KinematicCube> units){
+    public void AddSelectedUnits(List<T> units){
         SelectedUnits = units;
     }
 
     public void ClearSelection(){
-        MainSelectedUnit = null;
+        MainSelectedUnit = default(T);
         SelectedUnits.Clear();
     }
 
-    public void AddTarget(KinematicCube target){
-            foreach(KinematicCube c in SelectedUnits){
-                if(c != target){
-                    c.targetManager.AddTarget(target);
+    public void AddTarget(T target)
+    {
+            foreach(T c in SelectedUnits){
+                if(!EqualityComparer<T>.Default.Equals(c, target)){
+                    // c.targetManager.AddTarget(target);
                 }
             }
-        }
+    }
 }

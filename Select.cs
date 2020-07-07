@@ -2,30 +2,36 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Select : Spatial
+public class Select : Node
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-    SelectManager selectManager;
+
+    SelectManager<RigidBody> selectManager;
     PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect3.tscn");
 
     Vector3 _destination;
 
+    public void MoveToPosition(Vector3 destination){
+        if(selectManager.SelectedUnits.Count != 0){
+            _destination = destination;
+            foreach(Ship s in selectManager.SelectedUnits){
+                s.MoveToPos(destination);
+            }
+        }
+    }
 
-    void AddSelectEffect(KinematicCube unit){
+    void AddSelectEffect(RigidBody unit){
             var selectEffectNode = (MeshInstance)SelectEffect.Instance();
             selectEffectNode.Scale = (unit.Scale*2);
             unit.AddChild(selectEffectNode);
     }
 
     void RemoveSelectEffect(){
-        foreach(KinematicCube c in selectManager.SelectedUnits){
+        foreach(RigidBody c in selectManager.SelectedUnits){
             c.RemoveChild(c.GetNode("SelectEffect"));
         }
     }
 
-    public void SelectUnit(KinematicCube unit){
+    public void SelectUnit(RigidBody unit){
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
@@ -33,50 +39,55 @@ public class Select : Spatial
         }
     }
 
-    public void AddSelectedUnit(KinematicCube unit){
-        selectManager.AddSelectedUnit(unit);
+    public void AddSelectedUnit(RigidBody unit){
+        if(unit.GetNodeOrNull("SelectEffect") == null){
+            selectManager.AddSelectedUnit(unit);
+            AddSelectEffect(unit);
+            GD.Print(selectManager.SelectedUnits.Count);
+        }
     }
 
-    public void AddSelectedUnits(List<KinematicCube> units){
+    public void AddSelectedUnits(List<RigidBody> units){
         selectManager.AddSelectedUnits(units);
     }
 
-    public void AddTarget(KinematicCube target){
-        foreach(KinematicCube k in selectManager.SelectedUnits){
-            k.targetManager.SetTarget(target);
+    public void AddTarget(RigidBody target){
+        foreach(RigidBody k in selectManager.SelectedUnits){
+            if(k is Ship){
+                Ship ship = (Ship)k;
+                if(ship.targetManager.HasTarget){
+                    ship.targetManager.AddTarget(target);
+                }else{
+                    ship.targetManager.SetTarget(target);
+                    ship.MoveToTarget(target);
+                    GD.Print("settarget");
+                }
+            }
         }
+    }
+
+    public void ClearTarget(){
+        foreach(RigidBody k in selectManager.SelectedUnits){
+            if(k is Ship){
+                Ship ship = (Ship)k;
+                ship.targetManager.ClearTargets();
+            }
+        }
+    }
+
+
+    public void ClearSelection(){
+        RemoveSelectEffect();
+        selectManager.ClearSelection();
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-     SetProcess(false);   
-     selectManager = new SelectManager();
-
+        SetProcess(false);   
+        selectManager = new SelectManager<RigidBody>();
     }
 
-    Vector3 GetMouseWorldPosition(){
-        var ray_length = 1000;
-        var mousePos = GetViewport().GetMousePosition();
-        var camera = (Camera)GetParent().GetNode("CameraGimbal/InnerGimbal/FreeCamera");
-        var from = camera.ProjectRayOrigin(mousePos);
-        var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
-        var space_state = GetWorld().DirectSpaceState;
-        var state = space_state.IntersectRay(from, to);
-        Vector3 p = Vector3.Zero;
-        if(state.Contains("position")){
-            p = (Vector3)state["position"];
-        }
-        return p;
-    }
-     public override void _Input(InputEvent inputEvent){
-        if(inputEvent is InputEventMouseButton button){
-            if((ButtonList)button.ButtonIndex == ButtonList.Right){
-                _destination = GetMouseWorldPosition();
-                GD.Print("Dest " + _destination);
-            }
-        }
-    }
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {
