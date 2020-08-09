@@ -68,6 +68,8 @@
     <Compile Include="InnerGimbal.cs" />
     <Compile Include="KinematicBody.cs" />
     <Compile Include="KinematicCube.cs" />
+    <Compile Include="Menu\ExitButton.cs" />
+    <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RBullet.cs" />
