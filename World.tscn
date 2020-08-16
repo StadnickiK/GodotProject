@@ -1,80 +1,14 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://UI/FreeCamera.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Target.cs" type="Script" id=2]
-[ext_resource path="res://KinematicCube.tscn" type="PackedScene" id=3]
-[ext_resource path="res://KinematicTarget.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Map/StarSystem.tscn" type="PackedScene" id=2]
 [ext_resource path="res://WorldCursorControl.tscn" type="PackedScene" id=5]
-[ext_resource path="res://RCube.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Menu/Menu.tscn" type="PackedScene" id=8]
-
-[sub_resource type="SphereMesh" id=1]
-
-[sub_resource type="BoxShape" id=2]
-
-[sub_resource type="PlaneMesh" id=3]
-
-[sub_resource type="BoxShape" id=4]
 
 [node name="World" type="Spatial"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0117841, -0.0183463, -0.00334907 )
-
-[node name="Menu" parent="." instance=ExtResource( 8 )]
-
-[node name="Target" type="RigidBody" parent="." groups=[
-"Player",
-]]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.36516, 10.5069, 11.5182 )
-script = ExtResource( 2 )
-
-[node name="MeshInstance" type="MeshInstance" parent="Target"]
-mesh = SubResource( 1 )
-material/0 = null
-
-[node name="CollisionShape" type="CollisionShape" parent="Target"]
-shape = SubResource( 2 )
-
-[node name="StaticBody" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.45095, 3.54177 )
-
-[node name="MeshInstance" type="MeshInstance" parent="StaticBody"]
-transform = Transform( 31.1383, 0, 0, 0, 1, 0, 0, 0, 16.0742, -0.0342712, -0.0310898, 0.00719547 )
-mesh = SubResource( 3 )
-material/0 = null
-
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
-transform = Transform( 19.86, 0, 0, 0, 1, 0, 0, 0, 14.8641, 0, 0, 0 )
-shape = SubResource( 4 )
-
-[node name="KinematicBody" parent="." groups=[
-"Player",
-] instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0 )
-
-[node name="KTarget" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1, 15.6889, 11.1 )
-
-[node name="KinematicBody2" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.307698, 0, 7.72457 )
 
 [node name="CameraGimbal" parent="." instance=ExtResource( 1 )]
 transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -19.8449, 3.61984, 2.80506 )
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 5 )]
 
-[node name="RCube" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
-gravity_scale = 0.0
-
-[node name="Ship" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.266, 1, -5.16772 )
-gravity_scale = 0.0
-
-[node name="Ship2" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.266, 1, 10.5953 )
-gravity_scale = 0.0
-[connection signal="SelectTarget" from="Ship" to="WorldCursorControl" method="_SelectTarget"]
-[connection signal="SelectUnit" from="Ship" to="WorldCursorControl" method="_SelectUnit"]
-[connection signal="SelectTarget" from="Ship2" to="WorldCursorControl" method="_SelectTarget"]
-[connection signal="SelectUnit" from="Ship2" to="WorldCursorControl" method="_SelectUnit"]
+[node name="StarSystem" parent="." instance=ExtResource( 2 )]

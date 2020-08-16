@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Planet : RigidBody, IGenerator<Planet>
+public class Planet : RigidBody
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -23,11 +23,6 @@ public class Planet : RigidBody, IGenerator<Planet>
         Industrial,
         HeavyIndustrial,
         HellIndustrial
-
-    }
-
-    public Planet Generate(){
-        return this;
     }
 
     // Called when the node enters the scene tree for the first time.

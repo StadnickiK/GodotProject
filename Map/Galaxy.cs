@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Galaxy : Spatial, IGenerator<Galaxy>
+public class Galaxy : Spatial
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -19,10 +19,6 @@ public class Galaxy : Spatial, IGenerator<Galaxy>
         Elliptical,
         Spiral,
         Irregular
-    }
-
-    public Galaxy Generate(){
-        return this;
     }
 
     // Called when the node enters the scene tree for the first time.

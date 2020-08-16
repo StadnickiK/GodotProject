@@ -71,7 +71,8 @@
     <Compile Include="Map\Galaxy.cs" />
     <Compile Include="Map\Planet.cs" />
     <Compile Include="Map\PlanetTile.cs" />
-    <Compile Include="Map\Star%20System.cs" />
+    <Compile Include="Map\StarSystem.cs" />
+    <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Player.cs" />

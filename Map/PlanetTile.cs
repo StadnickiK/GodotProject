@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class PlanetTile : Spatial, IGenerator<PlanetTile>
+public class PlanetTile : Spatial
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -19,10 +19,6 @@ public class PlanetTile : Spatial, IGenerator<PlanetTile>
         RareGas
     }
 
-
-    public PlanetTile Generate(){
-        return this;
-    }
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
