@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 public class StarSystem : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
     [Export]
     int Size = 10;
@@ -19,6 +16,8 @@ public class StarSystem : Spatial
 
     List<Planet> Planets = new List<Planet>();
 
+    public Random Rand { get; set; } = new Random();
+
     void LoadScenes(){
         SunScene = (PackedScene)GD.Load("res://Map/Star.tscn");
         PlanetScene = (PackedScene)GD.Load("res://Map/Planet.tscn");
@@ -28,19 +27,18 @@ public class StarSystem : Spatial
         var sun = SunScene.Instance();
         AddChild(sun);
 
-        int dist = 5;
-        float angle = 45f;
+        int dist = Rand.Next(5, 15);
+        float angle = Rand.Next(0, 70);
         for(int i = 0;i < Size; i++){
             RotateY(angle);
             var pos = Transform.basis.Xform(new Vector3(0, 0, dist));
-            GD.Print(pos);
             var planet = (Planet)PlanetScene.Instance();
-            var temp = planet.GlobalTransform;
+            var temp = planet.Transform;
             temp.origin = pos;
-            planet.GlobalTransform = temp;
+            planet.Transform = temp;
             AddChild(planet);
-            dist += 4;
-            angle+= 23f;
+            dist += Rand.Next(4, 10);
+            angle += Rand.Next(0,50);
         }
         Rotation = Vector3.Zero;
     }
@@ -60,9 +58,4 @@ public class StarSystem : Spatial
         Generate();
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
