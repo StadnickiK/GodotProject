@@ -1,17 +1,19 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class Planet : RigidBody
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
     [Export]
     int Size = 10;
 
     [Export]
     int Wealth = 5;
+
+    public List<PlanetTile> MyProperty { get; set; } = new List<PlanetTile>();
+
+    public string PlanetName { get; set; }
 
     public enum Type
     {
@@ -30,10 +32,4 @@ public class Planet : RigidBody
     {
         
     }
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
