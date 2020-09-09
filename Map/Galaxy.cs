@@ -36,6 +36,7 @@ public class Galaxy : Spatial
             var pos = Transform.basis.Xform(new Vector3(0, 0, dist));
             var starSystem = (StarSystem)StarSystemScene.Instance();
             starSystem.Rand = Rand;
+            starSystem.SystemName = "System " + i;
             var temp = starSystem.Transform;
             temp.origin = pos;
             starSystem.Transform = temp;
