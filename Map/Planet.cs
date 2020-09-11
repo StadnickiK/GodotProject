@@ -11,13 +11,13 @@ public class Planet : RigidBody
     [Export]
     int Wealth = 5;
 
-    public List<PlanetTile> PlanetTiles { get; set; } = new List<PlanetTile>();
+    public List<Tile> Tiles { get; set; } = new List<Tile>();
 
     public Random Rand { get; set; } = new Random();
 
     public string PlanetName { get; set; }
 
-    PackedScene PlanetTileScene = null;
+    PackedScene TileScene = null;
 
     public enum Type
     {
@@ -36,16 +36,16 @@ public class Planet : RigidBody
         Scale *= Size/10;
         Size = Size%2==0 ? Size : ++Size;
         for(int i = 0; i<Size;i++){
-            PlanetTile pt =  (PlanetTile)PlanetTileScene.Instance();
-            pt.Rand = Rand;
-            PlanetTiles.Add(pt);
+            Tile t =  (Tile)TileScene.Instance();
+            t.Rand = Rand;
+            Tiles.Add(t);
         }
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        PlanetTileScene = (PackedScene)GD.Load("res://Map/PlanetTile.tscn");
+        TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
         Generate();
     }
 }
