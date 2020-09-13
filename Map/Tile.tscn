@@ -2,6 +2,5 @@
 
 [ext_resource path="res://Map/Tile.cs" type="Script" id=1]
 
-
 [node name="PlanetTile" type="Spatial"]
 script = ExtResource( 1 )

@@ -46,6 +46,6 @@ public class Planet : RigidBody
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
-        Generate();
+        //Generate();
     }
 }
