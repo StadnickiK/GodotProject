@@ -86,6 +86,7 @@
     <Compile Include="Target_Tracker.cs" />
     <Compile Include="UI\Text3D.cs" />
     <Compile Include="Units\Base\Ship.cs" />
+    <Compile Include="World.cs" />
     <Compile Include="WorldCursorControl.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,9 +3,6 @@ using System;
 
 public class CameraGimbal : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
     bool drag = false;
     [Export]
     public float MovementSpeed { get; set; } = (float)Math.PI/2;
@@ -31,7 +28,6 @@ public override void _Input(InputEvent inputEvent){
             }else{
                 drag = false;
             }
-            //MouseCameraControl(inputEvent);
         }
     }
 

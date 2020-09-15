@@ -10,6 +10,9 @@ public class Galaxy : Spatial
 
     public List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
 
+    [Signal]
+    public delegate void CameraLookAt(Vector3 position);
+
     PackedScene StarSystemScene = null;
 
     public Random Rand { get; set; }
@@ -55,6 +58,8 @@ public class Galaxy : Spatial
         foreach(StarSystem s in StarSystems){
             if(s.SystemID != id){
                 s.Visible = false;
+            }else{
+                EmitSignal(nameof(CameraLookAt), s.Transform.origin);
             }
         }
     }
