@@ -12,5 +12,6 @@ script = ExtResource( 3 )
 
 [node name="CameraGimbal" parent="." instance=ExtResource( 1 )]
 transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -15.5999, 1, 0 )
+Limit = 20
 
 [node name="Galaxy" parent="." instance=ExtResource( 2 )]
