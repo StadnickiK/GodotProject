@@ -42,6 +42,7 @@ public class Galaxy : Spatial
             starSystem.SystemID = i;
             starSystem.SystemName = "System " + i;
             starSystem.Connect("ViewStarSystem", this, nameof(_on_ViewStarSystem));
+            starSystem.Connect("ViewGalaxy", this, nameof(_on_ViewGalaxy));
             var temp = starSystem.Transform;
             temp.origin = pos;
             starSystem.Transform = temp;
@@ -54,13 +55,18 @@ public class Galaxy : Spatial
     }
 
     void _on_ViewStarSystem(int id){
-        GD.Print("View System " + id);
         foreach(StarSystem s in StarSystems){
             if(s.SystemID != id){
                 s.Visible = false;
             }else{
                 EmitSignal(nameof(CameraLookAt), s.Transform.origin);
             }
+        }
+    }
+
+    void _on_ViewGalaxy(){
+        foreach(StarSystem s in StarSystems){
+            s.Visible = true;
         }
     }
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Map/StarSystem.cs" type="Script" id=1]
 [ext_resource path="res://UI/Text3D.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -23,6 +24,10 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
 TextScale = Vector3( 10, 10, 10 )
 
+[node name="XButton" parent="." instance=ExtResource( 3 )]
+visible = false
+
 [node name="StarSysObjects" type="Spatial" parent="."]
 visible = false
 [connection signal="input_event" from="." to="." method="_on_StarSystem_input_event"]
+[connection signal="button_up" from="XButton" to="." method="_on_XButton_button_up"]
