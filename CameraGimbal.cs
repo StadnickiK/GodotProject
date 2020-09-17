@@ -3,14 +3,16 @@ using System;
 
 public class CameraGimbal : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
     bool drag = false;
     [Export]
-    public float MovementSpeed { get; set; } = (float)Math.PI/2;
+    public float MovementSpeed { get; set; } = 20;
     [Export] 
     public float RotationSpeed { get; set; } = 0.7f;
+
+    public Vector3 LimitCenter { get; set; } = Vector3.Zero;
+
+    [Export]
+    public int Limit { get; set; } = -1;
 
 
 
@@ -31,7 +33,6 @@ public override void _Input(InputEvent inputEvent){
             }else{
                 drag = false;
             }
-            //MouseCameraControl(inputEvent);
         }
     }
 
@@ -41,10 +42,8 @@ public override void _Input(InputEvent inputEvent){
     }
 }
 
-void KeyboardAction(InputEventKey key){
+Vector2 InputKeyToVector2(InputEventKey key){
     Vector2 input_movement_vector = new Vector2();
-    Vector3 Direction = new Vector3();
-
     switch(key.Scancode){
         case (int)KeyList.W:
         case (int)KeyList.Up:
@@ -63,14 +62,35 @@ void KeyboardAction(InputEventKey key){
         input_movement_vector.x += 1;
         break;
     }
-    Direction = GlobalTransform.basis.z.Normalized() * input_movement_vector.y;
-    Direction += GlobalTransform.basis.x.Normalized() * input_movement_vector.x*2;
-    AddGlobalOrigin(Direction);
+    return input_movement_vector;
+}
+
+void KeyboardAction(InputEventKey key){
+    Vector2 input_movement_vector = InputKeyToVector2(key);
+    
+    Vector3 Direction = new Vector3();
+    Direction = GlobalTransform.basis.z.Normalized() * input_movement_vector.y * MovementSpeed;
+    Direction += GlobalTransform.basis.x.Normalized() * input_movement_vector.x * MovementSpeed;
+
+    Vector3 origin = GlobalTransform.origin + Direction;
+    Vector3 dir = origin - LimitCenter;
+    int distance = (int)(dir).Length();
+    if(distance < Limit){
+        AddGlobalOrigin(Direction);
+    }else{
+        SetGlobalOrigin((dir.Normalized()*(Limit-1)));
+    }
 }
 
 void AddGlobalOrigin(Vector3 position){
     var temp = GlobalTransform;
     temp.origin += position;
+    GlobalTransform = temp;
+}
+
+void SetGlobalOrigin(Vector3 position){
+    var temp = GlobalTransform;
+    temp.origin = position;
     GlobalTransform = temp;
 }
 
