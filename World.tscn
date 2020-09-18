@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://UI/FreeCamera.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Map/Galaxy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://World.cs" type="Script" id=3]
+[ext_resource path="res://Map/Galaxy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://WorldCursorControl.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Menu/Menu.tscn" type="PackedScene" id=6]
 
 [node name="World" type="Spatial"]
 script = ExtResource( 3 )
+
+[node name="Menu" parent="." instance=ExtResource( 6 )]
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 5 )]
 
@@ -14,4 +18,8 @@ script = ExtResource( 3 )
 transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -15.5999, 1, 0 )
 Limit = 1000
 
-[node name="Galaxy" parent="." instance=ExtResource( 2 )]
+[node name="ResourcePanel" parent="." instance=ExtResource( 2 )]
+margin_right = 1036.0
+margin_bottom = 64.0
+
+[node name="Galaxy" parent="." instance=ExtResource( 4 )]
