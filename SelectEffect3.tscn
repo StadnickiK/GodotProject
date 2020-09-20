@@ -14,7 +14,7 @@ surfaces/0 = {
 }
 
 [sub_resource type="VisualShaderNodeColorConstant" id=2]
-constant = Color( 0.288139, 0.902344, 0.0659801, 1 )
+constant = Color( 0.385294, 1, 0.105882, 1 )
 
 [sub_resource type="VisualShaderNodeScalarOp" id=3]
 default_input_values = [ 0, 1.0, 1, 0.7 ]
@@ -28,6 +28,8 @@ constant = 3.0
 
 [sub_resource type="VisualShader" id=6]
 code = "shader_type spatial;
+render_mode unshaded, shadows_disabled;
+
 
 
 
@@ -38,7 +40,7 @@ void vertex() {
 
 void fragment() {
 // Color:2
-	vec3 n_out2p0 = vec3(0.288139, 0.902344, 0.065980);
+	vec3 n_out2p0 = vec3(0.385294, 1.000000, 0.105882);
 	float n_out2p1 = 1.000000;
 
 // ScalarOp:3
@@ -66,7 +68,8 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -443.034, 150 )
+flags/shadows_disabled = true
+flags/unshaded = true
 nodes/fragment/2/node = SubResource( 2 )
 nodes/fragment/2/position = Vector2( 60, 80 )
 nodes/fragment/3/node = SubResource( 3 )

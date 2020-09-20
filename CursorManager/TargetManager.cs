@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-    public class TargetManager<T>{
+    public class TargetManager<T> : Node{
 
         public T currentTarget = default(T);
 
@@ -10,6 +10,11 @@ using System.Collections.Generic;
         public bool HasTarget
         {
             get { return _hasTarget; }
+        }
+
+        public override void _Ready()
+        {    
+            SetProcess(false);
         }
 
         List<T> targets = new List<T>();

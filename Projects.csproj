@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
-    <Compile Include="Barrel.cs" />
+    <Compile Include="Units\Base\Barrel.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CameraGimbal.cs" />
     <Compile Include="Cannon.cs" />
@@ -70,13 +70,13 @@
     <Compile Include="KinematicCube.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RBullet.cs" />
-    <Compile Include="RCube.cs" />
+    <Compile Include="Units\Base\RBullet.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="Target.cs" />
-    <Compile Include="Target_Tracker.cs" />
+    <Compile Include="Units\Base\Unit.cs" />
     <Compile Include="Units\Base\Ship.cs" />
-    <Compile Include="WorldCursorControl.cs" />
+    <Compile Include="Units\Base\Turret.cs" />
+    <Compile Include="World\WorldCursorControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">

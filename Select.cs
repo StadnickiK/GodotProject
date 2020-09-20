@@ -43,7 +43,6 @@ public class Select : Node
         if(unit.GetNodeOrNull("SelectEffect") == null){
             selectManager.AddSelectedUnit(unit);
             AddSelectEffect(unit);
-            GD.Print(selectManager.SelectedUnits.Count);
         }
     }
 
@@ -60,7 +59,6 @@ public class Select : Node
                 }else{
                     ship.targetManager.SetTarget(target);
                     ship.MoveToTarget(target);
-                    GD.Print("settarget");
                 }
             }
         }

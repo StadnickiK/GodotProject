@@ -2,9 +2,14 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SelectManager<T>{
+public class SelectManager<T> : Node{
     public T MainSelectedUnit { get; set; }
     public List<T> SelectedUnits = new List<T>();
+
+    public override void _Ready()
+    {    
+        SetProcess(false);
+    }
 
     public void SelectUnit(T unit){
         MainSelectedUnit = unit;
@@ -25,6 +30,9 @@ public class SelectManager<T>{
         SelectedUnits.Clear();
     }
 
+}
+
+/*
     public void AddTarget(T target)
     {
             foreach(T c in SelectedUnits){
@@ -33,4 +41,5 @@ public class SelectManager<T>{
                 }
             }
     }
-}
+
+*/

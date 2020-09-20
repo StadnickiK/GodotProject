@@ -3,18 +3,12 @@ using System;
 
 public class CameraGimbal : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
     bool drag = false;
     [Export]
     public float MovementSpeed { get; set; } = (float)Math.PI/2;
     [Export] 
     public float RotationSpeed { get; set; } = 0.7f;
 
-
-
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         
@@ -73,10 +67,4 @@ void AddGlobalOrigin(Vector3 position){
     temp.origin += position;
     GlobalTransform = temp;
 }
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
