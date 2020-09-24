@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 0.46875, 0.46875, 0.46875, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 0.0193634, 0.550781, 0.214493, 1 )
+
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
+
+[sub_resource type="StyleBoxTexture" id=5]
+texture = SubResource( 4 )
+region_rect = Rect2( 0, 0, 2048, 1 )
+
+[sub_resource type="Gradient" id=6]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 0, 0, 0, 1 )
+
+[sub_resource type="GradientTexture" id=7]
+gradient = SubResource( 6 )
+
+[node name="TileMap" type="Node2D"]
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 1000.0
+margin_bottom = 500.0
+texture = SubResource( 2 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 991.0
+margin_bottom = 498.0
+custom_constants/vseparation = 0
+custom_constants/hseparation = 0
+columns = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GridContainer"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+custom_styles/panel = SubResource( 5 )
+
+[node name="Panel2" type="Panel" parent="GridContainer"]
+margin_left = 100.0
+margin_right = 200.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+custom_styles/panel = SubResource( 5 )
+
+[node name="Panel3" type="Panel" parent="GridContainer"]
+margin_left = 200.0
+margin_right = 300.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+custom_styles/panel = SubResource( 5 )
+
+[node name="TextureButton" type="TextureButton" parent="GridContainer"]
+margin_left = 300.0
+margin_right = 310.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 10, 10 )
+texture_normal = SubResource( 7 )
+expand = true

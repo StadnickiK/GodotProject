@@ -68,6 +68,14 @@
     <Compile Include="InnerGimbal.cs" />
     <Compile Include="KinematicBody.cs" />
     <Compile Include="KinematicCube.cs" />
+    <Compile Include="Map\Building.cs" />
+    <Compile Include="Map\Galaxy.cs" />
+    <Compile Include="Map\Planet.cs" />
+    <Compile Include="Map\Tile.cs" />
+    <Compile Include="Map\StarSystem.cs" />
+    <Compile Include="Map\Star.cs" />
+    <Compile Include="Menu\ExitButton.cs" />
+    <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units\Base\RBullet.cs" />
@@ -77,6 +85,9 @@
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
+    <Compile Include="Map\Resource.cs" />
+    <Compile Include="UI\Text3D.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
