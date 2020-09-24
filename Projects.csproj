@@ -78,7 +78,6 @@
     <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-<<<<<<< HEAD
     <Compile Include="Units\Base\RBullet.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="Target.cs" />
@@ -86,18 +85,9 @@
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
-=======
-    <Compile Include="RBullet.cs" />
-    <Compile Include="RCube.cs" />
     <Compile Include="Map\Resource.cs" />
-    <Compile Include="Select.cs" />
-    <Compile Include="Target.cs" />
-    <Compile Include="Target_Tracker.cs" />
     <Compile Include="UI\Text3D.cs" />
-    <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="World.cs" />
-    <Compile Include="WorldCursorControl.cs" />
->>>>>>> 69e7c3571647530781fddd88db827d2de8dccaa7
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
