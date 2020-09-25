@@ -18,6 +18,8 @@ public class Planet : RigidBody
     public string PlanetName { get; set; }
 
     PackedScene TileScene = null;
+    
+    PlanetInterface PInterface = null;
 
     public enum Type
     {
@@ -42,10 +44,19 @@ public class Planet : RigidBody
         }
     }
 
+    void _on_Planet_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
+        if(e is InputEventMouseButton mouseButton){
+            if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
+                PInterface.Visible = true;
+            }
+        }
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
+        PInterface = GetNode<PlanetInterface>("PlanetInterface");
         //Generate();
     }
 }

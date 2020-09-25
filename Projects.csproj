@@ -82,6 +82,8 @@
     <Compile Include="Select.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="Units\Base\Unit.cs" />
+    <Compile Include="Target_Tracker.cs" />
+    <Compile Include="UI\PlanetInterface.cs" />
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
