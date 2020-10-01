@@ -72,6 +72,14 @@ void KeyboardAction(InputEventKey key){
     Direction = GlobalTransform.basis.z.Normalized() * input_movement_vector.y * MovementSpeed;
     Direction += GlobalTransform.basis.x.Normalized() * input_movement_vector.x * MovementSpeed;
 
+    if(Limit >-1){
+        UpdatePositionWithLimit(Direction);
+    }else{
+        AddGlobalOrigin(Direction);
+    }
+}
+
+void UpdatePositionWithLimit(Vector3 Direction){
     Vector3 origin = GlobalTransform.origin + Direction;
     Vector3 dir = origin - LimitCenter;
     int distance = (int)(dir).Length();
@@ -81,6 +89,7 @@ void KeyboardAction(InputEventKey key){
         SetGlobalOrigin((dir.Normalized()*(Limit-1)));
     }
 }
+
 
 void AddGlobalOrigin(Vector3 position){
     var temp = GlobalTransform;
