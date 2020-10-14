@@ -10,6 +10,8 @@ public class Galaxy : Spatial
 
     public List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
 
+    public RigidBody Ground { get; set; } = null;
+
     [Signal]
     public delegate void CameraLookAt(Vector3 position);
 
@@ -48,8 +50,8 @@ public class Galaxy : Spatial
             starSystem.Transform = temp;
             AddChild(starSystem);
             StarSystems.Add(starSystem);
-            dist += Rand.Next(6, 10);
-            angle += Rand.Next(0, 50);
+            dist += Rand.Next(3, 8);
+            angle += Rand.Next(0, 60);
         }
         Rotation = Vector3.Zero;
     }
@@ -70,10 +72,15 @@ public class Galaxy : Spatial
         }
     }
 
+    void LoadNodes(){
+        Ground = (RigidBody)GetNode("Ground");
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         StarSystemScene = (PackedScene)GD.Load("res://Map/StarSystem.tscn");
+        LoadNodes();
         InitRand();
         Generate();
     }

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Map/StarSystem.cs" type="Script" id=1]
 [ext_resource path="res://UI/Text3D.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=4]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -29,5 +30,8 @@ visible = false
 
 [node name="StarSysObjects" type="Spatial" parent="."]
 visible = false
+
+[node name="Ship" parent="StarSysObjects" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.37704 )
 [connection signal="input_event" from="." to="." method="_on_StarSystem_input_event"]
 [connection signal="button_up" from="XButton" to="." method="_on_XButton_button_up"]
