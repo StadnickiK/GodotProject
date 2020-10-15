@@ -48,7 +48,7 @@
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
     <Compile Include="UI\Text3D.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup />
 </Project>

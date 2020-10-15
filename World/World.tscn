@@ -4,7 +4,7 @@
 [ext_resource path="res://Map/Galaxy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Menu/Menu.tscn" type="PackedScene" id=3]
 [ext_resource path="res://World/WorldCursorControl.tscn" type="PackedScene" id=4]
-[ext_resource path="res://World.cs" type="Script" id=5]
+[ext_resource path="res://World/World.cs" type="Script" id=5]
 [ext_resource path="res://UI/FreeCamera.tscn" type="PackedScene" id=7]
 
 [node name="World" type="Spatial"]
