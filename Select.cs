@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Select : Node
 {
 
-    SelectManager<RigidBody> selectManager;
+    SelectManager<PhysicsBody> selectManager;
     PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect3.tscn");
 
     Vector3 _destination;
@@ -19,19 +19,19 @@ public class Select : Node
         }
     }
 
-    void AddSelectEffect(RigidBody unit){
+    void AddSelectEffect(PhysicsBody unit){
             var selectEffectNode = (MeshInstance)SelectEffect.Instance();
             selectEffectNode.Scale = (unit.Scale*2);
             unit.AddChild(selectEffectNode);
     }
 
     void RemoveSelectEffect(){
-        foreach(RigidBody c in selectManager.SelectedUnits){
+        foreach(PhysicsBody c in selectManager.SelectedUnits){
             c.RemoveChild(c.GetNode("SelectEffect"));
         }
     }
 
-    public void SelectUnit(RigidBody unit){
+    public void SelectUnit(PhysicsBody unit){
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
@@ -39,21 +39,21 @@ public class Select : Node
         }
     }
 
-    public void AddSelectedUnit(RigidBody unit){
+    public void AddSelectedUnit(PhysicsBody unit){
         if(unit.GetNodeOrNull("SelectEffect") == null){
             selectManager.AddSelectedUnit(unit);
             AddSelectEffect(unit);
         }
     }
 
-    public void AddSelectedUnits(List<RigidBody> units){
+    public void AddSelectedUnits(List<PhysicsBody> units){
         selectManager.AddSelectedUnits(units);
     }
 
-    public void AddTarget(RigidBody target){
-        foreach(RigidBody k in selectManager.SelectedUnits){
-            if(k is Ship){
-                Ship ship = (Ship)k;
+    public void AddTarget(PhysicsBody target){
+        foreach(PhysicsBody rigidB in selectManager.SelectedUnits){
+            if(rigidB is Ship){
+                Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
                     ship.targetManager.AddTarget(target);
                 }else{
@@ -65,7 +65,7 @@ public class Select : Node
     }
 
     public void ClearTarget(){
-        foreach(RigidBody k in selectManager.SelectedUnits){
+        foreach(PhysicsBody k in selectManager.SelectedUnits){
             if(k is Ship){
                 Ship ship = (Ship)k;
                 ship.targetManager.ClearTargets();
@@ -83,7 +83,7 @@ public class Select : Node
     public override void _Ready()
     {
         SetProcess(false);   
-        selectManager = new SelectManager<RigidBody>();
+        selectManager = new SelectManager<PhysicsBody>();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

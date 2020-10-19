@@ -10,11 +10,16 @@ public class Ship : RigidBody
     [Signal]
     public delegate void SelectTarget(RigidBody target);
 
+    [Signal]
+    public delegate void LeaveSystem(int id);
+
     [Export]
     public int effectiveRange = 10;
 
     [Export]
     public int ID_Owner { get; set; }
+
+    public StarSystem System { get; set; } = null;
 
     List<int> _turretIDs = new List<int>();
 
@@ -23,7 +28,7 @@ public class Ship : RigidBody
     protected Ship self = null;
 
     protected VelocityController _velocityController = new VelocityController();
-    public TargetManager<RigidBody> targetManager { get; set; } = new TargetManager<RigidBody>();
+    public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
 
 
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
@@ -43,7 +48,7 @@ public class Ship : RigidBody
         return effectivePos;
     }
 
-    public void MoveToTarget(RigidBody target){
+    public void MoveToTarget(PhysicsBody target){
         Sleeping = false;
         targetPos = PosToTargetWithEffectiveRange(target.GlobalTransform.origin);
     }
@@ -51,6 +56,12 @@ public class Ship : RigidBody
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
         targetPos = destination;
+    }
+
+    public void MoveToSystem(StarSystem system){
+        Sleeping = false;
+        targetPos = system.GlobalTransform.origin;
+        System = system;
     }
 
     public override void _IntegrateForces(PhysicsDirectBodyState state){
@@ -69,6 +80,9 @@ public class Ship : RigidBody
                 if(posDiff.x < MultyScale.x && posDiff.z < MultyScale.z &&
                 posDiff.x > -MultyScale.x && posDiff.z > -MultyScale.z){
                     ResetVelocity();
+                    if(System != null){
+                        GD.Print(System.Name);
+                    }
                 }  
             }
         }else{

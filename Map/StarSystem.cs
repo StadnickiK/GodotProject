@@ -2,11 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : RigidBody
+public class StarSystem : StaticBody
 {
 
     [Export]
     int Size = 10;
+
 
     [Export]
     int Wealth = 5;
@@ -16,6 +17,13 @@ public class StarSystem : RigidBody
 
     [Signal]
     public delegate void ViewGalaxy();
+
+    private int _diameter;
+    public int Diameter
+    {
+        get { return _diameter; }
+    }
+    
 
     public String SystemName { get; set; }
 
@@ -68,6 +76,7 @@ public class StarSystem : RigidBody
             dist += Rand.Next(4, 10);
             angle += Rand.Next(0,50);
         }
+        _diameter = dist*2;
         StarSysObjects.Visible = false;
         Rotation = Vector3.Zero;
     }

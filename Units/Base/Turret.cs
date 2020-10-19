@@ -104,7 +104,7 @@ public class Turret : Ship
     {
         _velocityController = new VelocityController();
         _velocityController.RotationSpeed = RotationSpeed;
-        targetManager = new TargetManager<RigidBody>();
+        targetManager = new TargetManager<PhysicsBody>();
         self = (Turret)GetParent().GetChild(GetIndex());
         _velocityController.Mass = 10;
         _ConnectSignal();

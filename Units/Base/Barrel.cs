@@ -45,7 +45,7 @@ public class Barrel : Turret
             ray = GetNode<RayCast>("RayCast");
             ray.CastTo = ray.Transform.origin+new Vector3(0,0,EffectiveRange);
             projectiles = GetNode("/root/World/Projectiles");
-            targetManager = new TargetManager<RigidBody>();
+            targetManager = new TargetManager<PhysicsBody>();
             _velocityController.RotationSpeed = RotationSpeed;
             SetTimer();
     }

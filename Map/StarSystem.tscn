@@ -9,8 +9,7 @@
 
 [sub_resource type="SphereMesh" id=2]
 
-[node name="StarSystem" type="RigidBody"]
-gravity_scale = 0.0
+[node name="StarSystem" type="StaticBody"]
 script = ExtResource( 1 )
 
 [node name="Placeholder" type="CollisionShape" parent="."]

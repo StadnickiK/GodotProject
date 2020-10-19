@@ -73,7 +73,7 @@ public class Galaxy : Spatial
     }
 
     void LoadNodes(){
-        Ground = (RigidBody)GetNode("Ground");
+        //Ground = (RigidBody)GetNode("Ground");
     }
 
     // Called when the node enters the scene tree for the first time.
