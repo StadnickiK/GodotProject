@@ -20,9 +20,9 @@ using System.Collections.Generic;
         List<T> targets = new List<T>();
 
         public void SetTarget(T Target){
+            targets.Clear();
             _hasTarget = true;
             currentTarget = Target;
-            targets.Clear();
             targets.Add(currentTarget);
         }
 
@@ -31,6 +31,16 @@ using System.Collections.Generic;
                 SetTarget(Target);
             }else{
                 targets.Add(Target);
+            }
+        }
+
+        public void NextTarget(){
+            if(targets.Count > 1){
+                targets.RemoveAt(0);
+                currentTarget = targets[0];
+            }else{
+                GD.Print("Clear");
+                ClearTargets();
             }
         }
 

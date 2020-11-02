@@ -25,6 +25,7 @@ SelectManager="res://CursorManager/SelectManager.cs"
 VelocityController="res://Controllers/VelocityController.cs"
 TargetManager="res://CursorManager/TargetManager.cs"
 IGenerator="res://Map/IGenerator.cs"
+StatManager="*res://Units/Stats/StatManager.cs"
 
 [input]
 

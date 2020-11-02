@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Map\SpaceBattle.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CameraGimbal.cs" />
@@ -43,6 +44,8 @@
     <Compile Include="Target.cs" />
     <Compile Include="Units\Base\Unit.cs" />
     <Compile Include="UI\PlanetInterface.cs" />
+	<Compile Include="Units\Stats\BaseStat.cs" />
+	<Compile Include="Units\Stats\StatManager.cs" />
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
     <Compile Include="World\WorldCursorControl.cs" />

@@ -12,6 +12,7 @@ public class World : Spatial
         GD.Print(position);
         Camera.LookAt(position, new Vector3(0,1,0));
     }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {

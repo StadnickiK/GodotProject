@@ -32,11 +32,11 @@ public class WorldCursorControl : Spatial
         //*/
     }
 
-    public void _SelectUnit(RigidBody unit){
+    public void _SelectUnit(PhysicsBody unit){
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(RigidBody unit){;
+    public void _SelectTarget(PhysicsBody unit){;
         select.AddTarget(unit);
     }
 

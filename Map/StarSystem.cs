@@ -18,12 +18,16 @@ public class StarSystem : StaticBody
     [Signal]
     public delegate void ViewGalaxy();
 
+   [Signal]
+    public delegate void SelectTarget(StarSystem target);
+
     private int _diameter;
     public int Diameter
     {
         get { return _diameter; }
     }
     
+    protected StarSystem self = null;
 
     public String SystemName { get; set; }
 
@@ -60,7 +64,7 @@ public class StarSystem : StaticBody
         StarSysObjects.AddChild(sun);
 
         SystemName3D.UpdateText(SystemName);
-
+        GD.Print(SystemName);
         int dist = Rand.Next(5, 15);
         float angle = Rand.Next(0, 70);
         for(int i = 0;i < Size; i++){
@@ -76,7 +80,7 @@ public class StarSystem : StaticBody
             dist += Rand.Next(4, 10);
             angle += Rand.Next(0,50);
         }
-        _diameter = dist*2;
+        _diameter = dist*2-Rand.Next(20,40);
         StarSysObjects.Visible = false;
         Rotation = Vector3.Zero;
     }
@@ -95,6 +99,8 @@ public class StarSystem : StaticBody
                 XButton.Visible = true;
                 Placeholder.Visible = false;
                 EmitSignal(nameof(ViewStarSystem), SystemID);
+            }else if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Right){
+                EmitSignal(nameof(SelectTarget), (PhysicsBody)self);
             }
         }
     }
@@ -107,13 +113,21 @@ public class StarSystem : StaticBody
         GD.Print(SystemName);
     }
 
+    protected void _ConnectSignal(){
+        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/World/WorldCursorControl");
+        WCC.ConnectToSelectTarget(self);
+        //control.Connect("_SelectTarget", this, nameof(SelectTarget));
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        self = (StarSystem)GetParent().GetChild(GetIndex());
         SetPhysicsProcess(false);
         LoadScenes();
         LoadNodes();
         Generate();
+        _ConnectSignal();
     }
 
 }

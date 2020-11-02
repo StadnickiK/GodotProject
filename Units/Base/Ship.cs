@@ -13,6 +13,12 @@ public class Ship : RigidBody
     [Signal]
     public delegate void LeaveSystem(int id);
 
+    [Signal]
+    public delegate void EnterSystem(int shipID, int systemID, Vector3 aproachVec, PhysicsDirectBodyState state);
+
+    [Signal]
+    public delegate void EnterCombat(int shipID, int enemyID);
+
     [Export]
     public int effectiveRange = 10;
 
@@ -21,7 +27,7 @@ public class Ship : RigidBody
 
     public StarSystem System { get; set; } = null;
 
-    List<int> _turretIDs = new List<int>();
+    public StatManager StatManager { get; set; } = new StatManager();
 
     Vector3 targetPos = Vector3.Zero;
 
@@ -29,7 +35,6 @@ public class Ship : RigidBody
 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
-
 
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
             state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetPos);
@@ -48,6 +53,10 @@ public class Ship : RigidBody
         return effectivePos;
     }
 
+    protected Vector3 DirToCurrentTarget(){
+        return (targetManager.currentTarget.GlobalTransform.origin-GlobalTransform.origin).Normalized();
+    }
+
     public void MoveToTarget(PhysicsBody target){
         Sleeping = false;
         targetPos = PosToTargetWithEffectiveRange(target.GlobalTransform.origin);
@@ -64,10 +73,8 @@ public class Ship : RigidBody
         System = system;
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState state){
-        
-        if(targetPos != Vector3.Zero && targetPos != null){
-            float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
+    void UpdateShipVelocities(PhysicsDirectBodyState state){
+        float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
             if(angle > 0.01f || angle < -0.01f ){
                 state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
             }else{
@@ -80,13 +87,20 @@ public class Ship : RigidBody
                 if(posDiff.x < MultyScale.x && posDiff.z < MultyScale.z &&
                 posDiff.x > -MultyScale.x && posDiff.z > -MultyScale.z){
                     ResetVelocity();
-                    if(System != null){
-                        GD.Print(System.Name);
-                    }
                 }  
+            }
+    }
+
+    public override void _IntegrateForces(PhysicsDirectBodyState state){
+        if(targetManager.HasTarget ||(targetPos != Vector3.Zero && targetPos != null)){
+            UpdateShipVelocities(state);
+            if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
+                GD.Print("Enter system");
+                EmitSignal(nameof(EnterSystem), self.GetIndex(), targetManager.currentTarget.GetIndex(), DirToCurrentTarget(), state);
             }
         }else{
             Sleeping = true;
+            state.Sleeping = true;
         }
     }
 
@@ -94,19 +108,29 @@ public class Ship : RigidBody
       if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
-            EmitSignal(nameof(SelectUnit), (RigidBody)self);
+            EmitSignal(nameof(SelectUnit), (PhysicsBody)self);
             break;
           case ButtonList.Right:
-            EmitSignal(nameof(SelectTarget), (RigidBody)self);
+            EmitSignal(nameof(SelectTarget), (PhysicsBody)self);
             break;
         }
       } 
     }
 
+    void _on_Ship_body_entered(Node node){
+        if(node is Ship){
+            EmitSignal(nameof(EnterCombat), self.GetIndex(), node.GetIndex());
+            GD.Print("colliision");
+        }
+    }
+
     protected void _ConnectSignal(){
-        GetNode<WorldCursorControl>("/root/World/WorldCursorControl").ConnectToSelectUnit(self);
-        GetNode<WorldCursorControl>("/root/World/WorldCursorControl").ConnectToSelectTarget(self);
-        //control.Connect("_SelectTarget", this, nameof(SelectTarget));
+        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/World/WorldCursorControl");
+        WCC.ConnectToSelectUnit(self);
+        WCC.ConnectToSelectTarget(self);
+        Galaxy galaxy = GetNode<Galaxy>("/root/World/Galaxy");
+        galaxy.ConnectToEnterSystem(self);
+        galaxy.ConnectToEnterCombat(self);
     }
 
     // Called when the node enters the scene tree for the first time.
