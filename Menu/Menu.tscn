@@ -27,13 +27,15 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -149.5
-margin_top = -67.0
-margin_right = 149.5
+anchor_bottom = 0.5
+margin_left = -149.0
+margin_top = -60.0002
+margin_right = 150.0
+margin_bottom = 126.0
 theme = ExtResource( 1 )
+custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -49,38 +51,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 32.0
+[node name="PlayButton" type="Button" parent="VBoxContainer"]
+margin_top = 38.0
 margin_right = 299.0
-margin_bottom = 67.0
+margin_bottom = 80.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PlayButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_right = 147.0
-margin_bottom = 35.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Play"
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ExitButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 151.0
+[node name="ExitButton" type="Button" parent="VBoxContainer"]
+margin_top = 90.0
 margin_right = 299.0
-margin_bottom = 35.0
+margin_bottom = 132.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Exit"
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="button_up" from="VBoxContainer/HBoxContainer/PlayButton" to="VBoxContainer/HBoxContainer/PlayButton" method="_on_PlayButton_button_up"]
-[connection signal="button_up" from="VBoxContainer/HBoxContainer/ExitButton" to="VBoxContainer/HBoxContainer/ExitButton" method="_on_ExitButton_button_up"]
+[connection signal="button_up" from="VBoxContainer/PlayButton" to="VBoxContainer/PlayButton" method="_on_PlayButton_button_up"]
+[connection signal="button_up" from="VBoxContainer/ExitButton" to="VBoxContainer/ExitButton" method="_on_ExitButton_button_up"]
