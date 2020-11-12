@@ -64,7 +64,6 @@ public class StarSystem : StaticBody
         StarSysObjects.AddChild(sun);
 
         SystemName3D.UpdateText(SystemName);
-        GD.Print(SystemName);
         int dist = Rand.Next(5, 15);
         float angle = Rand.Next(0, 70);
         for(int i = 0;i < Size; i++){
@@ -110,7 +109,6 @@ public class StarSystem : StaticBody
         XButton.Visible = false;
         Placeholder.Visible = true;
         EmitSignal(nameof(ViewGalaxy));
-        GD.Print(SystemName);
     }
 
     protected void _ConnectSignal(){

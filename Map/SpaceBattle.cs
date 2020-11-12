@@ -10,6 +10,8 @@ public class SpaceBattle : StaticBody
 
     public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
 
+    public Node Participants = null;
+
     public List<PhysicsBody> Debris { get; set; } = new List<PhysicsBody>();
 
     public void SetPosition(Vector3 pos){
@@ -25,6 +27,8 @@ public class SpaceBattle : StaticBody
     public void AddCombatants(params PhysicsBody[] body){
         foreach(PhysicsBody b in body){
             Comabatants.Add(b);
+            b.GetParent().RemoveChild(b);
+            AddChild(b);
         }
     }
    
@@ -32,14 +36,17 @@ public class SpaceBattle : StaticBody
         Comabatants.Remove(body);
     }
 
+    void GetNodes(){
+        Participants = GetNode("Parts");
+        if(Participants == null){
+            GD.Print("null");
+        }
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        
-    }
-
-    void GetNodes(){
-        
+        GetNodes();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
