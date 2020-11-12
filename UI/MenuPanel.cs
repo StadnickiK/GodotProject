@@ -1,10 +1,8 @@
 using Godot;
 using System;
 
-public class PlanetInterface : Panel
+public class MenuPanel : Panel
 {
-
-
     Button _closeButton = null;
 
     Label _titleLabel = null;
@@ -29,3 +27,4 @@ public class PlanetInterface : Panel
     }
 
 }
+

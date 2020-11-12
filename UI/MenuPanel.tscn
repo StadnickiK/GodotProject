@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://UI/MenuPanel.cs" type="Script" id=1]
+[ext_resource path="res://UI/Header.tscn" type="PackedScene" id=2]
+
+[node name="MenuPanel" type="Panel"]
+margin_right = 322.0
+margin_bottom = 80.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Header" parent="." instance=ExtResource( 2 )]
+margin_right = 321.0
