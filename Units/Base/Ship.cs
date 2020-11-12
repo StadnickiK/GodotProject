@@ -17,13 +17,13 @@ public class Ship : RigidBody
     public delegate void EnterSystem(int shipID, int systemID, Vector3 aproachVec, PhysicsDirectBodyState state);
 
     [Signal]
-    public delegate void EnterCombat(int shipID, int enemyID);
+    public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
 
     [Export]
     public int effectiveRange = 10;
 
     [Export]
-    public int ID_Owner { get; set; }
+    public int ID_Owner { get; set; } = 0;
 
     public StarSystem System { get; set; } = null;
 
@@ -32,6 +32,11 @@ public class Ship : RigidBody
     Vector3 targetPos = Vector3.Zero;
 
     protected Ship self = null;
+
+    [Export]
+    public int Range { get; set; } = 4;
+
+    Spatial VisionRange = null;
 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
@@ -59,7 +64,7 @@ public class Ship : RigidBody
 
     public void MoveToTarget(PhysicsBody target){
         Sleeping = false;
-        targetPos = PosToTargetWithEffectiveRange(target.GlobalTransform.origin);
+        targetPos = target.GlobalTransform.origin;//PosToTargetWithEffectiveRange(target.GlobalTransform.origin);
     }
 
     public void MoveToPos(Vector3 destination){
@@ -96,7 +101,7 @@ public class Ship : RigidBody
             UpdateShipVelocities(state);
             if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
                 GD.Print("Enter system");
-                EmitSignal(nameof(EnterSystem), self.GetIndex(), targetManager.currentTarget.GetIndex(), DirToCurrentTarget(), state);
+                EmitSignal(nameof(EnterSystem), GetIndex(), targetManager.currentTarget.GetIndex(), DirToCurrentTarget(), state);
             }
         }else{
             Sleeping = true;
@@ -104,11 +109,12 @@ public class Ship : RigidBody
         }
     }
 
-    public void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
+    void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
             EmitSignal(nameof(SelectUnit), (PhysicsBody)self);
+            GD.Print("left");
             break;
           case ButtonList.Right:
             EmitSignal(nameof(SelectTarget), (PhysicsBody)self);
@@ -117,10 +123,27 @@ public class Ship : RigidBody
       } 
     }
 
+    void _on_Area_body_entered(Node body){
+        if(body is Ship){
+            var s = (Ship)body;
+            if(s.ID_Owner != ID_Owner && s.Visible == false){
+                s.Visible = true;
+            }
+        }
+    }
+
+    void _on_Area_body_exited(Node body){
+        if(body is Ship){
+            var s = (Ship)body;
+            if(s.ID_Owner != ID_Owner && s.Visible == true){
+                s.Visible = false;
+            }
+        }
+    }
+
     void _on_Ship_body_entered(Node node){
         if(node is Ship){
-            EmitSignal(nameof(EnterCombat), self.GetIndex(), node.GetIndex());
-            GD.Print("colliision");
+            EmitSignal(nameof(EnterCombat), (PhysicsBody)self, (PhysicsBody)node, GetParent());
         }
     }
 
@@ -128,15 +151,18 @@ public class Ship : RigidBody
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/World/WorldCursorControl");
         WCC.ConnectToSelectUnit(self);
         WCC.ConnectToSelectTarget(self);
-        Galaxy galaxy = GetNode<Galaxy>("/root/World/Galaxy");
-        galaxy.ConnectToEnterSystem(self);
-        galaxy.ConnectToEnterCombat(self);
+        Map map = GetNode<Map>("/root/World/Map/");
+        map.ConnectToEnterSystem(self);
+        map.ConnectToEnterCombat(self);
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         self = (Ship)GetParent().GetChild(GetIndex());
+        //VisionRange = GetNode<Spatial>("VisionRange");
+        //VisionRange.Scale = new Vector3(Range,0,Range);
+
         _velocityController.Mass = 10;
         _ConnectSignal();
     }

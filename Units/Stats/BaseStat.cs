@@ -3,6 +3,8 @@ using System;
 
 public class BaseStat : Node{
 
+    public BaseStat(){}
+
     public BaseStat(string name){
         _name = name;
     }
