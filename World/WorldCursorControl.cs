@@ -7,7 +7,8 @@ public class WorldCursorControl : Spatial
     // private int a = 2;
     // private string b = "text";
 
-    Select select;
+    Select select = null;
+    Camera camera = null;
     // Called when the node enters the scene tree for the first time.
 
     public void ConnectToSelectUnit(Node node){
@@ -18,9 +19,14 @@ public class WorldCursorControl : Spatial
         node.Connect("SelectTarget", this, nameof(_SelectTarget));
     }
 
+    void GetNodes(){
+        select = GetNode<Select>("Select");
+        camera = GetNode<Camera>("/root/World/UI/CameraGimbal/InnerGimbal/Camera");
+    }
+
     public override void _Ready()
     {
-        select = GetNode<Select>("/root/World/WorldCursorControl/Select");
+        GetNodes();
         /*
         foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
             n.Connect("SelectUnit", this, nameof(_SelectUnit));
@@ -43,7 +49,6 @@ public class WorldCursorControl : Spatial
     Vector3 GetMouseWorldPosition(){
         var ray_length = 1000;
         var mousePos = GetViewport().GetMousePosition();
-        var camera = (Camera)GetParent().GetNode("CameraGimbal/InnerGimbal/FreeCamera");
         var from = camera.ProjectRayOrigin(mousePos);
         var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
         var space_state = GetWorld().DirectSpaceState;
