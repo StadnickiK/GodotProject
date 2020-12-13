@@ -2,7 +2,14 @@
 
 [ext_resource path="res://Themes/Resource_Panel_theme.tres" type="Theme" id=1]
 
-[node name="ResourcePanel" type="HBoxContainer"]
+[node name="Panel" type="Panel"]
+margin_right = 349.0
+margin_bottom = 39.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ResourcePanel" type="HBoxContainer" parent="."]
 margin_right = 776.0
 margin_bottom = 41.0
 custom_constants/separation = 4
@@ -10,7 +17,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Resource" type="HBoxContainer" parent="."]
+[node name="Resource" type="HBoxContainer" parent="ResourcePanel"]
 margin_right = 80.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 0, 32 )
@@ -19,12 +26,12 @@ theme = ExtResource( 1 )
 custom_constants/separation = 0
 alignment = 1
 
-[node name="ResourceTexture" type="TextureRect" parent="Resource"]
+[node name="ResourceTexture" type="TextureRect" parent="ResourcePanel/Resource"]
 margin_right = 32.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 32, 32 )
 
-[node name="Amount" type="Label" parent="Resource"]
+[node name="Amount" type="Label" parent="ResourcePanel/Resource"]
 margin_left = 32.0
 margin_top = 4.0
 margin_right = 80.0
@@ -35,7 +42,7 @@ text = "1 000 000
 align = 1
 valign = 2
 
-[node name="Resource2" type="HBoxContainer" parent="."]
+[node name="Resource2" type="HBoxContainer" parent="ResourcePanel"]
 margin_left = 84.0
 margin_right = 164.0
 margin_bottom = 41.0
@@ -45,12 +52,12 @@ theme = ExtResource( 1 )
 custom_constants/separation = 0
 alignment = 1
 
-[node name="ResourceTexture" type="TextureRect" parent="Resource2"]
+[node name="ResourceTexture" type="TextureRect" parent="ResourcePanel/Resource2"]
 margin_right = 32.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 32, 32 )
 
-[node name="Amount" type="Label" parent="Resource2"]
+[node name="Amount" type="Label" parent="ResourcePanel/Resource2"]
 margin_left = 32.0
 margin_top = 4.0
 margin_right = 80.0
@@ -61,7 +68,7 @@ text = "1 000 000
 align = 1
 valign = 2
 
-[node name="Resource3" type="HBoxContainer" parent="."]
+[node name="Resource3" type="HBoxContainer" parent="ResourcePanel"]
 margin_left = 168.0
 margin_right = 248.0
 margin_bottom = 41.0
@@ -71,12 +78,12 @@ theme = ExtResource( 1 )
 custom_constants/separation = 0
 alignment = 1
 
-[node name="ResourceTexture" type="TextureRect" parent="Resource3"]
+[node name="ResourceTexture" type="TextureRect" parent="ResourcePanel/Resource3"]
 margin_right = 32.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 32, 32 )
 
-[node name="Amount" type="Label" parent="Resource3"]
+[node name="Amount" type="Label" parent="ResourcePanel/Resource3"]
 margin_left = 32.0
 margin_top = 4.0
 margin_right = 80.0
@@ -87,7 +94,7 @@ text = "1 000 000
 align = 1
 valign = 2
 
-[node name="Resource4" type="HBoxContainer" parent="."]
+[node name="Resource4" type="HBoxContainer" parent="ResourcePanel"]
 margin_left = 252.0
 margin_right = 332.0
 margin_bottom = 41.0
@@ -97,12 +104,12 @@ theme = ExtResource( 1 )
 custom_constants/separation = 0
 alignment = 1
 
-[node name="ResourceTexture" type="TextureRect" parent="Resource4"]
+[node name="ResourceTexture" type="TextureRect" parent="ResourcePanel/Resource4"]
 margin_right = 32.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 32, 32 )
 
-[node name="Amount" type="Label" parent="Resource4"]
+[node name="Amount" type="Label" parent="ResourcePanel/Resource4"]
 margin_left = 32.0
 margin_top = 4.0
 margin_right = 80.0
