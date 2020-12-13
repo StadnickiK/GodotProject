@@ -6,12 +6,30 @@ public class Player : Node
 {
     public int PlayerID { get; set; }
 
-    public List<Ship> MapObjects { get; set; } = new List<Ship>();
+    public string PlayerName { get; set; }
+
+    public bool MapObjectsChanged { get; set; } = true;
+
+    private List<PhysicsBody> _MapObejcts = new List<PhysicsBody>();
+    public List<PhysicsBody> MapObjects
+    {
+        get { return _MapObejcts; }
+    }
+
+    public PhysicsBody GetPlanetByName(string name){
+        foreach(PhysicsBody body in _MapObejcts){
+            if(body.Name == name){
+                return body;
+            }
+        }
+        return null;
+    }    
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         PlayerID = GetIndex();
+        PlayerName = "Player "+ PlayerID;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
