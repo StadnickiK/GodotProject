@@ -7,15 +7,21 @@ public class PlanetInterface : Panel
 
     Button _closeButton = null;
 
-    Label _titleLabel = null;
+    Header _header = null;
+
+    OverviewPanel _panel = null;
 
     [Export]
     public string Title { get; set; } = "Title";
-    // Called when the node enters the scene tree for the first time.
 
     void GetNodes(){
         _closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
-        _titleLabel = GetNode<Label>("VBoxContainer/Header/Title");
+        _header = GetNode<Header>("VBoxContainer/Header");
+        _panel = GetNode<OverviewPanel>("VBoxContainer/OverviewPanel");
+    }
+
+    public void SetTitle(string title){
+        _header.SetTitle(title);
     }
 
     public override void _Ready()
