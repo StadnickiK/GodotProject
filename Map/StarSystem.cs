@@ -18,7 +18,7 @@ public class StarSystem : StaticBody
     [Signal]
     public delegate void ViewGalaxy();
 
-   [Signal]
+    [Signal]
     public delegate void SelectTarget(StarSystem target);
 
     private int _diameter;
@@ -26,8 +26,8 @@ public class StarSystem : StaticBody
     {
         get { return _diameter; }
     }
-    
-    protected StarSystem self = null;
+
+    MeshInstance _size = null;
 
     public String SystemName { get; set; }
 
@@ -42,8 +42,11 @@ public class StarSystem : StaticBody
     PackedScene SunScene = null;
     PackedScene PlanetScene = null;
 
-    List<Planet> Planets = new List<Planet>();
-
+    private List<Planet> _planets = new List<Planet>();
+    public List<Planet> Planets
+    {
+        get { return _planets; }
+    }
 
     public Random Rand { get; set; } = new Random();
 
@@ -52,11 +55,12 @@ public class StarSystem : StaticBody
         PlanetScene = (PackedScene)GD.Load("res://Map/Planet.tscn");
     }
 
-    void LoadNodes(){
+    void GetNodes(){
         StarSysObjects = GetNode<Spatial>("StarSysObjects");
         SystemName3D = GetNode<Text3D>("Text3D");
         Placeholder = GetNode<CollisionShape>("Placeholder");
         XButton = GetNode<Button>("XButton");
+        _size = GetNode<MeshInstance>("StarSysObjects/Diameter");
     }
 
     void Generate(){
@@ -70,16 +74,18 @@ public class StarSystem : StaticBody
             RotateY(angle);
             var pos = Transform.basis.Xform(new Vector3(0, 0, dist));
             var planet = (Planet)PlanetScene.Instance();
-            planet.PlanetName = SystemName + i;
+            planet.PlanetName = SystemName +" "+ i;
             planet.Rand = Rand;
+            planet.System = this;
             var temp = planet.Transform;
             temp.origin = pos;
             planet.Transform = temp;
             StarSysObjects.AddChild(planet);
+            _planets.Add(planet);
             dist += Rand.Next(4, 10);
             angle += Rand.Next(0,50);
         }
-        _diameter = dist*2-Rand.Next(20,40);
+        _diameter = (int)(dist*1.2f);
         StarSysObjects.Visible = false;
         Rotation = Vector3.Zero;
     }
@@ -91,15 +97,19 @@ public class StarSystem : StaticBody
         Colony
     }
 
+    public void OpenStarSystem(){
+        StarSysObjects.Visible = true;
+        XButton.Visible = true;
+        Placeholder.Visible = false;
+        EmitSignal(nameof(ViewStarSystem), SystemID);
+    }
+
     void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(e is InputEventMouseButton mouseButton){
             if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
-                StarSysObjects.Visible = true;
-                XButton.Visible = true;
-                Placeholder.Visible = false;
-                EmitSignal(nameof(ViewStarSystem), SystemID);
+                OpenStarSystem();
             }else if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Right){
-                EmitSignal(nameof(SelectTarget), (PhysicsBody)self);
+                EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
             }
         }
     }
@@ -112,19 +122,19 @@ public class StarSystem : StaticBody
     }
 
     protected void _ConnectSignal(){
-        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/World/WorldCursorControl");
-        WCC.ConnectToSelectTarget(self);
+        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
+        WCC.ConnectToSelectTarget(this);
         //control.Connect("_SelectTarget", this, nameof(SelectTarget));
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        self = (StarSystem)GetParent().GetChild(GetIndex());
         SetPhysicsProcess(false);
         LoadScenes();
-        LoadNodes();
+        GetNodes();
         Generate();
+        _size.Scale = new Vector3(_diameter,1,_diameter);
         _ConnectSignal();
     }
 
