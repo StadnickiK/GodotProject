@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Themes/Main_Menu_theme.tres" type="Theme" id=1]
 [ext_resource path="res://Menu/PlayButton.cs" type="Script" id=2]
 [ext_resource path="res://Fonts/times.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Menu/ExitButton.cs" type="Script" id=4]
+[ext_resource path="res://Menu/MainMenuButton.cs" type="Script" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -56,16 +57,23 @@ margin_top = 38.0
 margin_right = 299.0
 margin_bottom = 80.0
 size_flags_horizontal = 3
-text = "Play"
+text = "Continue"
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ExitButton" type="Button" parent="VBoxContainer"]
+[node name="MainMenu" type="Button" parent="VBoxContainer"]
 margin_top = 90.0
 margin_right = 299.0
 margin_bottom = 132.0
+text = "Main Menu"
+script = ExtResource( 5 )
+
+[node name="Exit" type="Button" parent="VBoxContainer"]
+margin_top = 142.0
+margin_right = 299.0
+margin_bottom = 184.0
 size_flags_horizontal = 3
 text = "Exit"
 script = ExtResource( 4 )
@@ -73,4 +81,5 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="button_up" from="VBoxContainer/PlayButton" to="VBoxContainer/PlayButton" method="_on_PlayButton_button_up"]
-[connection signal="button_up" from="VBoxContainer/ExitButton" to="VBoxContainer/ExitButton" method="_on_ExitButton_button_up"]
+[connection signal="button_up" from="VBoxContainer/MainMenu" to="VBoxContainer/MainMenu" method="_on_MainMenu_button_up"]
+[connection signal="button_up" from="VBoxContainer/Exit" to="VBoxContainer/Exit" method="_on_Exit_button_up"]
