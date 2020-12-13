@@ -9,7 +9,7 @@ public class ListPanel : VBoxContainer
 
     Label _titleLabel = null;
 
-    Node _container = null;
+    Node _items = null;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -21,15 +21,44 @@ public class ListPanel : VBoxContainer
 
     void GetNodes(){
         _titleLabel = GetNode<Label>("Title");
-        _container = GetNode("ItemList/VContainer");
+        _items = GetNode("ItemList/Items");
     }
 
     public void AddListItem(Node item){
-        _container.AddChild(item);
+        if(!_items.GetChildren().Contains(item)){
+            _items.AddChild(item);
+        }
+    }
+
+    public void ConnectToOnGuiInput(Node node, string methodName){
+        GD.Print(methodName);
+        foreach(Node child in _items.GetChildren()){
+            if(child is Control control){
+                //if(control.IsConnected("gui_input", node, methodName)){
+                    Godot.Collections.Array array = new Godot.Collections.Array();
+                    array.Add(control);
+                    control.Connect("gui_input", node, methodName, array);
+                    control.MouseFilter = MouseFilterEnum.Stop;
+                //}
+            }
+        }
+    }
+
+    public void DisconnectToOnGuiInput(Node node, string methodName){
+        
+        foreach(Node child in _items.GetChildren()){
+                    child.Disconnect("gui_input", node, methodName);
+        }
     }
 
     public void RemoveListItem(Node item){
-        _container.RemoveChild(item);
+        _items.RemoveChild(item);
+    }
+
+    public void ClearItems(){
+        foreach(Node n in _items.GetChildren()){
+            n.QueueFree();
+        }
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
