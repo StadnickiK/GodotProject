@@ -13,18 +13,23 @@ public class Planet : StaticBody
 
     [Export]
     Gradient gradient = null;
+   
+    public Player PlanetOwner { get; set; } = null;
 
     public List<Tile> Tiles { get; set; } = new List<Tile>();
 
     public Random Rand { get; set; } = new Random();
 
-    public string PlanetName { get; set; }
+    public string PlanetName { get; set; } = "PlanetName";
+
+    public StarSystem System { get; set; } = null;
 
     PackedScene TileScene = null;
-    
-    PlanetInterface PInterface = null;
 
     MeshInstance Mesh = null;
+
+    [Signal]
+    public delegate void OpenPlanetInterface(Planet planet);
 
     public enum Type
     {
@@ -39,6 +44,7 @@ public class Planet : StaticBody
     }
 
     void Generate(){
+        Name = PlanetName;
         Size = Rand.Next(5,15);
         Scale *= Size/10;
         Size = Size%2==0 ? Size : ++Size;
@@ -68,14 +74,13 @@ public class Planet : StaticBody
     void _on_Planet_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(e is InputEventMouseButton mouseButton){
             if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
-                PInterface.Visible = true;
+                EmitSignal(nameof(OpenPlanetInterface), this);
             }
         }
     }
 
     void GetNodes(){
         Mesh = GetNode<MeshInstance>("MeshInstance");
-        PInterface = GetNode<PlanetInterface>("PlanetInterface");
     }
 
     // Called when the node enters the scene tree for the first time.
@@ -84,6 +89,8 @@ public class Planet : StaticBody
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
         GetNodes();
         GenerateMesh();
+        World w = GetNode<World>("/root/Game/World");
+        w.ConnectTo_OpenPlanetInterface(this);
         //Generate();
     }
 }

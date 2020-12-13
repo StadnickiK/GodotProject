@@ -1,71 +1,13 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Map/Planet.cs" type="Script" id=1]
-[ext_resource path="res://UI/PlanetInterface.tscn" type="PackedScene" id=2]
+[ext_resource path="res://PlanetMesh.tscn" type="PackedScene" id=3]
 
 [sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0, 0.526132, 1 )
-colors = PoolColorArray( 0.14902, 0.0470588, 0.745098, 1, 0, 1, 0.109804, 1, 0.125, 1, 0, 1 )
+offsets = PoolRealArray( 0.160535, 0.526132, 0.816054 )
+colors = PoolColorArray( 0.477227, 0.492188, 0.0134583, 1, 0.710938, 0.479462, 0.0805359, 1, 0.363281, 0.351918, 0.0723724, 1 )
 
 [sub_resource type="BoxShape" id=2]
-
-[sub_resource type="SphereMesh" id=3]
-
-[sub_resource type="Shader" id=4]
-code = "shader_type spatial;
-render_mode specular_schlick_ggx;
-
-uniform sampler2D noise;
-uniform sampler2D gradient;
-
-
-
-void vertex() {
-// Output:0
-
-}
-
-void fragment() {
-// Texture:10
-	vec4 noise_read = texture(noise, UV.xy);
-	vec3 n_out10p0 = noise_read.rgb;
-	float n_out10p1 = noise_read.a;
-
-// Texture:9
-	vec4 tex_frg_9_read = texture(gradient, n_out10p0.xy);
-	vec3 n_out9p0 = tex_frg_9_read.rgb;
-	float n_out9p1 = tex_frg_9_read.a;
-
-// Output:0
-	ALBEDO = n_out9p0;
-
-}
-
-void light() {
-// Output:0
-
-}
-"
-
-[sub_resource type="Gradient" id=5]
-offsets = PoolRealArray( 0, 0.498182, 1 )
-colors = PoolColorArray( 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1 )
-
-[sub_resource type="GradientTexture" id=6]
-gradient = SubResource( 5 )
-
-[sub_resource type="OpenSimplexNoise" id=7]
-seed = 130
-lacunarity = 4.0
-
-[sub_resource type="NoiseTexture" id=8]
-seamless = true
-noise = SubResource( 7 )
-
-[sub_resource type="ShaderMaterial" id=9]
-shader = SubResource( 4 )
-shader_param/noise = SubResource( 8 )
-shader_param/gradient = SubResource( 6 )
 
 [node name="Planet" type="StaticBody"]
 script = ExtResource( 1 )
@@ -74,10 +16,5 @@ gradient = SubResource( 1 )
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
 
-[node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
-material/0 = SubResource( 9 )
-
-[node name="PlanetInterface" parent="." instance=ExtResource( 2 )]
-visible = false
+[node name="MeshInstance" parent="." instance=ExtResource( 3 )]
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]
