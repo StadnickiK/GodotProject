@@ -11,7 +11,10 @@ public class ValueSlider : HBoxContainer
     Slider _slider = null;
 
     [Export]
-    string _valueName = "ValueName";
+    public string Text { get; set; } = "Value Name";
+
+    [Export]
+    public string ValueName = "ValueName";
 
     [Export]
     int _minValue = 0;
@@ -31,7 +34,7 @@ public class ValueSlider : HBoxContainer
         
     }
 
-    void _on_Value_changed(){
+    void _on_Value_changed(float Value){
         CurrentValue = (int)_slider.Value;
         _valueLabel.Text = CurrentValue.ToString();
     }
@@ -48,7 +51,7 @@ public class ValueSlider : HBoxContainer
         GetNodes();
         CurrentValue = (int)_slider.Value;
         _valueLabel.Text = CurrentValue.ToString();
-        _nameLabel.Text = _valueName;
+        _nameLabel.Text = Text; 
         HintTooltip = _hint;
         UpdateSlider();
     }
