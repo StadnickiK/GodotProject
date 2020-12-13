@@ -14,7 +14,7 @@ public class Ship : RigidBody
     public delegate void LeaveSystem(int id);
 
     [Signal]
-    public delegate void EnterSystem(int shipID, int systemID, Vector3 aproachVec, PhysicsDirectBodyState state);
+    public delegate void EnterSystem(Ship shipID, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state);
 
     [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
@@ -30,8 +30,6 @@ public class Ship : RigidBody
     public StatManager StatManager { get; set; } = new StatManager();
 
     Vector3 targetPos = Vector3.Zero;
-
-    protected Ship self = null;
 
     [Export]
     public int Range { get; set; } = 4;
@@ -59,7 +57,10 @@ public class Ship : RigidBody
     }
 
     protected Vector3 DirToCurrentTarget(){
-        return (targetManager.currentTarget.GlobalTransform.origin-GlobalTransform.origin).Normalized();
+        if(targetManager.HasTarget){
+            return (targetManager.currentTarget.GlobalTransform.origin-GlobalTransform.origin).Normalized();
+        }
+        return Vector3.Zero;
     }
 
     public void MoveToTarget(PhysicsBody target){
@@ -70,12 +71,6 @@ public class Ship : RigidBody
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
         targetPos = destination;
-    }
-
-    public void MoveToSystem(StarSystem system){
-        Sleeping = false;
-        targetPos = system.GlobalTransform.origin;
-        System = system;
     }
 
     void UpdateShipVelocities(PhysicsDirectBodyState state){
@@ -101,8 +96,15 @@ public class Ship : RigidBody
             UpdateShipVelocities(state);
             if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
                 GD.Print("Enter system");
-                EmitSignal(nameof(EnterSystem), GetIndex(), targetManager.currentTarget.GetIndex(), DirToCurrentTarget(), state);
+                EmitSignal(nameof(EnterSystem), this, (StarSystem)targetManager.currentTarget, DirToCurrentTarget(), state);
             }
+            if(System != null){
+                if(Transform.origin.Length()>System.Diameter){
+                    GD.Print("Leave system");
+                    EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
+                }
+            }
+
         }else{
             Sleeping = true;
             state.Sleeping = true;
@@ -113,11 +115,11 @@ public class Ship : RigidBody
       if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
-            EmitSignal(nameof(SelectUnit), (PhysicsBody)self);
+            EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
             GD.Print("left");
             break;
           case ButtonList.Right:
-            EmitSignal(nameof(SelectTarget), (PhysicsBody)self);
+            EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
             break;
         }
       } 
@@ -143,23 +145,23 @@ public class Ship : RigidBody
 
     void _on_Ship_body_entered(Node node){
         if(node is Ship){
-            EmitSignal(nameof(EnterCombat), (PhysicsBody)self, (PhysicsBody)node, GetParent());
+            EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
         }
     }
 
     protected void _ConnectSignal(){
-        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/World/WorldCursorControl");
-        WCC.ConnectToSelectUnit(self);
-        WCC.ConnectToSelectTarget(self);
-        Map map = GetNode<Map>("/root/World/Map/");
-        map.ConnectToEnterSystem(self);
-        map.ConnectToEnterCombat(self);
+        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
+        WCC.ConnectToSelectUnit(this);
+        WCC.ConnectToSelectTarget(this);
+        Map map = GetNode<Map>("/root/Game/World/Map/");
+        map.ConnectToEnterSystem(this);
+        map.ConnectToLeaveSystem(this);
+        map.ConnectToEnterCombat(this);
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        self = (Ship)GetParent().GetChild(GetIndex());
         //VisionRange = GetNode<Spatial>("VisionRange");
         //VisionRange.Scale = new Vector3(Range,0,Range);
 
