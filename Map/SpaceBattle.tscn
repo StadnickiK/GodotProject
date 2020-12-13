@@ -16,4 +16,5 @@ material/0 = null
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
 
-[node name="Parts" type="Node" parent="."]
+[node name="Participants" type="Node" parent="."]
+[connection signal="input_event" from="." to="." method="_on_SpaceBattle_input_event"]
