@@ -3,12 +3,11 @@ using System;
 
 public class WorldCursorControl : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
     Select select = null;
-    Camera camera = null;
+
+    public int LocalPlayerID { get; set; }
+    public Camera camera = null;
     // Called when the node enters the scene tree for the first time.
 
     public void ConnectToSelectUnit(Node node){
@@ -21,7 +20,6 @@ public class WorldCursorControl : Spatial
 
     void GetNodes(){
         select = GetNode<Select>("Select");
-        camera = GetNode<Camera>("/root/World/UI/CameraGimbal/InnerGimbal/Camera");
     }
 
     public override void _Ready()
