@@ -31,21 +31,21 @@ public class ListPanel : VBoxContainer
     }
 
     public void ConnectToOnGuiInput(Node node, string methodName){
-        GD.Print(methodName);
         foreach(Node child in _items.GetChildren()){
             if(child is Control control){
-                //if(control.IsConnected("gui_input", node, methodName)){
+                if(!control.IsConnected("gui_input", node, methodName)){
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
                     control.Connect("gui_input", node, methodName, array);
                     control.MouseFilter = MouseFilterEnum.Stop;
-                //}
+                }else{
+                    GD.Print("Already connected");
+                }
             }
         }
     }
 
     public void DisconnectToOnGuiInput(Node node, string methodName){
-        
         foreach(Node child in _items.GetChildren()){
                     child.Disconnect("gui_input", node, methodName);
         }

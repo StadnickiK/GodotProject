@@ -26,6 +26,8 @@ public WorldCursorControl WCC
 
     PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
 
+    PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
+
     int Seed = 0;
     public Random Rand { get; set; }
 
@@ -34,7 +36,12 @@ public WorldCursorControl WCC
         Rand = new Random(Seed);
 ;   }
 
-    Player _Player = null;
+    private Player _Player = null;
+    public Player Host
+    {
+        get { return _Player; }
+    }
+    
 
     Node Players = null;
 
@@ -78,6 +85,11 @@ public WorldCursorControl WCC
         Players = GetNode("Players");
         _wcc = GetNode<WorldCursorControl>("WorldCursorControl");
         _UI = GetNode<UI>("UI");
+    }
+
+    void ConnectSignals(){
+        _UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
+        _map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
     }
 
     void InitPlayers(){
@@ -146,28 +158,56 @@ public WorldCursorControl WCC
         }
     }
 
+    void InitStartFleets(){
+        foreach(Node node in Players.GetChildren()){
+            if(node is Player player){
+                int maxFleets = 1;
+                var ship = (Ship)_ShipScene.Instance();
+                foreach(PhysicsBody body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
+                    if(body is Planet planet && maxFleets>0){
+                        var transform = ship.Transform;
+                        transform.origin = planet.Transform.origin;
+                        transform.origin += new Vector3(3,0,3);
+                        ship.Transform = transform;
+                        ship.Controller = player;
+                        ship.ID_Owner = player.GetIndex();
+                        player.MapObjects.Add(ship);
+                        if(_Player != player){
+                            //ship.Visible = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     void InitStartResources(){
         
+    }
+
+    void InitWorld(){
+        InitRand();
+        InitPlayers();
+        InitGalaxy();
+        UpdateGround();
+        InitStartPlanets();
+        InitStartFleets();
+        InitStartResources();
     }
 
     public override void _Ready()
     {
         GetNodes();
-        InitRand();
-        InitPlayers();
         WCC.camera = Camera.GetNode<Camera>("InnerGimbal/Camera");
         if(_Player != null){
             WCC.LocalPlayerID = _Player.PlayerID;
         }
-        InitGalaxy();
-        UpdateGround();
-        InitStartPlanets();
-        _UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
-        _map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
+        ConnectSignals();
+        InitWorld();
     }
     public override void _Process(float delta)
     {
-        _UI.UpdateUI(_Player);
+        _UI.UpdateUI(Host);
         if(Input.IsActionJustReleased("ui_cancel")){
             _UI.WorldMenu.Visible = true;
         }
