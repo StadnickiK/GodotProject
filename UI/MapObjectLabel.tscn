@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/MapObjectLabel.cs" type="Script" id=1]
+
+[node name="MapObjectLabel" type="VBoxContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_top = 4.0
+margin_right = 40.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 26.0
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Location" type="Label" parent="HBoxContainer"]
+margin_right = 18.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Destination" type="Label" parent="HBoxContainer"]
+margin_left = 22.0
+margin_right = 40.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
