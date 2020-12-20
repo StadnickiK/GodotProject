@@ -16,8 +16,9 @@ public class Player : Node
         get { return _MapObejcts; }
     }
 
-    public PhysicsBody GetPlanetByName(string name){
+    public PhysicsBody GetMapObjectByName(string name){
         foreach(PhysicsBody body in _MapObejcts){
+            GD.Print(body.Name+"+" +" "+name+"+");
             if(body.Name == name){
                 return body;
             }

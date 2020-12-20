@@ -75,7 +75,7 @@ public class Map : Node
 
     void ShipLeaveSystem(Ship ship, Vector3 currentVec, PhysicsDirectBodyState state){
         if(ship.System != null && ship != null){
-            ship.System.GetNode("StarSysObjects").RemoveChild(ship);
+            ship.GetParent().RemoveChild(ship);
             galaxy.AddChild(ship);
             var trans = state.Transform;
             trans.origin = ship.System.Transform.origin;
@@ -85,7 +85,16 @@ public class Map : Node
         }
     }
 
+    public void ConnectToEnterPlanet(Node node){
+        node.Connect("EnterPlanet", this, nameof(_on_Ship_EnterPlanet));
+    }
 
+    void _on_Ship_EnterPlanet(Ship ship, Planet planet){
+        if(!planet.Orbit.GetChildren().Contains(ship)){
+            ship.GetParent().RemoveChild(ship);
+            planet.Orbit.AddChild(ship);
+        }
+    }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)

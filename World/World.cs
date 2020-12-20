@@ -63,7 +63,7 @@ public WorldCursorControl WCC
 
     void _on_OpenPlanetInterface(Planet planet){
         _UI.PInterface.Visible = true;
-        _UI.PInterface.SetTitle(planet.PlanetName);
+        _UI.PInterface.UpdatePlanetInterface(planet);
     }
 
     void _on_CameraLookAt(Vector3 position){
@@ -71,11 +71,15 @@ public WorldCursorControl WCC
     }
 
     void _on_LookAtObject(Node node){
-        var planet = _Player.GetPlanetByName(node.Name);
-        GD.Print(node.Name);
-        if(planet is Planet p){
+        var obj = _Player.GetMapObjectByName(node.Name);
+        //GD.Print(obj.Name);
+        if(obj is Planet p){
+            GD.Print(node.Name);
             p.System.OpenStarSystem();
             Camera.LookAt(p.Transform.origin);
+        }else if(obj is Ship s){
+            s.System.OpenStarSystem();
+            Camera.LookAt(s.Transform.origin);
         }
     }
 
@@ -171,6 +175,9 @@ public WorldCursorControl WCC
                         ship.Transform = transform;
                         ship.Controller = player;
                         ship.ID_Owner = player.GetIndex();
+                        ship.Name = planet.Name +" "+1;
+                        ship.System = planet.System;
+                        ship.System.AddMapObject(ship);
                         player.MapObjects.Add(ship);
                         if(_Player != player){
                             //ship.Visible = false;

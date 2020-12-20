@@ -17,6 +17,12 @@ public class Ship : RigidBody
     public delegate void EnterSystem(Ship shipID, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state);
 
     [Signal]
+    public delegate void LeavePlanet(int id);
+
+    [Signal]
+    public delegate void EnterPlanet(Ship shipID, Planet planet);
+
+    [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
 
     [Export]
@@ -24,6 +30,8 @@ public class Ship : RigidBody
 
     [Export]
     public int ID_Owner { get; set; } = 0;
+
+    public Player Controller { get; set; } = null;
 
     public StarSystem System { get; set; } = null;
 
@@ -45,6 +53,7 @@ public class Ship : RigidBody
 
     protected void ResetVelocity(){
         _velocityController.ResetSpeed();
+        targetManager.ClearTargets();
         LinearVelocity = Vector3.Zero;
         targetPos = Vector3.Zero;
         AngularVelocity = Vector3.Zero;
@@ -94,15 +103,30 @@ public class Ship : RigidBody
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget ||(targetPos != Vector3.Zero && targetPos != null)){
             UpdateShipVelocities(state);
-            if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
-                GD.Print("Enter system");
-                EmitSignal(nameof(EnterSystem), this, (StarSystem)targetManager.currentTarget, DirToCurrentTarget(), state);
+            if(System == null){
+                if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
+                    System = (StarSystem)targetManager.currentTarget;
+                    EmitSignal(nameof(EnterSystem), this, System, DirToCurrentTarget(), state);
+                }
             }
             if(System != null){
                 if(Transform.origin.Length()>System.Diameter){
-                    GD.Print("Leave system");
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
+                    System = null;
                 }
+            }
+            if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
+                GD.Print(planet.Name);
+                EmitSignal(nameof(EnterPlanet), this, planet);
+                // var transform = state.Transform;
+                // transform.origin = planet.Transform.origin;
+                // state.Transform = transform;
+                // targetManager.ClearTargets();
+                ResetVelocity();
+                var transform = state.Transform;
+                transform.origin = planet.GlobalTransform.origin;
+                state.Transform = transform;
+                targetManager.ClearTargets();
             }
 
         }else{
@@ -116,7 +140,6 @@ public class Ship : RigidBody
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
             EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
-            GD.Print("left");
             break;
           case ButtonList.Right:
             EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
@@ -157,6 +180,7 @@ public class Ship : RigidBody
         map.ConnectToEnterSystem(this);
         map.ConnectToLeaveSystem(this);
         map.ConnectToEnterCombat(this);
+        map.ConnectToEnterPlanet(this);
     }
 
     // Called when the node enters the scene tree for the first time.

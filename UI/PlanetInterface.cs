@@ -30,6 +30,16 @@ public class PlanetInterface : Panel
         _closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
     }
 
+    public void UpdatePlanetInterface(Planet planet){
+        if(planet != null){
+            foreach(PhysicsBody body in planet.Orbit.GetChildren()){
+                var label = new Label();
+                label.Name = label.Text = body.Name;
+                _panel.AddNodeToPanel("Orbit", label);
+            }
+        }
+    }
+
     void _on_XButton_button_up(){
         Visible = false;
     }

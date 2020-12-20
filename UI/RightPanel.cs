@@ -34,16 +34,21 @@ public class RightPanel : Panel
         _overwievPanel.ClearPanel(panelName);
         foreach(PhysicsBody body in player.MapObjects){
             if(body is Planet planet){
-                CreateOverviewPanelLabel(panelName, planet.PlanetName, planet);
+                CreateOverviewPanelLabel(panelName, planet.Name, planet);
             }else if(body is Ship ship){
                 CreateOverviewPanelLabel("Fleets", ship.Name, ship);
             }
         }
         _overwievPanel.ConnectToGuiInputEvent(this, panelName, nameof(_on_LabelGuiInputEvent));
+        _overwievPanel.ConnectToGuiInputEvent(this, "Fleets", nameof(_on_LabelGuiInputEvent));
     }
 
     public void _on_LabelGuiInputEvent(InputEvent input, Node node){
-        EmitSignal(nameof(LookAtObject), node);
+        if(input is InputEventMouseButton button){
+            if(button.ButtonIndex == (int)ButtonList.Left){
+                EmitSignal(nameof(LookAtObject), node);
+            }
+        }
     }
 
     void CreateOverviewPanelLabel(string panelName, string name, Node mapObject){
@@ -66,8 +71,6 @@ public class RightPanel : Panel
     void InitOverviewPanel(){
         foreach(string s in Options){
             _overwievPanel.AddPanel(s);
-            //_overwievPanel.ConnectToGuiInputEvent(this, s, nameof(_on_GuiInputEvent));
-            //_overwievPanel.ConnectToGuiInputEvent(this, s, nameof(_on_LabelGuiInputEvent));
         }
     }
 
@@ -76,7 +79,7 @@ public class RightPanel : Panel
         GetNodes();
         _title.Text = Title;
         if(_itemPath != null){
-            _itemScene = (PackedScene)ResourceLoader.Load(_itemPath);
+            //_itemScene = (PackedScene)ResourceLoader.Load(_itemPath);
         }
         InitOverviewPanel();
     }

@@ -30,7 +30,8 @@ __meta__ = {
 
 [node name="Header" parent="VBoxContainer" instance=ExtResource( 1 )]
 margin_right = 322.0
+custom_constants/separation = 210
 
 [node name="OverviewPanel" parent="VBoxContainer" instance=ExtResource( 3 )]
 margin_right = 322.0
-Values = [ "Overview", "Buildings" ]
+Values = [ "Overview", "Buildings", "Orbit" ]

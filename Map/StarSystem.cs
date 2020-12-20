@@ -104,6 +104,10 @@ public class StarSystem : StaticBody
         EmitSignal(nameof(ViewStarSystem), SystemID);
     }
 
+    public void AddMapObject(PhysicsBody body){
+        StarSysObjects.AddChild(body);
+    }
+
     void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(e is InputEventMouseButton mouseButton){
             if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
@@ -124,7 +128,6 @@ public class StarSystem : StaticBody
     protected void _ConnectSignal(){
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);
-        //control.Connect("_SelectTarget", this, nameof(SelectTarget));
     }
 
     // Called when the node enters the scene tree for the first time.

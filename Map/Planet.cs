@@ -13,6 +13,9 @@ public class Planet : StaticBody
 
     [Export]
     Gradient gradient = null;
+
+    [Signal]
+    public delegate void SelectTarget(RigidBody target);
    
     public Player PlanetOwner { get; set; } = null;
 
@@ -23,6 +26,13 @@ public class Planet : StaticBody
     public string PlanetName { get; set; } = "PlanetName";
 
     public StarSystem System { get; set; } = null;
+
+    private Spatial _orbit = null;
+    public Spatial Orbit
+    {
+        get { return _orbit; }
+    }
+    
 
     PackedScene TileScene = null;
 
@@ -71,16 +81,22 @@ public class Planet : StaticBody
         //Mesh.SetSurfaceMaterial(0, material);
     }
 
-    void _on_Planet_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
-        if(e is InputEventMouseButton mouseButton){
-            if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
-                EmitSignal(nameof(OpenPlanetInterface), this);
-            }
+    void _on_Planet_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
+        if(inputEvent is InputEventMouseButton eventMouseButton){
+        switch((ButtonList)eventMouseButton.ButtonIndex){
+          case ButtonList.Left:
+            EmitSignal(nameof(OpenPlanetInterface), this);
+            break;
+          case ButtonList.Right:
+            EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+            break;
         }
+      } 
     }
 
     void GetNodes(){
         Mesh = GetNode<MeshInstance>("MeshInstance");
+        _orbit = GetNode<Spatial>("Orbit");
     }
 
     // Called when the node enters the scene tree for the first time.
@@ -91,6 +107,9 @@ public class Planet : StaticBody
         GenerateMesh();
         World w = GetNode<World>("/root/Game/World");
         w.ConnectTo_OpenPlanetInterface(this);
+        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
+        WCC.ConnectToSelectTarget(this);    
+        Name = PlanetName;
         //Generate();
     }
 }

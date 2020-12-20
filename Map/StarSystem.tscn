@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Map/StarSystem.cs" type="Script" id=1]
 [ext_resource path="res://UI/Text3D.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=4]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -34,12 +33,6 @@ visible = false
 
 [node name="StarSysObjects" type="Spatial" parent="."]
 visible = false
-
-[node name="Ship" parent="StarSysObjects" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6707, 0, 0 )
-
-[node name="Ship2" parent="StarSysObjects" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.95856 )
 
 [node name="Diameter" type="MeshInstance" parent="StarSysObjects"]
 transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
