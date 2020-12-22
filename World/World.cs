@@ -75,10 +75,10 @@ public WorldCursorControl WCC
         if(obj is Planet p){
             GD.Print(node.Name);
             p.System.OpenStarSystem();
-            Camera.LookAt(p.Transform.origin);
+            Camera.LookAt(p.GlobalTransform.origin);
         }else if(obj is Ship s){
             s.System.OpenStarSystem();
-            Camera.LookAt(s.Transform.origin);
+            Camera.LookAt(s.GlobalTransform.origin);
         }
     }
 
