@@ -72,7 +72,6 @@ public WorldCursorControl WCC
 
     void _on_LookAtObject(Node node){
         var obj = _Player.GetMapObjectByName(node.Name);
-        //GD.Print(obj.Name);
         if(obj is Planet p){
             GD.Print(node.Name);
             p.System.OpenStarSystem();
@@ -80,6 +79,17 @@ public WorldCursorControl WCC
         }else if(obj is Ship s){
             s.System.OpenStarSystem();
             Camera.LookAt(s.Transform.origin);
+        }
+    }
+
+    void _on_SelectObjectInOrbit(Planet planet, Node node){
+        if(planet != null && node != null){
+            var label = (Label)node;
+            PhysicsBody obj = (PhysicsBody)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
+            GD.Print(node.Name);
+            if(obj != null){
+                _wcc._SelectUnit(obj);
+            }
         }
     }
 
@@ -93,6 +103,7 @@ public WorldCursorControl WCC
 
     void ConnectSignals(){
         _UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
+        _UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
         _map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
     }
 

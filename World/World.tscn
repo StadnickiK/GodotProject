@@ -47,6 +47,7 @@ visible = false
 
 [node name="PlanetInterface" parent="UI" instance=ExtResource( 8 )]
 visible = false
+Options = [ "Overview", "Buildings", "Orbit" ]
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false

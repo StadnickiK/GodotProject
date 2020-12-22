@@ -89,11 +89,30 @@ public class Map : Node
         node.Connect("EnterPlanet", this, nameof(_on_Ship_EnterPlanet));
     }
 
+    public void ConnectToLeavePlanet(Node node){
+        node.Connect("LeavePlanet", this, nameof(_on_Ship_LeavePlanet));
+    }
+
     void _on_Ship_EnterPlanet(Ship ship, Planet planet){
         if(!planet.Orbit.GetChildren().Contains(ship)){
             ship.GetParent().RemoveChild(ship);
             planet.Orbit.AddChild(ship);
+            //ship.Visible = false;
+            ship._Planet = planet;
+            ship.PlanetPos = (planet.Transform.origin - ship.GlobalTransform.origin);
+            // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
+            //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
+            // }
         }
+    }
+
+    void _on_Ship_LeavePlanet(Ship ship){
+        GD.Print("leave");
+        
+        ship._Planet.Orbit.RemoveChild(ship);
+        ship.System.AddMapObject(ship);
+        ship._Planet = null;
+        ship.Visible = true;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -9,7 +9,7 @@ public class RightPanel : Panel
 
     PackedScene _itemScene = null;
     
-    OverviewPanel _overwievPanel = null;
+    OverviewPanel _overviewPanel = null;
 
     [Export]
     public string Title { get; set; } = "Title";
@@ -25,13 +25,14 @@ public class RightPanel : Panel
 
     void GetNodes(){
         _title = GetNode<Label>("Vertical/Title");
-        _overwievPanel = GetNode<OverviewPanel>("OverviewPanel");
+        _overviewPanel = GetNode<OverviewPanel>("OverviewPanel");
     }
 
     public void UpdateRightPanel(Player player){
         var panelName = "Planets";
-        //_overwievPanel.DisconnectToGuiInputEvent(this, panelName, nameof(_on_GuiInputEvent));
-        _overwievPanel.ClearPanel(panelName);
+        //_overviewPanel.DisconnectToGuiInputEvent(this, panelName, nameof(_on_GuiInputEvent));
+        _overviewPanel.ClearPanel(panelName);
+        _overviewPanel.ClearPanel("Fleets");
         foreach(PhysicsBody body in player.MapObjects){
             if(body is Planet planet){
                 CreateOverviewPanelLabel(panelName, planet.Name, planet);
@@ -39,8 +40,8 @@ public class RightPanel : Panel
                 CreateOverviewPanelLabel("Fleets", ship.Name, ship);
             }
         }
-        _overwievPanel.ConnectToGuiInputEvent(this, panelName, nameof(_on_LabelGuiInputEvent));
-        _overwievPanel.ConnectToGuiInputEvent(this, "Fleets", nameof(_on_LabelGuiInputEvent));
+        _overviewPanel.ConnectToGuiInputEvent(this, panelName, nameof(_on_LabelGuiInputEvent));
+        _overviewPanel.ConnectToGuiInputEvent(this, "Fleets", nameof(_on_LabelGuiInputEvent));
     }
 
     public void _on_LabelGuiInputEvent(InputEvent input, Node node){
@@ -65,12 +66,12 @@ public class RightPanel : Panel
             label.Text = name;
             node = label;
         }
-        _overwievPanel.AddNodeToPanel(panelName, node);
+        _overviewPanel.AddNodeToPanel(panelName, node);
     }
 
     void InitOverviewPanel(){
         foreach(string s in Options){
-            _overwievPanel.AddPanel(s);
+            _overviewPanel.AddPanel(s);
         }
     }
 

@@ -17,10 +17,10 @@ public class Ship : RigidBody
     public delegate void EnterSystem(Ship shipID, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state);
 
     [Signal]
-    public delegate void LeavePlanet(int id);
+    public delegate void LeavePlanet(Ship ship);
 
     [Signal]
-    public delegate void EnterPlanet(Ship shipID, Planet planet);
+    public delegate void EnterPlanet(Ship ship, Planet planet);
 
     [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
@@ -35,7 +35,11 @@ public class Ship : RigidBody
 
     public StarSystem System { get; set; } = null;
 
+    public Planet _Planet { get; set; } = null;
+
     public StatManager StatManager { get; set; } = new StatManager();
+
+    public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
     Vector3 targetPos = Vector3.Zero;
 
@@ -111,22 +115,26 @@ public class Ship : RigidBody
             }
             if(System != null){
                 if(Transform.origin.Length()>System.Diameter){
+                    GD.Print("leave system");
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
                 }
             }
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
-                GD.Print(planet.Name);
                 EmitSignal(nameof(EnterPlanet), this, planet);
-                // var transform = state.Transform;
-                // transform.origin = planet.Transform.origin;
-                // state.Transform = transform;
-                // targetManager.ClearTargets();
                 ResetVelocity();
                 var transform = state.Transform;
                 transform.origin = planet.GlobalTransform.origin;
                 state.Transform = transform;
                 targetManager.ClearTargets();
+                
+            }
+            if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
+                //GD.Print(((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length());
+                var transform = Transform;
+                transform.origin = _Planet.GlobalTransform.origin;
+                EmitSignal(nameof(LeavePlanet), this);
+                state.Transform = transform;
             }
 
         }else{
@@ -181,6 +189,11 @@ public class Ship : RigidBody
         map.ConnectToLeaveSystem(this);
         map.ConnectToEnterCombat(this);
         map.ConnectToEnterPlanet(this);
+        map.ConnectToLeavePlanet(this);
+    }
+
+    public void ConnectToLeavePlanet(Node node, string methodName){
+        Connect(nameof(LeavePlanet), node, methodName);
     }
 
     // Called when the node enters the scene tree for the first time.

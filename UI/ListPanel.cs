@@ -32,7 +32,8 @@ public class ListPanel : VBoxContainer
 
     public void ConnectToOnGuiInput(Node node, string methodName){
         foreach(Node child in _items.GetChildren()){
-            if(child is Control control){
+            if(child is Label control){
+                GD.Print("l "+control.Name);
                 if(!control.IsConnected("gui_input", node, methodName)){
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
