@@ -3,7 +3,6 @@ using System;
 
 public class Resource : Node
 {
-    String RName = "ResourceName";
 
     public int Quantity { get; set; } = 0;
 

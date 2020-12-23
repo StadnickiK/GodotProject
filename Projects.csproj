@@ -29,6 +29,7 @@
     <Compile Include="UI\Header.cs" />
     <Compile Include="UI\ListPanel.cs" />
     <Compile Include="UI\OverviewPanel.cs" />
+    <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
