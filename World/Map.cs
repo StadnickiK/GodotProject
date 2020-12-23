@@ -59,7 +59,7 @@ public class Map : Node
             system.GetNode("StarSysObjects").AddChild(ship);
             ship.targetManager.NextTarget();
             var trans = state.Transform;
-            trans.origin = system.Diameter*0.9f*(-aproachVec)+system.GlobalTransform.origin;
+            trans.origin = system.Radius*0.9f*(-aproachVec)+system.GlobalTransform.origin;
             state.Transform = trans;
             ship.System = system;
         }
@@ -82,6 +82,7 @@ public class Map : Node
             state.Transform = trans;
             ship.targetManager.NextTarget();
             ship.System = null;
+            ship.Visible = false;
         }
     }
 

@@ -51,7 +51,8 @@ public WorldCursorControl WCC
 
     List<int> PlayerIDs = new List<int>();
 
-    int PlayerNumber = 1;
+    [Export]
+    int PlayerNumber = 3;
 
     void _on_ShowBattlePanel(SpaceBattle battle){
         _UI.BattlePan.Visible = true;
@@ -74,10 +75,18 @@ public WorldCursorControl WCC
         var obj = _Player.GetMapObjectByName(node.Name);
         if(obj is Planet p){
             GD.Print(node.Name);
-            p.System.OpenStarSystem();
+            if(p.System != null){
+                p.System.OpenStarSystem();
+            }else{
+                Galaxy.ViewGalaxy();
+            }
             Camera.LookAt(p.GlobalTransform.origin);
         }else if(obj is Ship s){
-            s.System.OpenStarSystem();
+            if(s.System != null){
+                s.System.OpenStarSystem();
+            }else{
+                Galaxy.ViewGalaxy();
+            }
             Camera.LookAt(s.GlobalTransform.origin);
         }
     }
@@ -107,6 +116,16 @@ public WorldCursorControl WCC
         _map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
     }
 
+    public void ConnectToSelectUnit(Node node){
+        node.Connect("SelectUnit", this, nameof(_on_SelectUnit));
+    }
+
+    void _on_SelectUnit(PhysicsBody body){
+        WCC._SelectUnit(body);
+        _UI.UInfo.Visible = true;
+        _UI.UInfo.UpdatePanel(body);
+    }
+
     void InitPlayers(){
         if(WorldGenParameters != null){
             if(WorldGenParameters.ContainsKey("Players")){
@@ -119,6 +138,7 @@ public WorldCursorControl WCC
             player.PlayerID = player.GetIndex();
             if(i == 0){
                 _Player = player;
+                player.IsLocal = true;
             }
             PlayerIDs.Add(player.PlayerID);
             PlayersList.Add(player);
@@ -192,6 +212,8 @@ public WorldCursorControl WCC
                         player.MapObjects.Add(ship);
                         if(_Player != player){
                             //ship.Visible = false;
+                        }else{
+                            ship.IsLocal = true;
                         }
                     }
                 }

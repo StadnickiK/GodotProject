@@ -21,6 +21,7 @@ gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 1 )
+VisionRange = 10
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = SubResource( 1 )
@@ -30,8 +31,10 @@ material/0 = SubResource( 2 )
 shape = SubResource( 3 )
 
 [node name="Area" type="Area" parent="."]
-transform = Transform( 4, 0, 0, 0, 0.1, 0, 0, 0, 4, 0, 0, 0 )
+transform = Transform( 10, 0, 0, 0, 0.1, 0, 0, 0, 10, 0, 0, 0 )
 monitorable = false
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="Area"]
 shape = SubResource( 4 )

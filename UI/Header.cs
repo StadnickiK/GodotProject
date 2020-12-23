@@ -3,7 +3,14 @@ using System;
 
 public class Header : HBoxContainer
 {
-    Button button = null;
+
+    private Button _button;
+    public Button HButton
+    {
+        get { return _button; }
+    }
+    
+    
 
     Label _TitleLabel = null;
 
@@ -22,8 +29,12 @@ public class Header : HBoxContainer
     }
 
     void GetNodes(){
-        button = GetNode<Button>("XButton");
+        _button = GetNode<Button>("XButton");
         _TitleLabel = GetNode<Label>("Title");
+    }
+
+    public void ConnectToByttonUp(Node node, string methodName){
+        _button.Connect("button_up", node, methodName);
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -10,6 +10,8 @@ public class UI : Node
     public PlanetInterface PInterface { get; set; } = null;
     
     public RightPanel RPanel { get; set; } = null;
+ 
+    public UnitInfoPanel UInfo { get; set; } = null;
 
     private Control _menu = null;
     public Control WorldMenu
@@ -31,6 +33,7 @@ public class UI : Node
         RPanel = GetNode<RightPanel>("RightPanel");
         _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
+        UInfo = GetNode<UnitInfoPanel>("UnitInfoPanel");
     }
 
     public void UpdateUI(Player player){

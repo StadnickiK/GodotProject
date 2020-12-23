@@ -29,7 +29,10 @@ public class Ship : RigidBody
     public int effectiveRange = 10;
 
     [Export]
-    public int ID_Owner { get; set; } = 0;
+    public int ID_Owner { get; set; }
+
+    [Export]
+    public bool IsLocal { get; set; } = false;
 
     public Player Controller { get; set; } = null;
 
@@ -44,9 +47,9 @@ public class Ship : RigidBody
     Vector3 targetPos = Vector3.Zero;
 
     [Export]
-    public int Range { get; set; } = 4;
+    public int VisionRange { get; set; } = 4;
 
-    Spatial VisionRange = null;
+    Spatial Area = null;
 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
@@ -104,6 +107,10 @@ public class Ship : RigidBody
             }
     }
 
+    public void UpdateVisionRange(){
+        Area.Scale = new Vector3(VisionRange, 0.1f, VisionRange);
+    }
+
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget ||(targetPos != Vector3.Zero && targetPos != null)){
             UpdateShipVelocities(state);
@@ -114,7 +121,7 @@ public class Ship : RigidBody
                 }
             }
             if(System != null){
-                if(Transform.origin.Length()>System.Diameter){
+                if(Transform.origin.Length()>System.Radius){
                     GD.Print("leave system");
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
@@ -138,6 +145,8 @@ public class Ship : RigidBody
             }
 
         }else{
+            state.AngularVelocity = Vector3.Zero;
+            state.LinearVelocity = Vector3.Zero;
             Sleeping = true;
             state.Sleeping = true;
         }
@@ -157,10 +166,9 @@ public class Ship : RigidBody
     }
 
     void _on_Area_body_entered(Node body){
-        if(body is Ship){
-            var s = (Ship)body;
-            if(s.ID_Owner != ID_Owner && s.Visible == false){
-                s.Visible = true;
+        if(body is Ship ship){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == false){
+                ship.Visible = true;
             }
         }
     }
@@ -168,7 +176,7 @@ public class Ship : RigidBody
     void _on_Area_body_exited(Node body){
         if(body is Ship){
             var s = (Ship)body;
-            if(s.ID_Owner != ID_Owner && s.Visible == true){
+            if(s.ID_Owner != ID_Owner && s.Visible == true && IsLocal){
                 s.Visible = false;
             }
         }
@@ -181,8 +189,9 @@ public class Ship : RigidBody
     }
 
     protected void _ConnectSignal(){
+        World world = GetNode<World>("/root/Game/World");
+        world.ConnectToSelectUnit(this);
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-        WCC.ConnectToSelectUnit(this);
         WCC.ConnectToSelectTarget(this);
         Map map = GetNode<Map>("/root/Game/World/Map/");
         map.ConnectToEnterSystem(this);
@@ -190,6 +199,26 @@ public class Ship : RigidBody
         map.ConnectToEnterCombat(this);
         map.ConnectToEnterPlanet(this);
         map.ConnectToLeavePlanet(this);
+    }
+
+    void GetNodes(){
+        Area = GetNode<Spatial>("Area");
+    }
+
+    public void ConnectToEnterCombat(Node node, string methodName){
+         Connect("EnterCombat", node, methodName);
+    }
+
+    public void ConnectToEnterSystem(Node node, string methodName){
+        Connect("EnterSystem", node, methodName);
+    }
+
+    public void ConnectToLeaveSystem(Node node, string methodName){
+         Connect("LeaveSystem", node, methodName);
+    }
+
+    public void ConnectToEnterPlanet(Node node, string methodName){
+        Connect("EnterPlanet", node, methodName);
     }
 
     public void ConnectToLeavePlanet(Node node, string methodName){
@@ -204,6 +233,8 @@ public class Ship : RigidBody
 
         _velocityController.Mass = 10;
         _ConnectSignal();
+        GetNodes();
+        UpdateVisionRange();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -6,7 +6,7 @@ public class Galaxy : Spatial
 {
 
     [Export]
-    public int StarSystemNumber { get; set; } = 10;
+    public int StarSystemNumber { get; set; } = 3;
 
     private int _radius;
     public int Radius
@@ -14,6 +14,7 @@ public class Galaxy : Spatial
         get { return _radius; }
     }
     
+    StarSystem _currentSystem = null;
 
     private List<StarSystem> _starSystems = new List<StarSystem>();
     public List<StarSystem> StarSystems
@@ -60,29 +61,51 @@ public class Galaxy : Spatial
             angle += Rand.Next(0, 60);
         }
         _radius = (int)(1.2f*dist);
+        var biggestRadius = GetBiggestStarSystemRAdius();
+        if(_radius < biggestRadius){
+            _radius = (int)(biggestRadius*1.5f);
+        }
         Rotation = Vector3.Zero;
     }
 
-    public void ViewStarSystem(int id){
-        foreach(Spatial n in GetChildren()){
-            if(n is StarSystem){
-                StarSystem s = (StarSystem)n;
-                if(s.SystemID != id){
+    int GetBiggestStarSystemRAdius(){
+        int max = 0;
+        foreach(StarSystem system in StarSystems){
+            if(system.Radius > max) max = system.Radius;
+        }
+        return max;
+    }
+
+    public void ViewStarSystem(StarSystem system){
+        _currentSystem = system;
+        foreach(Spatial node in GetChildren()){
+            if(node is StarSystem s){
+                if(s.SystemID != system.GetIndex()){
                     s.Visible = false;
                 }else{
                     EmitSignal(nameof(CameraLookAt), s.Transform.origin);
                 }
             }else{
-                n.Visible = false;
+                node.Visible = false;
             }
         }
     }
 
-    void _on_ViewStarSystem(int id){
-        ViewStarSystem(id);
+    void _on_ViewStarSystem(StarSystem system){
+        ViewStarSystem(system);
     }
 
     void _on_ViewGalaxy(){
+        foreach(Spatial n in GetChildren()){
+            n.Visible = true;
+        }
+    }
+
+    public void ViewGalaxy(){
+        if(_currentSystem != null){
+            _currentSystem.CloseSystem();
+            _currentSystem = null;
+        }
         foreach(Spatial n in GetChildren()){
             n.Visible = true;
         }

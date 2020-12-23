@@ -8,6 +8,8 @@ public class Player : Node
 
     public string PlayerName { get; set; }
 
+    public bool IsLocal { get; set; } = true;
+
     public bool MapObjectsChanged { get; set; } = true;
 
     private List<PhysicsBody> _MapObejcts = new List<PhysicsBody>();

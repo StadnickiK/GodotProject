@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
@@ -16,18 +16,20 @@
 [ext_resource path="res://Map/Combat.cs" type="Script" id=14]
 [ext_resource path="res://UI/BattlePanel.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Menu/space.hdr" type="Texture" id=16]
+[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=17]
+[ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=18]
 
-[sub_resource type="PanoramaSky" id=2]
+[sub_resource type="PanoramaSky" id=1]
 panorama = ExtResource( 16 )
 
-[sub_resource type="Environment" id=3]
+[sub_resource type="Environment" id=2]
 background_mode = 2
-background_sky = SubResource( 2 )
+background_sky = SubResource( 1 )
 ambient_light_color = Color( 0.8, 0.8, 0.8, 1 )
 ambient_light_sky_contribution = 0.7
 tonemap_mode = 1
 
-[sub_resource type="CubeMesh" id=1]
+[sub_resource type="CubeMesh" id=3]
 size = Vector3( 300, 2, 300 )
 subdivide_width = 500
 subdivide_depth = 500
@@ -36,7 +38,7 @@ subdivide_depth = 500
 script = ExtResource( 5 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 3 )
+environment = SubResource( 2 )
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 4 )]
 
@@ -52,7 +54,7 @@ script = ExtResource( 10 )
 
 [node name="CameraGimbal" parent="UI" instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0 )
-MovementSpeed = 10.0
+MovementSpeed = 5.0
 Limit = 250
 
 [node name="Menu" parent="UI" instance=ExtResource( 3 )]
@@ -67,6 +69,10 @@ Options = [ "Overview", "Buildings", "Orbit" ]
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false
 
+[node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
+visible = false
+Options = [ "Overview", "Details" ]
+
 [node name="Map" type="Node" parent="."]
 script = ExtResource( 13 )
 
@@ -78,8 +84,16 @@ script = ExtResource( 14 )
 
 [node name="FOW" type="MeshInstance" parent="Map"]
 visible = false
-mesh = SubResource( 1 )
+mesh = SubResource( 3 )
 material/0 = ExtResource( 9 )
+
+[node name="Ship" parent="Map" instance=ExtResource( 17 )]
+IsLocal = true
+
+[node name="Ship2" parent="Map" instance=ExtResource( 17 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17.5177 )
+visible = false
+ID_Owner = 1
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )

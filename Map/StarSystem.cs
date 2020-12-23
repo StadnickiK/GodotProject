@@ -13,7 +13,7 @@ public class StarSystem : StaticBody
     int Wealth = 5;
 
     [Signal]
-    public delegate void ViewStarSystem(int id);
+    public delegate void ViewStarSystem(StarSystem system);
 
     [Signal]
     public delegate void ViewGalaxy();
@@ -21,10 +21,10 @@ public class StarSystem : StaticBody
     [Signal]
     public delegate void SelectTarget(StarSystem target);
 
-    private int _diameter;
-    public int Diameter
+    private int _radius;
+    public int Radius
     {
-        get { return _diameter; }
+        get { return _radius; }
     }
 
     MeshInstance _size = null;
@@ -85,7 +85,7 @@ public class StarSystem : StaticBody
             dist += Rand.Next(4, 10);
             angle += Rand.Next(0,50);
         }
-        _diameter = (int)(dist*1.2f);
+        _radius = (int)(dist*1.2f);
         StarSysObjects.Visible = false;
         Rotation = Vector3.Zero;
     }
@@ -101,7 +101,7 @@ public class StarSystem : StaticBody
         StarSysObjects.Visible = true;
         XButton.Visible = true;
         Placeholder.Visible = false;
-        EmitSignal(nameof(ViewStarSystem), SystemID);
+        EmitSignal(nameof(ViewStarSystem), this);
     }
 
     public void AddMapObject(PhysicsBody body){
@@ -119,10 +119,14 @@ public class StarSystem : StaticBody
     }
 
     void _on_XButton_button_up(){
+        CloseSystem();
+        EmitSignal(nameof(ViewGalaxy));
+    }
+
+    public void CloseSystem(){
         StarSysObjects.Visible = false;
         XButton.Visible = false;
         Placeholder.Visible = true;
-        EmitSignal(nameof(ViewGalaxy));
     }
 
     protected void _ConnectSignal(){
@@ -137,7 +141,7 @@ public class StarSystem : StaticBody
         LoadScenes();
         GetNodes();
         Generate();
-        _size.Scale = new Vector3(_diameter,1,_diameter);
+        _size.Scale = new Vector3(_radius,1,_radius);
         _ConnectSignal();
     }
 
