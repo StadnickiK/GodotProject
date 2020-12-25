@@ -9,9 +9,13 @@ public class Building : Node
 
     public List<Resource> Products { get; set; } = new List<Resource>();
 
-    public List<Resource> ResourcesNeeded { get; set; } = new List<Resource>();
+    public List<Resource> BuildCost { get; set; } = new List<Resource>();
 
-    public String BuildingName { get; set; } = "BuildingName";
+    public List<Resource> ProductCost { get; set; } = new List<Resource>();
+
+    public int BuildTime { get; set; } = 5;
+
+    public int CurrentTime { get; set; } = 0;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()

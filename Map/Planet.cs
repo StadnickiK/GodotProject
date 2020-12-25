@@ -14,6 +14,8 @@ public class Planet : StaticBody
     [Export]
     Gradient gradient = null;
 
+    PackedScene TileScene = null;
+
     [Signal]
     public delegate void SelectTarget(RigidBody target);
    
@@ -32,11 +34,35 @@ public class Planet : StaticBody
     {
         get { return _orbit; }
     }
+
+    private Timer _timer = null;
+    public Timer PlanetTimer
+    {
+        get { return _timer; }
+    }
+
+    public Building Construction { get; set; } = null;
     
 
-    PackedScene TileScene = null;
-
     MeshInstance Mesh = null;
+
+    private List<Resource> _resources = new List<Resource>();
+    public List<Resource> Resources
+    {
+        get { return _resources; }
+    }
+
+    private List<Resource> _naturalResources = new List<Resource>();
+    public List<Resource> NaturalResources
+    {
+        get { return _resources; }
+    }
+
+    private List<Building> _buildings = new List<Building>();
+    public List<Building> Buildings
+    {
+        get { return _buildings; }
+    }
 
     [Signal]
     public delegate void OpenPlanetInterface(Planet planet);
@@ -94,12 +120,29 @@ public class Planet : StaticBody
       } 
     }
 
+    void _on_Timer_timeout(){
+        if(Construction != null){
+            Construction.CurrentTime++;
+            if(Construction.CurrentTime > Construction.BuildTime){
+                Construction = null;
+            }else{
+                _timer.Start(1);
+            }
+        }
+    }
+
     void GetNodes(){
         Mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Spatial>("Orbit");
+        _timer = GetNode<Timer>("Timer");
     }
 
-    // Called when the node enters the scene tree for the first time.
+    public void ConstructBuilding(Building building){
+        GD.Print("Start C");
+        Construction = building;
+        _timer.Start(1);
+    }
+
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
@@ -110,6 +153,12 @@ public class Planet : StaticBody
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
+
+        for(int i =0; i<5; i++){
+            var building = new Building();
+            building.Name = "Building "+i;
+            Buildings.Add(building);
+        }
         //Generate();
     }
 }

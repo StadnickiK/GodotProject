@@ -6,7 +6,7 @@ public class Resource : Node
 
     public int Quantity { get; set; } = 0;
 
-    public int QuantityCap { get; set; } = -1;
+    public int? QuantityCap { get; set; } = null;
 
     public int Value { get; set; } = 1;
 

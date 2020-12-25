@@ -20,4 +20,9 @@ shape = SubResource( 2 )
 
 [node name="Orbit" type="Spatial" parent="."]
 visible = false
+
+[node name="Timer" type="Timer" parent="."]
+process_mode = 0
+autostart = true
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

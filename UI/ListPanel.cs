@@ -24,6 +24,10 @@ public class ListPanel : VBoxContainer
         _items = GetNode("ItemList/Items");
     }
 
+    public void SetTitle(string title){
+        _titleLabel.Text = title;
+    }
+
     public void AddListItem(Node item){
         if(!_items.GetChildren().Contains(item)){
             _items.AddChild(item);

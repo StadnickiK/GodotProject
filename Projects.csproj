@@ -24,6 +24,8 @@
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
     <Compile Include="UI\BattlePanel.cs" />
+    <Compile Include="UI\BuildingLabel.cs" />
+    <Compile Include="UI\BuildingInterface.cs" />
     <Compile Include="UI\MapObjectLabel.cs" />
     <Compile Include="UI\MenuPanel.cs" />
     <Compile Include="UI\Header.cs" />

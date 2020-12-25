@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/Header.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/PlanetInterface.cs" type="Script" id=2]
 [ext_resource path="res://UI/OverviewPanel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/BuildingInterface.tscn" type="PackedScene" id=4]
 
 [node name="PlanetInterface" type="Panel"]
 anchor_left = 0.5
@@ -10,8 +11,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -161.0
+margin_top = -136.0
 margin_right = 161.0
-margin_bottom = 43.0
+margin_bottom = 136.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
@@ -34,3 +36,8 @@ custom_constants/separation = 210
 
 [node name="OverviewPanel" parent="VBoxContainer" instance=ExtResource( 3 )]
 margin_right = 322.0
+
+[node name="BuildingInterface" parent="." instance=ExtResource( 4 )]
+visible = false
+margin_left = 335.0
+margin_right = 477.0

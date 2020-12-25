@@ -15,11 +15,20 @@ public class PlanetInterface : Panel
 
     OverviewPanel _overviewPanel = null;
 
+    BuildingInterface _buildingInterface = null;
+
     [Export]
     public string Title { get; set; } = "Title";
 
     [Export]
     public List<string> Options { get; set; } = new List<string>();
+
+    [Export]
+    public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
+
+    PackedScene ItemScene = null;
+
+    BuildingLabel _selectedBuilding = null;
 
     [Signal]
     public delegate void SelectObjectInOrbit(Planet planet, Node node);
@@ -28,6 +37,12 @@ public class PlanetInterface : Panel
         _closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
         _header = GetNode<Header>("VBoxContainer/Header");
         _overviewPanel = GetNode<OverviewPanel>("VBoxContainer/OverviewPanel");
+        _buildingInterface = GetNode<BuildingInterface>("BuildingInterface");
+    }
+
+    void ConnectSignals(){
+        _closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
+        _buildingInterface.ConnecToStartConstruction(this, nameof(_on_StartConstruction));
     }
 
     public void SetTitle(string title){
@@ -43,8 +58,9 @@ public class PlanetInterface : Panel
     public override void _Ready()
     {
         GetNodes();
-        _closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
+        ConnectSignals();
         InitOverviewPanel();
+        ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
     }
 
     void ClearPlanetInterface(){
@@ -66,7 +82,20 @@ public class PlanetInterface : Panel
                 GD.Print("m "+node.Name);
                 _overviewPanel.AddNodeToPanel("Orbit", label);
             }
+            foreach(Building building in planet.Buildings){
+                var label = (BuildingLabel)ItemScene.Instance();
+                label.SetMeta(building.Name, building);
+                label.Name = building.Name;
+                label.Text = building.Name;
+                _overviewPanel.AddNodeToPanel("Buildings", label);
+                if(label.Progress != null){                             // ProgressBar is null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+                    label.Progress.Value = building.CurrentTime;
+                    label.Progress.MaxValue = building.BuildTime;
+                    GD.Print(label.Progress.MaxValue);
+                }
+            }
             _overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
+            _overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
         }
     }
 
@@ -79,12 +108,44 @@ public class PlanetInterface : Panel
         }
     }
 
-    public void ConnectToSelectObjectInOrbit(Node node, string methodName){
-        Connect(nameof(SelectObjectInOrbit), node, methodName);
+    public void _on_BuildingLabelGuiInputEvent(InputEvent input, Node node){
+        if(input is InputEventMouseButton button){
+            if(button.ButtonIndex == (int)ButtonList.Left){
+                GD.Print("p "+node.Name);
+                if(node is BuildingLabel label){
+                    var building = (Building)label.GetMeta(label.Text);
+                    if(building != null && _planet != null){
+                        _buildingInterface.Visible = true;
+                        _buildingInterface.UpdateInterface(building, _planet);
+                        _selectedBuilding = label;
+                    }
+                }
+            }
+        }
     }
 
     void _on_XButton_button_up(){
         Visible = false;
+        _buildingInterface.Visible = false;
     }
 
+    void _on_StartConstruction(Building building){
+        if(building != null && _planet != null){
+            _planet.ConstructBuilding(building);
+        }
+    }
+
+    public void ConnectToSelectObjectInOrbit(Node node, string methodName){
+        Connect(nameof(SelectObjectInOrbit), node, methodName);
+    }
+
+    public override void _Process(float delta){
+        if(Visible){
+            if(_planet != null && _selectedBuilding != null){
+                if(_planet.Construction != null){
+                    _selectedBuilding.Progress.Value = _planet.Construction.CurrentTime;
+                }
+            }
+        }
+    }
 }

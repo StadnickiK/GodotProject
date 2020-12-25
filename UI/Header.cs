@@ -33,7 +33,7 @@ public class Header : HBoxContainer
         _TitleLabel = GetNode<Label>("Title");
     }
 
-    public void ConnectToByttonUp(Node node, string methodName){
+    public void ConnectToButtonUp(Node node, string methodName){
         _button.Connect("button_up", node, methodName);
     }
 

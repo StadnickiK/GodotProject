@@ -18,6 +18,12 @@ public class Player : Node
         get { return _MapObejcts; }
     }
 
+    private List<Resource> _resources = new List<Resource>();
+    public List<Resource> Resources
+    {
+        get { return _resources; }
+    }
+
     public PhysicsBody GetMapObjectByName(string name){
         foreach(PhysicsBody body in _MapObejcts){
             GD.Print(body.Name+"+" +" "+name+"+");
