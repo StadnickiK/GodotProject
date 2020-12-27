@@ -41,6 +41,12 @@ public class UI : Node
             RPanel.UpdateRightPanel(player);
             player.MapObjectsChanged = false;
         }
+        if(player.ResourcesChanged){
+            if(player.Resources != null){
+                ResPanel.UpdatePanel(player.Resources);
+                //player.ResourcesChanged = false;
+            }
+        }
     }
 
     public override void _Ready()

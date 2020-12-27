@@ -41,11 +41,23 @@ public WorldCursorControl WCC
     {
         get { return _Player; }
     }
-    
 
     Node Players = null;
 
     List<Player> PlayersList = new List<Player>();
+
+    private List<Building> _worldBuildings = new List<Building>();
+    public List<Building> WorldBuildings
+    {
+        get { return _worldBuildings; }
+    }
+    
+    private Dictionary<string, Resource> _wolrdResources = new Dictionary<string, Resource>();
+    public Dictionary<string, Resource> WorldResources
+    {
+        get { return _wolrdResources; }
+    }
+    
 
     public Dictionary<string, int> WorldGenParameters = new Dictionary<string, int>();
 
@@ -64,7 +76,7 @@ public WorldCursorControl WCC
 
     void _on_OpenPlanetInterface(Planet planet){
         _UI.PInterface.Visible = true;
-        _UI.PInterface.UpdatePlanetInterface(planet);
+        _UI.PInterface.UpdatePlanetInterface(planet, WorldBuildings);
     }
 
     void _on_CameraLookAt(Vector3 position){
@@ -244,10 +256,18 @@ public WorldCursorControl WCC
         }
         ConnectSignals();
         InitWorld();
+
+        for(int i =0; i<5; i++){
+            var building = new Building();
+            building.Name = "Building "+i;
+            WorldBuildings.Add(building);
+        }
     }
     public override void _Process(float delta)
     {
-        _UI.UpdateUI(Host);
+        if(_Player != null){
+            _UI.UpdateUI(_Player);
+        }
         if(Input.IsActionJustReleased("ui_cancel")){
             _UI.WorldMenu.Visible = true;
         }

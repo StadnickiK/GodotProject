@@ -9,42 +9,42 @@ public class ResourcePanel : Panel
 
     PackedScene ResourceLabelScene = null;
 
+    bool Initialized = false;
+
     [Export]
-    public string ScenePath { get; set; } = "res://UI/ResourcePanel.tscn";
+    public string ScenePath { get; set; } = "res://UI/ResourceLabel.tscn";
 
     void GetNodes(){
         _hBox = GetNode<Control>("ScrollContainer/HBox");
     }
 
-    [Export]
-    public List<Resource> Resources { get; set; } = new List<Resource>();
-
     public override void _Ready()
     {
         GetNodes();
-        if(ScenePath != null){
-            ResourceLabelScene = (PackedScene)ResourceLoader.Load(ScenePath);
-        }
-        InitPanel();
+        ResourceLabelScene = (PackedScene)ResourceLoader.Load(ScenePath);
     }
 
-    void InitPanel(){
-        foreach(Resource resource in Resources){
-            var label = (ResourceLabel)ResourceLabelScene.Instance();
-            label.Name = resource.Name;
-            label.SetResourceName(resource.Name);
-            label.SetValue(resource.Quantity);
-            _hBox.AddChild(label);
-        }
-    }
-
-    public void UpdatePanel(){
-        for(int i = 0; i<Resources.Count; i++){
-            var label = (ResourceLabel)_hBox.GetChild(i);
-            label.Name = Resources[i].Name;
-            label.SetResourceName(Resources[i].Name);
-            label.SetValue(Resources[i].Quantity);
-            _hBox.AddChild(label);
+    public void UpdatePanel(Dictionary<string, Resource> Resources){
+        if(Initialized){
+            foreach(Node node in _hBox.GetChildren()){
+                if(node is ResourceLabel label){
+                    if(Resources.ContainsKey(label.ResourceName.Text)){
+                        //label.SetValue(Resources[label.ResourceName.Text].Quantity);
+                        label.SetValue(Resources[label.ResourceName.Text].Value);
+                    }else{
+                        GD.Print("Update resource panel "+label.ResourceName.Text);
+                    }
+                }
+            }
+        }else{
+            foreach(KeyValuePair<string, Resource> resource in Resources){
+                var label = (ResourceLabel)ResourceLabelScene.Instance();
+                _hBox.AddChild(label);
+                label.ResourceName.Text = resource.Value.Name;
+                //label.Value.Text = resource.Value.Quantity.ToString();
+                label.Value.Text = resource.Value.Value.ToString();
+                Initialized = true; 
+            }
         }
     }
 

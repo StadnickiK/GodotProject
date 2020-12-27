@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
@@ -15,7 +15,6 @@
 [ext_resource path="res://Map/Combat.cs" type="Script" id=14]
 [ext_resource path="res://UI/BattlePanel.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Menu/space.hdr" type="Texture" id=16]
-[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=17]
 [ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=18]
 
 [sub_resource type="PanoramaSky" id=1]
@@ -45,8 +44,10 @@ environment = SubResource( 2 )
 script = ExtResource( 11 )
 
 [node name="ResourcePanel" parent="UI" instance=ExtResource( 1 )]
-margin_right = 1024.0
-margin_bottom = 64.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -512.0
+margin_right = 512.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -85,15 +86,7 @@ visible = false
 mesh = SubResource( 3 )
 material/0 = ExtResource( 9 )
 
-[node name="Ship" parent="Map" instance=ExtResource( 17 )]
-IsLocal = true
-
-[node name="Ship2" parent="Map" instance=ExtResource( 17 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17.5177 )
-visible = false
-ID_Owner = 1
+[node name="Players" type="Node" parent="."]
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
-
-[node name="Players" type="Node" parent="."]

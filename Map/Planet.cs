@@ -14,6 +14,9 @@ public class Planet : StaticBody
     [Export]
     Gradient gradient = null;
 
+    [Export]
+    public int TimeStep { get; set; } = 1;
+
     PackedScene TileScene = null;
 
     [Signal]
@@ -41,21 +44,26 @@ public class Planet : StaticBody
         get { return _timer; }
     }
 
+    //public TargetManager<Building> Construction { get; set; } = new TargetManager<Building>(); TO DO: create construction list, multiple simultanous constructions
+
     public Building Construction { get; set; } = null;
-    
 
     MeshInstance Mesh = null;
 
-    private List<Resource> _resources = new List<Resource>();
-    public List<Resource> Resources
+    float _time = 0;
+
+    private Dictionary<string, Resource> _resources = new Dictionary<string, Resource>();
+    public IReadOnlyDictionary<string, Resource> Resources
     {
         get { return _resources; }
     }
 
-    private List<Resource> _naturalResources = new List<Resource>();
-    public List<Resource> NaturalResources
+    public bool ResourcesChanged { get; set; } = false;
+
+    private Dictionary<string, Resource> _naturalResources = new Dictionary<string, Resource>();
+    public Dictionary<string, Resource> NaturalResources
     {
-        get { return _resources; }
+        get { return _naturalResources; }
     }
 
     private List<Building> _buildings = new List<Building>();
@@ -124,6 +132,7 @@ public class Planet : StaticBody
         if(Construction != null){
             Construction.CurrentTime++;
             if(Construction.CurrentTime > Construction.BuildTime){
+                _buildings.Add(Construction);
                 Construction = null;
             }else{
                 _timer.Start(1);
@@ -153,12 +162,44 @@ public class Planet : StaticBody
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
-
-        for(int i =0; i<5; i++){
+        //Generate();
+        for(int i = 0; i<5; i++){
             var building = new Building();
             building.Name = "Building "+i;
+            var resource = new Resource();
+            resource.Name = "resource "+i;
+            //resource.Quantity = i;
+            building.Products.Add(resource);
             Buildings.Add(building);
+            _resources.Add(resource.Name, resource);
         }
-        //Generate();
+    }
+
+    public override void _Process(float delta){
+        _time += delta;
+        if(_time >= TimeStep){
+            foreach(Building building in _buildings){
+                // foreach(Resource resource in building.ProductCost){  TO DO: product cost, linq?
+                //     var Quantity = Resources[resource.Name].Quantity; 
+                //     if(0 >=(Quantity-resource.Quantity)){
+                        
+                //     }
+                // }
+                foreach(Resource product in building.Products){
+                    if(Resources.ContainsKey(product.Name)){
+                        //int temp = product.Quantity;
+                        //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
+                        Resources[product.Name].Value += product.Quantity;
+                    }else{
+                        //GD.Print(resource.Name);
+                    }
+                }
+            }
+            if(PlanetOwner != null){
+                //GD.Print(Resources["resource 4"].Quantity +" "+ Buildings[4].Products[0].Quantity);
+            }
+            ResourcesChanged = true;
+            _time = 0;
+        }
     }
 }

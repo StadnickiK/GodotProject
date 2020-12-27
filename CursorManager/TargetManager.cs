@@ -17,27 +17,32 @@ using System.Collections.Generic;
             SetProcess(false);
         }
 
-        List<T> targets = new List<T>();
+        private List<T> _targets;
+        public List<T> Targets
+        {
+            get { return _targets; }
+        }
+        
 
         public void SetTarget(T Target){
-            targets.Clear();
+            _targets.Clear();
             _hasTarget = true;
             currentTarget = Target;
-            targets.Add(currentTarget);
+            _targets.Add(currentTarget);
         }
 
         public void AddTarget(T Target){
             if(!_hasTarget){
                 SetTarget(Target);
             }else{
-                targets.Add(Target);
+                _targets.Add(Target);
             }
         }
 
         public void NextTarget(){
-            if(targets.Count > 1){
-                targets.RemoveAt(0);
-                currentTarget = targets[0];
+            if(_targets.Count > 1){
+                _targets.RemoveAt(0);
+                currentTarget = _targets[0];
             }else{
                 GD.Print("Clear");
                 ClearTargets();
@@ -46,7 +51,7 @@ using System.Collections.Generic;
 
         public void ClearTargets(){
             currentTarget = default(T);
-            targets.Clear();
+            _targets.Clear();
             _hasTarget = false;
         }
     }
