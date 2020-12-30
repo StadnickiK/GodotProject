@@ -70,7 +70,7 @@ visible = false
 
 [node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
 visible = false
-Options = [ "Overview", "Details" ]
+Options = [ "Overview", "Details", "Stance" ]
 
 [node name="Map" type="Node" parent="."]
 script = ExtResource( 13 )
@@ -90,3 +90,4 @@ material/0 = ExtResource( 9 )
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
+visible = false

@@ -34,7 +34,7 @@ public class Ship : RigidBody
     [Export]
     public bool IsLocal { get; set; } = false;
 
-    public Player Controller { get; set; } = null;
+    public Player ShipOwner { get; set; } = null;
 
     public StarSystem System { get; set; } = null;
 
@@ -171,13 +171,22 @@ public class Ship : RigidBody
                 ship.Visible = true;
             }
         }
+        if(body is Planet planet){
+            if(planet.Vision == false && planet.System == System){
+                planet.Vision = true;
+            }
+        }
     }
 
     void _on_Area_body_exited(Node body){
-        if(body is Ship){
-            var s = (Ship)body;
-            if(s.ID_Owner != ID_Owner && s.Visible == true && IsLocal){
-                s.Visible = false;
+        if(body is Ship ship){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == true && IsLocal){
+                ship.Visible = false;
+            }
+        }
+        if(body is Planet planet){
+            if(planet.Vision == true && planet.PlanetOwner != ShipOwner && planet.System == System){
+                planet.Vision = false;
             }
         }
     }

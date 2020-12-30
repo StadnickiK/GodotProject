@@ -17,6 +17,8 @@ public class Planet : StaticBody
     [Export]
     public int TimeStep { get; set; } = 1;
 
+    public bool Vision { get; set; } = false;
+
     PackedScene TileScene = null;
 
     [Signal]
@@ -32,8 +34,8 @@ public class Planet : StaticBody
 
     public StarSystem System { get; set; } = null;
 
-    private Spatial _orbit = null;
-    public Spatial Orbit
+    private Orbit _orbit = null;
+    public Orbit Orbit
     {
         get { return _orbit; }
     }
@@ -44,11 +46,26 @@ public class Planet : StaticBody
         get { return _timer; }
     }
 
+    public Status PlanetStatus { get; set; } = Status.None;
+
+    public enum Status
+    {
+        None,
+        Blockade,
+        Siege,
+        Occupied
+    }
+
     //public TargetManager<Building> Construction { get; set; } = new TargetManager<Building>(); TO DO: create construction list, multiple simultanous constructions
 
     public Building Construction { get; set; } = null;
 
-    MeshInstance Mesh = null;
+    private MeshInstance _mesh = null;
+    public MeshInstance Mesh
+    {
+        get { return _mesh; }
+    }
+    
 
     float _time = 0;
 
@@ -100,12 +117,25 @@ public class Planet : StaticBody
     }
 
     void GenerateMesh(){
+
         ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceMaterial(0);
         //ShaderMaterial material = new ShaderMaterial();
         NoiseTexture noise = new NoiseTexture();
         noise = (NoiseTexture)material.GetShaderParam("noise");//new OpenSimplexNoise();
         var tempGradient = (GradientTexture)material.GetShaderParam("gradient");
-        tempGradient.Gradient = gradient;
+        if(gradient != null){
+            tempGradient.Gradient = gradient;
+        }else{
+            gradient = new Gradient();
+            for(float i = 1; i<4;i++){
+                gradient.AddPoint(i*0.3f, new Color(
+                    (float)Rand.NextDouble(),
+                    (float)Rand.NextDouble(),
+                    (float)Rand.NextDouble()
+                ));
+            }
+            tempGradient.Gradient = gradient;
+        }
         noise.Noise.Seed = Rand.Next(-1000,1000);
         //GradientTexture texture = new GradientTexture();
         //texture.Gradient = gradient;
@@ -141,8 +171,8 @@ public class Planet : StaticBody
     }
 
     void GetNodes(){
-        Mesh = GetNode<MeshInstance>("MeshInstance");
-        _orbit = GetNode<Spatial>("Orbit");
+        _mesh = GetNode<MeshInstance>("MeshInstance");
+        _orbit = GetNode<Orbit>("Orbit");
         _timer = GetNode<Timer>("Timer");
     }
 
@@ -150,6 +180,12 @@ public class Planet : StaticBody
         GD.Print("Start C");
         Construction = building;
         _timer.Start(1);
+    }
+
+    public void Siege(Node node){
+        if(node is Ship ship){
+            
+        }
     }
 
     public override void _Ready()

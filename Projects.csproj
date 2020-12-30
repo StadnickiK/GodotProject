@@ -19,6 +19,7 @@
     <Compile Include="Army.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map\Combat.cs" />
+    <Compile Include="Map\Orbit.cs" />
     <Compile Include="Map\SpaceBattle.cs" />
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
@@ -30,6 +31,7 @@
     <Compile Include="UI\MenuPanel.cs" />
     <Compile Include="UI\Header.cs" />
     <Compile Include="UI\ListPanel.cs" />
+    <Compile Include="UI\OrbitFleetInterface.cs" />
     <Compile Include="UI\OverviewPanel.cs" />
     <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />

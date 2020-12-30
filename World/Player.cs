@@ -47,6 +47,7 @@ public class Player : Node
     {
         PlayerID = GetIndex();
         PlayerName = "Player "+ PlayerID;
+        Name = PlayerName;
 
         for(int i = 0; i<5; i++){
             var resource = new Resource();

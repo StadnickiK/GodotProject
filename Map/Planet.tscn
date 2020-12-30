@@ -1,17 +1,18 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Map/Planet.cs" type="Script" id=1]
+[ext_resource path="res://Map/Orbit.cs" type="Script" id=2]
 [ext_resource path="res://PlanetMesh.tscn" type="PackedScene" id=3]
 
-[sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0.160535, 0.526132, 0.816054 )
-colors = PoolColorArray( 0.477227, 0.492188, 0.0134583, 1, 0.710938, 0.479462, 0.0805359, 1, 0.363281, 0.351918, 0.0723724, 1 )
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0.140845, 0.422535, 0.489437, 0.552817, 0.866197 )
+colors = PoolColorArray( 0.0612946, 0.402344, 0.0906035, 1, 0, 0.5, 0.0429688, 1, 0.738281, 0.736163, 0.602737, 1, 0.279974, 0.225906, 0.917969, 1, 0.0732925, 0.0440826, 0.417969, 1 )
 
 [sub_resource type="BoxShape" id=2]
 
 [node name="Planet" type="StaticBody"]
 script = ExtResource( 1 )
-gradient = SubResource( 1 )
+gradient = SubResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
@@ -20,6 +21,7 @@ shape = SubResource( 2 )
 
 [node name="Orbit" type="Spatial" parent="."]
 visible = false
+script = ExtResource( 2 )
 
 [node name="Timer" type="Timer" parent="."]
 process_mode = 0

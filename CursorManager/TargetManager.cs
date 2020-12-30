@@ -17,7 +17,7 @@ using System.Collections.Generic;
             SetProcess(false);
         }
 
-        private List<T> _targets;
+        private List<T> _targets = new List<T>();
         public List<T> Targets
         {
             get { return _targets; }

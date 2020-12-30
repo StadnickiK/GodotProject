@@ -15,9 +15,6 @@ public class BuildingInterface : Panel
     public delegate void StartConstruction(Building building);
 
     void GetNodes(){
-        foreach(Node node in GetChildren()){
-            GD.Print(node.Name);
-        }
         _header = GetNode<Header>("Header");
         _listPanel = GetNode<ListPanel>("Details");
         _acceptButton = GetNode<Button>("Build");

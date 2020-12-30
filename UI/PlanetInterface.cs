@@ -74,31 +74,40 @@ public class PlanetInterface : Panel
             _planet = planet;
             SetTitle(planet.Name);
             ClearPlanetInterface();
-            foreach(PhysicsBody body in planet.Orbit.GetChildren()){
-                var label = new Label();
-                label.Name = label.Text = body.Name;
-                label.SetMeta(label.Name, body);
-                var node = (Node)label.GetMeta(label.Name);
-                //GD.Print("m "+node.Name);
-                _overviewPanel.AddNodeToPanel("Orbit", label);
-            }
-            foreach(Building building in planet.Buildings){
-                var label = (BuildingLabel)ItemScene.Instance();
-                label.SetMeta(building.Name, building);
-                label.Name = building.Name;
-                label.Text = building.Name;
-                _overviewPanel.AddNodeToPanel("Buildings", label);
-                if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-                    label.Progress.Value = building.CurrentTime;
-                    label.Progress.MaxValue = building.BuildTime;
-                    //GD.Print(label.Progress.MaxValue);
+            if(planet.Vision){
+                UpdateOverview(planet);
+                foreach(PhysicsBody body in planet.Orbit.GetChildren()){
+                    var label = new Label();
+                    label.Name = label.Text = body.Name;
+                    label.SetMeta(label.Name, body);
+                    var node = (Node)label.GetMeta(label.Name);
+                    //GD.Print("m "+node.Name);
+                    _overviewPanel.AddNodeToPanel("Orbit", label);
                 }
+                foreach(Building building in planet.Buildings){
+                    var label = (BuildingLabel)ItemScene.Instance();
+                    label.SetMeta(building.Name, building);
+                    label.Name = building.Name;
+                    label.Text = building.Name;
+                    _overviewPanel.AddNodeToPanel("Buildings", label);
+                    if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+                        label.Progress.Value = building.CurrentTime;
+                        label.Progress.MaxValue = building.BuildTime;
+                        //GD.Print(label.Progress.MaxValue);
+                    }
+                }
+                UpdateAllBuildings(allBuildings);
+                _overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
+                _overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
             }
-
-            UpdateAllBuildings(allBuildings);
-            _overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
-            _overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
         }
+    }
+
+    void UpdateOverview(Planet planet){
+        var label = new Label();
+        label.Name = planet.PlanetOwner.Name;
+        label.Text = "Planet controller: " + planet.PlanetOwner.Name;
+        _overviewPanel.AddNodeToPanel("Overview", label);
     }
 
     void UpdateAllBuildings(List<Building> buildings){

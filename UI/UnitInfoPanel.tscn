@@ -8,7 +8,7 @@
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_top = -166.0
-margin_right = 187.0
+margin_right = 193.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 3 )
@@ -25,9 +25,9 @@ __meta__ = {
 }
 
 [node name="Header" parent="VBoxContainer" instance=ExtResource( 2 )]
-margin_right = 187.0
-custom_constants/separation = 75
+margin_right = 193.0
+custom_constants/separation = 81
 
 [node name="OverviewPanel" parent="VBoxContainer" instance=ExtResource( 1 )]
-margin_right = 187.0
+margin_right = 193.0
 margin_bottom = 46.0

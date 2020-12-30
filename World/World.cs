@@ -125,6 +125,7 @@ public WorldCursorControl WCC
     void ConnectSignals(){
         _UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
         _UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
+        _UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
         _map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
     }
 
@@ -187,6 +188,12 @@ public WorldCursorControl WCC
                 planet.PlanetOwner = player;
                 player.MapObjects.Add(planet);
                 tempStarSystems.Remove(system);
+                if(player == _Player){
+                    planet.Vision = true;
+                    GD.Print(planet.PlanetName);
+                }else{
+                    planet.Vision = false;
+                }
             }
         }else{
             var usedPlanetList = new List<Planet>();
@@ -216,7 +223,7 @@ public WorldCursorControl WCC
                         transform.origin = planet.Transform.origin;
                         transform.origin += new Vector3(3,0,3);
                         ship.Transform = transform;
-                        ship.Controller = player;
+                        ship.ShipOwner = player;
                         ship.ID_Owner = player.GetIndex();
                         ship.Name = planet.Name +" "+1;
                         ship.System = planet.System;

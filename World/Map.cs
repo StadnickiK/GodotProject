@@ -97,7 +97,7 @@ public class Map : Node
     void _on_Ship_EnterPlanet(Ship ship, Planet planet){
         if(!planet.Orbit.GetChildren().Contains(ship)){
             ship.GetParent().RemoveChild(ship);
-            planet.Orbit.AddChild(ship);
+            planet.Orbit.AddNode(ship);
             //ship.Visible = false;
             ship._Planet = planet;
             ship.PlanetPos = (planet.Transform.origin - ship.GlobalTransform.origin);
@@ -108,12 +108,20 @@ public class Map : Node
     }
 
     void _on_Ship_LeavePlanet(Ship ship){
-        GD.Print("leave");
-        
         ship._Planet.Orbit.RemoveChild(ship);
         ship.System.AddMapObject(ship);
         ship._Planet = null;
         ship.Visible = true;
+    }
+
+    public void _on_UInfo_ChangeStance(Node node, string stance){
+        if(node is Ship ship){
+            if(ship._Planet != null){
+                if(ship._Planet.PlanetOwner == null){
+                    ship._Planet.PlanetOwner = ship.ShipOwner;
+                }
+            }
+        }
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

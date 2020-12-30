@@ -21,6 +21,14 @@ public class StarSystem : StaticBody
     [Signal]
     public delegate void SelectTarget(StarSystem target);
 
+    private MeshInstance myVar;
+    public MeshInstance MyProperty
+    {
+        get { return myVar; }
+        set { myVar = value; }
+    }
+    
+
     private int _radius;
     public int Radius
     {
@@ -28,6 +36,8 @@ public class StarSystem : StaticBody
     }
 
     MeshInstance _size = null;
+
+    Spatial _mask = null;   
 
     public String SystemName { get; set; }
 
@@ -61,6 +71,7 @@ public class StarSystem : StaticBody
         Placeholder = GetNode<CollisionShape>("Placeholder");
         XButton = GetNode<Button>("XButton");
         _size = GetNode<MeshInstance>("StarSysObjects/Diameter");
+        _mask = GetNode<Spatial>("Placeholder/Mask");
     }
 
     void Generate(){
@@ -88,6 +99,22 @@ public class StarSystem : StaticBody
         _radius = (int)(dist*1.2f);
         StarSysObjects.Visible = false;
         Rotation = Vector3.Zero;
+    }
+
+    void GenerateMesh(){
+        var mesh = new MeshInstance();
+        mesh.Mesh = new SphereMesh();
+        mesh.Scale = new Vector3(4,4,4);
+        _mask.AddChild(mesh);
+        foreach(Planet planet in _planets){
+            mesh = (MeshInstance)planet.Mesh.Duplicate();
+            var transform = mesh.Transform;
+            transform.origin = planet.Transform.origin;
+            mesh.Transform = transform;
+            mesh.Scale = new Vector3(2,2,2);
+            _mask.AddChild(mesh);
+        }
+        _mask.Scale = new Vector3(0.05f, 0.05f, 0.05f);
     }
     public enum Type
     {
@@ -143,6 +170,7 @@ public class StarSystem : StaticBody
         Generate();
         _size.Scale = new Vector3(_radius,1,_radius);
         _ConnectSignal();
+        GenerateMesh();
     }
 
 }
