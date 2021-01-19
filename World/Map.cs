@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Map : Node
+public class Map : Spatial
 {
     public Galaxy galaxy = null;
 

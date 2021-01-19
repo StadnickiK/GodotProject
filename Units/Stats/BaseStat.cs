@@ -7,16 +7,19 @@ public class BaseStat : Node{
 
     public BaseStat(string name){
         _name = name;
+        Name = name;
     }
 
     public BaseStat(string name, int baseValue){
         _name = name;
+        Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
     }
 
     public BaseStat(string name, int baseValue, int max){
         _name = name;
+        Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
         _maxValue = max;
@@ -25,6 +28,7 @@ public class BaseStat : Node{
 
     public BaseStat(string name, int baseValue, int min,int max){
         _name = name;
+        Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
         _maxValue = max;
@@ -34,7 +38,7 @@ public class BaseStat : Node{
     }
 
     private string _name;
-    new public string Name
+    public string StatName
     {
         get { return _name; }
     }

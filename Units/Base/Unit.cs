@@ -1,7 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public class Unit : RigidBody
+public class Unit : Node
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -10,12 +11,16 @@ public class Unit : RigidBody
     [Export]
     public int ID_Owner { get; set; }
 
-    protected Unit self;
+    public bool HasHitpoints { get; set; } = true;  
+
+    public List<BaseStat> Stats { get; set; } = new List<BaseStat>();
+
+    public void CalculateDamage(Unit unit){}
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        self = (Unit)GetParent().GetChild(GetIndex());
+        
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

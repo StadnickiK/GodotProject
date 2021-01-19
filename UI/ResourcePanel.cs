@@ -32,7 +32,7 @@ public class ResourcePanel : Panel
                         //label.SetValue(Resources[label.ResourceName.Text].Quantity);
                         label.SetValue(Resources[label.ResourceName.Text].Value);
                     }else{
-                        GD.Print("Update resource panel "+label.ResourceName.Text);
+                        //GD.Print("Update resource panel "+label.ResourceName.Text);
                     }
                 }
             }
@@ -40,6 +40,16 @@ public class ResourcePanel : Panel
             foreach(KeyValuePair<string, Resource> resource in Resources){
                 var label = (ResourceLabel)ResourceLabelScene.Instance();
                 _hBox.AddChild(label);
+                if(Theme != null){
+                    label.SetLabelTheme(Theme);
+                }else{
+                    Theme = new Theme();
+                    var font = new DynamicFont();
+                    font.Size = 20;
+                    font.UseFilter = true;
+                    Theme.DefaultFont = font;
+                    label.SetLabelTheme(Theme);
+                }
                 label.ResourceName.Text = resource.Value.Name;
                 //label.Value.Text = resource.Value.Quantity.ToString();
                 label.Value.Text = resource.Value.Value.ToString();

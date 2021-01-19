@@ -18,9 +18,8 @@ public class Combat : Node
         battle.Transform = trans;
         battle.AddCombatants(ship, enemy);
         HideNodes(ship, enemy);
-        if(parent is StarSystem){
-            StarSystem s = (StarSystem)parent;
-            s.GetNode("StarSysObjects").AddChild(battle);
+        if(parent.Name =="StarSysObjects"){
+            parent.AddChild(battle);
         }else{
             parent.AddChild(battle);
         }

@@ -6,9 +6,9 @@
 
 [sub_resource type="BoxShape" id=1]
 
-[sub_resource type="CylinderMesh" id=3]
+[sub_resource type="CylinderMesh" id=2]
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.117647, 0.87451, 0.164706, 1 )
 
 [node name="StarSystem" type="StaticBody"]
@@ -33,7 +33,8 @@ visible = false
 
 [node name="Diameter" type="MeshInstance" parent="StarSysObjects"]
 transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+visible = false
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
 [connection signal="input_event" from="." to="." method="_on_StarSystem_input_event"]
 [connection signal="button_up" from="XButton" to="." method="_on_XButton_button_up"]

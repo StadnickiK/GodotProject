@@ -105,7 +105,9 @@ public class PlanetInterface : Panel
 
     void UpdateOverview(Planet planet){
         var label = new Label();
-        label.Name = planet.PlanetOwner.Name;
+        if(planet.PlanetOwner != null){
+            label.Name = planet.PlanetOwner.Name;
+        }
         label.Text = "Planet controller: " + planet.PlanetOwner.Name;
         _overviewPanel.AddNodeToPanel("Overview", label);
     }

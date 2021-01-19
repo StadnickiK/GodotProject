@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class UI : Node
+public class UI : Spatial
 {
 
 

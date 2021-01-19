@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
@@ -27,7 +27,18 @@ ambient_light_color = Color( 0.8, 0.8, 0.8, 1 )
 ambient_light_sky_contribution = 0.7
 tonemap_mode = 1
 
-[sub_resource type="CubeMesh" id=3]
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://Fonts/times.ttf"
+
+[sub_resource type="DynamicFont" id=4]
+size = 20
+use_filter = true
+font_data = SubResource( 3 )
+
+[sub_resource type="Theme" id=5]
+default_font = SubResource( 4 )
+
+[sub_resource type="CubeMesh" id=6]
 size = Vector3( 300, 2, 300 )
 subdivide_width = 500
 subdivide_depth = 500
@@ -40,7 +51,7 @@ environment = SubResource( 2 )
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 4 )]
 
-[node name="UI" type="Node" parent="."]
+[node name="UI" type="Spatial" parent="."]
 script = ExtResource( 11 )
 
 [node name="ResourcePanel" parent="UI" instance=ExtResource( 1 )]
@@ -50,6 +61,7 @@ margin_left = -512.0
 margin_right = 512.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = SubResource( 5 )
 
 [node name="CameraGimbal" parent="UI" instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0 )
@@ -67,12 +79,13 @@ Options = [ "Overview", "Buildings", "Orbit" ]
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false
+Options = [ "Overview", "Details" ]
 
 [node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
 visible = false
 Options = [ "Overview", "Details", "Stance" ]
 
-[node name="Map" type="Node" parent="."]
+[node name="Map" type="Spatial" parent="."]
 script = ExtResource( 13 )
 
 [node name="MapObjects" type="Node" parent="Map"]
@@ -83,7 +96,7 @@ script = ExtResource( 14 )
 
 [node name="FOW" type="MeshInstance" parent="Map"]
 visible = false
-mesh = SubResource( 3 )
+mesh = SubResource( 6 )
 material/0 = ExtResource( 9 )
 
 [node name="Players" type="Node" parent="."]

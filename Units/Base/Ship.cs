@@ -42,8 +42,13 @@ public class Ship : RigidBody
 
     public StatManager StatManager { get; set; } = new StatManager();
 
+    public List<BaseStat> Stats { get; set; } = new List<BaseStat>();
+
+    public List<Unit> Units { get; set; } = new List<Unit>();
+
     public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
+    public MeshInstance Mesh { get; set; } = null;  
     Vector3 targetPos = Vector3.Zero;
 
     [Export]
@@ -122,7 +127,6 @@ public class Ship : RigidBody
             }
             if(System != null){
                 if(Transform.origin.Length()>System.Radius){
-                    GD.Print("leave system");
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
                 }
@@ -137,7 +141,6 @@ public class Ship : RigidBody
                 
             }
             if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
-                //GD.Print(((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length());
                 var transform = Transform;
                 transform.origin = _Planet.GlobalTransform.origin;
                 EmitSignal(nameof(LeavePlanet), this);
@@ -212,6 +215,7 @@ public class Ship : RigidBody
 
     void GetNodes(){
         Area = GetNode<Spatial>("Area");
+        Mesh = GetNode<MeshInstance>("Mesh");
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){
@@ -244,6 +248,9 @@ public class Ship : RigidBody
         _ConnectSignal();
         GetNodes();
         UpdateVisionRange();
+        Stats.Add(new BaseStat("Attack", 5));
+        Stats.Add(new BaseStat("Defense", 3));
+        Stats.Add(new BaseStat("Hit points", 100));
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

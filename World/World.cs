@@ -68,6 +68,7 @@ public WorldCursorControl WCC
 
     void _on_ShowBattlePanel(SpaceBattle battle){
         _UI.BattlePan.Visible = true;
+        _UI.BattlePan.UpdatePanel(battle);
     }
 
     public void ConnectTo_OpenPlanetInterface(Node node){

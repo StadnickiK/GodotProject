@@ -24,7 +24,6 @@ show_behind_parent = true
 margin_right = 161.0
 margin_bottom = 14.0
 mouse_filter = 1
-max_value = 100.0
 step = 1.0
 __meta__ = {
 "_edit_use_anchors_": false

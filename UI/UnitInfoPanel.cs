@@ -42,6 +42,11 @@ void GetNodes(){
         ClearOverviewPanel();
         if(body is Ship ship){
             CreateStancePanel(ship);
+            foreach(BaseStat stat in ship.Stats){
+                var label = new Label();
+                label.Text = stat.StatName + " " + stat.BaseValue;
+                _overviewPanel.AddNodeToPanel("Overview", label); 
+            }
         }
     }
 

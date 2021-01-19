@@ -40,6 +40,11 @@ public class ResourceLabel : HBoxContainer
          ResourceName.HintTooltip = tip;
      }
 
+     public void SetLabelTheme(Theme theme){
+        _value.Theme = theme;
+        _resourceName.Theme = theme;
+     }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {

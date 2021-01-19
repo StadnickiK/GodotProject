@@ -117,7 +117,6 @@ public class Planet : StaticBody
     }
 
     void GenerateMesh(){
-
         ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceMaterial(0);
         //ShaderMaterial material = new ShaderMaterial();
         NoiseTexture noise = new NoiseTexture();
@@ -128,10 +127,14 @@ public class Planet : StaticBody
         }else{
             gradient = new Gradient();
             for(float i = 1; i<4;i++){
+                float r = (float)Rand.NextDouble();//Rand.Next(101)/100;
+                float g = (float)Rand.NextDouble();//Rand.Next(101)/100;
+                float b = (float)Rand.NextDouble();//Rand.Next(101)/100;
+                //GD.Print(r +" " + g + " " + b);
                 gradient.AddPoint(i*0.3f, new Color(
-                    (float)Rand.NextDouble(),
-                    (float)Rand.NextDouble(),
-                    (float)Rand.NextDouble()
+                    r,
+                    Rand.Next(101),
+                    b
                 ));
             }
             tempGradient.Gradient = gradient;
@@ -188,6 +191,15 @@ public class Planet : StaticBody
         }
     }
 
+    public void _on_Planet_TakeOver(Node node){
+        if(node is Ship ship){
+            PlanetOwner = ship.ShipOwner;
+        }
+        if(node is Player player){
+            PlanetOwner = player;
+        }
+    }
+
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
@@ -199,7 +211,7 @@ public class Planet : StaticBody
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
         //Generate();
-        for(int i = 0; i<5; i++){
+        for(int i = 0; i<1; i++){
             var building = new Building();
             building.Name = "Building "+i;
             var resource = new Resource();
