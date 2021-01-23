@@ -40,11 +40,12 @@ public class UI : Spatial
         if(player.MapObjectsChanged){
             RPanel.UpdateRightPanel(player);
             player.MapObjectsChanged = false;
+            GD.Print("update r panel");
         }
         if(player.ResourcesChanged){
             if(player.Resources != null){
                 ResPanel.UpdatePanel(player.Resources);
-                //player.ResourcesChanged = false;
+                player.ResourcesChanged = false;
             }
         }
     }

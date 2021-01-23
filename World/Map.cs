@@ -101,6 +101,9 @@ public class Map : Spatial
             //ship.Visible = false;
             ship._Planet = planet;
             ship.PlanetPos = (planet.Transform.origin - ship.GlobalTransform.origin);
+            if(planet.PlanetOwner != ship.ShipOwner){
+                planet.PlanetOwner = ship.ShipOwner;
+            }
             // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
             //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
             // }

@@ -98,6 +98,7 @@ public class Ship : RigidBody
         float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
             if(angle > 0.01f || angle < -0.01f ){
                 state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
+                UpdateLinearVelocity(state);
             }else{
                 AngularVelocity = Vector3.Zero;
                 UpdateLinearVelocity(state);
@@ -129,6 +130,7 @@ public class Ship : RigidBody
                 if(Transform.origin.Length()>System.Radius){
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
+                    targetManager.NextTarget();
                 }
             }
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
@@ -215,7 +217,7 @@ public class Ship : RigidBody
 
     void GetNodes(){
         Area = GetNode<Spatial>("Area");
-        Mesh = GetNode<MeshInstance>("Mesh");
+        Mesh = GetNode<MeshInstance>("ship model/Cube");
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){

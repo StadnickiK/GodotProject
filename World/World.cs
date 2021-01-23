@@ -76,6 +76,7 @@ public WorldCursorControl WCC
     }
 
     void _on_OpenPlanetInterface(Planet planet){
+        GD.Print("p int open");
         _UI.PInterface.Visible = true;
         _UI.PInterface.UpdatePlanetInterface(planet, WorldBuildings);
     }
@@ -191,7 +192,6 @@ public WorldCursorControl WCC
                 tempStarSystems.Remove(system);
                 if(player == _Player){
                     planet.Vision = true;
-                    GD.Print(planet.PlanetName);
                 }else{
                     planet.Vision = false;
                 }
@@ -268,6 +268,9 @@ public WorldCursorControl WCC
         for(int i =0; i<5; i++){
             var building = new Building();
             building.Name = "Building "+i;
+            Resource res = new Resource();
+            res.Name = "resource "+i;
+            building.BuildTime = 5+i;
             WorldBuildings.Add(building);
         }
     }

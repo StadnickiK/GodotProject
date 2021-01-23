@@ -44,7 +44,6 @@ using System.Collections.Generic;
                 _targets.RemoveAt(0);
                 currentTarget = _targets[0];
             }else{
-                GD.Print("Clear");
                 ClearTargets();
             }
         }
