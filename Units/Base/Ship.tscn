@@ -20,7 +20,7 @@ script = ExtResource( 1 )
 VisionRange = 10
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( -2.44381e-07, 0, 1, 0, 1, 0, -1.5, 0, -1.62921e-07, 0, 0, 0 )
+transform = Transform( -2.44381e-07, 0, 1, 0, 2.1, 0, -1.5, 0, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 1 )
 
 [node name="Area" type="Area" parent="."]

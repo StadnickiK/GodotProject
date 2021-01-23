@@ -58,13 +58,15 @@ public class WorldCursorControl : Spatial
         return p;
     }
      public override void _Input(InputEvent inputEvent){
-        if(inputEvent is InputEventMouseButton button){ // mouse
-            if((ButtonList)button.ButtonIndex == ButtonList.Right && select != null){   // right click
-                select.MoveToPosition(GetMouseWorldPosition());
-                select.ClearTarget();
-            }
-            if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
-                select.ClearSelection();
+        if(select.HasSelected()){
+            if(inputEvent is InputEventMouseButton button){ // mouse
+                if((ButtonList)button.ButtonIndex == ButtonList.Right && select != null){   // right click
+                    select.ClearTarget();
+                    select.MoveToPosition(GetMouseWorldPosition());
+                }
+                if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
+                    select.ClearSelection();
+                }
             }
         }
     }

@@ -49,7 +49,6 @@ public class Ship : RigidBody
     public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
     public MeshInstance Mesh { get; set; } = null;  
-    Vector3 targetPos = Vector3.Zero;
 
     [Export]
     public int VisionRange { get; set; } = 4;
@@ -60,14 +59,13 @@ public class Ship : RigidBody
     public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
 
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
-            state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetPos);
+            state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetManager.currentTarget.Transform.origin);
     }
 
     protected void ResetVelocity(){
         _velocityController.ResetSpeed();
-        targetManager.ClearTargets();
+        NextTarget();
         LinearVelocity = Vector3.Zero;
-        targetPos = Vector3.Zero;
         AngularVelocity = Vector3.Zero;
         Sleeping = true;
     }
@@ -86,15 +84,32 @@ public class Ship : RigidBody
 
     public void MoveToTarget(PhysicsBody target){
         Sleeping = false;
-        targetPos = target.GlobalTransform.origin;//PosToTargetWithEffectiveRange(target.GlobalTransform.origin);
+        targetManager.SetTarget(target);
     }
 
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
-        targetPos = destination;
+        var target = new StaticBody();
+        var transform = target.Transform;
+        transform.origin = destination;
+        target.Transform = transform;
+        target.Name = "tempTarget";
+        targetManager.SetTarget(target);
+    }
+
+    public void NextTarget(){
+        if(targetManager.currentTarget is StaticBody body){
+            if(body.Name == "tempTarget"){
+                body.QueueFree();
+                targetManager.NextTarget();
+                return;
+            }
+        }
+        targetManager.NextTarget();
     }
 
     void UpdateShipVelocities(PhysicsDirectBodyState state){
+        var targetPos = targetManager.currentTarget.Transform.origin;
         float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
             if(angle > 0.01f || angle < -0.01f ){
                 state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
@@ -118,7 +133,8 @@ public class Ship : RigidBody
     }
 
     public override void _IntegrateForces(PhysicsDirectBodyState state){
-        if(targetManager.HasTarget ||(targetPos != Vector3.Zero && targetPos != null)){
+        if(targetManager.HasTarget){
+            var targetPos = targetManager.currentTarget.Transform.origin;
             UpdateShipVelocities(state);
             if(System == null){
                 if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
@@ -130,7 +146,6 @@ public class Ship : RigidBody
                 if(Transform.origin.Length()>System.Radius){
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
-                    targetManager.NextTarget();
                 }
             }
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){

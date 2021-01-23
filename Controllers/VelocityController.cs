@@ -88,7 +88,6 @@ public class VelocityController : Node
         else if (angle <= -Math.PI) { angle += 2 * (float)Math.PI; }
 
         if((targetPosition-currentTransform.origin).Length() < 8){
-            GD.Print("fix");
             rotationFix *= 4;
         }
 

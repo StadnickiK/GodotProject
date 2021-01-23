@@ -149,7 +149,6 @@ public class Planet : StaticBody
     }
 
     void _on_Planet_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
-        GD.Print("click planet");
         if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
@@ -181,7 +180,6 @@ public class Planet : StaticBody
     }
 
     public void ConstructBuilding(Building building){
-        GD.Print("Start C");
         Construction = building;
         _timer.Start(1);
     }

@@ -57,7 +57,7 @@ public class Map : Spatial
         if(system != null && ship != null){
             galaxy.RemoveChild(ship);
             system.GetNode("StarSysObjects").AddChild(ship);
-            ship.targetManager.NextTarget();
+            ship.NextTarget();
             var trans = state.Transform;
             trans.origin = system.Radius*0.9f*(-aproachVec)+system.GlobalTransform.origin;
             state.Transform = trans;
@@ -80,7 +80,7 @@ public class Map : Spatial
             var trans = state.Transform;
             trans.origin = ship.System.Transform.origin;
             state.Transform = trans;
-            ship.targetManager.NextTarget();
+            ship.NextTarget();
             ship.System = null;
             ship.Visible = false;
         }

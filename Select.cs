@@ -79,6 +79,10 @@ public class Select : Node
         selectManager.ClearSelection();
     }
 
+    public bool HasSelected(){
+        return selectManager.HasSelect;
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
