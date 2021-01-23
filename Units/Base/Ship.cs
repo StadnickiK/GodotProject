@@ -56,7 +56,7 @@ public class Ship : RigidBody
     Spatial Area = null;
 
     protected VelocityController _velocityController = new VelocityController();
-    public TargetManager<PhysicsBody> targetManager { get; set; } = new TargetManager<PhysicsBody>();
+    public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
 
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
             state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetManager.currentTarget.Transform.origin);
@@ -89,7 +89,8 @@ public class Ship : RigidBody
 
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
-        var target = new StaticBody();
+        var target = new Spatial();
+        target.SetProcess(false);
         var transform = target.Transform;
         transform.origin = destination;
         target.Transform = transform;
