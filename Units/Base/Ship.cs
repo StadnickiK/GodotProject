@@ -188,12 +188,12 @@ public class Ship : RigidBody
 
     void _on_Area_body_entered(Node body){
         if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == false){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.System == System && !ship.IsLocal){
                 ship.Visible = true;
             }
         }
         if(body is Planet planet){
-            if(planet.Vision == false && planet.System == System){
+            if(planet.Vision == false && planet.PlanetOwner != ShipOwner && planet.System == System){
                 planet.Vision = true;
             }
         }
@@ -201,7 +201,7 @@ public class Ship : RigidBody
 
     void _on_Area_body_exited(Node body){
         if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == true && IsLocal){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.System == System && ship.IsLocal){
                 ship.Visible = false;
             }
         }
@@ -213,8 +213,10 @@ public class Ship : RigidBody
     }
 
     void _on_Ship_body_entered(Node node){
-        if(node is Ship){
-            EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
+        if(node is Ship ship){
+            if(ship.System == System){
+                EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
+            }
         }
     }
 
@@ -267,8 +269,11 @@ public class Ship : RigidBody
         GetNodes();
         UpdateVisionRange();
         Stats.Add(new BaseStat("Attack", 5));
-        Stats.Add(new BaseStat("Defense", 3));
+        Stats.Add(new BaseStat("Defence", 3));
         Stats.Add(new BaseStat("Hit points", 100));
+        for(int i = 0;i<5;i++){
+            Units.Add(new Unit());
+        }
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
