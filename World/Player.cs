@@ -52,7 +52,7 @@ public class Player : Node
         for(int i = 0; i<5; i++){
             var resource = new Resource();
             resource.Name = "resource "+i;
-            //resource.Quantity = i * 1000;
+            resource.Quantity = i * 1000;
             Resources.Add(resource.Name, resource);
             ResourcesChanged = true;
         }
@@ -66,7 +66,7 @@ public class Player : Node
             Resources.Clear();
             foreach(Planet planet in MapObjects.Where( x => x is Planet )){
                 if(planet.ResourcesChanged){
-                    foreach(Resource resource in planet.Resources.Values){
+                    foreach(Resource resource in planet.PlayerResources.Values){
                         if(Resources.ContainsKey(resource.Name)){
                             //Resources[resource.Name].Quantity += resource.Quantity;
                             Resources[resource.Name].Value += resource.Value;

@@ -17,7 +17,7 @@ public class Combat : Node
         trans.origin =  ship.Transform.origin;
         battle.Transform = trans;
         battle.AddCombatants(ship, enemy);
-        HideNodes(ship, enemy);
+        //HideNodes(ship, enemy);
         if(parent.Name =="StarSysObjects"){
             parent.AddChild(battle);
         }else{
@@ -27,8 +27,8 @@ public class Combat : Node
     }
 
     void HideNodes(params Spatial[] Nodes){
-        foreach(Spatial n in Nodes){
-            n.Visible = false;
+        foreach(Spatial spatial in Nodes){
+            spatial.Visible = false;
         }
     }
 

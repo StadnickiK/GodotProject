@@ -17,12 +17,18 @@ public class SpaceBattle : StaticBody
 
     bool ZeroOne = false;
 
+    bool _endCombat = false;
+
     [Signal]
     public delegate void OpenBattlePanel(SpaceBattle battle);
 
     MeshInstance _placeholder = null;
 
     Spatial _mesh = null;
+
+    float _time = 0;
+
+    public int TimeStep { get; set; } = 1;
 
     public void SetPosition(Vector3 pos){
         var trans = Transform;
@@ -37,7 +43,6 @@ public class SpaceBattle : StaticBody
     public void AddCombatants(params PhysicsBody[] body){
         foreach(PhysicsBody b in body){
             if(b is Ship ship){
-
                 if(!ZeroOne){
                     Attacker = ship;
                     ZeroOne = true;
@@ -50,20 +55,20 @@ public class SpaceBattle : StaticBody
     }
 
     public void GenerateMesh(){
-        if(Comabatants.Count >=2){
-            if(Comabatants[0] is Ship ship && Comabatants[1] is Ship ship2){
+        if(Attacker != null && Defender != null){
                 _placeholder.QueueFree();
-                MeshInstance mesh = (MeshInstance)ship.Mesh.Duplicate();
+                MeshInstance mesh = (MeshInstance)Attacker.Mesh.Duplicate();
                 var transform = mesh.Transform;
                 transform.origin = new Vector3(2,0,0);
                 mesh.Transform = transform;
                 _mesh.AddChild(mesh);
-                mesh = (MeshInstance)ship2.Mesh.Duplicate();
+                mesh = (MeshInstance)Defender.Mesh.Duplicate();
                 transform = mesh.Transform;
                 transform.origin = new Vector3(-2,0,0);
                 mesh.Transform = transform;
+                mesh.RotateY(135);
                 _mesh.AddChild(mesh);
-            }
+                _mesh.Scale = new Vector3(0.5f,0.5f,0.5f);
         }
     }
    
@@ -85,6 +90,10 @@ public class SpaceBattle : StaticBody
             b.GetParent().RemoveChild(b);
             Participants.AddChild(b);
         }
+        Attacker.GetParent().RemoveChild(Attacker);
+        Defender.GetParent().RemoveChild(Defender);
+        Participants.AddChild(Attacker);
+        Participants.AddChild(Defender);
     }
 
     public void ConnectToOpenBattlePanel(Node node, string method){
@@ -96,22 +105,36 @@ public class SpaceBattle : StaticBody
         for(var i = Attacker.Units.Count-1;i>=0; i--){
             var unit = Attacker.Units[i];
             unit.CalculateDamage(Defender.Units[defenderCount]);
-            Defender.Units[defenderCount].CalculateDamage(unit);
             if(!Defender.Units[defenderCount].HasHitpoints){
+                Defender.Units[defenderCount].QueueFree();
                 Defender.Units.RemoveAt(defenderCount);
                 defenderCount -= 1;
             }
             if(!unit.HasHitpoints){
+                Attacker.Units[i].QueueFree();
                 Attacker.Units.Remove(unit);
             }
             if(Attacker.Units.Count == 0 || Defender.Units.Count == 0){
+                GD.Print(Attacker.Units.Count +" "+ Defender.Units.Count);
                 EndCombat();
             }
         }
     }
 
     void EndCombat(){
+        foreach(Node node in Participants.GetChildren()){
+            if(node is Ship ship){
+                if(ship.Units.Count == 0){
+                    ship.QueueFree();
+                }else{
+                    Participants.RemoveChild(ship);
+                    GetParent().AddChild(ship);
+                    ship.Visible = true;
+                }
+            }
+        }
         QueueFree();
+        _endCombat = true;
     }
 
     public void _on_SpaceBattle_input_event(Camera camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
@@ -121,16 +144,24 @@ public class SpaceBattle : StaticBody
             EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
             break;
           case ButtonList.Right:
-            EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
+            //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
             break;
         }
       }
     }
 
-  public override void _Process(float delta){
-      if(Attacker != null&& Defender != null){
-        Combat();
-      }
-  }
-
+    public override void _Process(float delta){
+        if(!_endCombat){
+            if(Attacker != null&& Defender != null){
+                if(_time >= TimeStep){  
+                    Combat();
+                    _time = 0;
+                }
+            }else{
+                // to do create debris
+                QueueFree();
+            }
+            _time += delta;
+        }
+    }
 }

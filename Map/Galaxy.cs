@@ -78,15 +78,15 @@ public class Galaxy : Spatial
 
     public void ViewStarSystem(StarSystem system){
         _currentSystem = system;
-        foreach(Spatial node in GetChildren()){
-            if(node is StarSystem s){
-                if(s.SystemID != system.GetIndex()){
-                    s.Visible = false;
+        foreach(Spatial spatial in GetChildren()){
+            if(spatial is StarSystem starSystem){
+                if(starSystem.SystemID != system.GetIndex()){
+                    starSystem.Visible = false;
                 }else{
-                    EmitSignal(nameof(CameraLookAt), s.Transform.origin);
+                    EmitSignal(nameof(CameraLookAt), starSystem.Transform.origin);
                 }
             }else{
-                node.Visible = false;
+                spatial.Visible = false;
             }
         }
     }
@@ -96,8 +96,8 @@ public class Galaxy : Spatial
     }
 
     void _on_ViewGalaxy(){
-        foreach(Spatial n in GetChildren()){
-            n.Visible = true;
+        foreach(Spatial node in GetChildren()){
+            node.Visible = true;
         }
     }
 
@@ -106,8 +106,8 @@ public class Galaxy : Spatial
             _currentSystem.CloseSystem();
             _currentSystem = null;
         }
-        foreach(Spatial n in GetChildren()){
-            n.Visible = true;
+        foreach(Spatial spatial in GetChildren()){
+            spatial.Visible = true;
         }
     }
 
@@ -124,8 +124,8 @@ public class Galaxy : Spatial
     }
 
     void HideNodes(params Spatial[] Nodes){
-        foreach(Spatial n in Nodes){
-            n.Visible = false;
+        foreach(Spatial spatial in Nodes){
+            spatial.Visible = false;
         }
     }
 }

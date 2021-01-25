@@ -70,7 +70,7 @@ public class Planet : StaticBody
     float _time = 0;
 
     private Dictionary<string, Resource> _resources = new Dictionary<string, Resource>();
-    public IReadOnlyDictionary<string, Resource> Resources
+    public Dictionary<string, Resource> PlayerResources
     {
         get { return _resources; }
     }
@@ -233,17 +233,15 @@ public class Planet : StaticBody
                 //     }
                 // }
                 foreach(Resource product in building.Products){
-                    if(Resources.ContainsKey(product.Name)){
+                    if(PlayerResources.ContainsKey(product.Name)){
                         //int temp = product.Quantity;
                         //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                        Resources[product.Name].Value += product.Quantity;
+                        PlayerResources[product.Name].Value += product.Quantity;
+
                     }else{
                         //GD.Print(resource.Name);
                     }
                 }
-            }
-            if(PlanetOwner != null){
-                //GD.Print(Resources["resource 4"].Quantity +" "+ Buildings[4].Products[0].Quantity);
             }
             ResourcesChanged = true;
             _time = 0;
