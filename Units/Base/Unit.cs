@@ -14,8 +14,9 @@ public class Unit : Node
     public bool HasHitpoints { get; set; } = true;  
 
     public Unit(){
-        BaseStat attack = new BaseStat("Attack", 5);
-        BaseStat defence = new BaseStat("Defence", 2);
+        Random rand = new Random();
+        BaseStat attack = new BaseStat("Attack", rand.Next(10,30));
+        BaseStat defence = new BaseStat("Defence", rand.Next(0,10));
         BaseStat hp = new BaseStat("HitPoints", 100);
         Stats.Add(attack.StatName, attack);
         Stats.Add(defence.StatName, defence);
@@ -25,10 +26,14 @@ public class Unit : Node
     public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
     public void CalculateDamage(Unit unit){
-        Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
         unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
         if(Stats["HitPoints"].CurrentValue<0){
             HasHitpoints = false;
+        }
+        if(unit.Stats["HitPoints"].CurrentValue<=0){
+            unit.HasHitpoints = false;
+        }else{
+                Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
         }
     }
 

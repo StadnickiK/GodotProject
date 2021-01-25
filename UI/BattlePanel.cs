@@ -17,6 +17,8 @@ public class BattlePanel : Panel
     [Export]
     public List<string> Options { get; set; } = new List<string>();
 
+    SpaceBattle _battle = null;
+
         void GetNodes(){
         _closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
         _header = GetNode<Header>("VBoxContainer/Header");
@@ -43,9 +45,11 @@ public class BattlePanel : Panel
     }
 
     public void UpdatePanel(SpaceBattle battle){
+        _battle = battle;
         ClearInterface();
         var progressBar = new ProgressBar();
-        progressBar.Value = 69;
+        progressBar.Value = (double)battle.Attacker.Power.CurrentValue/((double)battle.Attacker.Power.CurrentValue+(double)battle.Defender.Power.CurrentValue)*100;
+        GD.Print(battle.Attacker.Power.CurrentValue+" "+battle.Defender.Power.CurrentValue);
         progressBar.PercentVisible = true;
         _overviewPanel.AddNodeToPanel("Overview", progressBar);
         for(int i =0; i<battle.Comabatants.Count; i +=2){
@@ -59,9 +63,13 @@ public class BattlePanel : Panel
         Visible = false;
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public override void _Process(float delta){
+        if(Visible){
+            if(_battle != null){
+                if(_battle.PowerChanged)
+                    UpdatePanel(_battle);
+            }
+        }
+    }
+
 }

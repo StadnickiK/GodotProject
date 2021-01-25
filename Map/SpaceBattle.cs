@@ -19,6 +19,8 @@ public class SpaceBattle : StaticBody
 
     bool _endCombat = false;
 
+    public bool PowerChanged { get; set; } = false;
+
     [Signal]
     public delegate void OpenBattlePanel(SpaceBattle battle);
 
@@ -90,10 +92,8 @@ public class SpaceBattle : StaticBody
             b.GetParent().RemoveChild(b);
             Participants.AddChild(b);
         }
-        Attacker.GetParent().RemoveChild(Attacker);
-        Defender.GetParent().RemoveChild(Defender);
-        Participants.AddChild(Attacker);
-        Participants.AddChild(Defender);
+        Comabatants.Add(Attacker);
+        Comabatants.Add(Defender);
     }
 
     public void ConnectToOpenBattlePanel(Node node, string method){
@@ -104,31 +104,39 @@ public class SpaceBattle : StaticBody
         var defenderCount = Defender.Units.Count - 1;
         for(var i = Attacker.Units.Count-1;i>=0; i--){
             var unit = Attacker.Units[i];
-            unit.CalculateDamage(Defender.Units[defenderCount]);
-            if(!Defender.Units[defenderCount].HasHitpoints){
-                Defender.Units[defenderCount].QueueFree();
-                Defender.Units.RemoveAt(defenderCount);
-                defenderCount -= 1;
+            if(defenderCount>=0){
+                unit.CalculateDamage(Defender.Units[defenderCount]);
+                if(!Defender.Units[defenderCount].HasHitpoints){
+                    Defender.Units[defenderCount].QueueFree();
+                    Defender.Units.RemoveAt(defenderCount);
+                    defenderCount -= 1;
+                }
             }
             if(!unit.HasHitpoints){
                 Attacker.Units[i].QueueFree();
                 Attacker.Units.Remove(unit);
             }
             if(Attacker.Units.Count == 0 || Defender.Units.Count == 0){
-                GD.Print(Attacker.Units.Count +" "+ Defender.Units.Count);
                 EndCombat();
             }
         }
+        Attacker.UpdatePower();
+        Defender.UpdatePower();
+        PowerChanged = true;
     }
 
     void EndCombat(){
-        foreach(Node node in Participants.GetChildren()){
+        foreach(Node node in Comabatants){
             if(node is Ship ship){
                 if(ship.Units.Count == 0){
+                    if(ship.IsLocal){
+                        ship.ShipOwner.MapObjects.Remove(ship);
+                        ship.ShipOwner.MapObjectsChanged = true;
+                    }
                     ship.QueueFree();
                 }else{
-                    Participants.RemoveChild(ship);
-                    GetParent().AddChild(ship);
+                    //Participants.RemoveChild(ship);
+                    //GetParent().AddChild(ship);
                     ship.Visible = true;
                 }
             }

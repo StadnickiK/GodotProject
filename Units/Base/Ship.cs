@@ -50,6 +50,8 @@ public class Ship : RigidBody
 
     public MeshInstance Mesh { get; set; } = null;  
 
+    public BaseStat Power { get; set; } = new BaseStat("Power");
+
     [Export]
     public int VisionRange { get; set; } = 4;
 
@@ -64,7 +66,6 @@ public class Ship : RigidBody
 
     protected void ResetVelocity(){
         _velocityController.ResetSpeed();
-        NextTarget();
         LinearVelocity = Vector3.Zero;
         AngularVelocity = Vector3.Zero;
         Sleeping = true;
@@ -216,6 +217,7 @@ public class Ship : RigidBody
         if(node is Ship ship){
             if(ship.System == System){
                 EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
+                ResetVelocity();
             }
         }
     }
@@ -273,6 +275,14 @@ public class Ship : RigidBody
         Stats.Add(new BaseStat("Hit points", 100));
         for(int i = 0;i<5;i++){
             Units.Add(new Unit());
+            Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
+        }
+    }
+
+    public void UpdatePower(){
+        Power.CurrentValue = 0;
+        foreach(Unit unit in Units){
+            Power.CurrentValue += unit.Stats["HitPoints"].CurrentValue;
         }
     }
 
