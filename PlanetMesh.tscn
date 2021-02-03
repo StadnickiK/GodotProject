@@ -39,10 +39,11 @@ void light() {
 "
 
 [sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0, 0.498182, 1 )
-colors = PoolColorArray( 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1 )
+offsets = PoolRealArray( 0, 0.2, 0.5, 0.8, 1 )
+colors = PoolColorArray( 0.0205497, 0.0110173, 0, 1, 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1, 0.958333, 0.958333, 0.958333, 1 )
 
 [sub_resource type="GradientTexture" id=4]
+resource_local_to_scene = true
 gradient = SubResource( 3 )
 
 [sub_resource type="OpenSimplexNoise" id=5]
@@ -54,6 +55,7 @@ seamless = true
 noise = SubResource( 5 )
 
 [sub_resource type="ShaderMaterial" id=7]
+resource_local_to_scene = true
 shader = SubResource( 2 )
 shader_param/noise = SubResource( 6 )
 shader_param/gradient = SubResource( 4 )

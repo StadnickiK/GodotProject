@@ -76,9 +76,12 @@ public WorldCursorControl WCC
     }
 
     void _on_OpenPlanetInterface(Planet planet){
-        GD.Print("p int open");
         _UI.PInterface.Visible = true;
         _UI.PInterface.UpdatePlanetInterface(planet, WorldBuildings);
+    }
+
+    void _on_CreateShip(Planet planet, Unit unit){
+        CreateShip(planet, unit);
     }
 
     void _on_CameraLookAt(Vector3 position){
@@ -109,9 +112,15 @@ public WorldCursorControl WCC
         if(planet != null && node != null){
             var label = (Label)node;
             PhysicsBody obj = (PhysicsBody)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
-            GD.Print(node.Name);
             if(obj != null){
-                _wcc._SelectUnit(obj);
+                if(obj is Ship){
+                    _wcc._SelectUnit(obj);
+                }else{
+                    if(obj is SpaceBattle battle){
+                        _on_ShowBattlePanel(battle);
+                    }
+                }
+
             }
         }
     }
@@ -139,6 +148,10 @@ public WorldCursorControl WCC
         WCC._SelectUnit(body);
         _UI.UInfo.Visible = true;
         _UI.UInfo.UpdatePanel(body);
+    }
+
+    void _on_Deselect(){
+        _UI.UInfo.Visible = false;
     }
 
     void InitPlayers(){
@@ -187,8 +200,7 @@ public WorldCursorControl WCC
                 var planetList = system.Planets;
                 var player = (Player)Players.GetChild(id);
                 var planet = planetList[Rand.Next(0,planetList.Count)];
-                planet.PlanetOwner = player;
-                player.MapObjects.Add(planet);
+                planet.ChangePlanetOwner(player);
                 tempStarSystems.Remove(system);
                 if(player == _Player){
                     planet.Vision = true;
@@ -199,16 +211,20 @@ public WorldCursorControl WCC
         }else{
             var usedPlanetList = new List<Planet>();
             foreach(int id in PlayerIDs){
-                var system = tempStarSystems[Rand.Next(0,count)];
+                var system = tempStarSystems[Rand.Next(0,count-1)];
                 var planetList = new List<Planet>(system.Planets);
                 var planet = planetList[Rand.Next(0,planetList.Count)];
                 var player = (Player)Players.GetChild(id);
                 while(usedPlanetList.Contains(planet)){
                     planet = system.Planets[Rand.Next(0,planetList.Count)];
                 }
-                planet.PlanetOwner = player;
-                player.MapObjects.Add(planet);
+                planet.ChangePlanetOwner(player);
                 usedPlanetList.Add(planet);
+                if(player == _Player){
+                    planet.Vision = true;
+                }else{
+                    planet.Vision = false;
+                }
             }
         }
     }
@@ -230,6 +246,10 @@ public WorldCursorControl WCC
                         ship.System = planet.System;
                         ship.System.AddMapObject(ship);
                         player.MapObjects.Add(ship);
+                        for(int i = 0;i<5;i++){
+                            ship.Units.Add(new Unit());
+                            ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
+                        }
                         if(_Player != player){
                             //ship.Visible = false;
                         }else{
@@ -241,8 +261,129 @@ public WorldCursorControl WCC
         }
     }
 
+    public Ship CreateShip(Unit unit){
+        var ship = (Ship)_ShipScene.Instance();
+        ship.Units.Add(unit);
+        return ship;
+    }
+
+    public Ship CreateShip(Planet planet, Unit unit){
+        var ship = (Ship)_ShipScene.Instance();
+        var transform = ship.Transform;
+        transform.origin = planet.Transform.origin;
+        transform.origin += new Vector3(3,0,3);
+        ship.System = planet.System;
+        ship.Transform = transform;
+        ship.ShipOwner = planet.PlanetOwner;
+        ship.IsLocal = planet.Vision;
+        ship.ID_Owner = ship.ShipOwner.PlayerID;
+        ship.Name = planet.Name +" "+Rand.Next(0,1000);
+        ship.Units.Add(unit);
+        planet.System.AddMapObject(ship);
+        //planet.AddToOrbit(ship);
+        return ship;
+    }
+
     void InitStartResources(){
-        
+        foreach(StarSystem system in _map.galaxy.StarSystems){
+            foreach(Node node in system.StarSysObjects.GetChildren()){
+                if(node is Planet planet){
+                    if(planet.PlanetOwner != null){
+                        var resource = new Resource("resource 0");
+                        if(!(planet.PlayerResources.ContainsKey(resource.Name)))
+                            planet.PlayerResources.Add(resource.Name, resource);
+                        do{
+                            resource = new Resource("resource "+ Rand.Next(1,5));
+                        }while(planet.PlayerResources.ContainsKey(resource.Name));
+                        planet.PlayerResources.Add(resource.Name, resource);
+                    }else{
+                        int amount = Rand.Next(1,5);
+                        while(amount>0){
+                            Resource resource = null;
+                            do{
+                                resource = new Resource("resource "+ Rand.Next(0,5));
+                            }while(planet.PlayerResources.ContainsKey(resource.Name));
+                            planet.PlayerResources.Add(resource.Name, resource);
+                            amount--;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void InitResistance(){
+        foreach(StarSystem system in _map.galaxy.StarSystems){
+            foreach(Node node in system.StarSysObjects.GetChildren()){
+                if(node is Planet planet){
+                    if(planet.PlanetOwner == null){
+                        int amount = Rand.Next(10, 50);
+                        var unit = new Unit();
+                        var ship = CreateShip(unit);
+                        for(int i = 0; i < amount; i++){
+                            ship.Units.Add(new Unit());
+                        }
+                        planet.AddToOrbit(ship);
+                        //var transform = ship.Transform;
+                    }
+                }
+            }
+        }
+    }
+
+    void InitWorldBuildings(){
+        for(int i = 1; i<6; i++){
+            var building = new Building();
+            building.Name = "Building "+i;
+            
+            Resource res = new Resource();
+            res.Name = "resource "+i;
+            building.BuildTime = 5+i;
+            
+            for(int j = 0; j<i;j++){
+                res = new Resource();
+                res.Name = "resource "+(j);
+                res.Quantity = i * 100;
+                building.BuildCost.Add(res);
+            }
+
+            res = new Resource();
+            res.Quantity = (int)(25f/i);
+            res.Name = "resource "+i;
+            building.Products.Add(res);
+
+            res = new Resource();
+            res.Name = "resource "+(i-1);
+            res.Quantity = (int)(10f/i);
+            building.ProductCost.Add(res);
+
+            building.ResourceLimit = 200;
+
+            building.BuildTime = (i+1) * 5;
+            WorldBuildings.Add(building);
+        }
+
+        for(int i = 0; i<5; i++){
+            var building = new Building();
+            building.Name = "Storage "+i;
+            
+            Resource res = new Resource();
+            res.Name = "resource "+i;
+            
+            res = new Resource();
+            res.Name = "resource 0";
+            res.Quantity = 100+i * 100;
+            building.BuildCost.Add(res);
+
+            res = new Resource();
+            res.Name = "resource "+i;
+            building.Products.Add(res);
+
+            building.ResourceLimit = 1000;
+
+            building.BuildTime = (i+5) * 5;
+            WorldBuildings.Add(building);
+        }
     }
 
     void InitWorld(){
@@ -253,6 +394,8 @@ public WorldCursorControl WCC
         InitStartPlanets();
         InitStartFleets();
         InitStartResources();
+        InitResistance();
+        InitWorldBuildings();
     }
 
     public override void _Ready()
@@ -262,17 +405,11 @@ public WorldCursorControl WCC
         if(_Player != null){
             WCC.LocalPlayerID = _Player.PlayerID;
         }
+        WCC.Connect("Deselect", this, nameof(_on_Deselect));
         ConnectSignals();
         InitWorld();
+        _UI.PInterface.LocalPlayerID = _Player.PlayerID;
 
-        for(int i =0; i<5; i++){
-            var building = new Building();
-            building.Name = "Building "+i;
-            Resource res = new Resource();
-            res.Name = "resource "+i;
-            building.BuildTime = 5+i;
-            WorldBuildings.Add(building);
-        }
     }
     public override void _Process(float delta)
     {

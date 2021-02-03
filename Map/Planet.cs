@@ -19,10 +19,15 @@ public class Planet : StaticBody
 
     public bool Vision { get; set; } = false;
 
+    public bool LoacalInOrbit { get; set; } = false;
+
     PackedScene TileScene = null;
 
     [Signal]
     public delegate void SelectTarget(RigidBody target);
+
+    [Signal]
+    public delegate void CreateShip(Planet planet, Unit unit);
    
     public Player PlanetOwner { get; set; } = null;
 
@@ -75,6 +80,14 @@ public class Planet : StaticBody
         get { return _resources; }
     }
 
+    private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
+    public Dictionary<string, int> ResourceLimits
+    {
+        get { return _resourceLimits; }
+    }
+
+    public bool ResourceLimitChanged { get; set; } = false;
+
     public bool ResourcesChanged { get; set; } = false;
 
     private Dictionary<string, Resource> _naturalResources = new Dictionary<string, Resource>();
@@ -88,6 +101,8 @@ public class Planet : StaticBody
     {
         get { return _buildings; }
     }
+
+    public bool BuildingsChanged { get; set; } = false;
 
     [Signal]
     public delegate void OpenPlanetInterface(Planet planet);
@@ -118,7 +133,7 @@ public class Planet : StaticBody
 
     void GenerateMesh(){
         ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceMaterial(0);
-        //ShaderMaterial material = new ShaderMaterial();
+        material.ResourceLocalToScene = true;
         NoiseTexture noise = new NoiseTexture();
         noise = (NoiseTexture)material.GetShaderParam("noise");//new OpenSimplexNoise();
         var tempGradient = (GradientTexture)material.GetShaderParam("gradient");
@@ -127,36 +142,26 @@ public class Planet : StaticBody
         }else{
             gradient = new Gradient();
             for(float i = 1; i<4;i++){
-                float r = (float)Rand.NextDouble();//Rand.Next(101)/100;
-                float g = (float)Rand.NextDouble();//Rand.Next(101)/100;
-                float b = (float)Rand.NextDouble();//Rand.Next(101)/100;
-                //GD.Print(r +" " + g + " " + b);
-                gradient.AddPoint(i*0.3f, new Color(
-                    r,
-                    Rand.Next(101),
-                    b
-                ));
+                gradient.AddPoint(i*0.3f, new Color( (float)Rand.NextDouble(), (float)Rand.NextDouble(), (float)Rand.NextDouble()));
             }
+            gradient.RemovePoint(0);
             tempGradient.Gradient = gradient;
         }
         noise.Noise.Seed = Rand.Next(-1000,1000);
-        //GradientTexture texture = new GradientTexture();
-        //texture.Gradient = gradient;
         material.SetShaderParam("noise", noise);
         material.SetShaderParam("gradient", tempGradient);
-        //Mesh.MaterialOverride = material;
-        //Mesh.SetSurfaceMaterial(0, material);
+        Mesh.SetSurfaceMaterial(0, material);
     }
 
     void _on_Planet_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton eventMouseButton){
-        switch((ButtonList)eventMouseButton.ButtonIndex){
-          case ButtonList.Left:
-            EmitSignal(nameof(OpenPlanetInterface), this);
-            break;
-          case ButtonList.Right:
-            EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
-            break;
+            switch((ButtonList)eventMouseButton.ButtonIndex){
+            case ButtonList.Left:
+                EmitSignal(nameof(OpenPlanetInterface), this);
+                break;
+            case ButtonList.Right:
+                EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+                break;
         }
       } 
     }
@@ -164,8 +169,10 @@ public class Planet : StaticBody
     void _on_Timer_timeout(){
         if(Construction != null){
             Construction.CurrentTime++;
-            if(Construction.CurrentTime > Construction.BuildTime){
+            BuildingsChanged = true;
+            if(Construction.CurrentTime >= Construction.BuildTime){
                 _buildings.Add(Construction);
+                UpdateResourceLimit(Construction);
                 Construction = null;
             }else{
                 _timer.Start(1);
@@ -180,8 +187,115 @@ public class Planet : StaticBody
     }
 
     public void ConstructBuilding(Building building){
-        Construction = building;
-        _timer.Start(1);
+        if(Construction == null){
+            if(PlanetOwner.PayCost(building.BuildCost)){
+                Construction = building;
+                _timer.Start(1);
+            }else{
+                return;
+            }
+        }else{
+            _timer.Start(1);
+        }
+    }
+
+    void UpdateResourceLimit(){  
+        foreach(Building building in Buildings){
+            if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
+                foreach(Resource resource in building.Products){
+                    if(ResourceLimits.ContainsKey(resource.Name)){
+                        ResourceLimits[resource.Name] += building.ResourceLimit;
+                        ResourceLimitChanged = true;   
+                    }else{
+                        ResourceLimits.Add(resource.Name, building.ResourceLimit);
+                        ResourceLimitChanged = true;   
+                    }
+                }
+        }
+    }
+
+    void UpdateResourceLimit(Building building){
+
+        if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
+            foreach(Resource resource in building.Products){
+                if(ResourceLimits.ContainsKey(resource.Name)){
+                    ResourceLimits[resource.Name] += building.ResourceLimit;
+                    ResourceLimitChanged = true;   
+                }else{
+                    ResourceLimits.Add(resource.Name, building.ResourceLimit);
+                    ResourceLimitChanged = true;   
+                }
+            }
+    }
+
+    public void ConstructUnit(Unit unit){
+        if(PlanetOwner.PayCost(unit.BuildCost)){
+            var ship = GetLocalShip();
+            if(ship != null){
+                ship.Units.Add(unit);
+            }else{
+                EmitSignal(nameof(CreateShip), this, unit);
+            }
+        }else{
+            return;
+        }
+    }
+
+    bool PayCost(List<Resource> BuildCost){
+        foreach(Resource resource in BuildCost){
+            if(PlayerResources.ContainsKey(resource.Name)){
+                if(PlayerResources[resource.Name].Value < resource.Quantity){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }
+        foreach(Resource resource in BuildCost){
+            PlayerResources[resource.Name].Value -= resource.Quantity;
+        }
+        return true;
+    }
+
+    public void CheckOrbit(Node node){
+        // to do change it to multiple enemies
+        if(node is Ship ship){
+            foreach(Node orbitNode in Orbit.GetChildren()){
+                if(ship != orbitNode && orbitNode is Ship orbitShip){
+                    if(ship.ShipOwner != orbitShip.ShipOwner){
+                        ship.EmitSignal("EnterCombat", ship, orbitShip, Orbit);
+                        if(ship.IsLocal)
+                            Vision = ship.IsLocal;
+                    }else{
+                        //ChangePlanetOwner(ship.ShipOwner);
+                    }
+                }else{
+                    //ChangePlanetOwner(ship.ShipOwner);
+                }
+            }
+        }
+    }
+
+    public void AddToOrbit(Node ship){
+        if(ship.GetParent() != null){
+            ship.GetParent().RemoveChild(ship);
+        }
+        Orbit.AddNode(ship);
+        Orbit.OrbitChanged = true;
+    }
+
+    public void RemoveFromOrbit(Ship ship){
+        if(ship != null){
+            if(ship._Planet != null)
+                ship._Planet.Orbit.RemoveChild(ship);
+            if(ship.System != null)
+                ship.System.AddMapObject(ship);
+            Orbit.OrbitChanged = true;
+        }
+    }
+
+    public Ship GetLocalShip(){
+        return Orbit.GetLocal();
     }
 
     public void Siege(Node node){
@@ -192,11 +306,25 @@ public class Planet : StaticBody
 
     public void _on_Planet_TakeOver(Node node){
         if(node is Ship ship){
-            PlanetOwner = ship.ShipOwner;
+            ChangePlanetOwner(ship.ShipOwner);
         }
         if(node is Player player){
-            PlanetOwner = player;
+            ChangePlanetOwner(player);
         }
+    }
+
+    public void ChangePlanetOwner(Player player){
+            if(player != PlanetOwner){
+                if(PlanetOwner != null){
+                    PlanetOwner.MapObjects.Remove(this);
+                    PlanetOwner.MapObjectsChanged = true;
+                }
+                PlanetOwner = player;
+                if(player != null){
+                    player.MapObjects.Add(this);
+                    player.MapObjectsChanged = true;
+                }
+            }
     }
 
     public override void _Ready()
@@ -206,6 +334,8 @@ public class Planet : StaticBody
         GenerateMesh();
         World w = GetNode<World>("/root/Game/World");
         w.ConnectTo_OpenPlanetInterface(this);
+        Connect(nameof(CreateShip), w, "_on_CreateShip");
+        
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
@@ -215,16 +345,16 @@ public class Planet : StaticBody
             building.Name = "Building "+i;
             var resource = new Resource();
             resource.Name = "resource "+i;
-            //resource.Quantity = i;
+            resource.Quantity = 20;
             building.Products.Add(resource);
+            building.ResourceLimit = 500;
             Buildings.Add(building);
             _resources.Add(resource.Name, resource);
         }
+        UpdateResourceLimit();
     }
 
-    public override void _Process(float delta){
-        _time += delta;
-        if(_time >= TimeStep){
+    void UpdatePlanetResources(){
             foreach(Building building in _buildings){
                 // foreach(Resource resource in building.ProductCost){  TO DO: product cost, linq?
                 //     var Quantity = Resources[resource.Name].Quantity; 
@@ -233,18 +363,43 @@ public class Planet : StaticBody
                 //     }
                 // }
                 foreach(Resource product in building.Products){
-                    if(PlayerResources.ContainsKey(product.Name)){
-                        //int temp = product.Quantity;
-                        //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                        PlayerResources[product.Name].Value += product.Quantity;
-
+                    if(PlayerResources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
+                        if(PayCost(building.ProductCost)){
+                            if(PlayerResources.ContainsKey(product.Name)){
+                                //int temp = product.Quantity;
+                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
+                                PlayerResources[product.Name].Value += product.Quantity;
+                            }else{
+                                PlayerResources.Add(product.Name, product);
+                            }
+                            ResourcesChanged = true;
+                        }
                     }else{
-                        //GD.Print(resource.Name);
+                        if(PayCost(building.ProductCost)){
+                            if(PlayerResources.ContainsKey(product.Name)){
+                                //int temp = product.Quantity;
+                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
+                                PlayerResources[product.Name].Value = ResourceLimits[product.Name];
+                            }else{
+                                PlayerResources.Add(product.Name, product);
+                            }
+                            ResourcesChanged = true;
+                        }
                     }
                 }
             }
-            ResourcesChanged = true;
+    }
+
+    public override void _Process(float delta){
+        _time += delta;
+        if(_time >= TimeStep){
+            //UpdatePlanetResources();
             _time = 0;
+        }
+        if(Orbit.OrbitChanged){
+            if(_orbit.HasLocal()){
+                Vision = true;
+            }
         }
     }
 }

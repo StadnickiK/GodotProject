@@ -12,17 +12,14 @@ public class Combat : Node
     PackedScene _battleScene = (PackedScene)ResourceLoader.Load("res://Map/SpaceBattle.tscn");
 
     public SpaceBattle CreateBattle(PhysicsBody ship, PhysicsBody enemy, Node parent){
+        
         var battle = (SpaceBattle)_battleScene.Instance();
         var trans = battle.Transform;
         trans.origin =  ship.Transform.origin;
         battle.Transform = trans;
         battle.AddCombatants(ship, enemy);
-        //HideNodes(ship, enemy);
-        if(parent.Name =="StarSysObjects"){
-            parent.AddChild(battle);
-        }else{
-            parent.AddChild(battle);
-        }
+        HideNodes(ship, enemy);
+        parent.AddChild(battle);
         return battle;
     }
 

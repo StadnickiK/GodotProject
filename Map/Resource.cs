@@ -10,7 +10,7 @@ public class Resource : Node
 
     public int? QuantityCap { get; set; } = null;
 
-    public int Value { get; set; } = 3;
+    public int Value { get; set; } = 0;
 
     public Random Rand { get; set; } = new Random();
 
@@ -21,6 +21,23 @@ public class Resource : Node
     public Type ResourceType
     {
         get { return _type; }
+    }
+
+    public Resource(){}
+
+    public Resource(string name){
+        Name = name;
+    }
+
+    public Resource(string name, int quantity){
+        Name = name;
+        Quantity = quantity;
+    }
+
+    public Resource(string name, int quantity, int value){
+        Name = name;
+        Quantity = quantity;
+        Value = value;
     }
 
     public enum Type

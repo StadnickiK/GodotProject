@@ -13,3 +13,4 @@ __meta__ = {
 
 [node name="Header" parent="." instance=ExtResource( 2 )]
 margin_right = 321.0
+custom_constants/separation = 209

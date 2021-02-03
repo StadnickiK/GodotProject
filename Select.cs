@@ -19,6 +19,14 @@ public class Select : Node
         }
     }
 
+    public void MoveToTarget(Spatial target){
+        if(selectManager.SelectedUnits.Count != 0){
+            foreach(Ship s in selectManager.SelectedUnits){
+                s.MoveToTarget(target);
+            }
+        }
+    }
+
     void AddSelectEffect(PhysicsBody unit){
             var selectEffectNode = (MeshInstance)SelectEffect.Instance();
             selectEffectNode.Scale = (unit.Scale*2);
@@ -27,7 +35,11 @@ public class Select : Node
 
     void RemoveSelectEffect(){
         foreach(PhysicsBody c in selectManager.SelectedUnits){
-            c.RemoveChild(c.GetNode("SelectEffect"));
+            if(c != null){
+                c.RemoveChild(c.GetNode("SelectEffect"));
+            }else{
+                selectManager.SelectedUnits.Remove(c);
+            }
         }
     }
 

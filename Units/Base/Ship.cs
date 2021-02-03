@@ -71,6 +71,13 @@ public class Ship : RigidBody
         Sleeping = true;
     }
 
+    protected void ResetVelocity(PhysicsDirectBodyState state){
+        _velocityController.ResetSpeed();
+        state.LinearVelocity = Vector3.Zero;
+        state.AngularVelocity = Vector3.Zero;
+        state.Sleeping = true;
+    }
+
     protected Vector3 PosToTargetWithEffectiveRange(Vector3 targetPos){
         Vector3 effectivePos = ((targetPos) - ((targetPos - GlobalTransform.origin).Normalized()*effectiveRange));
         return effectivePos;
@@ -78,12 +85,12 @@ public class Ship : RigidBody
 
     protected Vector3 DirToCurrentTarget(){
         if(targetManager.HasTarget){
-            return (targetManager.currentTarget.GlobalTransform.origin-GlobalTransform.origin).Normalized();
+            return (targetManager.currentTarget.Transform.origin-Transform.origin).Normalized();
         }
         return Vector3.Zero;
     }
 
-    public void MoveToTarget(PhysicsBody target){
+    public void MoveToTarget(Spatial target){
         Sleeping = false;
         targetManager.SetTarget(target);
     }
@@ -110,9 +117,9 @@ public class Ship : RigidBody
         targetManager.NextTarget();
     }
 
-    void UpdateShipVelocities(PhysicsDirectBodyState state){
-        var targetPos = targetManager.currentTarget.Transform.origin;
-        float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
+    void UpdateShipVelocities(PhysicsDirectBodyState state , Vector3 targetPos){
+        if(targetManager.HasTarget){
+            float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
             if(angle > 0.01f || angle < -0.01f ){
                 state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
                 UpdateLinearVelocity(state);
@@ -125,9 +132,10 @@ public class Ship : RigidBody
                 Vector3 MultyScale = Scale;
                 if(posDiff.x < MultyScale.x && posDiff.z < MultyScale.z &&
                 posDiff.x > -MultyScale.x && posDiff.z > -MultyScale.z){
-                    ResetVelocity();
+                    NextTarget();
                 }  
             }
+        }
     }
 
     public void UpdateVisionRange(){
@@ -136,8 +144,12 @@ public class Ship : RigidBody
 
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget){
-            var targetPos = targetManager.currentTarget.Transform.origin;
-            UpdateShipVelocities(state);
+            Vector3 targetPos = Vector3.Zero;
+            if(targetManager.currentTarget is PhysicsBody){
+                targetPos = targetManager.currentTarget.GlobalTransform.origin;
+            }else{
+                targetPos = targetManager.currentTarget.Transform.origin;
+            }
             if(System == null){
                 if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
                     System = (StarSystem)targetManager.currentTarget;
@@ -157,6 +169,7 @@ public class Ship : RigidBody
                 transform.origin = planet.GlobalTransform.origin;
                 state.Transform = transform;
                 targetManager.ClearTargets();
+                ResetVelocity(state);
                 
             }
             if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
@@ -165,7 +178,12 @@ public class Ship : RigidBody
                 EmitSignal(nameof(LeavePlanet), this);
                 state.Transform = transform;
             }
-
+            if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){
+                EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
+                targetManager.ClearTargets();
+                ResetVelocity(state);
+            }
+            UpdateShipVelocities(state, targetPos);
         }else{
             state.AngularVelocity = Vector3.Zero;
             state.LinearVelocity = Vector3.Zero;
@@ -188,6 +206,7 @@ public class Ship : RigidBody
     }
 
     void _on_Area_body_entered(Node body){
+        // to do test in galaxy
         if(body is Ship ship){
             if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.System == System && !ship.IsLocal){
                 ship.Visible = true;
@@ -202,7 +221,7 @@ public class Ship : RigidBody
 
     void _on_Area_body_exited(Node body){
         if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.System == System && ship.IsLocal){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.System == System && !ship.IsLocal){
                 ship.Visible = false;
             }
         }
@@ -270,13 +289,9 @@ public class Ship : RigidBody
         _ConnectSignal();
         GetNodes();
         UpdateVisionRange();
-        Stats.Add(new BaseStat("Attack", 5));
-        Stats.Add(new BaseStat("Defence", 3));
-        Stats.Add(new BaseStat("Hit points", 100));
-        for(int i = 0;i<5;i++){
-            Units.Add(new Unit());
-            Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
-        }
+        //Stats.Add(new BaseStat("Attack", 5));
+        //Stats.Add(new BaseStat("Defence", 3));
+        //Stats.Add(new BaseStat("Hit points", 100));
     }
 
     public void UpdatePower(){

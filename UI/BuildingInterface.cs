@@ -9,10 +9,14 @@ public class BuildingInterface : Panel
 
     Building _building = null;
 
+    Unit _unit = null;
+
+    Ship _ship = null; 
+
     ListPanel _listPanel = null;
 
     [Signal]
-    public delegate void StartConstruction(Building building);
+    public delegate void StartConstruction(Node building);
 
     void GetNodes(){
         _header = GetNode<Header>("Header");
@@ -27,6 +31,8 @@ public class BuildingInterface : Panel
     }
 
     public void UpdateInterface(Building building, Planet planet){
+        _building = null;
+        _unit = null;
         _listPanel.ClearItems();
         if(building != null){
             _building = building;
@@ -58,8 +64,33 @@ public class BuildingInterface : Panel
                 label.Text = resource.Name + " " + resource.Quantity;
                 _listPanel.AddListItem(label);
             }
-        }else{
-            //GD.Print("null");
+            label = new Label();
+            label.Text = "\nStorage capacity: "+building.ResourceLimit+"\n";
+            _listPanel.AddListItem(label);
+        }
+    }
+
+    public void UpdateInterface(){
+        _listPanel.ClearItems();
+        for(int i = 0; i < 5; i++){
+            Unit unit = new Unit(5+i*8,2+i*2);
+            unit.Name = "Unit "+i;
+            Resource resource = new Resource();
+            resource.Name = "resource "+i;
+            resource.Quantity = 20 + i * 1;
+            unit.BuildCost.Add(resource);
+            var label = new Label(); 
+            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue 
+            +"\n Cost: "+ resource.Name +": "+resource.Quantity;
+            _listPanel.AddListItem(label, this, nameof(_on_gui_input), unit);
+        }
+    }
+
+    void _on_gui_input(InputEvent input, Node node){
+        if(input is InputEventMouseButton button && node is Unit unit){
+            if(button.ButtonIndex == (int)ButtonList.Left){
+                _unit = unit;
+            }
         }
     }
 
@@ -75,6 +106,9 @@ public class BuildingInterface : Panel
     void _on_Build_button_up(){
         if(_building != null){
             EmitSignal(nameof(StartConstruction), _building);
+        }
+        if(_unit != null){
+            EmitSignal(nameof(StartConstruction), _unit);
         }
     }
 

@@ -5,6 +5,8 @@ public class Orbit : Spatial
 {
 
     public delegate void StartSiege(Node node);
+
+    public bool OrbitChanged { get; set; } = false;
     
     public override void _Ready()
     {
@@ -50,6 +52,29 @@ public class Orbit : Spatial
     public bool CanSiege(Node node){
         if(node is Ship ship){
 
+        }
+        return false;
+    }
+
+    public Ship GetLocal(){
+        foreach(Node node in GetChildren()){
+            if(node is Ship ship){
+                if(ship.IsLocal)
+                    return ship;
+            }
+        }
+        return null;
+    }
+
+    public bool HasLocal(){
+        foreach(Node node in GetChildren()){
+            if(node is Ship ship){
+                if(ship.IsLocal)
+                    return true;
+            }
+            if(node is SpaceBattle battle)
+                if(battle.IsLocal)
+                    return true;
         }
         return false;
     }

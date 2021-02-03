@@ -26,6 +26,7 @@ public class UnitInfoPanel : Panel
 
 void GetNodes(){
         _header = GetNode<Header>("VBoxContainer/Header");
+        _header.HButton.Visible = false;
         _overviewPanel = GetNode<OverviewPanel>("VBoxContainer/OverviewPanel");
     }
 
@@ -37,16 +38,43 @@ void GetNodes(){
     }
 
     public void UpdatePanel(PhysicsBody body){
-        Selected = body;
-        _header.SetTitle(body.Name);
-        ClearOverviewPanel();
-        if(body is Ship ship){
-            CreateStancePanel(ship);
-            foreach(BaseStat stat in ship.Stats){
-                var label = new Label();
+        if(body != null){
+            Selected = body;
+            _header.SetTitle(body.Name);
+            ClearOverviewPanel();
+            if(body is Ship ship){
+                CreateStancePanel(ship);
+                UpdateOverview(ship);
+                UpdateDetails(ship);
+            }
+        }else{
+            ClearOverviewPanel();
+            Selected = null;
+            Visible = false;
+        }
+    }
+
+    void UpdateDetails(Ship ship){
+        if(ship != null){
+            var label = new Label(); 
+            label.Text = "Name / HP / Attack / Defence \n";
+            _overviewPanel.AddNodeToPanel("Details", label);
+            foreach(Unit unit in ship.Units){
+                label = new Label(); 
+                label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+                _overviewPanel.AddNodeToPanel("Details", label);
+            }
+        }
+    }
+
+    void UpdateOverview(Ship ship){
+        var label = new Label();
+        label.Text = "Controller: Player "+ship.ShipOwner.PlayerID;
+        _overviewPanel.AddNodeToPanel("Overview", label); 
+        foreach(BaseStat stat in ship.Stats){
+                label = new Label();
                 label.Text = stat.StatName + " " + stat.BaseValue;
                 _overviewPanel.AddNodeToPanel("Overview", label); 
-            }
         }
     }
 

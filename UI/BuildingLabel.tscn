@@ -6,10 +6,7 @@
 margin_right = 161.0
 margin_bottom = 14.0
 rect_min_size = Vector2( 161, 14 )
-hint_tooltip = "a
-a
-a
-a
+hint_tooltip = "
 "
 mouse_filter = 1
 size_flags_vertical = 1

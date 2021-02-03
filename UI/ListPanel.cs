@@ -34,6 +34,18 @@ public class ListPanel : VBoxContainer
         }
     }
 
+    public void AddListItem(Node item, Node node, string methodName, Unit unit){
+        if(!_items.GetChildren().Contains(item)){
+            _items.AddChild(item);
+            if(item is Control control){
+                Godot.Collections.Array array = new Godot.Collections.Array();
+                array.Add(unit);
+                control.Connect("gui_input", node, methodName, array);
+                control.MouseFilter = MouseFilterEnum.Stop;
+            }
+        }
+    }
+
     public void ConnectToOnGuiInput(Node node, string methodName){
         foreach(Node child in _items.GetChildren()){
             if(child is Label control){

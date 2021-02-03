@@ -15,6 +15,8 @@ public class SpaceBattle : StaticBody
 
     public Ship Defender { get; set; } = null;
 
+    public bool IsLocal { get; set; } = false;
+
     bool ZeroOne = false;
 
     bool _endCombat = false;
@@ -45,6 +47,8 @@ public class SpaceBattle : StaticBody
     public void AddCombatants(params PhysicsBody[] body){
         foreach(PhysicsBody b in body){
             if(b is Ship ship){
+                if(ship.IsLocal)
+                    IsLocal = true;
                 if(!ZeroOne){
                     Attacker = ship;
                     ZeroOne = true;
@@ -92,6 +96,10 @@ public class SpaceBattle : StaticBody
             b.GetParent().RemoveChild(b);
             Participants.AddChild(b);
         }
+        Attacker.GetParent().RemoveChild(Attacker);
+        Participants.AddChild(Attacker);
+        Defender.GetParent().RemoveChild(Defender);
+        Participants.AddChild(Defender);
         Comabatants.Add(Attacker);
         Comabatants.Add(Defender);
     }
@@ -135,9 +143,15 @@ public class SpaceBattle : StaticBody
                     }
                     ship.QueueFree();
                 }else{
-                    //Participants.RemoveChild(ship);
-                    //GetParent().AddChild(ship);
-                    ship.Visible = true;
+                    Participants.RemoveChild(ship);
+                    GetParent().AddChild(ship);
+                    if(GetParent() is Orbit orbit){
+                        var planet = (Planet)orbit.GetParent();
+                        planet.ChangePlanetOwner(ship.ShipOwner);
+                    }
+                    if(ship.IsLocal){
+                        ship.Visible = true;
+                    }
                 }
             }
         }

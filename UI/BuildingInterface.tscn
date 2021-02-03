@@ -5,7 +5,7 @@
 [ext_resource path="res://UI/BuildingInterface.cs" type="Script" id=3]
 
 [node name="BuildingInterface" type="Panel"]
-margin_right = 141.0
+margin_right = 161.0
 margin_bottom = 272.0
 script = ExtResource( 3 )
 __meta__ = {
@@ -13,14 +13,14 @@ __meta__ = {
 }
 
 [node name="Header" parent="." instance=ExtResource( 2 )]
-margin_right = 140.0
+margin_right = 161.0
 size_flags_vertical = 3
-custom_constants/separation = 28
+custom_constants/separation = 53
 
 [node name="ListPanel" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.426
 margin_top = 44.0
-margin_right = 80.934
+margin_right = 91.414
 margin_bottom = 164.576
 Title = "Details"
 

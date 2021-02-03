@@ -48,6 +48,14 @@ using System.Collections.Generic;
             }
         }
 
+        public bool HasNextTarget(){
+            if(_targets.Count > 1){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
         public void ClearTargets(){
             currentTarget = default(T);
             _targets.Clear();

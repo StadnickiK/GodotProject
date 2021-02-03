@@ -57,7 +57,7 @@ public class Galaxy : Spatial
             starSystem.Transform = temp;
             AddChild(starSystem);
             _starSystems.Add(starSystem);
-            dist += Rand.Next(3, 8);
+            dist += Rand.Next(10, 15);
             angle += Rand.Next(0, 60);
         }
         _radius = (int)(1.2f*dist);

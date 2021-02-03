@@ -13,6 +13,8 @@ public class PlanetInterface : Panel
 
     Planet _planet = null;
 
+    List<Building> _allBuildings = null;
+
     OverviewPanel _overviewPanel = null;
 
     BuildingInterface _buildingInterface = null;
@@ -25,6 +27,8 @@ public class PlanetInterface : Panel
 
     [Export]
     public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
+
+    public int LocalPlayerID { get; set; }
 
     PackedScene ItemScene = null;
 
@@ -72,31 +76,13 @@ public class PlanetInterface : Panel
     public void UpdatePlanetInterface(Planet planet, List<Building> allBuildings){
         if(planet != null){
             _planet = planet;
+            _allBuildings = allBuildings;
             SetTitle(planet.Name);
             ClearPlanetInterface();
             if(planet.Vision){
                 UpdateOverview(planet);
-                foreach(PhysicsBody body in planet.Orbit.GetChildren()){
-                    var label = new Label();
-                    label.Name = label.Text = body.Name;
-                    label.SetMeta(label.Name, body);
-                    var node = (Node)label.GetMeta(label.Name);
-                    //GD.Print("m "+node.Name);
-                    _overviewPanel.AddNodeToPanel("Orbit", label);
-                }
-                foreach(Building building in planet.Buildings){
-                    var label = (BuildingLabel)ItemScene.Instance();
-                    label.SetMeta(building.Name, building);
-                    label.Name = building.Name;
-                    label.Text = building.Name;
-                    _overviewPanel.AddNodeToPanel("Buildings", label);
-                    if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-                        label.Progress.Value = building.CurrentTime;
-                        label.Progress.MaxValue = building.BuildTime;
-                        //GD.Print(label.Progress.MaxValue);
-                    }
-                }
-                UpdateAllBuildings(allBuildings);
+                UpdateOrbit(planet);
+                UpdateBuildings(planet, allBuildings);
                 _overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
                 _overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
             }
@@ -112,29 +98,102 @@ public class PlanetInterface : Panel
             label.Text = "Planet controller: ";
         }
         _overviewPanel.AddNodeToPanel("Overview", label);
+        label = new Label();
+        label.Text = "\nPlanet Resources: \n";
+        _overviewPanel.AddNodeToPanel("Overview", label);
+        foreach(Resource resource in planet.PlayerResources.Values){
+            label = new Label();
+            label.Text = resource.Name;
+            _overviewPanel.AddNodeToPanel("Overview", label);
+        }
     }
 
-    void UpdateAllBuildings(List<Building> buildings){
+    void _on_button_up(){
+        _buildingInterface.Visible = true;
+        _buildingInterface.UpdateInterface();
+    }
+
+    void UpdateOrbit(Planet planet){
+        if(planet.PlanetOwner != null){
+            if(planet.PlanetOwner.PlayerID == LocalPlayerID){
+                var button = new Button();
+                button.Text = "Orbit build menu";
+                button.Connect("button_up",this,nameof(_on_button_up));
+                _overviewPanel.AddNodeToPanel("Orbit", button);
+            }
+        }
+        foreach(PhysicsBody body in planet.Orbit.GetChildren()){
+            var label = new Label();
+            label.Name = label.Text = body.Name;
+            label.SetMeta(label.Name, body);
+            var node = (Node)label.GetMeta(label.Name);
+            _overviewPanel.AddNodeToPanel("Orbit", label);
+        }
+    }
+
+    void UpdateBuildings(Planet planet, List<Building> allBuildings){
+        _overviewPanel.ClearPanel("Buildings");
+        UpdatePlanetBuildings(planet.Buildings);
+        if(planet.PlanetOwner != null){
+            if(planet.PlanetOwner.PlayerID == LocalPlayerID){
+                var tempLabel = new Label();
+                tempLabel.Text = "\n Construction list: \n";
+                _overviewPanel.AddNodeToPanel("Buildings", tempLabel);
+                UpdateAllBuildings(allBuildings, planet);
+            }
+        }
+    }
+
+    void UpdatePlanetBuildings(List<Building> buildings){
         foreach(Building building in buildings){
-            if(!_planet.Buildings.Contains(building)){
-                var label = (BuildingLabel)ItemScene.Instance();
-                label.SetMeta(building.Name, building);
-                label.Name = building.Name;
-                label.Text = building.Name;
-                _overviewPanel.AddNodeToPanel("Buildings", label);
-                if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-                    label.Progress.Value = building.CurrentTime;
-                    label.Progress.MaxValue = building.BuildTime;
+            var label = (BuildingLabel)ItemScene.Instance();
+            label.SetMeta(building.Name, building);
+            label.Name = building.Name;
+            label.Text = building.Name;
+            _overviewPanel.AddNodeToPanel("Buildings", label);
+            label.Progress.PercentVisible = false;
+            if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+                label.Progress.Value = building.CurrentTime;
+                label.Progress.MaxValue = building.BuildTime;
+            }
+        }
+    }
+
+    void UpdateAllBuildings(List<Building> buildings, Planet planet){
+        foreach(Building building in buildings){
+            if(CheckBuildingResources(planet, building)){
+                if(!_planet.Buildings.Contains(building)){
+                    var label = (BuildingLabel)ItemScene.Instance();
+                    label.SetMeta(building.Name, building);
+                    label.Name = building.Name;
+                    label.Text = building.Name;
+                    _overviewPanel.AddNodeToPanel("Buildings", label);
+                    if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+                        label.Progress.Value = building.CurrentTime;
+                        label.Progress.MaxValue = building.BuildTime;
+                    }
                 }
             }
         }
     }
 
+    bool CheckBuildingResources(Planet planet, Building building){
+        foreach(Resource resource in building.Products){
+            if(!planet.PlayerResources.ContainsKey(resource.Name)){
+                return false;
+            }
+        }
+        foreach(Resource resource in building.ProductCost){
+            if(!planet.PlayerResources.ContainsKey(resource.Name)){
+                //return false;
+            }
+        }
+        return true;
+    }
 
     public void _on_LabelGuiInputEvent(InputEvent input, Node node){
         if(input is InputEventMouseButton button){
             if(button.ButtonIndex == (int)ButtonList.Left){
-                //GD.Print("p "+node.Name);
                 EmitSignal(nameof(SelectObjectInOrbit), _planet, node);
             }
         }
@@ -143,7 +202,6 @@ public class PlanetInterface : Panel
     public void _on_BuildingLabelGuiInputEvent(InputEvent input, Node node){
         if(input is InputEventMouseButton button){
             if(button.ButtonIndex == (int)ButtonList.Left){
-                //GD.Print("p "+node.Name);
                 if(node is BuildingLabel label){
                     var building = (Building)label.GetMeta(label.Text);
                     if(building != null && _planet != null){
@@ -161,9 +219,16 @@ public class PlanetInterface : Panel
         _buildingInterface.Visible = false;
     }
 
-    void _on_StartConstruction(Building building){
-        if(building != null && _planet != null){
-            _planet.ConstructBuilding(building);
+    void _on_StartConstruction(Node node){
+        if(node is Building building){
+            if(building != null && _planet != null){
+                _planet.ConstructBuilding(building);
+            }
+        }
+        if(node is Unit unit){
+            if(unit != null && _planet != null){
+                _planet.ConstructUnit(unit);
+            }
         }
     }
 
@@ -173,9 +238,10 @@ public class PlanetInterface : Panel
 
     public override void _Process(float delta){
         if(Visible){
-            if(_planet != null && _selectedBuilding != null){
-                if(_planet.Construction != null){
-                    _selectedBuilding.Progress.Value = _planet.Construction.CurrentTime;
+            if(_planet != null && _allBuildings != null){
+                if(_planet.BuildingsChanged){
+                    UpdateBuildings(_planet, _allBuildings);
+                    _planet.BuildingsChanged = false;
                 }
             }
         }

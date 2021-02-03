@@ -13,13 +13,37 @@ public class Unit : Node
 
     public bool HasHitpoints { get; set; } = true;  
 
+    public List<Resource> BuildCost { get; set; } = new List<Resource>();
+
     public Unit(){
         Random rand = new Random();
-        BaseStat attack = new BaseStat("Attack", rand.Next(10,30));
-        BaseStat defence = new BaseStat("Defence", rand.Next(0,10));
-        BaseStat hp = new BaseStat("HitPoints", 100);
+        BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
+        BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
+        BaseStat hp = new BaseStat("HitPoints", 200);
+        Name = "Unit ";
         Stats.Add(attack.StatName, attack);
         Stats.Add(defence.StatName, defence);
+        Stats.Add(hp.StatName, hp);
+    }
+
+    public Unit(int hitPoints){
+        Random rand = new Random();
+        BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
+        BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
+        BaseStat hp = new BaseStat("HitPoints", hitPoints);
+        Name = "Unit ";
+        Stats.Add(attack.StatName, attack);
+        Stats.Add(defence.StatName, defence);
+        Stats.Add(hp.StatName, hp);
+    }
+
+    public Unit(int attack, int defence){
+        BaseStat atck = new BaseStat("Attack", attack);
+        BaseStat dfnce = new BaseStat("Defence", defence);
+        BaseStat hp = new BaseStat("HitPoints", 200);
+        Name = "Unit ";
+        Stats.Add(atck.StatName, atck);
+        Stats.Add(dfnce.StatName, dfnce);
         Stats.Add(hp.StatName, hp);
     }
 

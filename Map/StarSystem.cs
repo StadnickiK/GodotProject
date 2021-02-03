@@ -45,7 +45,14 @@ public class StarSystem : StaticBody
 
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
-	Spatial StarSysObjects = null;
+
+	private Spatial _starSysObjects = null;
+	public Spatial StarSysObjects
+	{
+		get { return _starSysObjects; }
+	}
+	
+
 	CollisionShape Placeholder = null;
 	Button XButton = null;
 
@@ -68,7 +75,7 @@ public class StarSystem : StaticBody
 	}
 
 	void GetNodes(){
-		StarSysObjects = GetNode<Spatial>("StarSysObjects");
+		_starSysObjects = GetNode<Spatial>("StarSysObjects");
 		SystemName3D = GetNode<Text3D>("Text3D");
 		Placeholder = GetNode<CollisionShape>("Placeholder");
 		XButton = GetNode<Button>("XButton");

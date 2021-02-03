@@ -47,15 +47,42 @@ public class BattlePanel : Panel
     public void UpdatePanel(SpaceBattle battle){
         _battle = battle;
         ClearInterface();
+        UpdateOverview(battle);
+        UpdateAttacker(battle);
+        UpdateDefender(battle);
+    }
+
+    void UpdateOverview(SpaceBattle battle){
         var progressBar = new ProgressBar();
         progressBar.Value = (double)battle.Attacker.Power.CurrentValue/((double)battle.Attacker.Power.CurrentValue+(double)battle.Defender.Power.CurrentValue)*100;
-        GD.Print(battle.Attacker.Power.CurrentValue+" "+battle.Defender.Power.CurrentValue);
         progressBar.PercentVisible = true;
         _overviewPanel.AddNodeToPanel("Overview", progressBar);
         for(int i =0; i<battle.Comabatants.Count; i +=2){
             var label = new Label();
             label.Text = battle.Comabatants[i].Name + " vs " + battle.Comabatants[i+1].Name;
             _overviewPanel.AddNodeToPanel("Overview", label);
+        }
+    }
+
+    void UpdateDefender(SpaceBattle battle){
+        var label = new Label(); 
+        label.Text = "Name / HP / Attack / Defence \n";
+        _overviewPanel.AddNodeToPanel("Defender", label);
+        foreach(Unit unit in battle.Defender.Units){
+            label = new Label(); 
+            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+            _overviewPanel.AddNodeToPanel("Defender", label);
+        }
+    }
+
+    void UpdateAttacker(SpaceBattle battle){
+        var label = new Label(); 
+        label.Text = "Name / HP / Attack / Defence \n";
+        _overviewPanel.AddNodeToPanel("Attacker", label);
+        foreach(Unit unit in battle.Attacker.Units){
+            label = new Label(); 
+            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+            _overviewPanel.AddNodeToPanel("Attacker", label);
         }
     }
 

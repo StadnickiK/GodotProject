@@ -79,11 +79,11 @@ Options = [ "Overview", "Buildings", "Orbit" ]
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false
-Options = [ "Overview", "Details" ]
+Options = [ "Overview", "Attacker", "Defender" ]
 
 [node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
 visible = false
-Options = [ "Overview", "Details", "Stance" ]
+Options = [ "Overview", "Details" ]
 
 [node name="Map" type="Spatial" parent="."]
 script = ExtResource( 13 )
@@ -103,4 +103,4 @@ material/0 = ExtResource( 9 )
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
-visible = false
+[connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

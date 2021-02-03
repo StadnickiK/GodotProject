@@ -24,6 +24,9 @@ albedo_texture = SubResource( 3 )
 
 [node name="Text3D" type="Spatial"]
 script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="Viewport" type="Viewport" parent="."]
 size = Vector2( 200, 75 )
