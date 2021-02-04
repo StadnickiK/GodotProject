@@ -41,7 +41,7 @@ public class Galaxy : Spatial
 
     void Generate(){
 
-        int dist = Rand.Next(10, 20);
+        int dist = Rand.Next(5, 10);
         float angle = Rand.Next(0, 70);
         for(int i = 0;i < StarSystemNumber; i++){
             RotateY(angle);

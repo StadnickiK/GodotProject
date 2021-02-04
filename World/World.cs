@@ -64,7 +64,7 @@ public WorldCursorControl WCC
     List<int> PlayerIDs = new List<int>();
 
     [Export]
-    int PlayerNumber = 3;
+    int PlayerNumber = 1;
 
     void _on_ShowBattlePanel(SpaceBattle battle){
         _UI.BattlePan.Visible = true;
@@ -410,7 +410,8 @@ public WorldCursorControl WCC
         WCC.Connect("Deselect", this, nameof(_on_Deselect));
         ConnectSignals();
         InitWorld();
-        _UI.PInterface.LocalPlayerID = _Player.PlayerID;
+        if(_Player != null)
+            _UI.PInterface.LocalPlayerID = _Player.PlayerID;
 
     }
     public override void _Process(float delta)
