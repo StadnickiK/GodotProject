@@ -55,8 +55,12 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.461, 8.496, 10.595 )
 [node name="Turret" parent="." instance=ExtResource( 10 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.4606, 1, -1.52869 )
 can_sleep = false
+ID_Owner = 0
+dir = Vector3( 0, 0, 0 )
 
 [node name="Turret2" parent="." instance=ExtResource( 10 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.60942, 1, 5.45443 )
+ID_Owner = 0
+dir = Vector3( 0, 0, 0 )
 RotationSpeed = 10.0
 barrelScene = ExtResource( 6 )
