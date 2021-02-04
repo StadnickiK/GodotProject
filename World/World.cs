@@ -115,6 +115,8 @@ public WorldCursorControl WCC
             if(obj != null){
                 if(obj is Ship){
                     _wcc._SelectUnit(obj);
+                    _UI.UInfo.Visible = true;
+                    _UI.UInfo.UpdatePanel(obj);
                 }else{
                     if(obj is SpaceBattle battle){
                         _on_ShowBattlePanel(battle);
@@ -145,7 +147,7 @@ public WorldCursorControl WCC
     }
 
     void _on_SelectUnit(PhysicsBody body){
-        WCC._SelectUnit(body);
+        _wcc._SelectUnit(body);
         _UI.UInfo.Visible = true;
         _UI.UInfo.UpdatePanel(body);
     }

@@ -43,7 +43,7 @@ void GetNodes(){
             _header.SetTitle(body.Name);
             ClearOverviewPanel();
             if(body is Ship ship){
-                CreateStancePanel(ship);
+                //CreateStancePanel(ship);
                 UpdateOverview(ship);
                 UpdateDetails(ship);
             }
