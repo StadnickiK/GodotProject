@@ -104,8 +104,7 @@ public class Turret : Ship
     {
         _velocityController = new VelocityController();
         _velocityController.RotationSpeed = RotationSpeed;
-        targetManager = new TargetManager<RigidBody>();
-        self = (Turret)GetParent().GetChild(GetIndex());
+        targetManager = new TargetManager<Spatial>();
         _velocityController.Mass = 10;
         _ConnectSignal();
         muzzle = GetNode<Spatial>("Muzzle");

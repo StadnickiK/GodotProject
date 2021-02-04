@@ -13,7 +13,7 @@ public class ExitButton : Button
         
     }
 
-    public void _on_ExitButton_button_up(){
+    public void _on_Exit_button_up(){
         GetTree().Quit();
     }
 

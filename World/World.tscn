@@ -1,66 +1,106 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=23 format=2]
 
-[ext_resource path="res://Target.cs" type="Script" id=1]
-[ext_resource path="res://Units/Base/Ship.tscn" type="PackedScene" id=2]
-[ext_resource path="res://KinematicTarget.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Menu/Menu.tscn" type="PackedScene" id=3]
 [ext_resource path="res://World/WorldCursorControl.tscn" type="PackedScene" id=4]
-[ext_resource path="res://StaticGround.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Units/Base/Barrel.tscn" type="PackedScene" id=6]
+[ext_resource path="res://World/World.cs" type="Script" id=5]
+[ext_resource path="res://StaticGround.tscn" type="PackedScene" id=6]
 [ext_resource path="res://UI/FreeCamera.tscn" type="PackedScene" id=7]
-[ext_resource path="res://World/Background.tscn" type="PackedScene" id=9]
-[ext_resource path="res://Units/Base/Turret.tscn" type="PackedScene" id=10]
+[ext_resource path="res://UI/PlanetInterface.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Map/FOW_Shader.tres" type="Material" id=9]
+[ext_resource path="res://World/UI.cs" type="Script" id=11]
+[ext_resource path="res://World/MapObjects.cs" type="Script" id=12]
+[ext_resource path="res://World/Map.cs" type="Script" id=13]
+[ext_resource path="res://Map/Combat.cs" type="Script" id=14]
+[ext_resource path="res://UI/BattlePanel.tscn" type="PackedScene" id=15]
+[ext_resource path="res://Menu/space.hdr" type="Texture" id=16]
+[ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=18]
 
-[sub_resource type="SphereMesh" id=1]
+[sub_resource type="PanoramaSky" id=1]
+panorama = ExtResource( 16 )
 
-[sub_resource type="BoxShape" id=2]
+[sub_resource type="Environment" id=2]
+background_mode = 2
+background_sky = SubResource( 1 )
+ambient_light_color = Color( 0.8, 0.8, 0.8, 1 )
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 1
+
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://Fonts/times.ttf"
+
+[sub_resource type="DynamicFont" id=4]
+size = 20
+use_filter = true
+font_data = SubResource( 3 )
+
+[sub_resource type="Theme" id=5]
+default_font = SubResource( 4 )
+
+[sub_resource type="CubeMesh" id=6]
+size = Vector3( 300, 2, 300 )
+subdivide_width = 500
+subdivide_depth = 500
 
 [node name="World" type="Spatial"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0117841, -0.0183463, -0.00334907 )
+script = ExtResource( 5 )
 
-[node name="Projectiles" type="Node" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 2 )
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 4 )]
 
-[node name="Ship" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2772, 8.49637, -5.38783 )
-mass = 10.0
+[node name="UI" type="Spatial" parent="."]
+script = ExtResource( 11 )
 
-[node name="Target" type="RigidBody" parent="." groups=[
-"Player",
-]]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.36516, 10.5069, 11.5182 )
-script = ExtResource( 1 )
+[node name="ResourcePanel" parent="UI" instance=ExtResource( 1 )]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -512.0
+margin_right = 512.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 5 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target"]
-mesh = SubResource( 1 )
-material/0 = null
+[node name="CameraGimbal" parent="UI" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0 )
+MovementSpeed = 5.0
+Limit = 250
 
-[node name="CollisionShape" type="CollisionShape" parent="Target"]
-shape = SubResource( 2 )
+[node name="Menu" parent="UI" instance=ExtResource( 3 )]
+visible = false
 
-[node name="Ground" parent="." instance=ExtResource( 5 )]
-transform = Transform( 23.8199, 0, 0, 0, 1, 0, 0, 0, 16.1061, 0, -3.45095, 3.62053 )
+[node name="RightPanel" parent="UI" instance=ExtResource( 2 )]
 
-[node name="KTarget" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1, 15.6889, 11.1 )
+[node name="PlanetInterface" parent="UI" instance=ExtResource( 8 )]
+visible = false
+Options = [ "Overview", "Buildings", "Orbit" ]
 
-[node name="CameraGimbal" parent="." instance=ExtResource( 7 )]
-transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -26.4896, 3.61984, 2.80506 )
+[node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
+visible = false
+Options = [ "Overview", "Attacker", "Defender" ]
 
-[node name="Ship2" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.461, 8.496, 10.595 )
+[node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
+visible = false
+Options = [ "Overview", "Details" ]
 
-[node name="Background" parent="." instance=ExtResource( 9 )]
+[node name="Map" type="Spatial" parent="."]
+script = ExtResource( 13 )
 
-[node name="Turret" parent="." instance=ExtResource( 10 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.4606, 1, -1.52869 )
-can_sleep = false
-ID_Owner = 0
-dir = Vector3( 0, 0, 0 )
+[node name="MapObjects" type="Node" parent="Map"]
+script = ExtResource( 12 )
 
-[node name="Turret2" parent="." instance=ExtResource( 10 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.60942, 1, 5.45443 )
-ID_Owner = 0
-dir = Vector3( 0, 0, 0 )
-RotationSpeed = 10.0
-barrelScene = ExtResource( 6 )
+[node name="Combat" type="Node" parent="Map"]
+script = ExtResource( 14 )
+
+[node name="FOW" type="MeshInstance" parent="Map"]
+visible = false
+mesh = SubResource( 6 )
+material/0 = ExtResource( 9 )
+
+[node name="Players" type="Node" parent="."]
+
+[node name="Ground" parent="." instance=ExtResource( 6 )]
+transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
+[connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

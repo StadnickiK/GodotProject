@@ -7,7 +7,7 @@ public class VelocityController : Node
     public float MaxSpeed { get; set; } = 10;
     public float Speed { get; set; } = 0;
 
-    public float RotationSpeed { get; set; } = 1;
+    public float RotationSpeed { get; set; } = 3;
 
     public float Acceleration { get; set; } = 1;
 
@@ -31,14 +31,11 @@ public class VelocityController : Node
         return Velocity;
     }
 
-    public Vector3 GetAcceleratedVelocity(
-            Vector3 currentPosition,
-            Vector3 targetPos)
-            {
+    public Vector3 GetAcceleratedVelocity(Vector3 currentPosition, Vector3 targetPos){
         if(Speed <= MaxSpeed){
             Speed += Acceleration;
         }
-        Vector3 Velocity = (targetPos - currentPosition).Normalized() * Speed;
+        Vector3 Velocity = GetTargetDir(currentPosition, targetPos) * Speed;
         Velocity.y = 0;
         return Velocity;
     }
@@ -82,13 +79,19 @@ public class VelocityController : Node
     //      The default forward facing direction is on positive z axis Vector3(0,0,1)
     public Vector3 GetAngularVelocity(Transform currentTransform, Vector3 targetPosition)
 	{
+        int rotationFix = 1;
+
         Vector3 upDir = new Vector3(0, 1, 0);
         float angle = GetAngleToTarget(currentTransform, targetPosition);
 
         if (angle > Math.PI)        { angle -= 2 * (float)Math.PI; }
         else if (angle <= -Math.PI) { angle += 2 * (float)Math.PI; }
 
-        return upDir*(angle) * RotationSpeed;
+        if((targetPosition-currentTransform.origin).Length() < 8){
+            rotationFix *= 4;
+        }
+
+        return upDir*(angle) * RotationSpeed * rotationFix;
 	}
 
     public Vector3 GetAngularVelocity(Transform currentTransform, Vector3 targetPosition, Vector3 upDir)

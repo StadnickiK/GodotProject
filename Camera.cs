@@ -3,9 +3,6 @@ using System;
 
 public class Camera : Godot.Camera
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
     [Export]
     public float MinZoom { get; set; } = 2.0f;
@@ -17,7 +14,8 @@ public class Camera : Godot.Camera
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        
+        float z = (MaxZoom - MinZoom)/2;
+        AddOrigin(new Vector3(0,0,z));
     }
 public override void _Input(InputEvent inputEvent){
     if(inputEvent is InputEventMouseButton button){

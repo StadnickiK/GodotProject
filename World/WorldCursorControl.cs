@@ -3,12 +3,15 @@ using System;
 
 public class WorldCursorControl : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
-    Select select;
+    Select select = null;
+
+    public int LocalPlayerID { get; set; }
+    public Camera camera = null;
     // Called when the node enters the scene tree for the first time.
+
+    [Signal]
+    public delegate void Deselect();
 
     public void ConnectToSelectUnit(Node node){
         node.Connect("SelectUnit", this, nameof(_SelectUnit));
@@ -18,9 +21,13 @@ public class WorldCursorControl : Spatial
         node.Connect("SelectTarget", this, nameof(_SelectTarget));
     }
 
+    void GetNodes(){
+        select = GetNode<Select>("Select");
+    }
+
     public override void _Ready()
     {
-        select = GetNode<Select>("/root/World/WorldCursorControl/Select");
+        GetNodes();
         /*
         foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
             n.Connect("SelectUnit", this, nameof(_SelectUnit));
@@ -32,18 +39,17 @@ public class WorldCursorControl : Spatial
         //*/
     }
 
-    public void _SelectUnit(RigidBody unit){
+    public void _SelectUnit(PhysicsBody unit){
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(RigidBody unit){;
+    public void _SelectTarget(PhysicsBody unit){;
         select.AddTarget(unit);
     }
 
     Vector3 GetMouseWorldPosition(){
         var ray_length = 1000;
         var mousePos = GetViewport().GetMousePosition();
-        var camera = (Camera)GetParent().GetNode("CameraGimbal/InnerGimbal/FreeCamera");
         var from = camera.ProjectRayOrigin(mousePos);
         var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
         var space_state = GetWorld().DirectSpaceState;
@@ -54,14 +60,30 @@ public class WorldCursorControl : Spatial
         }
         return p;
     }
-     public override void _Input(InputEvent inputEvent){
-        if(inputEvent is InputEventMouseButton button){ // mouse
-            if((ButtonList)button.ButtonIndex == ButtonList.Right && select != null){   // right click
-                select.MoveToPosition(GetMouseWorldPosition());
-                select.ClearTarget();
+
+    
+
+    void _on_Ground_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
+        if(inputEvent is InputEventMouseButton button){
+            if(select.HasSelected()){ // mouse
+                if((ButtonList)button.ButtonIndex == ButtonList.Right){   // right click
+                    select.MoveToPosition(GetMouseWorldPosition());
+                }
+                if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
+                    select.ClearSelection();
+                    EmitSignal(nameof(Deselect));
+                }
             }
-            if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
-                select.ClearSelection();
+        }
+    }
+
+     public override void _Input(InputEvent inputEvent){
+        if(select.HasSelected()){
+            if(inputEvent is InputEventMouseButton button){ // mouse
+                if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
+                    //select.ClearSelection();
+                    //EmitSignal(nameof(Deselect));
+                }
             }
         }
     }

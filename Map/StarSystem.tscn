@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Map/StarSystem.cs" type="Script" id=1]
 [ext_resource path="res://UI/Text3D.tscn" type="PackedScene" id=2]
@@ -6,22 +6,25 @@
 
 [sub_resource type="BoxShape" id=1]
 
-[sub_resource type="SphereMesh" id=2]
+[sub_resource type="CylinderMesh" id=2]
 
-[node name="StarSystem" type="RigidBody"]
-gravity_scale = 0.0
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.117647, 0.87451, 0.164706, 1 )
+
+[node name="StarSystem" type="StaticBody"]
+collision_mask = 4
 script = ExtResource( 1 )
 
 [node name="Placeholder" type="CollisionShape" parent="."]
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 shape = SubResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Placeholder"]
-mesh = SubResource( 2 )
-material/0 = null
+[node name="Mask" type="Spatial" parent="Placeholder"]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
 
 [node name="Text3D" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
+visible = false
 TextScale = Vector3( 10, 10, 10 )
 
 [node name="XButton" parent="." instance=ExtResource( 3 )]
@@ -29,5 +32,11 @@ visible = false
 
 [node name="StarSysObjects" type="Spatial" parent="."]
 visible = false
+
+[node name="Diameter" type="MeshInstance" parent="StarSysObjects"]
+transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
+visible = false
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
 [connection signal="input_event" from="." to="." method="_on_StarSystem_input_event"]
 [connection signal="button_up" from="XButton" to="." method="_on_XButton_button_up"]

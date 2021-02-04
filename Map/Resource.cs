@@ -3,13 +3,14 @@ using System;
 
 public class Resource : Node
 {
-    String RName = "ResourceName";
 
-    public int Quantity { get; set; } = 0;
+    //public int Quantity { get; set; } = 0;
 
-    public int QuantityCap { get; set; } = -1;
+    public int Quantity = 5;
 
-    public int Value { get; set; } = 1;
+    public int? QuantityCap { get; set; } = null;
+
+    public int Value { get; set; } = 0;
 
     public Random Rand { get; set; } = new Random();
 
@@ -22,22 +23,29 @@ public class Resource : Node
         get { return _type; }
     }
 
+    public Resource(){}
+
+    public Resource(string name){
+        Name = name;
+    }
+
+    public Resource(string name, int quantity){
+        Name = name;
+        Quantity = quantity;
+    }
+
+    public Resource(string name, int quantity, int value){
+        Name = name;
+        Quantity = quantity;
+        Value = value;
+    }
+
     public enum Type
     {
         Ore,
         Gas,
         Liquid,
         Other
-    }
-
-    void Generate(){
-        Quantity = Rand.Next(1,100)*1000+Rand.Next(1,1000);
-        QuantityCap = Quantity;
-        _type = (Type)Rand.Next(0,1);
-    }
-
-    public Resource(){
-        Generate();
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

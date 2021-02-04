@@ -14,6 +14,9 @@ public class CameraGimbal : Spatial
     [Export]
     public int Limit { get; set; } = -1;
 
+    [Export]
+    Vector3 PosToLookFrom = new Vector3(0,0,10);
+
 
 
     // Called when the node enters the scene tree for the first time.
@@ -40,6 +43,15 @@ public override void _Input(InputEvent inputEvent){
         //GlobalRotate(new Vector3(0,1,0), Mathf.Deg2Rad(motion.Relative.x*RotationSpeed));
         RotateY(Mathf.Deg2Rad(motion.Relative.x*RotationSpeed));
     }
+}
+
+Vector3 DirToTarget(Vector3 target){
+    return (target-GlobalTransform.origin).Normalized();
+}
+
+public void LookAt(Vector3 target){
+    LookAtFromPosition(target+PosToLookFrom,target,new Vector3(0,1,0));
+    Rotation *= new Vector3(0,1,0);
 }
 
 Vector2 InputKeyToVector2(InputEventKey key){

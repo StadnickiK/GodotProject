@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/OverviewPanel.cs" type="Script" id=2]
+
+[node name="OverviewPanel" type="VBoxContainer"]
+margin_top = 46.0
+margin_right = 150.0
+margin_bottom = 272.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Options" type="HBoxContainer" parent="."]
+margin_right = 150.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}

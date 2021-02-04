@@ -5,7 +5,7 @@
     <RootNamespace>Projects</RootNamespace>
     <AssemblyName>Projects</AssemblyName>
     <GodotProjectGeneratorVersion>1.0.7374.16792</GodotProjectGeneratorVersion>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <!--The following properties were overriden during migration to prevent errors.
     Enabling them may require other manual changes to the project and its files.-->
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -17,6 +17,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Map\Combat.cs" />
+    <Compile Include="Map\Orbit.cs" />
+    <Compile Include="Map\SpaceBattle.cs" />
+    <Compile Include="Menu\MainMenu.cs" />
+    <Compile Include="Menu\MainMenuButton.cs" />
+    <Compile Include="Menu\MenuPlanet.cs" />
+    <Compile Include="UI\BattlePanel.cs" />
+    <Compile Include="UI\BuildingLabel.cs" />
+    <Compile Include="UI\BuildingInterface.cs" />
+    <Compile Include="UI\MapObjectLabel.cs" />
+    <Compile Include="UI\MenuPanel.cs" />
+    <Compile Include="UI\Header.cs" />
+    <Compile Include="UI\ListPanel.cs" />
+    <Compile Include="UI\OrbitFleetInterface.cs" />
+    <Compile Include="UI\OverviewPanel.cs" />
+    <Compile Include="UI\ResourceLabel.cs" />
+    <Compile Include="UI\ResourcePanel.cs" />
+    <Compile Include="UI\RightPanel.cs" />
+    <Compile Include="UI\UnitInfoPanel.cs" />
+    <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CameraGimbal.cs" />
@@ -36,19 +57,24 @@
     <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="World\Map.cs" />
+    <Compile Include="World\MapObjects.cs" />
+    <Compile Include="World\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units\Base\RBullet.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="Units\Base\Unit.cs" />
     <Compile Include="UI\PlanetInterface.cs" />
+    <Compile Include="Units\Stats\BaseStat.cs" />
+    <Compile Include="Units\Stats\StatManager.cs" />
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
+    <Compile Include="World\UI.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
     <Compile Include="UI\Text3D.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup />
 </Project>

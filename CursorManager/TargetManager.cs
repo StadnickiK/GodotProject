@@ -17,26 +17,48 @@ using System.Collections.Generic;
             SetProcess(false);
         }
 
-        List<T> targets = new List<T>();
+        private List<T> _targets = new List<T>();
+        public List<T> Targets
+        {
+            get { return _targets; }
+        }
+        
 
         public void SetTarget(T Target){
+            _targets.Clear();
             _hasTarget = true;
             currentTarget = Target;
-            targets.Clear();
-            targets.Add(currentTarget);
+            _targets.Add(currentTarget);
         }
 
         public void AddTarget(T Target){
             if(!_hasTarget){
                 SetTarget(Target);
             }else{
-                targets.Add(Target);
+                _targets.Add(Target);
+            }
+        }
+
+        public void NextTarget(){
+            if(_targets.Count > 1){
+                _targets.RemoveAt(0);
+                currentTarget = _targets[0];
+            }else{
+                ClearTargets();
+            }
+        }
+
+        public bool HasNextTarget(){
+            if(_targets.Count > 1){
+                return true;
+            }else{
+                return false;
             }
         }
 
         public void ClearTargets(){
             currentTarget = default(T);
-            targets.Clear();
+            _targets.Clear();
             _hasTarget = false;
         }
     }

@@ -6,9 +6,23 @@ public class Galaxy : Spatial
 {
 
     [Export]
-    int Size = 40;
+    public int StarSystemNumber { get; set; } = 3;
 
-    public List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
+    private int _radius;
+    public int Radius
+    {
+        get { return _radius; }
+    }
+    
+    StarSystem _currentSystem = null;
+
+    private List<StarSystem> _starSystems = new List<StarSystem>();
+    public List<StarSystem> StarSystems
+    {
+        get { return _starSystems; }
+    }
+
+    public RigidBody Ground { get; set; } = null;
 
     [Signal]
     public delegate void CameraLookAt(Vector3 position);
@@ -17,8 +31,6 @@ public class Galaxy : Spatial
 
     public Random Rand { get; set; }
 
-    int Seed = 0;
-
     public enum Type
     {
         Elliptical,
@@ -26,15 +38,12 @@ public class Galaxy : Spatial
         Irregular
     }
 
-    void InitRand(){
-        Seed = Guid.NewGuid().GetHashCode();
-        Rand = new Random(Seed);
-;    }
+
     void Generate(){
 
         int dist = Rand.Next(10, 20);
         float angle = Rand.Next(0, 70);
-        for(int i = 0;i < Size; i++){
+        for(int i = 0;i < StarSystemNumber; i++){
             RotateY(angle);
             var pos = Transform.basis.Xform(new Vector3(0, 0, dist));
             var starSystem = (StarSystem)StarSystemScene.Instance();
@@ -47,35 +56,76 @@ public class Galaxy : Spatial
             temp.origin = pos;
             starSystem.Transform = temp;
             AddChild(starSystem);
-            StarSystems.Add(starSystem);
-            dist += Rand.Next(6, 10);
-            angle += Rand.Next(0, 50);
+            _starSystems.Add(starSystem);
+            dist += Rand.Next(10, 15);
+            angle += Rand.Next(0, 60);
+        }
+        _radius = (int)(1.2f*dist);
+        var biggestRadius = GetBiggestStarSystemRAdius();
+        if(_radius < biggestRadius){
+            _radius = (int)(biggestRadius*1.5f);
         }
         Rotation = Vector3.Zero;
     }
 
-    void _on_ViewStarSystem(int id){
-        foreach(StarSystem s in StarSystems){
-            if(s.SystemID != id){
-                s.Visible = false;
+    int GetBiggestStarSystemRAdius(){
+        int max = 0;
+        foreach(StarSystem system in StarSystems){
+            if(system.Radius > max) max = system.Radius;
+        }
+        return max;
+    }
+
+    public void ViewStarSystem(StarSystem system){
+        _currentSystem = system;
+        foreach(Spatial spatial in GetChildren()){
+            if(spatial is StarSystem starSystem){
+                if(starSystem.SystemID != system.GetIndex()){
+                    starSystem.Visible = false;
+                }else{
+                    EmitSignal(nameof(CameraLookAt), starSystem.Transform.origin);
+                }
             }else{
-                EmitSignal(nameof(CameraLookAt), s.Transform.origin);
+                spatial.Visible = false;
             }
         }
     }
 
+    void _on_ViewStarSystem(StarSystem system){
+        ViewStarSystem(system);
+    }
+
     void _on_ViewGalaxy(){
-        foreach(StarSystem s in StarSystems){
-            s.Visible = true;
+        foreach(Spatial node in GetChildren()){
+            node.Visible = true;
         }
+    }
+
+    public void ViewGalaxy(){
+        if(_currentSystem != null){
+            _currentSystem.CloseSystem();
+            _currentSystem = null;
+        }
+        foreach(Spatial spatial in GetChildren()){
+            spatial.Visible = true;
+        }
+    }
+
+    void GetNodes(){
+        //Ground = (RigidBody)GetNode("Ground");
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         StarSystemScene = (PackedScene)GD.Load("res://Map/StarSystem.tscn");
-        InitRand();
+        GetNodes();
         Generate();
     }
 
+    void HideNodes(params Spatial[] Nodes){
+        foreach(Spatial spatial in Nodes){
+            spatial.Visible = false;
+        }
+    }
 }

@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://UI/MenuPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/ValueSlider.tscn" type="PackedScene" id=3]
+
+[node name="NewGame" instance=ExtResource( 2 )]
+margin_bottom = 153.0
+Title = "New Game"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="1"]
+margin_top = 43.0
+margin_right = 321.0
+margin_bottom = 154.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ValueContainer" type="VBoxContainer" parent="VBoxContainer" index="0"]
+margin_right = 321.0
+margin_bottom = 37.0
+size_flags_horizontal = 3
+custom_constants/separation = 5
+
+[node name="ValueSlider" parent="VBoxContainer/ValueContainer" index="0" instance=ExtResource( 3 )]
+margin_top = 0.0
+margin_bottom = 16.0
+hint_tooltip = "Number of Star Systems."
+mouse_filter = 0
+size_flags_horizontal = 3
+Text = "Star Systems"
+ValueName = "Systems"
+_minValue = 5
+_maxValue = 40
+
+[node name="ValueSlider2" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource( 3 )]
+margin_top = 21.0
+margin_bottom = 37.0
+hint_tooltip = "Number of players."
+mouse_filter = 0
+Text = "Players "
+ValueName = "Players"
+_maxValue = 10
+
+[node name="ConfirmButton" type="HBoxContainer" parent="VBoxContainer" index="1"]
+margin_top = 41.0
+margin_right = 321.0
+margin_bottom = 61.0
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="Confirm" type="Button" parent="VBoxContainer/ConfirmButton" index="0"]
+margin_left = 280.0
+margin_right = 321.0
+margin_bottom = 20.0
+text = "Start"
+[connection signal="button_up" from="VBoxContainer/ConfirmButton/Confirm" to="." method="_on_Confirm_button_up"]

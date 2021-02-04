@@ -1,23 +1,26 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Map/Planet.cs" type="Script" id=1]
-[ext_resource path="res://UI/PlanetInterface.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Map/Orbit.cs" type="Script" id=2]
+[ext_resource path="res://PlanetMesh.tscn" type="PackedScene" id=3]
 
 [sub_resource type="BoxShape" id=1]
 
-[sub_resource type="SphereMesh" id=2]
-
-[node name="Planet" type="RigidBody"]
-gravity_scale = 0.0
+[node name="Planet" type="StaticBody"]
+collision_mask = 4
 script = ExtResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 2 )
-material/0 = null
+[node name="MeshInstance" parent="." instance=ExtResource( 3 )]
 
-[node name="PlanetInterface" parent="." instance=ExtResource( 2 )]
+[node name="Orbit" type="Spatial" parent="."]
 visible = false
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+process_mode = 0
+autostart = true
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="SphereMesh" id=1]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform sampler2D noise;
+uniform sampler2D gradient;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Texture:10
+	vec4 noise_read = texture(noise, UV.xy);
+	vec3 n_out10p0 = noise_read.rgb;
+	float n_out10p1 = noise_read.a;
+
+// Texture:9
+	vec4 tex_frg_9_read = texture(gradient, n_out10p0.xy);
+	vec3 n_out9p0 = tex_frg_9_read.rgb;
+	float n_out9p1 = tex_frg_9_read.a;
+
+// Output:0
+	ALBEDO = n_out9p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0, 0.2, 0.5, 0.8, 1 )
+colors = PoolColorArray( 0.0205497, 0.0110173, 0, 1, 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1, 0.958333, 0.958333, 0.958333, 1 )
+
+[sub_resource type="GradientTexture" id=4]
+resource_local_to_scene = true
+gradient = SubResource( 3 )
+
+[sub_resource type="OpenSimplexNoise" id=5]
+seed = 130
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=6]
+seamless = true
+noise = SubResource( 5 )
+
+[sub_resource type="ShaderMaterial" id=7]
+resource_local_to_scene = true
+shader = SubResource( 2 )
+shader_param/noise = SubResource( 6 )
+shader_param/gradient = SubResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 7 )
