@@ -27,6 +27,9 @@ public class Galaxy : Spatial
     [Signal]
     public delegate void CameraLookAt(Vector3 position);
 
+    [Signal]
+    public delegate void LookAtStarSystem(StarSystem system);
+
     PackedScene StarSystemScene = null;
 
     public Random Rand { get; set; }
@@ -95,11 +98,13 @@ public class Galaxy : Spatial
         ViewStarSystem(system);
     }
 
-    void _on_ViewGalaxy(){
+    void _on_ViewGalaxy(StarSystem system){
+        EmitSignal(nameof(LookAtStarSystem), system);
         foreach(Spatial node in GetChildren()){
             node.Visible = true;
         }
     }
+
 
     public void ViewGalaxy(){
         if(_currentSystem != null){

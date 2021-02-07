@@ -16,7 +16,7 @@ public class StarSystem : StaticBody
 	public delegate void ViewStarSystem(StarSystem system);
 
 	[Signal]
-	public delegate void ViewGalaxy();
+	public delegate void ViewGalaxy(StarSystem system);
 
 	[Signal]
 	public delegate void SelectTarget(StarSystem target);
@@ -156,7 +156,7 @@ public class StarSystem : StaticBody
 
 	void _on_XButton_button_up(){
 		CloseSystem();
-		EmitSignal(nameof(ViewGalaxy));
+		EmitSignal(nameof(ViewGalaxy), this);
 	}
 
 	public void CloseSystem(){

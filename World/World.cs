@@ -90,22 +90,25 @@ public WorldCursorControl WCC
 
     void _on_LookAtObject(Node node){
         var obj = _Player.GetMapObjectByName(node.Name);
-        if(obj is Planet p){
-            GD.Print(node.Name);
-            if(p.System != null){
-                p.System.OpenStarSystem();
-            }else{
-                Galaxy.ViewGalaxy();
+        if(obj is Planet planet){
+            Galaxy.ViewGalaxy();
+            if(planet.System != null){
+                planet.System.OpenStarSystem();
             }
-            Camera.LookAt(p.GlobalTransform.origin);
-        }else if(obj is Ship s){
-            if(s.System != null){
-                s.System.OpenStarSystem();
-            }else{
-                Galaxy.ViewGalaxy();
+            Camera.LookAt(planet.GlobalTransform.origin);
+        }else if(obj is Ship ship){
+            Galaxy.ViewGalaxy();
+            if(ship.System != null){
+                ship.System.OpenStarSystem();
             }
-            Camera.LookAt(s.GlobalTransform.origin);
+            Camera.LookAt(ship.GlobalTransform.origin);
         }
+    }
+
+    void _on_LookAtStarSystem(StarSystem system){
+        if(system != null)
+            Camera.LookAt(system.GlobalTransform.origin);
+        
     }
 
     void _on_SelectObjectInOrbit(Planet planet, Node node){
@@ -186,6 +189,7 @@ public WorldCursorControl WCC
         _map.AddChild(Galaxy);
         _map.galaxy = Galaxy;
         Galaxy.Connect("CameraLookAt",this, nameof(_on_CameraLookAt));
+        Galaxy.Connect("LookAtStarSystem", this, nameof(_on_LookAtStarSystem));
     }
 
     void UpdateGround(){
@@ -403,11 +407,11 @@ public WorldCursorControl WCC
     public override void _Ready()
     {
         GetNodes();
-        WCC.camera = Camera.GetNode<Camera>("InnerGimbal/Camera");
+        _wcc.camera = Camera.GetNode<Camera>("InnerGimbal/Camera");
         if(_Player != null){
-            WCC.LocalPlayerID = _Player.PlayerID;
+            _wcc.LocalPlayerID = _Player.PlayerID;
         }
-        WCC.Connect("Deselect", this, nameof(_on_Deselect));
+        _wcc.Connect("Deselect", this, nameof(_on_Deselect));
         ConnectSignals();
         InitWorld();
         if(_Player != null)
