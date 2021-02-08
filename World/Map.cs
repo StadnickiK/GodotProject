@@ -54,10 +54,18 @@ public class Map : Spatial
     }
 
     void _on_Ship_EnterSystem(Ship ship, StarSystem System, Vector3 aproachVec, PhysicsDirectBodyState state){
-        MoveShipToSystem(ship,System, aproachVec, state);
+        MoveToMapObject(ship,System, aproachVec, state);
+        //MoveShipToSystem(ship,System, aproachVec, state);
+    }
+
+    void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+        if(targetMapObject is IEnterMapObject enterMapObject){
+            enterMapObject.EnterMapObject(mapObject, aproachVec, state);
+        }
     }
 
     void MoveShipToSystem(Ship ship, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state){
+        
         if(system != null && ship != null){
             galaxy.RemoveChild(ship);
             system.GetNode("StarSysObjects").AddChild(ship);
