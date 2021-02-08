@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : StaticBody
+public class StarSystem : StaticBody, IEnterMapObject
 {
 
 	[Export]
@@ -168,6 +168,20 @@ public class StarSystem : StaticBody
 	protected void _ConnectSignal(){
 		WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
 		WCC.ConnectToSelectTarget(this);
+	}
+
+	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+		if(node != null){
+			if(node is Ship ship){
+				ship.GetParent().RemoveChild(ship);
+				_starSysObjects.AddChild(ship);
+				ship.NextTarget();
+				var trans = state.Transform;
+				trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
+				state.Transform = trans;
+				ship.System = this;
+			}
+        }
 	}
 
 	// Called when the node enters the scene tree for the first time.
