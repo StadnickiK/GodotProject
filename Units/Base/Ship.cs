@@ -153,18 +153,25 @@ public class Ship : RigidBody
             }else{
                 targetPos = targetManager.currentTarget.Transform.origin;
             }
+            if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
+                EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
+                NextTarget();
+            }
+            /*
             if(System == null){
                 if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
                     System = (StarSystem)targetManager.currentTarget;
                     EmitSignal(nameof(SignalEnterMapObject), this, System, DirToCurrentTarget(), state);
                 }
-            }
+            }\
+            */
             if(System != null){
                 if(Transform.origin.Length()>System.Radius){
                     EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
                     System = null;
                 }
             }
+            /*
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(SignalEnterMapObject), this, planet, DirToCurrentTarget(), state);
                 ResetVelocity();
@@ -174,6 +181,7 @@ public class Ship : RigidBody
                 targetManager.ClearTargets();
                 ResetVelocity(state);
             }
+            */
             if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
                 var transform = Transform;
                 transform.origin = _Planet.GlobalTransform.origin;

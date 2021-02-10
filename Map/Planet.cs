@@ -182,15 +182,18 @@ public class Planet : StaticBody, IEnterMapObject
 
     public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
         if(node is Ship ship)
-            if(!Orbit.GetChildren().Contains(ship)){
+            if(!Orbit.GetChildren().Contains(ship) && ship._Planet != this){
                 AddToOrbit(ship);
-                //ship.Visible = false;
                 ship._Planet = this;
                 ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
+                var transform = state.Transform;
+                transform.origin = GlobalTransform.origin;
+                state.Transform = transform;
                 CheckOrbit(ship);
                 // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
                 //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
                 // }
+                ship.targetManager.ClearTargets();
             }
     }
 
