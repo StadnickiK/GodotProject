@@ -166,14 +166,13 @@ public class Ship : RigidBody
                 }
             }
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
-                EmitSignal(nameof(SignalEnterMapObject), this, planet, default(Vector3), null);
+                EmitSignal(nameof(SignalEnterMapObject), this, planet, DirToCurrentTarget(), state);
                 ResetVelocity();
                 var transform = state.Transform;
                 transform.origin = planet.GlobalTransform.origin;
                 state.Transform = transform;
                 targetManager.ClearTargets();
                 ResetVelocity(state);
-                
             }
             if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
                 var transform = Transform;
