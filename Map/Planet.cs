@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody
+public class Planet : StaticBody, IEnterMapObject
 {
 
     [Export]
@@ -180,6 +180,20 @@ public class Planet : StaticBody
         }
     }
 
+    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+        if(node is Ship ship)
+            if(!Orbit.GetChildren().Contains(ship)){
+                AddToOrbit(ship);
+                //ship.Visible = false;
+                ship._Planet = this;
+                ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
+                CheckOrbit(ship);
+                // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
+                //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
+                // }
+            }
+    }
+
     void GetNodes(){
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
@@ -215,7 +229,6 @@ public class Planet : StaticBody
     }
 
     void UpdateResourceLimit(Building building){
-
         if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
             foreach(Resource resource in building.Products){
                 if(ResourceLimits.ContainsKey(resource.Name)){

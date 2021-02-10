@@ -58,6 +58,14 @@ public class Map : Spatial
         //MoveShipToSystem(ship,System, aproachVec, state);
     }
 
+    public void ConnectToEnterMapObject(Node node){
+        node.Connect("SignalEnterMapObject", this, nameof(_on_Enter_MapObject));
+    }
+
+    void _on_Enter_MapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+        MoveToMapObject(mapObject, targetMapObject, aproachVec, state);
+    }
+
     void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
         if(targetMapObject is IEnterMapObject enterMapObject){
             enterMapObject.EnterMapObject(mapObject, aproachVec, state);
@@ -65,7 +73,6 @@ public class Map : Spatial
     }
 
     void MoveShipToSystem(Ship ship, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state){
-        
         if(system != null && ship != null){
             galaxy.RemoveChild(ship);
             system.GetNode("StarSysObjects").AddChild(ship);

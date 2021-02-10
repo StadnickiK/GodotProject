@@ -25,6 +25,9 @@ public class Ship : RigidBody
     [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
 
+    [Signal]
+    public delegate void SignalEnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state);
+
     [Export]
     public int effectiveRange = 10;
 
@@ -153,7 +156,7 @@ public class Ship : RigidBody
             if(System == null){
                 if((targetManager.currentTarget is StarSystem) && (targetPos - GlobalTransform.origin).Length()<2){
                     System = (StarSystem)targetManager.currentTarget;
-                    EmitSignal(nameof(EnterSystem), this, System, DirToCurrentTarget(), state);
+                    EmitSignal(nameof(SignalEnterMapObject), this, System, DirToCurrentTarget(), state);
                 }
             }
             if(System != null){
@@ -163,7 +166,7 @@ public class Ship : RigidBody
                 }
             }
             if((targetManager.currentTarget is Planet planet) && (targetPos - GlobalTransform.origin).Length()<2){
-                EmitSignal(nameof(EnterPlanet), this, planet);
+                EmitSignal(nameof(SignalEnterMapObject), this, planet, default(Vector3), null);
                 ResetVelocity();
                 var transform = state.Transform;
                 transform.origin = planet.GlobalTransform.origin;
@@ -247,11 +250,10 @@ public class Ship : RigidBody
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);
         Map map = GetNode<Map>("/root/Game/World/Map/");
-        map.ConnectToEnterSystem(this);
         map.ConnectToLeaveSystem(this);
         map.ConnectToEnterCombat(this);
-        map.ConnectToEnterPlanet(this);
         map.ConnectToLeavePlanet(this);
+        map.ConnectToEnterMapObject(this);
     }
 
     void GetNodes(){
