@@ -19,7 +19,8 @@
     <Compile Include="Army.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map\Combat.cs" />
-    <Compile Include="Map\IEnterMapObject.cs" />
+    <Compile Include="Map\IMap\IEnterMapObject.cs" />
+    <Compile Include="Map\IMap\IExitMapObject.cs" />
     <Compile Include="Map\Orbit.cs" />
     <Compile Include="Map\SpaceBattle.cs" />
     <Compile Include="Menu\MainMenu.cs" />
