@@ -14,7 +14,13 @@ public class Ship : RigidBody
     public delegate void LeaveSystem(int id);
 
     [Signal]
+    public delegate void EnterSystem(Ship shipID, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state);
+
+    [Signal]
     public delegate void LeavePlanet(Ship ship);
+
+    [Signal]
+    public delegate void EnterPlanet(Ship ship, Planet planet);
 
     [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
@@ -259,8 +265,16 @@ public class Ship : RigidBody
          Connect("EnterCombat", node, methodName);
     }
 
+    public void ConnectToEnterSystem(Node node, string methodName){
+        Connect("EnterSystem", node, methodName);
+    }
+
     public void ConnectToLeaveSystem(Node node, string methodName){
          Connect("LeaveSystem", node, methodName);
+    }
+
+    public void ConnectToEnterPlanet(Node node, string methodName){
+        Connect("EnterPlanet", node, methodName);
     }
 
     public void ConnectToLeavePlanet(Node node, string methodName){
