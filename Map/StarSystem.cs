@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : StaticBody, IEnterMapObject
+public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 {
 
 	[Export]
@@ -182,6 +182,22 @@ public class StarSystem : StaticBody, IEnterMapObject
 				ship.System = this;
 			}
         }
+	}
+
+	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+		if(node is Ship ship)
+			if(ship.System != null && ship != null){
+				if(ship.Transform.origin.Length()>Radius){
+					StarSysObjects.RemoveChild(ship);
+					GetParent().AddChild(ship);
+					var trans = state.Transform;
+					trans.origin = ship.System.Transform.origin;
+					state.Transform = trans;
+					ship.NextTarget();
+					ship.System = null;
+					ship.Visible = false;
+				}
+			}
 	}
 
 	// Called when the node enters the scene tree for the first time.
