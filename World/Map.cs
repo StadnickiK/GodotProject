@@ -63,6 +63,16 @@ public class Map : Spatial
         }
     }
 
+    public void ConnectToExitMapObject(Node node){
+        node.Connect("SignalExitMapObject", this ,nameof(_on_Exit_MapObject));
+    }
+
+    void _on_Exit_MapObject(Node mapObject, Node parentMapObject, Vector3 exitVec = default(Vector3), PhysicsDirectBodyState state = null){
+        if(parentMapObject is IExitMapObject exitMapObject){
+            exitMapObject.ExitMapObject(mapObject, exitVec, state);
+        }
+    }
+
     public void ConnectToLeaveSystem(Node node){
          node.Connect("LeaveSystem", this, nameof(_on_Ship_LeaveSystem));
     }

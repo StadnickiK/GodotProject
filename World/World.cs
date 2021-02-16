@@ -250,6 +250,7 @@ public WorldCursorControl WCC
                         ship.ID_Owner = player.GetIndex();
                         ship.Name = planet.Name +" "+1;
                         ship.System = planet.System;
+                        ship.MapObject = planet.System;
                         ship.System.AddMapObject(ship);
                         player.MapObjects.Add(ship);
                         for(int i = 0;i<5;i++){
