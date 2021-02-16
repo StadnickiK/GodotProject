@@ -11,18 +11,6 @@ public class Ship : RigidBody
     public delegate void SelectTarget(RigidBody target);
 
     [Signal]
-    public delegate void LeaveSystem(int id);
-
-    [Signal]
-    public delegate void EnterSystem(Ship shipID, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state);
-
-    [Signal]
-    public delegate void LeavePlanet(Ship ship);
-
-    [Signal]
-    public delegate void EnterPlanet(Ship ship, Planet planet);
-
-    [Signal]
     public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
 
     [Signal]
@@ -251,9 +239,7 @@ public class Ship : RigidBody
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);
         Map map = GetNode<Map>("/root/Game/World/Map/");
-        //map.ConnectToLeaveSystem(this);
         map.ConnectToEnterCombat(this);
-        //map.ConnectToLeavePlanet(this);
         map.ConnectToEnterMapObject(this);
         map.ConnectToExitMapObject(this);
     }
@@ -265,14 +251,6 @@ public class Ship : RigidBody
 
     public void ConnectToEnterCombat(Node node, string methodName){
          Connect("EnterCombat", node, methodName);
-    }
-
-    public void ConnectToLeaveSystem(Node node, string methodName){
-         Connect("LeaveSystem", node, methodName);
-    }
-
-    public void ConnectToLeavePlanet(Node node, string methodName){
-        Connect(nameof(LeavePlanet), node, methodName);
     }
 
     // Called when the node enters the scene tree for the first time.

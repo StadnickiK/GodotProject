@@ -192,10 +192,9 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 					StarSysObjects.RemoveChild(ship);
 					GetParent().AddChild(ship);
 					var trans = state.Transform;
-					trans.origin = ship.System.Transform.origin;
+					trans.origin = Transform.origin;
 					state.Transform = trans;
 					ship.NextTarget();
-					ship.System = null;
 					ship.Visible = false;
 				}
 			}

@@ -19,7 +19,7 @@ __meta__ = {
 
 [node name="ValueContainer" type="VBoxContainer" parent="VBoxContainer" index="0"]
 margin_right = 321.0
-margin_bottom = 16.0
+margin_bottom = 37.0
 size_flags_horizontal = 3
 custom_constants/separation = 5
 
@@ -35,7 +35,6 @@ _minValue = 5
 _maxValue = 40
 
 [node name="ValueSlider2" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource( 3 )]
-visible = false
 margin_top = 21.0
 margin_bottom = 37.0
 hint_tooltip = "Number of players."
@@ -46,9 +45,9 @@ _minValue = 1
 _maxValue = 10
 
 [node name="ConfirmButton" type="HBoxContainer" parent="VBoxContainer" index="1"]
-margin_top = 20.0
+margin_top = 41.0
 margin_right = 321.0
-margin_bottom = 40.0
+margin_bottom = 61.0
 size_flags_horizontal = 3
 alignment = 2
 

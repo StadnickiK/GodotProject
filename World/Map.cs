@@ -73,39 +73,6 @@ public class Map : Spatial
         }
     }
 
-    public void ConnectToLeaveSystem(Node node){
-         node.Connect("LeaveSystem", this, nameof(_on_Ship_LeaveSystem));
-    }
-
-    void _on_Ship_LeaveSystem(Ship ship, Vector3 currentVec, PhysicsDirectBodyState state){
-        ShipLeaveSystem(ship, currentVec, state);
-    }
-
-    void ShipLeaveSystem(Ship ship, Vector3 currentVec, PhysicsDirectBodyState state){
-        if(ship.System != null && ship != null){
-            ship.GetParent().RemoveChild(ship);
-            galaxy.AddChild(ship);
-            var trans = state.Transform;
-            trans.origin = ship.System.Transform.origin;
-            state.Transform = trans;
-            ship.NextTarget();
-            ship.System = null;
-            ship.Visible = false;
-        }
-    }
-
-    public void ConnectToLeavePlanet(Node node){
-        node.Connect("LeavePlanet", this, nameof(_on_Ship_LeavePlanet));
-    }
-
-    void _on_Ship_LeavePlanet(Ship ship){
-        if(ship != null){
-            ship._Planet.RemoveFromOrbit(ship);
-            ship._Planet = null;
-            ship.Visible = true;
-        }
-    }
-
     public void _on_UInfo_ChangeStance(Node node, string stance){
         if(node is Ship ship){
             if(ship._Planet != null){
