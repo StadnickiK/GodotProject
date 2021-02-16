@@ -90,6 +90,14 @@ public WorldCursorControl WCC
 
     void _on_LookAtObject(Node node){
         var obj = _Player.GetMapObjectByName(node.Name);
+        Galaxy.ViewGalaxy();
+        if(obj.GetParent().GetParent() is StarSystem system){
+            system.OpenStarSystem();
+        }
+        if(obj is Spatial spatial){
+            Camera.LookAt(spatial.GlobalTransform.origin);
+        }
+        /*
         if(obj is Planet planet){
             Galaxy.ViewGalaxy();
             if(planet.System != null){
@@ -103,6 +111,7 @@ public WorldCursorControl WCC
             }
             Camera.LookAt(ship.GlobalTransform.origin);
         }
+        */
     }
 
     void _on_LookAtStarSystem(StarSystem system){
