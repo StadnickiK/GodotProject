@@ -141,7 +141,8 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 	}
 
 	public void AddMapObject(PhysicsBody body){
-		StarSysObjects.AddChild(body);
+		if(body.GetParent() != StarSysObjects)
+			StarSysObjects.AddChild(body);
 	}
 
 	void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
@@ -186,7 +187,7 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
 		if(node is Ship ship)
-			if(ship.System != null && ship != null){
+			if(ship.MapObject == this){
 				if(ship.Transform.origin.Length()>Radius){
 					StarSysObjects.RemoveChild(ship);
 					GetParent().AddChild(ship);

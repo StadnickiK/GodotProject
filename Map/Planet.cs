@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 {
 
     [Export]
@@ -193,8 +193,28 @@ public class Planet : StaticBody, IEnterMapObject
                 // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
                 //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
                 // }
+                ship.MapObject = this;
                 ship.targetManager.ClearTargets();
             }
+    }
+
+    public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState state){
+        var transform = Transform;
+        transform.origin = GlobalTransform.origin;
+        if(node != null)
+            if(node is Ship ship){
+                if(ship.MapObject == this){
+                    if(((Transform.origin - ship.GlobalTransform.origin) - ship.PlanetPos).Length()>2){
+                        ship.MapObject = null; 
+                        RemoveFromOrbit(ship);
+                        ship._Planet = null;
+                        ship.Visible = true; 
+                        ship.targetManager.ClearTargets();
+                    }
+                }
+
+            }
+        state.Transform = transform;
     }
 
     void GetNodes(){
@@ -302,10 +322,13 @@ public class Planet : StaticBody, IEnterMapObject
 
     public void RemoveFromOrbit(Ship ship){
         if(ship != null){
-            if(ship._Planet != null)
-                ship._Planet.Orbit.RemoveChild(ship);
-            if(ship.System != null)
-                ship.System.AddMapObject(ship);
+            Orbit.RemoveChild(ship);
+            if(GetParent().GetParent() is StarSystem system){
+                system.AddMapObject(ship);
+                ship.MapObject = system;
+            }else{
+                GetParent().AddChild(ship);
+            }
             Orbit.OrbitChanged = true;
         }
     }
