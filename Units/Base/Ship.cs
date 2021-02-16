@@ -212,12 +212,12 @@ public class Ship : RigidBody
     void _on_Area_body_entered(Node body){
         // to do test in galaxy
         if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.System == System && !ship.IsLocal){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.GetParent() == GetParent() && !ship.IsLocal){
                 ship.Visible = true;
             }
         }
         if(body is Planet planet){
-            if(planet.Vision == false && planet.PlanetOwner != ShipOwner && planet.System == System){
+            if(planet.Vision == false && planet.PlanetOwner != ShipOwner && planet.GetParent() == GetParent() ){
                 planet.Vision = true;
             }
         }
@@ -225,7 +225,7 @@ public class Ship : RigidBody
 
     void _on_Area_body_exited(Node body){
         if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.System == System && !ship.IsLocal){
+            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.GetParent() == GetParent()  && !ship.IsLocal){
                 ship.Visible = false;
             }
         }
