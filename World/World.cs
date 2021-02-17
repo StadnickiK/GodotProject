@@ -97,21 +97,6 @@ public WorldCursorControl WCC
         if(obj is Spatial spatial){
             Camera.LookAt(spatial.GlobalTransform.origin);
         }
-        /*
-        if(obj is Planet planet){
-            Galaxy.ViewGalaxy();
-            if(planet.System != null){
-                planet.System.OpenStarSystem();
-            }
-            Camera.LookAt(planet.GlobalTransform.origin);
-        }else if(obj is Ship ship){
-            Galaxy.ViewGalaxy();
-            if(ship.System != null){
-                ship.System.OpenStarSystem();
-            }
-            Camera.LookAt(ship.GlobalTransform.origin);
-        }
-        */
     }
 
     void _on_LookAtStarSystem(StarSystem system){
