@@ -322,14 +322,16 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 
     public void RemoveFromOrbit(Ship ship){
         if(ship != null){
-            Orbit.RemoveChild(ship);
-            if(GetParent().GetParent() is StarSystem system){
-                system.AddMapObject(ship);
-                ship.MapObject = system;
-            }else{
-                GetParent().AddChild(ship);
+            if(Orbit.GetChildren().Contains(ship)){
+                Orbit.RemoveChild(ship);
+                if(GetParent().GetParent() is StarSystem system){
+                    system.AddMapObject(ship);
+                    ship.MapObject = system;
+                }else{
+                    GetParent().AddChild(ship);
+                }
+                Orbit.OrbitChanged = true;
             }
-            Orbit.OrbitChanged = true;
         }
     }
 
