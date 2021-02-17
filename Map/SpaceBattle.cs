@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SpaceBattle : StaticBody
+public class SpaceBattle : StaticBody, ISelectMapObject
 {
 
     public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
@@ -159,11 +159,15 @@ public class SpaceBattle : StaticBody
         _endCombat = true;
     }
 
+    public void SelectMapObject(){
+        EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
+    }
+
     public void _on_SpaceBattle_input_event(Camera camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
         if(input is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
-            EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
+            SelectMapObject();
             break;
           case ButtonList.Right:
             //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
