@@ -110,16 +110,9 @@ public WorldCursorControl WCC
             var label = (Label)node;
             PhysicsBody obj = (PhysicsBody)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
             if(obj != null){
-                if(obj is Ship){
-                    _wcc._SelectUnit(obj);
-                    _UI.UInfo.Visible = true;
-                    _UI.UInfo.UpdatePanel(obj);
-                }else{
-                    if(obj is SpaceBattle battle){
-                        _on_ShowBattlePanel(battle);
-                    }
+                if(obj is ISelectMapObject selectMapObject){
+                    selectMapObject.SelectMapObject();
                 }
-
             }
         }
     }
