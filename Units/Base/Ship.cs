@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody
+public class Ship : RigidBody, ISelectMapObject
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);
@@ -17,7 +17,7 @@ public class Ship : RigidBody
     public delegate void SignalEnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state);
 
     [Signal]
-    public delegate void SignalExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state);
+    public delegate void SignalExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state); 
 
     [Export]
     public int effectiveRange = 10;
@@ -184,11 +184,15 @@ public class Ship : RigidBody
         }
     }
 
+    public void SelectMapObject(){
+        EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
+    }
+
     void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
-            EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
+            SelectMapObject();
             break;
           case ButtonList.Right:
             EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
