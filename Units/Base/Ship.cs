@@ -88,6 +88,33 @@ public class Ship : RigidBody, ISelectMapObject
 
     public void MoveToTarget(Spatial target){
         Sleeping = false;
+        Node starSysObj = null;
+        if((GetParent() is Orbit orbit)){
+            starSysObj = orbit.GetParent().GetParent();
+        }else{
+            starSysObj = GetParent();
+        }
+        if(target.GetParent() != starSysObj){
+            if(starSysObj.GetParent() is StarSystem system){
+                var tempTarget = new Spatial(); // used as point to exit current system
+                var tempTrans = tempTarget.Transform;
+                tempTrans.origin = (target.Transform.origin-Transform.origin).Normalized()*(system.Radius+2);
+                tempTarget.Transform = tempTrans;
+                tempTarget.Name = "tempTarget";
+                targetManager.SetTarget(tempTarget);
+                if(target.GetParent().GetParent() is StarSystem targetSystem){
+                    targetManager.AddTarget(targetSystem);
+                }
+                targetManager.AddTarget(target);
+                return;
+            }else{
+                if(target.GetParent().GetParent() is StarSystem targetSystem){
+                    targetManager.SetTarget(targetSystem);
+                }
+                targetManager.AddTarget(target);
+                return;
+            }
+        }
         targetManager.SetTarget(target);
     }
 
