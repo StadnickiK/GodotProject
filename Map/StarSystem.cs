@@ -41,7 +41,7 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	public String SystemName { get; set; }
 
-	public Text3D SystemName3D { get; set; }
+	public Text3 SystemName3D { get; set; } = null;
 
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
@@ -76,7 +76,7 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	void GetNodes(){
 		_starSysObjects = GetNode<Spatial>("StarSysObjects");
-		SystemName3D = GetNode<Text3D>("Text3D");
+		SystemName3D = GetNode<Text3>("Placeholder/Text3");
 		Placeholder = GetNode<CollisionShape>("Placeholder");
 		XButton = GetNode<Button>("XButton");
 		_size = GetNode<MeshInstance>("StarSysObjects/Diameter");
@@ -173,15 +173,16 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
 		if(node != null){
-			if(node is Ship ship){
-				ship.GetParent().RemoveChild(ship);
-				_starSysObjects.AddChild(ship);
-				ship.NextTarget();
-				var trans = state.Transform;
-				trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
-				state.Transform = trans;
-				ship.System = this;
-			}
+			if(node.GetParent() == GetParent())
+				if(node is Ship ship){
+					ship.GetParent().RemoveChild(ship);
+					_starSysObjects.AddChild(ship);
+					ship.NextTarget();
+					var trans = state.Transform;
+					trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
+					state.Transform = trans;
+					ship.System = this;
+				}
         }
 	}
 

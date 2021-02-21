@@ -37,6 +37,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 
     public string PlanetName { get; set; } = "PlanetName";
 
+    public Text3 MapObjectName3 { get; set; } = null;
+
     public StarSystem System { get; set; } = null;
 
     private Orbit _orbit = null;
@@ -182,20 +184,21 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 
     public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
         if(node is Ship ship)
-            if(!Orbit.GetChildren().Contains(ship) && ship._Planet != this){
-                AddToOrbit(ship);
-                ship._Planet = this;
-                ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
-                var transform = state.Transform;
-                transform.origin = GlobalTransform.origin;
-                state.Transform = transform;
-                CheckOrbit(ship);
-                // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
-                //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
-                // }
-                ship.MapObject = this;
-                ship.targetManager.ClearTargets();
-            }
+            if(GetParent() == ship.GetParent())
+                if(!Orbit.GetChildren().Contains(ship) && ship._Planet != this){
+                    AddToOrbit(ship);
+                    ship._Planet = this;
+                    ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
+                    var transform = state.Transform;
+                    transform.origin = GlobalTransform.origin;
+                    state.Transform = transform;
+                    CheckOrbit(ship);
+                    // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
+                    //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
+                    // }
+                    ship.MapObject = this;
+                    ship.targetManager.ClearTargets();
+                }
     }
 
     public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState state){
@@ -221,6 +224,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
         _timer = GetNode<Timer>("Timer");
+        MapObjectName3 = GetNode<Text3>("Text3");
     }
 
     public void ConstructBuilding(Building building){
@@ -380,6 +384,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
+        MapObjectName3.UpdateText(Name);
         //Generate();
         for(int i = 0; i<1; i++){
             var building = new Building();
