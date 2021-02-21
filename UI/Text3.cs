@@ -11,20 +11,28 @@ public class Text3 : Sprite3D
 
     Label label = null;
 
+    bool TextChanged = false;
+
     Viewport vp = null;
     public override void _Ready()
     {
         label = (Label)GetNode("Viewport/Label");
         vp = (Viewport)GetNode("Viewport");
-        label.Text = Text;
-        label.RectSize = Vector2.Zero;
-        vp.Size = label.RectSize;
-        Texture = vp.GetTexture();
+        UpdateText(Text);
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public void UpdateText(string text){
+        Text = text;
+        label.Text = Text;
+        vp.Size = label.RectSize;
+        Texture = vp.GetTexture();
+        TextChanged = true; 
+    }
+
+    public override void _Process(float delta){
+        if(TextChanged){
+            vp.Size = label.RectSize;
+            TextChanged = false;
+        }
+    }
 }
