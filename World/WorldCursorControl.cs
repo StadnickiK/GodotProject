@@ -8,7 +8,6 @@ public class WorldCursorControl : Spatial
 
     public int LocalPlayerID { get; set; }
     public Camera camera = null;
-    // Called when the node enters the scene tree for the first time.
 
     [Signal]
     public delegate void Deselect();
@@ -60,8 +59,6 @@ public class WorldCursorControl : Spatial
         }
         return p;
     }
-
-    
 
     void _on_Ground_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton button){

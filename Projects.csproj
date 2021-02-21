@@ -28,6 +28,7 @@
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
+    <Compile Include="Text3Viewport.cs" />
     <Compile Include="UI\BattlePanel.cs" />
     <Compile Include="UI\BuildingLabel.cs" />
     <Compile Include="UI\BuildingInterface.cs" />
@@ -40,6 +41,7 @@
     <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
+    <Compile Include="UI\Text3.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
     <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
