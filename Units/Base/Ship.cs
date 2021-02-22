@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject
+public class Ship : RigidBody, ISelectMapObject, IMapObjectController
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);
@@ -28,7 +28,7 @@ public class Ship : RigidBody, ISelectMapObject
     [Export]
     public bool IsLocal { get; set; } = false;
 
-    public Player ShipOwner { get; set; } = null;
+    public Player Controller { get; set; } = null;
 
     public StarSystem System { get; set; } = null;
 
@@ -236,7 +236,7 @@ public class Ship : RigidBody, ISelectMapObject
             }
         }
         if(body is Planet planet){
-            if(planet.Vision == false && planet.PlanetOwner != ShipOwner && planet.GetParent() == GetParent() ){
+            if(planet.Vision == false && planet.Controller != Controller && planet.GetParent() == GetParent() ){
                 planet.Vision = true;
             }
         }
@@ -249,7 +249,7 @@ public class Ship : RigidBody, ISelectMapObject
             }
         }
         if(body is Planet planet){
-            if(planet.Vision == true && planet.PlanetOwner != ShipOwner && planet.System == System){
+            if(planet.Vision == true && planet.Controller != Controller && planet.System == System){
                 planet.Vision = false;
             }
         }

@@ -193,7 +193,7 @@ public WorldCursorControl WCC
                 var planetList = system.Planets;
                 var player = (Player)Players.GetChild(id);
                 var planet = planetList[Rand.Next(0,planetList.Count)];
-                planet.ChangePlanetOwner(player);
+                planet.ChangeController(player);
                 tempStarSystems.Remove(system);
                 if(player == _Player){
                     planet.Vision = true;
@@ -211,7 +211,7 @@ public WorldCursorControl WCC
                 while(usedPlanetList.Contains(planet)){
                     planet = system.Planets[Rand.Next(0,planetList.Count)];
                 }
-                planet.ChangePlanetOwner(player);
+                planet.ChangeController(player);
                 usedPlanetList.Add(planet);
                 if(player == _Player){
                     planet.Vision = true;
@@ -233,7 +233,7 @@ public WorldCursorControl WCC
                         transform.origin = planet.Transform.origin;
                         transform.origin += new Vector3(3,0,3);
                         ship.Transform = transform;
-                        ship.ShipOwner = player;
+                        ship.Controller = player;
                         ship.ID_Owner = player.GetIndex();
                         ship.Name = planet.Name +" "+1;
                         ship.System = planet.System;
@@ -268,9 +268,9 @@ public WorldCursorControl WCC
         transform.origin += new Vector3(3,0,3);
         ship.System = planet.System;
         ship.Transform = transform;
-        ship.ShipOwner = planet.PlanetOwner;
+        ship.Controller = planet.Controller;
         ship.IsLocal = planet.Vision;
-        ship.ID_Owner = ship.ShipOwner.PlayerID;
+        ship.ID_Owner = ship.Controller.PlayerID;
         ship.Name = planet.Name +" "+Rand.Next(0,1000);
         ship.Units.Add(unit);
         planet.System.AddMapObject(ship);
@@ -282,7 +282,7 @@ public WorldCursorControl WCC
         foreach(StarSystem system in _map.galaxy.StarSystems){
             foreach(Node node in system.StarSysObjects.GetChildren()){
                 if(node is Planet planet){
-                    if(planet.PlanetOwner != null){
+                    if(planet.Controller != null){
                         var resource = new Resource("resource 0");
                         if(!(planet.PlayerResources.ContainsKey(resource.Name)))
                             planet.PlayerResources.Add(resource.Name, resource);
@@ -310,7 +310,7 @@ public WorldCursorControl WCC
         foreach(StarSystem system in _map.galaxy.StarSystems){
             foreach(Node node in system.StarSysObjects.GetChildren()){
                 if(node is Planet planet){
-                    if(planet.PlanetOwner == null){
+                    if(planet.Controller == null){
                         int amount = Rand.Next(10, 50);
                         var unit = new Unit();
                         var ship = CreateShip(unit);

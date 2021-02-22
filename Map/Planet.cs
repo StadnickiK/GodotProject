@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectController
 {
 
     [Export]
@@ -29,7 +29,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
     [Signal]
     public delegate void CreateShip(Planet planet, Unit unit);
    
-    public Player PlanetOwner { get; set; } = null;
+    public Player Controller { get; set; } = null;
 
     public List<Tile> Tiles { get; set; } = new List<Tile>();
 
@@ -229,7 +229,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 
     public void ConstructBuilding(Building building){
         if(Construction == null){
-            if(PlanetOwner.PayCost(building.BuildCost)){
+            if(Controller.PayCost(building.BuildCost)){
                 Construction = building;
                 _timer.Start(1);
             }else{
@@ -269,7 +269,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
     }
 
     public void ConstructUnit(Unit unit){
-        if(PlanetOwner.PayCost(unit.BuildCost)){
+        if(Controller.PayCost(unit.BuildCost)){
             var ship = GetLocalShip();
             if(ship != null){
                 ship.Units.Add(unit);
@@ -302,15 +302,15 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
         if(node is Ship ship){
             foreach(Node orbitNode in Orbit.GetChildren()){
                 if(ship != orbitNode && orbitNode is Ship orbitShip){
-                    if(ship.ShipOwner != orbitShip.ShipOwner){
+                    if(ship.Controller != orbitShip.Controller){
                         ship.EmitSignal("EnterCombat", ship, orbitShip, Orbit);
                         if(ship.IsLocal)
                             Vision = ship.IsLocal;
                     }else{
-                        //ChangePlanetOwner(ship.ShipOwner);
+                        //ChangeController(ship.ShipOwner);
                     }
                 }else{
-                    //ChangePlanetOwner(ship.ShipOwner);
+                    //ChangeController(ship.ShipOwner);
                 }
             }
         }
@@ -351,19 +351,19 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
 
     public void _on_Planet_TakeOver(Node node){
         if(node is Ship ship){
-            ChangePlanetOwner(ship.ShipOwner);
+            ChangeController(ship.Controller);
         }
         if(node is Player player){
-            ChangePlanetOwner(player);
+            ChangeController(player);
         }
     }
 
-    public void ChangePlanetOwner(Player player){
-            if(player != PlanetOwner){
-                if(PlanetOwner != null){
-                    PlanetOwner.RemoveMapObject(this);
+    public void ChangeController(Player player){
+            if(player != Controller){
+                if(Controller != null){
+                    Controller.RemoveMapObject(this);
                 }
-                PlanetOwner = player;
+                Controller = player;
                 if(player != null){
                     player.AddMapObject(this);
                 }

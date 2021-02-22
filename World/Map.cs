@@ -76,7 +76,7 @@ public class Map : Spatial
     public void _on_UInfo_ChangeStance(Node node, string stance){
         if(node is Ship ship){
             if(ship._Planet != null){
-                if(ship._Planet.PlanetOwner == null){
+                if(ship._Planet.Controller == null){
                     //ship._Planet.ChangePlanetOwner(ship.ShipOwner);
                 }
             }
