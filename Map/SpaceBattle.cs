@@ -138,8 +138,8 @@ public class SpaceBattle : StaticBody, ISelectMapObject
             if(node is Ship ship){
                 if(ship.Units.Count == 0){
                     if(ship.IsLocal){
-                        ship.ShipOwner.MapObjects.Remove(ship);
-                        ship.ShipOwner.MapObjectsChanged = true;
+                        ship.Controller.MapObjects.Remove(ship);
+                        ship.Controller.MapObjectsChanged = true;
                     }
                     ship.QueueFree();
                 }else{
@@ -147,7 +147,7 @@ public class SpaceBattle : StaticBody, ISelectMapObject
                     GetParent().AddChild(ship);
                     if(GetParent() is Orbit orbit){
                         var planet = (Planet)orbit.GetParent();
-                        planet.ChangePlanetOwner(ship.ShipOwner);
+                        planet.ChangeController(ship.Controller);
                     }
                     if(ship.IsLocal){
                         ship.Visible = true;

@@ -70,8 +70,8 @@ void GetNodes(){
     void UpdateOverview(Ship ship){
         var label = new Label();
         label.Text = "Controller: ";     
-        if(ship.ShipOwner != null){
-            label.Text += "Player "+ship.ShipOwner.PlayerID;
+        if(ship.Controller != null){
+            label.Text += "Player "+ship.Controller.PlayerID;
         }
         _overviewPanel.AddNodeToPanel("Overview", label); 
         foreach(BaseStat stat in ship.Stats){
