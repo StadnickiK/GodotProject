@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectController
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger
 {
 
     [Export]

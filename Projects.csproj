@@ -22,6 +22,7 @@
     <Compile Include="Map\IMap\IEnterMapObject.cs" />
     <Compile Include="Map\IMap\IExitMapObject.cs" />
     <Compile Include="Map\IMap\IMapObject.cs" />
+    <Compile Include="Map\IMap\IMapObjectControllerChanger.cs" />
     <Compile Include="Map\IMap\ISelectMapObject.cs" />
     <Compile Include="Map\Orbit.cs" />
     <Compile Include="Map\SpaceBattle.cs" />
