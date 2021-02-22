@@ -63,6 +63,16 @@ public class Player : Node
         return null;
     }    
 
+    public void AddMapObject(PhysicsBody mapObject){
+        MapObjects.Add(mapObject);
+        MapObjectsChanged = true;
+    }
+
+    public void RemoveMapObject(PhysicsBody mapObject){
+        MapObjects.Remove(mapObject);
+        MapObjectsChanged = true;
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
