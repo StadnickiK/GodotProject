@@ -361,13 +361,11 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject
     public void ChangePlanetOwner(Player player){
             if(player != PlanetOwner){
                 if(PlanetOwner != null){
-                    PlanetOwner.MapObjects.Remove(this);
-                    PlanetOwner.MapObjectsChanged = true;
+                    PlanetOwner.RemoveMapObject(this);
                 }
                 PlanetOwner = player;
                 if(player != null){
-                    player.MapObjects.Add(this);
-                    player.MapObjectsChanged = true;
+                    player.AddMapObject(this);
                 }
             }
     }
