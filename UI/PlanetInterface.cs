@@ -91,9 +91,9 @@ public class PlanetInterface : Panel
 
     void UpdateOverview(Planet planet){
         var label = new Label();
-        if(planet.PlanetOwner != null){
-            label.Name = planet.PlanetOwner.Name;
-            label.Text = "Planet controller: " + planet.PlanetOwner.Name;
+        if(planet.Controller != null){
+            label.Name = planet.Controller.Name;
+            label.Text = "Planet controller: " + planet.Controller.Name;
         }else{
             label.Text = "Planet controller: ";
         }
@@ -114,8 +114,8 @@ public class PlanetInterface : Panel
     }
 
     void UpdateOrbit(Planet planet){
-        if(planet.PlanetOwner != null){
-            if(planet.PlanetOwner.PlayerID == LocalPlayerID){
+        if(planet.Controller != null){
+            if(planet.Controller.PlayerID == LocalPlayerID){
                 var button = new Button();
                 button.Text = "Orbit build menu";
                 button.Connect("button_up",this,nameof(_on_button_up));
@@ -134,8 +134,8 @@ public class PlanetInterface : Panel
     void UpdateBuildings(Planet planet, List<Building> allBuildings){
         _overviewPanel.ClearPanel("Buildings");
         UpdatePlanetBuildings(planet.Buildings);
-        if(planet.PlanetOwner != null){
-            if(planet.PlanetOwner.PlayerID == LocalPlayerID){
+        if(planet.Controller != null){
+            if(planet.Controller.PlayerID == LocalPlayerID){
                 var tempLabel = new Label();
                 tempLabel.Text = "\n Construction list: \n";
                 _overviewPanel.AddNodeToPanel("Buildings", tempLabel);
