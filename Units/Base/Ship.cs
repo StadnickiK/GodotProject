@@ -224,15 +224,19 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision
       } 
     }
 
-    void _on_Area_body_entered(){
-        GD.Print("smt");
+    public void ChangeVision(){
+        if(Visible){
+            Visible = false;
+        }else{
+            Visible = true;
+        }
     }
 
     void _on_Area_body_entered(Node body){
         // to do test in galaxy
-        if(body is IVision visionObject){
-            if(visionObject.Controller != Controller && visionObject.Visible == false && body.GetParent() == GetParent()){
-                visionObject.Visible = true;
+        if(body is IVisible visionObject){
+            if(visionObject.Controller != Controller && visionObject.IsVisible() == false && body.GetParent() == GetParent()){
+                visionObject.ChangeVision();
             }
         }
         /*
@@ -240,15 +244,21 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision
             if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.GetParent() == GetParent() && !ship.IsLocal){
                 ship.Visible = true;
             }
-        }*/
+        }
         if(body is Planet planet){
             if(planet.Vision == false && planet.Controller != Controller && planet.GetParent() == GetParent() ){
                 planet.Vision = true;
             }
-        }
+        }*/
     }
 
     void _on_Area_body_exited(Node body){
+        if(body is IVisible visionObject){
+            if(visionObject.Controller != Controller && visionObject.IsVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
+                visionObject.ChangeVision();
+            }
+        }
+        /*
         if(body is Ship ship){
             if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.GetParent() == GetParent()  && !ship.IsLocal){
                 ship.Visible = false;
@@ -259,6 +269,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision
                 planet.Vision = false;
             }
         }
+        */
     }
 
     void _on_Ship_body_entered(Node node){

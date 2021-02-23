@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible
 {
 
     [Export]
@@ -312,6 +312,18 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 }
             }
         }
+    }
+
+    public void ChangeVision(){
+        if(Vision){
+            Vision = false;
+        }else{
+            Vision = true;
+        }
+    }
+
+    public new bool IsVisible(){
+        return Vision;
     }
 
     public void AddToOrbit(Node ship){

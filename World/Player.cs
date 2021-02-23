@@ -9,7 +9,7 @@ public class Player : Node
 
     public string PlayerName { get; set; }
 
-    public bool IsLocal { get; set; } = true;
+    public bool IsLocal { get; set; } = false;
 
     public bool MapObjectsChanged { get; set; } = true;
 
