@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public interface IVision : IMapObjectController, IVisible
+public interface IVision : IVisible
 {
     VisionArea _area { get; }
 
