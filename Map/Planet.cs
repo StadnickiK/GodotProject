@@ -19,8 +19,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public bool Vision { get; set; } = false;
 
-    public bool LoacalInOrbit { get; set; } = false;
-
     PackedScene TileScene = null;
 
     [Signal]

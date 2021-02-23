@@ -1,11 +1,9 @@
 using Godot;
 using System;
 
-public interface IVision 
+public interface IVision : IMapObjectController, IVisible
 {
     VisionArea _area { get; }
-
-    bool Visible { get; set; }
 
     int VisionRange { get; set; }
 

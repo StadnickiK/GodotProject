@@ -64,6 +64,9 @@
     <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
+    <Compile Include="Units\Base\IVisible.cs" />
+    <Compile Include="Units\Base\IVision.cs" />
+    <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />
     <Compile Include="World\Player.cs" />

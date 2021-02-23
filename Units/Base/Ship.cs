@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject, IMapObjectController
+public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);
@@ -51,7 +51,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController
     [Export]
     public int VisionRange { get; set; } = 4;
 
-    Spatial Area = null;
+    public VisionArea _area { get; set; }
 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
@@ -161,10 +161,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController
         }
     }
 
-    public void UpdateVisionRange(){
-        Area.Scale = new Vector3(VisionRange, 0.1f, VisionRange);
-    }
-
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;
@@ -228,13 +224,23 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController
       } 
     }
 
+    void _on_Area_body_entered(){
+        GD.Print("smt");
+    }
+
     void _on_Area_body_entered(Node body){
         // to do test in galaxy
+        if(body is IVision visionObject){
+            if(visionObject.Controller != Controller && visionObject.Visible == false && body.GetParent() == GetParent()){
+                visionObject.Visible = true;
+            }
+        }
+        /*
         if(body is Ship ship){
             if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.GetParent() == GetParent() && !ship.IsLocal){
                 ship.Visible = true;
             }
-        }
+        }*/
         if(body is Planet planet){
             if(planet.Vision == false && planet.Controller != Controller && planet.GetParent() == GetParent() ){
                 planet.Vision = true;
@@ -276,7 +282,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController
     }
 
     void GetNodes(){
-        Area = GetNode<Spatial>("Area");
+        _area = GetNode<VisionArea>("Area");
         Mesh = GetNode<MeshInstance>("ship model/Cube");
     }
 
@@ -293,7 +299,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController
         _velocityController.Mass = 10;
         _ConnectSignal();
         GetNodes();
-        UpdateVisionRange();
+        _area.UpdateVisionRange(VisionRange);
         //Stats.Add(new BaseStat("Attack", 5));
         //Stats.Add(new BaseStat("Defence", 3));
         //Stats.Add(new BaseStat("Hit points", 100));
