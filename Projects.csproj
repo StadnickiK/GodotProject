@@ -18,6 +18,7 @@
   <ItemGroup>
     <Compile Include="Army.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
     <Compile Include="Map\IMap\IEnterMapObject.cs" />
     <Compile Include="Map\IMap\IExitMapObject.cs" />

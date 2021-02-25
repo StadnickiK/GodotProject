@@ -45,6 +45,7 @@ using System.Collections.Generic;
                 currentTarget = _targets[0];
             }else{
                 ClearTargets();
+                currentTarget = default(T);
             }
         }
 
