@@ -101,7 +101,7 @@ public class PlanetInterface : Panel
         label = new Label();
         label.Text = "\nPlanet Resources: \n";
         _overviewPanel.AddNodeToPanel("Overview", label);
-        foreach(Resource resource in planet.PlayerResources.Values){
+        foreach(Resource resource in planet.ResourcesManager.Resources.Values){
             label = new Label();
             label.Text = resource.Name;
             _overviewPanel.AddNodeToPanel("Overview", label);
@@ -133,7 +133,7 @@ public class PlanetInterface : Panel
 
     void UpdateBuildings(Planet planet, List<Building> allBuildings){
         _overviewPanel.ClearPanel("Buildings");
-        UpdatePlanetBuildings(planet.Buildings);
+        UpdatePlanetBuildings(planet.BuildingsManager.Buildings);
         if(planet.Controller != null){
             if(planet.Controller.PlayerID == LocalPlayerID){
                 var tempLabel = new Label();
@@ -162,7 +162,7 @@ public class PlanetInterface : Panel
     void UpdateAllBuildings(List<Building> buildings, Planet planet){
         foreach(Building building in buildings){
             if(CheckBuildingResources(planet, building)){
-                if(!_planet.Buildings.Contains(building)){
+                if(!_planet.BuildingsManager.Buildings.Contains(building)){
                     var label = (BuildingLabel)ItemScene.Instance();
                     label.SetMeta(building.Name, building);
                     label.Name = building.Name;
@@ -179,12 +179,12 @@ public class PlanetInterface : Panel
 
     bool CheckBuildingResources(Planet planet, Building building){
         foreach(Resource resource in building.Products){
-            if(!planet.PlayerResources.ContainsKey(resource.Name)){
+            if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
                 return false;
             }
         }
         foreach(Resource resource in building.ProductCost){
-            if(!planet.PlayerResources.ContainsKey(resource.Name)){
+            if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
                 //return false;
             }
         }
@@ -222,7 +222,7 @@ public class PlanetInterface : Panel
     void _on_StartConstruction(Node node){
         if(node is Building building){
             if(building != null && _planet != null){
-                _planet.ConstructBuilding(building);
+                _planet.BuildingsManager.ConstructBuilding(building);
             }
         }
         if(node is Unit unit){
@@ -239,9 +239,9 @@ public class PlanetInterface : Panel
     public override void _Process(float delta){
         if(Visible){
             if(_planet != null && _allBuildings != null){
-                if(_planet.BuildingsChanged){
+                if(_planet.BuildingsManager.BuildingsChanged){
                     UpdateBuildings(_planet, _allBuildings);
-                    _planet.BuildingsChanged = false;
+                    _planet.BuildingsManager.BuildingsChanged = false;
                 }
             }
         }

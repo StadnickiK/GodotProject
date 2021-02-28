@@ -33,12 +33,14 @@ public class BuildingManager : Node
     }
 
     void UpdateConstruction(){
+        if(CurrentConstruction != null){
             CurrentConstruction.CurrentTime++;
             if(CurrentConstruction.CurrentTime >= CurrentConstruction.BuildTime){
                 Buildings.Add(CurrentConstruction);
                 ConstructionList.NextTarget();
-                BuildingsChanged = true;
             }
+            BuildingsChanged = true;
+        }
     }
 
     public override void _Process(float delta){

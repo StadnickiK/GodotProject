@@ -284,20 +284,20 @@ public WorldCursorControl WCC
                 if(node is Planet planet){
                     if(planet.Controller != null){
                         var resource = new Resource("resource 0");
-                        if(!(planet.PlayerResources.ContainsKey(resource.Name)))
-                            planet.PlayerResources.Add(resource.Name, resource);
+                        if(!(planet.ResourcesManager.Resources.ContainsKey(resource.Name)))
+                            planet.ResourcesManager.Resources.Add(resource.Name, resource);
                         do{
                             resource = new Resource("resource "+ Rand.Next(1,5));
-                        }while(planet.PlayerResources.ContainsKey(resource.Name));
-                        planet.PlayerResources.Add(resource.Name, resource);
+                        }while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
+                        planet.ResourcesManager.Resources.Add(resource.Name, resource);
                     }else{
                         int amount = Rand.Next(1,5);
                         while(amount>0){
                             Resource resource = null;
                             do{
                                 resource = new Resource("resource "+ Rand.Next(0,5));
-                            }while(planet.PlayerResources.ContainsKey(resource.Name));
-                            planet.PlayerResources.Add(resource.Name, resource);
+                            }while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
+                            planet.ResourcesManager.Resources.Add(resource.Name, resource);
                             amount--;
                         }
                     }

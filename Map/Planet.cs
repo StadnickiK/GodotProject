@@ -45,12 +45,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         get { return _orbit; }
     }
 
-    private Timer _timer = null;
-    public Timer PlanetTimer
-    {
-        get { return _timer; }
-    }
-
     public Status PlanetStatus { get; set; } = Status.None;
 
     public enum Status
@@ -63,46 +57,17 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     //public TargetManager<Building> Construction { get; set; } = new TargetManager<Building>(); TO DO: create construction list, multiple simultanous constructions
 
-    public Building Construction { get; set; } = null;
+    public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
     private MeshInstance _mesh = null;
     public MeshInstance Mesh
     {
         get { return _mesh; }
     }
-    
 
     float _time = 0;
 
-    private Dictionary<string, Resource> _resources = new Dictionary<string, Resource>();
-    public Dictionary<string, Resource> PlayerResources
-    {
-        get { return _resources; }
-    }
-
-    private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
-    public Dictionary<string, int> ResourceLimits
-    {
-        get { return _resourceLimits; }
-    }
-
-    public bool ResourceLimitChanged { get; set; } = false;
-
-    public bool ResourcesChanged { get; set; } = false;
-
-    private Dictionary<string, Resource> _naturalResources = new Dictionary<string, Resource>();
-    public Dictionary<string, Resource> NaturalResources
-    {
-        get { return _naturalResources; }
-    }
-
-    private List<Building> _buildings = new List<Building>();
-    public List<Building> Buildings
-    {
-        get { return _buildings; }
-    }
-
-    public bool BuildingsChanged { get; set; } = false;
+    public ResourceManager ResourcesManager { get; } = new ResourceManager();
 
     [Signal]
     public delegate void OpenPlanetInterface(Planet planet);
@@ -166,20 +131,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
       } 
     }
 
-    void _on_Timer_timeout(){
-        if(Construction != null){
-            Construction.CurrentTime++;
-            BuildingsChanged = true;
-            if(Construction.CurrentTime >= Construction.BuildTime){
-                _buildings.Add(Construction);
-                UpdateResourceLimit(Construction);
-                Construction = null;
-            }else{
-                _timer.Start(1);
-            }
-        }
-    }
-
     public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
         if(node is Ship ship)
             if(GetParent() == ship.GetParent())
@@ -221,49 +172,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     void GetNodes(){
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
-        _timer = GetNode<Timer>("Timer");
         MapObjectName3 = GetNode<Text3>("Text3");
-    }
-
-    public void ConstructBuilding(Building building){
-        if(Construction == null){
-            if(Controller.PayCost(building.BuildCost)){
-                Construction = building;
-                _timer.Start(1);
-            }else{
-                return;
-            }
-        }else{
-            _timer.Start(1);
-        }
-    }
-
-    void UpdateResourceLimit(){  
-        foreach(Building building in Buildings){
-            if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
-                foreach(Resource resource in building.Products){
-                    if(ResourceLimits.ContainsKey(resource.Name)){
-                        ResourceLimits[resource.Name] += building.ResourceLimit;
-                        ResourceLimitChanged = true;   
-                    }else{
-                        ResourceLimits.Add(resource.Name, building.ResourceLimit);
-                        ResourceLimitChanged = true;   
-                    }
-                }
-        }
-    }
-
-    void UpdateResourceLimit(Building building){
-        if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
-            foreach(Resource resource in building.Products){
-                if(ResourceLimits.ContainsKey(resource.Name)){
-                    ResourceLimits[resource.Name] += building.ResourceLimit;
-                    ResourceLimitChanged = true;   
-                }else{
-                    ResourceLimits.Add(resource.Name, building.ResourceLimit);
-                    ResourceLimitChanged = true;   
-                }
-            }
     }
 
     public void ConstructUnit(Unit unit){
@@ -277,22 +186,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         }else{
             return;
         }
-    }
-
-    bool PayCost(List<Resource> BuildCost){
-        foreach(Resource resource in BuildCost){
-            if(PlayerResources.ContainsKey(resource.Name)){
-                if(PlayerResources[resource.Name].Value < resource.Quantity){
-                    return false;
-                }
-            }else{
-                return false;
-            }
-        }
-        foreach(Resource resource in BuildCost){
-            PlayerResources[resource.Name].Value -= resource.Quantity;
-        }
-        return true;
     }
 
     public void CheckOrbit(Node node){
@@ -393,6 +286,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
         MapObjectName3.UpdateText(Name);
+
+        AddChild(BuildingsManager);
+        AddChild(ResourcesManager);
         //Generate();
         for(int i = 0; i<1; i++){
             var building = new Building();
@@ -402,52 +298,17 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             resource.Quantity = 20;
             building.Products.Add(resource);
             building.ResourceLimit = 500;
-            Buildings.Add(building);
-            _resources.Add(resource.Name, resource);
+            BuildingsManager.Buildings.Add(building);
+            ResourcesManager.Resources.Add(resource.Name, resource);
         }
-        UpdateResourceLimit();
-    }
-
-    void UpdatePlanetResources(){
-            foreach(Building building in _buildings){
-                // foreach(Resource resource in building.ProductCost){  TO DO: product cost, linq?
-                //     var Quantity = Resources[resource.Name].Quantity; 
-                //     if(0 >=(Quantity-resource.Quantity)){
-                        
-                //     }
-                // }
-                foreach(Resource product in building.Products){
-                    if(PlayerResources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
-                        if(PayCost(building.ProductCost)){
-                            if(PlayerResources.ContainsKey(product.Name)){
-                                //int temp = product.Quantity;
-                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                                PlayerResources[product.Name].Value += product.Quantity;
-                            }else{
-                                PlayerResources.Add(product.Name, product);
-                            }
-                            ResourcesChanged = true;
-                        }
-                    }else{
-                        if(PayCost(building.ProductCost)){
-                            if(PlayerResources.ContainsKey(product.Name)){
-                                //int temp = product.Quantity;
-                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                                PlayerResources[product.Name].Value = ResourceLimits[product.Name];
-                            }else{
-                                PlayerResources.Add(product.Name, product);
-                            }
-                            ResourcesChanged = true;
-                        }
-                    }
-                }
-            }
+        foreach(Building building in BuildingsManager.Buildings)
+            ResourcesManager.UpdateResourceLimit(building);
     }
 
     public override void _Process(float delta){
         _time += delta;
         if(_time >= TimeStep){
-            //UpdatePlanetResources();
+            ResourcesManager.UpdateResources(BuildingsManager.Buildings);
             _time = 0;
         }
         if(Orbit.OrbitChanged){

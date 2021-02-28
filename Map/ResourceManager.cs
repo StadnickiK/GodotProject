@@ -26,7 +26,7 @@ public class ResourceManager : Node
         
     }
 
-    void UpdateResourceLimit(List<Building> buildings){  
+    public void UpdateResourceLimit(List<Building> buildings){  
         foreach(Building building in buildings){
             if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
                 foreach(Resource resource in building.Products){
@@ -41,7 +41,7 @@ public class ResourceManager : Node
         }
     }
 
-    void UpdateResourceLimit(Building building){
+    public void UpdateResourceLimit(Building building){
         if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
             foreach(Resource resource in building.Products){
                 if(ResourceLimits.ContainsKey(resource.Name)){
@@ -54,7 +54,7 @@ public class ResourceManager : Node
             }
     }
 
-    bool PayCost(List<Resource> BuildCost){
+    public bool PayCost(List<Resource> BuildCost){
         foreach(Resource resource in BuildCost){
             if(Resources.ContainsKey(resource.Name)){
                 if(Resources[resource.Name].Value < resource.Quantity){
@@ -70,7 +70,7 @@ public class ResourceManager : Node
         return true;
     }
 
-    void UpdatePlanetResources(List<Building> buildings){
+    public void UpdateResources(List<Building> buildings){
             foreach(Building building in buildings){
                 // foreach(Resource resource in building.ProductCost){  TO DO: product cost, linq?
                 //     var Quantity = Resources[resource.Name].Quantity; 

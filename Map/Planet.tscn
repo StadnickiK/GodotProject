@@ -79,11 +79,6 @@ material/0 = SubResource( 7 )
 visible = false
 script = ExtResource( 2 )
 
-[node name="Timer" type="Timer" parent="."]
-process_mode = 0
-autostart = true
-
 [node name="Text3" parent="." instance=ExtResource( 4 )]
 transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 1.96895, 0 )
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
