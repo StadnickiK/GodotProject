@@ -1,19 +1,20 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Menu/Background.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Menu/ExitButton.cs" type="Script" id=2]
 [ext_resource path="res://UI/NewGame.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Menu/MainMenu.cs" type="Script" id=4]
+[ext_resource path="res://Themes/Main_Menu_theme.tres" type="Theme" id=5]
 
 [node name="MainMenu" type="Control"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -60.0
-margin_top = -66.5
-margin_right = 60.0
-margin_bottom = 66.5
+margin_left = -150.0
+margin_top = -95.0
+margin_right = 150.0
+margin_bottom = 95.0
 rect_min_size = Vector2( 120, 133 )
 script = ExtResource( 4 )
 __meta__ = {
@@ -28,6 +29,7 @@ margin_bottom = -93.0
 rect_min_size = Vector2( 120, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource( 5 )
 custom_constants/separation = 10
 alignment = 1
 __meta__ = {
@@ -35,27 +37,27 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="Menu"]
-margin_right = 120.0
-margin_bottom = 14.0
+margin_right = 300.0
+margin_bottom = 36.0
 text = "Title"
 align = 1
 
 [node name="NewGame" type="Button" parent="Menu"]
-margin_top = 24.0
-margin_right = 120.0
-margin_bottom = 44.0
+margin_top = 46.0
+margin_right = 300.0
+margin_bottom = 88.0
 text = "New Game"
 
 [node name="QuickGame" type="Button" parent="Menu"]
-margin_top = 54.0
-margin_right = 120.0
-margin_bottom = 74.0
+margin_top = 98.0
+margin_right = 300.0
+margin_bottom = 140.0
 text = "Play"
 
 [node name="Exit" type="Button" parent="Menu"]
-margin_top = 84.0
-margin_right = 120.0
-margin_bottom = 104.0
+margin_top = 150.0
+margin_right = 300.0
+margin_bottom = 192.0
 text = "Exit"
 script = ExtResource( 2 )
 
