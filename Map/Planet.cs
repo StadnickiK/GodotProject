@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager
 {
 
     [Export]
@@ -67,7 +67,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     float _time = 0;
 
-    public ResourceManager ResourcesManager { get; } = new ResourceManager();
+    public ResourceManager ResourcesManager { get; set; } = new ResourceManager();
 
     [Signal]
     public delegate void OpenPlanetInterface(Planet planet);

@@ -92,16 +92,16 @@ public class Player : Node
 
     void UpdateTempResources(){
             Resources.Clear();
-            foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-                if(planet.ResourcesManager.ResourcesChanged){
-                    foreach(Resource resource in planet.ResourcesManager.Resources.Values){
+            foreach(IResourceManager resManager in MapObjects.Where( x => x is IResourceManager )){
+                if(resManager.ResourcesManager.ResourcesChanged){
+                    foreach(Resource resource in resManager.ResourcesManager.Resources.Values){
                         if(Resources.ContainsKey(resource.Name)){
                             Resources[resource.Name].Value += resource.Value;
                         }else{
                             Resources.Add(resource.Name,resource);
                         }
                     }
-                    planet.ResourcesManager.ResourcesChanged = false;
+                    resManager.ResourcesManager.ResourcesChanged = false;
                 }
             }
             ResourcesChanged = true;
