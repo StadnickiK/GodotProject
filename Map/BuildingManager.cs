@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class BuildingManager : Node
 {
@@ -41,6 +42,10 @@ public class BuildingManager : Node
             }
             BuildingsChanged = true;
         }
+    }
+
+    public Building GetLastBuilding(){
+        return Buildings.LastOrDefault();
     }
 
     public override void _Process(float delta){

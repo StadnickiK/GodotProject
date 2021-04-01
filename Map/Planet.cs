@@ -316,5 +316,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 Vision = true;
             }
         }
+        if(BuildingsManager.BuildingsChanged){
+            ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
+        }
     }
 }
