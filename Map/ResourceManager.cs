@@ -54,6 +54,16 @@ public class ResourceManager : Node
             }
     }
 
+    public void UpdateResourceLimit(string resourceName, int quantity){
+                if(ResourceLimits.ContainsKey(resourceName)){
+                    ResourceLimits[resourceName] += quantity;
+                    ResourceLimitChanged = true;   
+                }else{
+                    ResourceLimits.Add(resourceName, quantity);
+                    ResourceLimitChanged = true;   
+                }
+    }
+
     public bool PayCost(List<Resource> BuildCost){
         foreach(Resource resource in BuildCost){
             if(Resources.ContainsKey(resource.Name)){
@@ -104,5 +114,50 @@ public class ResourceManager : Node
                     }
                 }
             }
+    }
+
+        public void AddResource(Resource resource){
+                    if(Resources[resource.Name].Value + resource.Quantity<ResourceLimits[resource.Name]){
+                            if(Resources.ContainsKey(resource.Name)){
+                                Resources[resource.Name].Value += resource.Quantity;
+                            }else{
+                                Resources.Add(resource.Name, resource);
+                            }
+                            ResourcesChanged = true;
+                        
+                    }else{
+                            if(Resources.ContainsKey(resource.Name)){
+                                Resources[resource.Name].Value = ResourceLimits[resource.Name];
+                            }else{
+                                Resources.Add(resource.Name, resource);
+                            }
+                            ResourcesChanged = true;
+                        
+                    }
+        }
+
+    public void AddResource(string resourceName, int quantity){
+                    if(Resources[resourceName].Value + quantity<ResourceLimits[resourceName]){
+                            if(Resources.ContainsKey(resourceName)){
+                                Resources[resourceName].Value += quantity;
+                            }else{
+                                var resource = new Resource();
+                                resource.Value = quantity;
+                                Resources.Add(resource.Name, resource);
+                            }
+                            ResourcesChanged = true;
+                        
+                    }else{
+                            if(Resources.ContainsKey(resourceName)){
+                                Resources[resourceName].Value = ResourceLimits[resourceName];
+                            }else{
+                                                                var resource = new Resource();
+                                resource.Value = quantity;
+                                Resources.Add(resource.Name, resource);
+                            }
+                            ResourcesChanged = true;
+                        
+                    }
+        
     }
 }
