@@ -15,7 +15,19 @@ __meta__ = {
 
 [node name="Options" type="HBoxContainer" parent="."]
 margin_right = 150.0
+margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Button" type="Button" parent="Options"]
+margin_right = 63.0
+margin_bottom = 20.0
+text = "Button1"
+
+[node name="Button2" type="Button" parent="Options"]
+margin_left = 67.0
+margin_right = 130.0
+margin_bottom = 20.0
+text = "Button1"

@@ -18,6 +18,9 @@ public class OverviewPanel : VBoxContainer
 
     public override void _Ready(){
         GetNodes();
+        foreach(Node node in _options.GetChildren()){
+            node.QueueFree();
+        }
         InitButtons();
     }
 
@@ -42,8 +45,28 @@ public class OverviewPanel : VBoxContainer
             ConnectButton(button);
     }
 
+    public void AddPanel(string name, CanvasItem node){
+        var button = new Button();
+            button.Text = name;
+            button.Name = name;
+            node.Name = name;
+            _options.AddChild(button);
+            AddChild(node);
+            if(!_hasPanel){
+                button.Disabled = true;
+                _hasPanel = true;
+            }else{
+                node.Visible = false;
+            }
+            ConnectButton(button);
+    }
+
     public void AddNodeToPanel(string name, Node node){
         var listPanel = GetNode<ListPanel>(name);
+        var parent = node.GetParent();
+        if(parent != null){
+            parent.RemoveChild(node);
+        }
         listPanel.AddListItem(node);
     }
 
@@ -88,10 +111,4 @@ public class OverviewPanel : VBoxContainer
         var listPanel = GetNode<ListPanel>(nodeName);
         listPanel.DisconnectToOnGuiInput(node, methodName);
     }
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
