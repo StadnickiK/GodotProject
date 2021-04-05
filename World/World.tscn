@@ -72,7 +72,12 @@ visible = false
 
 [node name="PlanetInterface" parent="UI" instance=ExtResource( 8 )]
 visible = false
-Options = [ "Overview", "Buildings", "Orbit" ]
+Options = {
+"Buildings": null,
+"Orbit": null,
+"Overview": null,
+"Resource transfer": "res://UI/TransferPanel.tscn"
+}
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false
