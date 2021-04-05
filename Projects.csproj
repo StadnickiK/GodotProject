@@ -46,6 +46,8 @@
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
     <Compile Include="UI\Text3.cs" />
+    <Compile Include="UI\TransferLabel.cs" />
+    <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
     <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
