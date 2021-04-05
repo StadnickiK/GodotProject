@@ -13,21 +13,16 @@ public class Building : Node
 
     public List<Resource> ProductCost { get; set; } = new List<Resource>();
 
+    public bool HasProductCost { get; set; } = false;
+
+    public int ResourceLimit { get; set; }
+
     public int BuildTime { get; set; } = 5;
 
     public int CurrentTime { get; set; } = 0;
 
-    public int ResourceLimit { get; set; }
-
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         
     }
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
