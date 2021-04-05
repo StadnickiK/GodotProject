@@ -23,7 +23,7 @@ public class PlanetInterface : Panel
 	public string Title { get; set; } = "Title";
 
 	[Export]
-	public List<string> Options { get; set; } = new List<string>();
+	public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
@@ -54,8 +54,17 @@ public class PlanetInterface : Panel
 	}
 
 	void InitOverviewPanel(){
-		foreach(string s in Options){
-			_overviewPanel.AddPanel(s);
+		foreach(KeyValuePair<string, string> pair in Options){
+			if(pair.Value == null){
+				_overviewPanel.AddPanel(pair.Key);
+			}else{
+				PackedScene scene = (PackedScene)ResourceLoader.Load(pair.Value);
+				if(scene != null){
+					_overviewPanel.AddPanel(pair.Key, (CanvasItem)scene.Instance());
+				}else{
+					_overviewPanel.AddPanel(pair.Key);
+				}
+			}
 		}
 	}
 
@@ -65,11 +74,14 @@ public class PlanetInterface : Panel
 		ConnectSignals();
 		InitOverviewPanel();
 		ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		//_overviewPanel.AddNodeToPanel("Resource transfer", _transfer);
 	}
 
 	void ClearPlanetInterface(){
-		foreach(string s in Options){
-			_overviewPanel.ClearPanel(s);
+		foreach(KeyValuePair<string, string> pair in Options){
+			if(pair.Value == null){
+				_overviewPanel.ClearPanel(pair.Key);
+			}
 		}
 	}
 
