@@ -1,0 +1,69 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://UI/TransferPanel.cs" type="Script" id=1]
+[ext_resource path="res://UI/TransferLabel.tscn" type="PackedScene" id=2]
+
+[node name="TransferPanel" type="ScrollContainer"]
+margin_right = 500.0
+margin_bottom = 231.0
+rect_min_size = Vector2( 0, 250 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="VBoxContainer" parent="."]
+margin_right = 500.0
+margin_bottom = 250.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Top" type="HBoxContainer" parent="Container"]
+margin_right = 500.0
+margin_bottom = 28.0
+rect_min_size = Vector2( 0, 28 )
+size_flags_horizontal = 3
+
+[node name="Local" type="Label" parent="Container/Top"]
+margin_top = 7.0
+margin_right = 40.0
+margin_bottom = 21.0
+text = "Planet"
+
+[node name="Guest" type="Label" parent="Container/Top"]
+margin_left = 462.0
+margin_top = 7.0
+margin_right = 500.0
+margin_bottom = 21.0
+size_flags_horizontal = 10
+text = "Guest"
+
+[node name="TransferLabel" parent="Container" instance=ExtResource( 2 )]
+margin_top = 32.0
+margin_right = 500.0
+margin_bottom = 54.0
+
+[node name="TransferLabel2" parent="Container" instance=ExtResource( 2 )]
+margin_top = 58.0
+margin_right = 500.0
+margin_bottom = 80.0
+
+[node name="TransferLabel3" parent="Container" instance=ExtResource( 2 )]
+margin_top = 84.0
+margin_right = 500.0
+margin_bottom = 106.0
+
+[node name="TransferLabel4" parent="Container" instance=ExtResource( 2 )]
+margin_top = 110.0
+margin_right = 500.0
+margin_bottom = 132.0
+
+[node name="TransferLabel5" parent="Container" instance=ExtResource( 2 )]
+margin_top = 136.0
+margin_right = 500.0
+margin_bottom = 158.0
