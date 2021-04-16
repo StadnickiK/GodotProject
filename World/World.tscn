@@ -76,7 +76,7 @@ Options = {
 "Buildings": null,
 "Orbit": null,
 "Overview": null,
-"Resource transfer": "res://UI/TransferPanel.tscn"
+"Resource transfer": null
 }
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
