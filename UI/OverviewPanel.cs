@@ -70,6 +70,10 @@ public class OverviewPanel : VBoxContainer
         listPanel.AddListItem(node);
     }
 
+    public ListPanel GetPanel(string name){
+        return GetNode<ListPanel>(name);
+    }
+
     public void ClearPanel(string name){
         var listPanel = GetNode<ListPanel>(name);
         listPanel.ClearItems();
