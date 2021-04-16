@@ -26,6 +26,24 @@ public class ResourceManager : Node
         
     }
 
+    public bool TransferResources(IResourceManager target, string resourceName, int quantity){
+        if(target.ResourcesManager.HasLimit(resourceName, quantity))
+            if(PayCost(resourceName, quantity)){
+                target.ResourcesManager.AddResource(resourceName, quantity);
+                return true;
+            }
+        return false;
+    }
+
+    public bool TransferResources(ResourceManager target, string resourceName, int quantity){
+        if(target.HasLimit(resourceName, quantity))
+            if(PayCost(resourceName, quantity)){
+                target.AddResource(resourceName, quantity);
+                return true;
+            }
+        return false;
+    }
+
     public void UpdateResourceLimit(List<Building> buildings){  
         foreach(Building building in buildings){
             if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
@@ -78,6 +96,53 @@ public class ResourceManager : Node
             Resources[resource.Name].Value -= resource.Quantity;
         }
         return true;
+    }
+
+    public bool PayCost(Resource resource){
+            if(Resources.ContainsKey(resource.Name)){
+                if(Resources[resource.Name].Value < resource.Quantity){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+            Resources[resource.Name].Value -= resource.Quantity;
+        return true;
+    }
+
+    public bool PayCost(string resourceName, int quantity){
+            if(Resources.ContainsKey(resourceName)){
+                if(Resources[resourceName].Value < quantity){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+            Resources[resourceName].Value -= quantity;
+        return true;
+    }
+
+    public bool HasResource(string resourceName){
+        return (Resources.ContainsKey(resourceName));
+    }
+
+    public bool HasResource(string resourceName, int quantity){
+        if(HasResource(resourceName))
+            if(Resources[resourceName].Value >= quantity)
+                return true;
+        return false;  
+    }
+
+    public bool HasLimit(string resourceName, int quantity){
+        if(ResourceLimits.ContainsKey(resourceName))
+            if(HasResource(resourceName)){
+                if((ResourceLimits[resourceName] - Resources[resourceName].Value) > quantity)
+                    return true;
+            }else{
+                if(ResourceLimits[resourceName] > quantity)
+                    return true;
+            }
+        return false;  
     }
 
     public void UpdateResources(List<Building> buildings){
