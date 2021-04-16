@@ -20,12 +20,24 @@ public class ListPanel : VBoxContainer
     }
 
     void GetNodes(){
-        _titleLabel = GetNode<Label>("Title");
+        _titleLabel = GetNode<Label>("Header/Title");
         _items = GetNode("ItemList/Items");
     }
 
     public void SetTitle(string title){
         _titleLabel.Text = title;
+    }
+
+    public Label GetTitle(){
+        return _titleLabel;
+    }
+
+    public Node GetHeader(){
+        return GetNode("Header");
+    }
+
+    public Node GetFoot(){
+        return GetNode("Foot");
     }
 
     public void AddListItem(Node item){
