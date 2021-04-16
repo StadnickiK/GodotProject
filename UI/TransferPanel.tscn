@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://UI/TransferPanel.cs" type="Script" id=1]
-[ext_resource path="res://UI/TransferLabel.tscn" type="PackedScene" id=2]
 
 [node name="TransferPanel" type="ScrollContainer"]
 margin_right = 500.0
@@ -42,28 +41,3 @@ margin_right = 500.0
 margin_bottom = 21.0
 size_flags_horizontal = 10
 text = "Guest"
-
-[node name="TransferLabel" parent="Container" instance=ExtResource( 2 )]
-margin_top = 32.0
-margin_right = 500.0
-margin_bottom = 54.0
-
-[node name="TransferLabel2" parent="Container" instance=ExtResource( 2 )]
-margin_top = 58.0
-margin_right = 500.0
-margin_bottom = 80.0
-
-[node name="TransferLabel3" parent="Container" instance=ExtResource( 2 )]
-margin_top = 84.0
-margin_right = 500.0
-margin_bottom = 106.0
-
-[node name="TransferLabel4" parent="Container" instance=ExtResource( 2 )]
-margin_top = 110.0
-margin_right = 500.0
-margin_bottom = 132.0
-
-[node name="TransferLabel5" parent="Container" instance=ExtResource( 2 )]
-margin_top = 136.0
-margin_right = 500.0
-margin_bottom = 158.0

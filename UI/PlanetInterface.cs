@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class PlanetInterface : Panel
 {
 
-
 	Button _closeButton = null;
 
 	Header _header = null;
@@ -27,6 +26,8 @@ public class PlanetInterface : Panel
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
+
+	PackedScene _transferLabelScene = (PackedScene)ResourceLoader.Load("res://UI/TransferLabel.tscn");
 
 	public int LocalPlayerID { get; set; }
 
@@ -95,6 +96,7 @@ public class PlanetInterface : Panel
 				UpdateOverview(planet);
 				UpdateOrbit(planet);
 				UpdateBuildings(planet, allBuildings);
+				UpdateTransferPanel(planet);
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
 				_overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
 			}
@@ -120,7 +122,7 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void _on_button_up(){
+	void _on_orbitButton_up(){
 		_buildingInterface.Visible = true;
 		_buildingInterface.UpdateInterface();
 	}
@@ -130,7 +132,7 @@ public class PlanetInterface : Panel
 			if(planet.Controller.PlayerID == LocalPlayerID){
 				var button = new Button();
 				button.Text = "Orbit build menu";
-				button.Connect("button_up",this,nameof(_on_button_up));
+				button.Connect("button_up",this,nameof(_on_orbitButton_up));
 				_overviewPanel.AddNodeToPanel("Orbit", button);
 			}
 		}
@@ -140,6 +142,88 @@ public class PlanetInterface : Panel
 			label.SetMeta(label.Name, body);
 			var node = (Node)label.GetMeta(label.Name);
 			_overviewPanel.AddNodeToPanel("Orbit", label);
+		}
+	}
+
+	void _on_ResetTransferPanel(Planet planet){
+		_overviewPanel.ClearPanel("Resource transfer");
+		_overviewPanel.GetPanel("Resource transfer").GetHeader()?.GetChild(1)?.QueueFree(); // remove reset button
+		UpdateTransferPanel(planet);
+	}
+
+	void _on_TransferResources2(PhysicsBody left, PhysicsBody body){
+		if(left is Planet planet && body is Ship ship){
+			///*
+			foreach(TransferLabel label in _overviewPanel.GetPanel("Resource transfer").GetNode("ItemList/Items").GetChildren()){
+				int value = (int)label.NumInput.Value;
+				if(value > 0){
+					if(label.IsRight){
+						planet.ResourcesManager.TransferResources(ship.ResourcesManager, label.Name, (int)label.NumInput.Value);
+					}else{
+						ship.ResourcesManager.TransferResources(planet.ResourcesManager, label.Name, (int)label.NumInput.Value);
+					}
+				}
+			}
+			//*/
+		}
+	}
+
+	void _on_transferButton_up(Ship body, Planet planet){
+		if(body is IResourceManager manager){
+			_overviewPanel.ClearPanel("Resource transfer");
+			Button button = new Button();
+			button.Text = "X";
+			button.SizeFlagsHorizontal = 10;
+			Godot.Collections.Array arr = new Godot.Collections.Array();
+			arr.Add(planet);
+			button.Connect("button_up", this, nameof(_on_ResetTransferPanel), arr);
+			_overviewPanel.GetPanel("Resource transfer").GetHeader().AddChild(button);
+
+ 			button = new Button();
+			button.Text = "Transfer";
+			button.SizeFlagsHorizontal = 10;
+			arr = new Godot.Collections.Array();
+			arr.Add(planet);
+			arr.Add(body);
+			button.Connect("button_up", this, nameof(_on_TransferResources2), arr);
+			_overviewPanel.GetPanel("Resource transfer").GetFoot().AddChild(button);
+
+			if(manager.ResourcesManager.Resources.Count > 0){
+				foreach(Resource resource in manager.ResourcesManager.Resources.Values){
+					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
+					if(planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
+						label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, resource.Value );
+					}else{
+						label.UpdateLabel(resource.Name, 0, resource.Value );
+					}
+					_overviewPanel.AddNodeToPanel("Resource transfer", label);
+				}
+			}else{
+				foreach(Resource resource in planet.ResourcesManager.Resources.Values){
+					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
+					label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, 0);
+					_overviewPanel.AddNodeToPanel("Resource transfer", label);
+				}
+			}
+		}
+	}
+
+	void UpdateTransferPanel(Planet planet){
+		_overviewPanel.ClearPanel("Resource transfer");
+		foreach(Ship body in planet.Orbit.GetChildren()){
+			if(body is IMapObjectController controller){
+				if(controller.Controller.PlayerID == LocalPlayerID){
+					var button = new Button();
+					button.Name = button.Text = body.Name;
+					Godot.Collections.Array arr = new Godot.Collections.Array();
+        			arr.Add(body);
+					arr.Add(planet);
+					button.Connect("button_up",this, nameof(_on_transferButton_up), arr);
+					button.SetMeta(button.Name, body);
+					var node = (Node)button.GetMeta(button.Name);
+					_overviewPanel.AddNodeToPanel("Resource transfer", button);
+				}
+			}
 		}
 	}
 
