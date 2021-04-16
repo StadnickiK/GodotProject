@@ -93,16 +93,16 @@ public class Player : Node
     void UpdateTempResources(){
             Resources.Clear();
             foreach(IResourceManager resManager in MapObjects.Where( x => x is IResourceManager )){
-                if(resManager.ResourcesManager.ResourcesChanged){
-                    foreach(Resource resource in resManager.ResourcesManager.Resources.Values){
-                        if(Resources.ContainsKey(resource.Name)){
-                            Resources[resource.Name].Value += resource.Value;
-                        }else{
-                            Resources.Add(resource.Name,resource);
+                    if(resManager.ResourcesManager.ResourcesChanged){
+                        foreach(Resource resource in resManager.ResourcesManager.Resources.Values){
+                            if(Resources.ContainsKey(resource.Name)){
+                                Resources[resource.Name].Value += resource.Value;
+                            }else{
+                                Resources.Add(resource.Name,resource);
+                            }
                         }
+                        resManager.ResourcesManager.ResourcesChanged = false;
                     }
-                    resManager.ResourcesManager.ResourcesChanged = false;
-                }
             }
             ResourcesChanged = true;
     }
