@@ -27,12 +27,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     [Export]
     public bool IsLocal { get; set; } = false;
-
     public Player Controller { get; set; } = null;
-
-    public StarSystem System { get; set; } = null;
-
-    public Planet _Planet { get; set; } = null;
 
     public IEnterMapObject MapObject { get; set; } = null;
 
@@ -276,7 +271,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     void _on_Ship_body_entered(Node node){
         if(node is Ship ship){
-            if(ship.System == System){
+            if(ship.MapObject == MapObject){
                 EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
                 ResetVelocity();
             }

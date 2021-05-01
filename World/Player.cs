@@ -87,7 +87,6 @@ public class Player : Node
             Resources.Add(resource.Name, resource);
             ResourcesChanged = true;
         }
-
     }
 
     void UpdateTempResources(){

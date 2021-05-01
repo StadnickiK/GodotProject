@@ -72,14 +72,9 @@ public class Map : Spatial
             exitMapObject.ExitMapObject(mapObject, exitVec, state);
         }
     }
-
     public void _on_UInfo_ChangeStance(Node node, string stance){
         if(node is Ship ship){
-            if(ship._Planet != null){
-                if(ship._Planet.Controller == null){
-                    //ship._Planet.ChangePlanetOwner(ship.ShipOwner);
-                }
-            }
+
         }
     }
 

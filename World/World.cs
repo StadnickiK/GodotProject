@@ -57,7 +57,6 @@ public WorldCursorControl WCC
 	{
 		get { return _wolrdResources; }
 	}
-	
 
 	public Dictionary<string, int> WorldGenParameters = new Dictionary<string, int>();
 
@@ -236,9 +235,8 @@ public WorldCursorControl WCC
 						ship.Controller = player;
 						ship.ID_Owner = player.GetIndex();
 						ship.Name = planet.Name +" "+1;
-						ship.System = planet.System;
 						ship.MapObject = planet.System;
-						ship.System.AddMapObject(ship);
+						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);
 						for(int i = 0;i<5;i++){
 							ship.Units.Add(new Unit());
@@ -266,7 +264,7 @@ public WorldCursorControl WCC
 		var transform = ship.Transform;
 		transform.origin = planet.Transform.origin;
 		transform.origin += new Vector3(3,0,3);
-		ship.System = planet.System;
+		ship.MapObject = planet;
 		ship.Transform = transform;
 		ship.Controller = planet.Controller;
 		ship.IsLocal = planet.Vision;

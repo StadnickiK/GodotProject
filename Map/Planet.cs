@@ -134,9 +134,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
         if(node is Ship ship)
             if(GetParent() == ship.GetParent())
-                if(!Orbit.GetChildren().Contains(ship) && ship._Planet != this){
+                if(!Orbit.GetChildren().Contains(ship) && ship.MapObject != this){
                     AddToOrbit(ship);
-                    ship._Planet = this;
                     ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
                     var transform = state.Transform;
                     transform.origin = GlobalTransform.origin;
@@ -159,7 +158,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                     if(((Transform.origin - ship.GlobalTransform.origin) - ship.PlanetPos).Length()>2){
                         ship.MapObject = null; 
                         RemoveFromOrbit(ship);
-                        ship._Planet = null;
                         ship.Visible = true; 
                         ship.targetManager.ClearTargets();
                     }

@@ -181,7 +181,7 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 					var trans = state.Transform;
 					trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
 					state.Transform = trans;
-					ship.System = this;
+					ship.MapObject = this;
 				}
         }
 	}
