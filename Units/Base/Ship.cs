@@ -86,19 +86,19 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     public void MoveToTarget(Spatial target){
         Sleeping = false;
         Node starSysObj = null;
-        if((GetParent() is Orbit orbit)){
+        if((GetParent() is Orbit orbit)){ 
             starSysObj = orbit.GetParent().GetParent();
         }else{
             starSysObj = GetParent();
         }
-        if(target.GetParent() != starSysObj){
+        if(target.GetParent() != starSysObj){   // check if target is in the same map object (f.e. star system)
             if(starSysObj.GetParent() is StarSystem system){
                 var tempTarget = new Spatial(); // used as point to exit current system
                 var tempTrans = tempTarget.Transform;
-                tempTrans.origin = (target.Transform.origin-Transform.origin).Normalized()*(system.Radius+2);
+                tempTrans.origin = (target.Transform.origin-system.Transform.origin).Normalized()*(((float)system.Radius)*1.2f);
                 tempTarget.Transform = tempTrans;
                 tempTarget.Name = "tempTarget";
-                targetManager.SetTarget(tempTarget);
+                targetManager.SetTarget(tempTarget);    // set temp target to leave star system
                 if(target.GetParent().GetParent() is StarSystem targetSystem){
                     targetManager.AddTarget(targetSystem);
                 }
@@ -112,7 +112,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 return;
             }
         }
-        targetManager.SetTarget(target);
+        targetManager.SetTarget(target); // if target is in the same map object (f.e. star system) set as target
     }
 
     public void MoveToPos(Vector3 destination){
