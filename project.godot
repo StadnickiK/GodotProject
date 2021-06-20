@@ -30,8 +30,6 @@ StatManager="*res://Units/Stats/StatManager.cs"
 
 window/size/width=1920
 window/size/height=1080
-window/size/borderless=true
-window/size/fullscreen=true
 window/stretch/aspect="expand"
 
 [input]
