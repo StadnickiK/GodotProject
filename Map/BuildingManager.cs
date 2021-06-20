@@ -23,7 +23,7 @@ public class BuildingManager : Node
         if(building != null){
             //to do paycost
             ConstructionList.AddTarget(building);
-            ConstructionListChanged = true;
+            // ConstructionListChanged = true;
         }
     }
 
@@ -39,6 +39,7 @@ public class BuildingManager : Node
             if(CurrentConstruction.CurrentTime >= CurrentConstruction.BuildTime){
                 Buildings.Add(CurrentConstruction);
                 ConstructionList.NextTarget();
+                ConstructionListChanged = true;
             }
             BuildingsChanged = true;
         }

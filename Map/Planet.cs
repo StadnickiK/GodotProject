@@ -59,6 +59,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
+    public bool BuildingsChanged { get; set; } = false;
+
     private MeshInstance _mesh = null;
     public MeshInstance Mesh
     {
@@ -314,8 +316,10 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 Vision = true;
             }
         }
-        if(BuildingsManager.BuildingsChanged){
+        if(BuildingsManager.ConstructionListChanged){
             ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
+            BuildingsManager.ConstructionListChanged = false;
+            BuildingsChanged = true;
         }
     }
 }

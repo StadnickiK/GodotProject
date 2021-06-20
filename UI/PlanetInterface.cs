@@ -212,17 +212,18 @@ public class PlanetInterface : Panel
 		_overviewPanel.ClearPanel("Resource transfer");
 		foreach(Ship body in planet.Orbit.GetChildren()){
 			if(body is IMapObjectController controller){
-				if(controller.Controller.PlayerID == LocalPlayerID){
-					var button = new Button();
-					button.Name = button.Text = body.Name;
-					Godot.Collections.Array arr = new Godot.Collections.Array();
-        			arr.Add(body);
-					arr.Add(planet);
-					button.Connect("button_up",this, nameof(_on_transferButton_up), arr);
-					button.SetMeta(button.Name, body);
-					var node = (Node)button.GetMeta(button.Name);
-					_overviewPanel.AddNodeToPanel("Resource transfer", button);
-				}
+				if(controller.Controller != null)
+					if(controller.Controller.PlayerID == LocalPlayerID){
+						var button = new Button();
+						button.Name = button.Text = body.Name;
+						Godot.Collections.Array arr = new Godot.Collections.Array();
+						arr.Add(body);
+						arr.Add(planet);
+						button.Connect("button_up",this, nameof(_on_transferButton_up), arr);
+						button.SetMeta(button.Name, body);
+						var node = (Node)button.GetMeta(button.Name);
+						_overviewPanel.AddNodeToPanel("Resource transfer", button);
+					}
 			}
 		}
 	}
