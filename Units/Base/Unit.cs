@@ -17,10 +17,12 @@ public class Unit : Node
         BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
         BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
         BaseStat hp = new BaseStat("HitPoints", 200);
+        BaseStat storage = new BaseStat("Storage", 100);
         Name = "Unit ";
         Stats.Add(attack.StatName, attack);
         Stats.Add(defence.StatName, defence);
         Stats.Add(hp.StatName, hp);
+        Stats.Add(storage.StatName, storage);
     }
 
     public Unit(int hitPoints){

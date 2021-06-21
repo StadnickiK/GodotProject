@@ -239,8 +239,10 @@ public WorldCursorControl WCC
 						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);
 						for(int i = 0;i<5;i++){
-							ship.Units.Add(new Unit());
+							var unit = new Unit();
+							ship.Units.Add(unit);
 							ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
+							ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
 						if(_Player != player){
 							//ship.Visible = false;

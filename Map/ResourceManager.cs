@@ -17,6 +17,8 @@ public class ResourceManager : Node
         get { return _resourceLimits; }
     }
 
+    public int TotalResourceLimit { get; set; } = -1; // used for dynamaic resource limit allocation, -1 if not used
+
     public bool ResourceLimitChanged { get; set; } = false;
 
     public bool ResourcesChanged { get; set; } = false;
@@ -134,7 +136,23 @@ public class ResourceManager : Node
     }
 
     public bool HasLimit(string resourceName, int quantity){
-        if(ResourceLimits.ContainsKey(resourceName))
+        if(TotalResourceLimit < 0){
+            if(ResourceLimits.ContainsKey(resourceName))
+                if(HasResource(resourceName)){
+                    if((ResourceLimits[resourceName] - Resources[resourceName].Value) > quantity)
+                        return true;
+                }else{
+                    if(ResourceLimits[resourceName] > quantity)
+                        return true;
+                }
+        }else{
+            return CheckDynamicLimit(resourceName, quantity);
+        }
+        return false;  
+    }
+
+    public bool CheckDynamicLimit(string resourceName, int quantity){
+        if(ResourceLimits.ContainsKey(resourceName)){
             if(HasResource(resourceName)){
                 if((ResourceLimits[resourceName] - Resources[resourceName].Value) > quantity)
                     return true;
@@ -142,7 +160,13 @@ public class ResourceManager : Node
                 if(ResourceLimits[resourceName] > quantity)
                     return true;
             }
-        return false;  
+        }else{
+            if(quantity <= TotalResourceLimit){
+                ResourceLimits.Add(resourceName, quantity);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void UpdateResources(List<Building> buildings){
@@ -202,27 +226,20 @@ public class ResourceManager : Node
         }
 
     public void AddResource(string resourceName, int quantity){
-                    if(Resources[resourceName].Value + quantity<ResourceLimits[resourceName]){
-                            if(Resources.ContainsKey(resourceName)){
-                                Resources[resourceName].Value += quantity;
-                            }else{
-                                var resource = new Resource();
-                                resource.Value = quantity;
-                                Resources.Add(resource.Name, resource);
-                            }
-                            ResourcesChanged = true;
-                        
-                    }else{
-                            if(Resources.ContainsKey(resourceName)){
-                                Resources[resourceName].Value = ResourceLimits[resourceName];
-                            }else{
-                                                                var resource = new Resource();
-                                resource.Value = quantity;
-                                Resources.Add(resource.Name, resource);
-                            }
-                            ResourcesChanged = true;
-                        
-                    }
-        
+        if(Resources.ContainsKey(resourceName)){
+            if(Resources[resourceName].Value + quantity < ResourceLimits[resourceName]){
+                Resources[resourceName].Value += quantity;
+            }else{
+                Resources[resourceName].Value = quantity;
+            }
+        }else{
+            if(quantity <= ResourceLimits[resourceName]){
+                var resource = new Resource();
+                resource.Value = quantity;
+                resource.Name =resourceName;
+                Resources.Add(resource.Name, resource);
+            }
+        }
+        ResourcesChanged = true;  
     }
 }

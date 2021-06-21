@@ -151,7 +151,7 @@ public class PlanetInterface : Panel
 		UpdateTransferPanel(planet);
 	}
 
-	void _on_TransferResources2(PhysicsBody left, PhysicsBody body){
+	void _on_TransferResources(PhysicsBody left, PhysicsBody body){
 		if(left is Planet planet && body is Ship ship){
 			///*
 			foreach(TransferLabel label in _overviewPanel.GetPanel("Resource transfer").GetNode("ItemList/Items").GetChildren()){
@@ -185,7 +185,7 @@ public class PlanetInterface : Panel
 			arr = new Godot.Collections.Array();
 			arr.Add(planet);
 			arr.Add(body);
-			button.Connect("button_up", this, nameof(_on_TransferResources2), arr);
+			button.Connect("button_up", this, nameof(_on_TransferResources), arr);
 			_overviewPanel.GetPanel("Resource transfer").GetFoot().AddChild(button);
 
 			if(manager.ResourcesManager.Resources.Count > 0){
