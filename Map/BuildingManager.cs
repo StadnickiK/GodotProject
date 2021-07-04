@@ -21,7 +21,6 @@ public class BuildingManager : Node
 
     public void ConstructBuilding(Building building){
         if(building != null){
-            //to do paycost
             ConstructionList.AddTarget(building);
             // ConstructionListChanged = true;
         }

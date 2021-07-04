@@ -193,12 +193,12 @@ public WorldCursorControl WCC
 				var player = (Player)Players.GetChild(id);
 				var planet = planetList[Rand.Next(0,planetList.Count)];
 				planet.ChangeController(player);
-				tempStarSystems.Remove(system);
 				if(player == _Player){
 					planet.Vision = true;
 				}else{
 					planet.Vision = false;
 				}
+				player.InitResourceLimit();
 			}
 		}else{
 			var usedPlanetList = new List<Planet>();
@@ -217,6 +217,7 @@ public WorldCursorControl WCC
 				}else{
 					planet.Vision = false;
 				}
+				player.InitResourceLimit();
 			}
 		}
 	}

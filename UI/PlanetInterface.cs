@@ -157,11 +157,11 @@ public class PlanetInterface : Panel
 			foreach(TransferLabel label in _overviewPanel.GetPanel("Resource transfer").GetNode("ItemList/Items").GetChildren()){
 				int value = (int)label.NumInput.Value;
 				if(value > 0){
-					if(label.IsRight){
-						planet.ResourcesManager.TransferResources(ship.ResourcesManager, label.Name, (int)label.NumInput.Value);
-					}else{
-						ship.ResourcesManager.TransferResources(planet.ResourcesManager, label.Name, (int)label.NumInput.Value);
-					}
+					// if(label.IsRight){
+					// 	planet.ResourcesManager.TransferResources(ship.ResourcesManager, label.Name, (int)label.NumInput.Value);
+					// }else{
+					// 	ship.ResourcesManager.TransferResources(planet.ResourcesManager, label.Name, (int)label.NumInput.Value);
+					// }
 				}
 			}
 			//*/
@@ -191,19 +191,19 @@ public class PlanetInterface : Panel
 			if(manager.ResourcesManager.Resources.Count > 0){
 				foreach(Resource resource in manager.ResourcesManager.Resources.Values){
 					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
-					if(planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
-						label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, resource.Value );
-					}else{
-						label.UpdateLabel(resource.Name, 0, resource.Value );
-					}
+					// if(planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
+					// 	label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, resource.Value );
+					// }else{
+					// 	label.UpdateLabel(resource.Name, 0, resource.Value );
+					// }
 					_overviewPanel.AddNodeToPanel("Resource transfer", label);
 				}
 			}else{
-				foreach(Resource resource in planet.ResourcesManager.Resources.Values){
-					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
-					label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, 0);
-					_overviewPanel.AddNodeToPanel("Resource transfer", label);
-				}
+				// foreach(Resource resource in planet.ResourcesManager.Resources.Values){
+				// 	TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
+				// 	label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, 0);
+				// 	_overviewPanel.AddNodeToPanel("Resource transfer", label);
+				// }
 			}
 		}
 	}
@@ -280,11 +280,11 @@ public class PlanetInterface : Panel
 				return false;
 			}
 		}
-		foreach(Resource resource in building.ProductCost){
-			if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
-				//return false;
-			}
-		}
+		// foreach(Resource resource in building.ProductCost){
+		// 	if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
+		// 		//return false;
+		// 	}
+		// }
 		return true;
 	}
 
@@ -319,7 +319,11 @@ public class PlanetInterface : Panel
 	void _on_StartConstruction(Node node){
 		if(node is Building building){
 			if(building != null && _planet != null){
-				_planet.BuildingsManager.ConstructBuilding(building);
+				if(_planet.Controller.ResManager.PayCost(building.BuildCost)){
+					_planet.BuildingsManager.ConstructBuilding(building);
+				}else{
+
+				}
 			}
 		}
 		if(node is Unit unit){

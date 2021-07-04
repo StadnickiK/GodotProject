@@ -43,8 +43,8 @@ public class UI : Spatial
             GD.Print("update r panel");
         }
         if(player.ResourcesChanged){
-            if(player.Resources != null){
-                ResPanel.UpdatePanel(player.Resources);
+            if(player.ResManager != null){
+                ResPanel.UpdatePanel(player.ResManager.Resources);
                 player.ResourcesChanged = false;
             }
         }

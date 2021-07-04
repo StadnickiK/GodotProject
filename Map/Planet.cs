@@ -68,7 +68,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     }
 
     float _time = 0;
-
     public ResourceManager ResourcesManager { get; set; } = new ResourceManager();
 
     [Signal]
@@ -176,7 +175,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     }
 
     public void ConstructUnit(Unit unit){
-        if(Controller.PayCost(unit.BuildCost)){
+        if(Controller.ResManager.PayCost(unit.BuildCost)){
             var ship = GetLocalShip();
             if(ship != null){
                 ship.Units.Add(unit);
@@ -301,23 +300,23 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             BuildingsManager.Buildings.Add(building);
             ResourcesManager.Resources.Add(resource.Name, resource);
         }
-        foreach(Building building in BuildingsManager.Buildings)
-            ResourcesManager.UpdateResourceLimit(building);
+        // foreach(Building building in BuildingsManager.Buildings)
+        //     ResourcesManager.UpdateResourceLimit(building);
     }
 
     public override void _Process(float delta){
         _time += delta;
-        if(_time >= TimeStep){
-            ResourcesManager.UpdateResources(BuildingsManager.Buildings);
-            _time = 0;
-        }
+        // if(_time >= TimeStep){
+        //     ResourcesManager.UpdateResources(BuildingsManager.Buildings);
+        //     _time = 0;
+        // }
         if(Orbit.OrbitChanged){
             if(_orbit.HasLocal()){
                 Vision = true;
             }
         }
         if(BuildingsManager.ConstructionListChanged){
-            ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
+            // ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
             BuildingsManager.ConstructionListChanged = false;
             BuildingsChanged = true;
         }

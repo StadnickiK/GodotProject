@@ -74,6 +74,21 @@ public class ResourceManager : Node
             }
     }
 
+    public void RemoveResourceLimit(Building building){
+        if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
+            foreach(Resource resource in building.Products){
+                if(ResourceLimits.ContainsKey(resource.Name)){
+                    ResourceLimits[resource.Name] -= building.ResourceLimit;
+                    ResourceLimitChanged = true;   
+                }
+            }
+    }
+
+    public void UpdateResourceLimit(Building newBuilding, Building oldBuilding){
+        RemoveResourceLimit(oldBuilding);
+        UpdateResourceLimit(newBuilding);
+    }
+
     public void UpdateResourceLimit(string resourceName, int quantity){
                 if(ResourceLimits.ContainsKey(resourceName)){
                     ResourceLimits[resourceName] += quantity;
@@ -178,29 +193,49 @@ public class ResourceManager : Node
                 //     }
                 // }
                 foreach(Resource product in building.Products){
-                    if(Resources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
-                        if(PayCost(building.ProductCost)){
-                            if(Resources.ContainsKey(product.Name)){
-                                //int temp = product.Quantity;
-                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                                Resources[product.Name].Value += product.Quantity;
-                            }else{
+                    if(!Resources.ContainsKey(product.Name)){
+                        if(product.Quantity<ResourceLimits[product.Name]){  // case for no resource limit may be required
+                            if(PayCost(building.ProductCost)){
                                 Resources.Add(product.Name, product);
+                                ResourcesChanged = true;
                             }
-                            ResourcesChanged = true;
                         }
                     }else{
-                        if(PayCost(building.ProductCost)){
-                            if(Resources.ContainsKey(product.Name)){
-                                //int temp = product.Quantity;
-                                //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                                Resources[product.Name].Value = ResourceLimits[product.Name];
-                            }else{
-                                Resources.Add(product.Name, product);
+                        if(Resources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
+                            if(PayCost(building.ProductCost)){
+                                Resources[product.Name].Value += product.Quantity;
+                                ResourcesChanged = true;
                             }
-                            ResourcesChanged = true;
+                        }else{
+                            if(PayCost(building.ProductCost)){
+                                Resources[product.Name].Value = ResourceLimits[product.Name];
+                                ResourcesChanged = true;
+                            }
                         }
                     }
+                    // if(Resources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
+                    //     if(PayCost(building.ProductCost)){
+                    //         if(Resources.ContainsKey(product.Name)){
+                    //             //int temp = product.Quantity;
+                    //             //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
+                    //             Resources[product.Name].Value += product.Quantity;
+                    //         }else{
+                    //             Resources.Add(product.Name, product);
+                    //         }
+                    //         ResourcesChanged = true;
+                    //     }
+                    // }else{
+                    //     if(PayCost(building.ProductCost)){
+                    //         if(Resources.ContainsKey(product.Name)){
+                    //             //int temp = product.Quantity;
+                    //             //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
+                    //             Resources[product.Name].Value = ResourceLimits[product.Name];
+                    //         }else{
+                    //             Resources.Add(product.Name, product);
+                    //         }
+                    //         ResourcesChanged = true;
+                    //     }
+                    // }
                 }
             }
     }
