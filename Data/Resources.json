@@ -1,0 +1,22 @@
+{
+  "Resource 0": {
+    "Type": "Ore",
+    "Rarity": 80,
+    "Starter": true
+  },
+  "Resource 1": {
+    "Type": "Ore",
+    "Rarity": 60,
+    "Starter": false
+  },
+  "Resource 2": {
+    "Type": "Ore",
+    "Rarity": 45,
+    "Starter": false
+  },
+  "Resource 3": {
+    "Type": "Ore",
+    "Rarity": 30,
+    "Starter": false
+  }
+}
