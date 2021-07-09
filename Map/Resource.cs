@@ -6,22 +6,20 @@ public class Resource : Node
 
     //public int Quantity { get; set; } = 0;
 
-    public int Quantity = 5;
+    public int Quantity = 0;
 
     public int? QuantityCap { get; set; } = null;
 
     public int Value { get; set; } = 0;
 
-    public Random Rand { get; set; } = new Random();
-
     private int _baseValue = 1;
     public int BaseValue { get => _baseValue; }
 
-    private Type _type = Type.Other;
-    public Type ResourceType
-    {
-        get { return _type; }
-    }
+public Type ResourceType { get; set; } = Type.Ore;
+
+    public int Rarity { get; set; } = 0;
+
+    public bool IsStarter { get; set; } = false;
 
     public Resource(){}
 
