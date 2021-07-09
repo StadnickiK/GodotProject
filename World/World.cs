@@ -17,6 +17,8 @@ public WorldCursorControl WCC
 	get { return _wcc; }
 }
 
+private Data _data = null;
+
 	Galaxy Galaxy = null;
 	CameraGimbal Camera = null;
 
@@ -117,6 +119,7 @@ public WorldCursorControl WCC
 	}
 
 	void GetNodes(){
+		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
 		Camera = GetNode<CameraGimbal>("UI/CameraGimbal");
 		Players = GetNode("Players");
@@ -283,24 +286,37 @@ public WorldCursorControl WCC
 		foreach(StarSystem system in _map.galaxy.StarSystems){
 			foreach(Node node in system.StarSysObjects.GetChildren()){
 				if(node is Planet planet){
-					if(planet.Controller != null){
-						var resource = new Resource("resource 0");
-						if(!(planet.ResourcesManager.Resources.ContainsKey(resource.Name)))
+					foreach(var resource in _data.WorldResources.Values){
+						if(resource.IsStarter == true && 
+						planet.Controller != null && 
+						(resource.ResourceType == Resource.Type.Ore)){
 							planet.ResourcesManager.Resources.Add(resource.Name, resource);
-						do{
-							resource = new Resource("resource "+ Rand.Next(1,5));
-						}while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
-						planet.ResourcesManager.Resources.Add(resource.Name, resource);
-					}else{
-						int amount = Rand.Next(1,5);
-						while(amount>0){
-							Resource resource = null;
-							do{
-								resource = new Resource("resource "+ Rand.Next(0,5));
-							}while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
-							planet.ResourcesManager.Resources.Add(resource.Name, resource);
-							amount--;
+						}else if((resource.ResourceType == Resource.Type.Ore)){
+							if(Rand.Next(0,100)>(100 - resource.Rarity))
+								planet.ResourcesManager.Resources.Add(resource.Name, resource);
 						}
+						// if(resource is Godot.Collections.Dictionary)
+							// GD.Print(resource);
+					
+					// if(planet.Controller != null){
+						// var resource = new Resource("resource 0");
+						// if(!(planet.ResourcesManager.Resources.ContainsKey(resource.Name)))
+						// 	planet.ResourcesManager.Resources.Add(resource.Name, resource);
+						// do{
+						// 	resource = new Resource("resource "+ Rand.Next(1,5));
+						// }while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
+						// planet.ResourcesManager.Resources.Add(resource.Name, resource);
+					// }else{
+						// int amount = Rand.Next(1,5);
+						// while(amount>0){
+						// 	Resource resource = null;
+						// 	do{
+						// 		resource = new Resource("resource "+ Rand.Next(0,5));
+						// 	}while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
+						// 	planet.ResourcesManager.Resources.Add(resource.Name, resource);
+						// 	amount--;
+						// }
+					// }
 					}
 				}
 			}

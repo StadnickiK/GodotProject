@@ -17,6 +17,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\JSONLoader.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
