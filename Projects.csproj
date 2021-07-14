@@ -20,6 +20,7 @@
     <Compile Include="Data\BuildingLoader.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\JSONLoader.cs" />
+    <Compile Include="Data\ResourcesLoader.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
