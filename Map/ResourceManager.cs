@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class ResourceManager : Node
 {
 
-    private Dictionary<string, Resource> _resources = new Dictionary<string, Resource>();
-    public Dictionary<string, Resource> Resources
+    private Dictionary<string, int> _resources = new Dictionary<string, int>();
+    public Dictionary<string, int> Resources
     {
         get { return _resources; }
     }
@@ -48,37 +48,29 @@ public class ResourceManager : Node
 
     public void UpdateResourceLimit(List<Building> buildings){  
         foreach(Building building in buildings){
-            if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
-                foreach(Resource resource in building.Products){
-                    if(ResourceLimits.ContainsKey(resource.Name)){
-                        ResourceLimits[resource.Name] += building.ResourceLimit;
-                        ResourceLimitChanged = true;   
-                    }else{
-                        ResourceLimits.Add(resource.Name, building.ResourceLimit);
-                        ResourceLimitChanged = true;   
-                    }
-                }
+            if(building.ResourceLimits != null)
+                UpdateResourceLimit(building);
         }
     }
 
     public void UpdateResourceLimit(Building building){
-        if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
-            foreach(Resource resource in building.Products){
-                if(ResourceLimits.ContainsKey(resource.Name)){
-                    ResourceLimits[resource.Name] += building.ResourceLimit;
+        if(building.ResourceLimits != null)
+            foreach(var resourceName in building.ResourceLimits.Keys){
+                if(ResourceLimits.ContainsKey(resourceName)){
+                    ResourceLimits[resourceName] += building.ResourceLimits[resourceName];
                     ResourceLimitChanged = true;   
                 }else{
-                    ResourceLimits.Add(resource.Name, building.ResourceLimit);
+                    ResourceLimits.Add(resourceName, building.ResourceLimits[resourceName]);
                     ResourceLimitChanged = true;   
                 }
             }
     }
 
     public void RemoveResourceLimit(Building building){
-        if(building.ResourceLimit >0 && building.ResourceLimit != default(int))
-            foreach(Resource resource in building.Products){
-                if(ResourceLimits.ContainsKey(resource.Name)){
-                    ResourceLimits[resource.Name] -= building.ResourceLimit;
+        if(building.ResourceLimits != null)
+            foreach(var resourceName in building.ResourceLimits.Keys){
+                if(ResourceLimits.ContainsKey(resourceName)){
+                    ResourceLimits[resourceName] -= building.ResourceLimits[resourceName];
                     ResourceLimitChanged = true;   
                 }
             }
@@ -99,43 +91,43 @@ public class ResourceManager : Node
                 }
     }
 
-    public bool PayCost(List<Resource> BuildCost){
-        foreach(Resource resource in BuildCost){
-            if(Resources.ContainsKey(resource.Name)){
-                if(Resources[resource.Name].Value < resource.Quantity){
+    public bool PayCost(Godot.Collections.Dictionary<string, int> BuildCost){
+        foreach(var resName in BuildCost.Keys){
+            if(Resources.ContainsKey(resName)){
+                if(Resources[resName] < BuildCost[resName]){
                     return false;
                 }
             }else{
                 return false;
             }
         }
-        foreach(Resource resource in BuildCost){
-            Resources[resource.Name].Value -= resource.Quantity;
+        foreach(var resName in BuildCost.Keys){
+            Resources[resName] -= BuildCost[resName];
         }
         return true;
     }
 
     public bool PayCost(Resource resource){
             if(Resources.ContainsKey(resource.Name)){
-                if(Resources[resource.Name].Value < resource.Quantity){
+                if(Resources[resource.Name] < resource.Quantity){
                     return false;
                 }
             }else{
                 return false;
             }
-            Resources[resource.Name].Value -= resource.Quantity;
+            Resources[resource.Name] -= resource.Quantity;
         return true;
     }
 
     public bool PayCost(string resourceName, int quantity){
             if(Resources.ContainsKey(resourceName)){
-                if(Resources[resourceName].Value < quantity){
+                if(Resources[resourceName] < quantity){
                     return false;
                 }
             }else{
                 return false;
             }
-            Resources[resourceName].Value -= quantity;
+            Resources[resourceName] -= quantity;
         return true;
     }
 
@@ -145,7 +137,7 @@ public class ResourceManager : Node
 
     public bool HasResource(string resourceName, int quantity){
         if(HasResource(resourceName))
-            if(Resources[resourceName].Value >= quantity)
+            if(Resources[resourceName] >= quantity)
                 return true;
         return false;  
     }
@@ -154,7 +146,7 @@ public class ResourceManager : Node
         if(TotalResourceLimit < 0){
             if(ResourceLimits.ContainsKey(resourceName))
                 if(HasResource(resourceName)){
-                    if((ResourceLimits[resourceName] - Resources[resourceName].Value) > quantity)
+                    if((ResourceLimits[resourceName] - Resources[resourceName]) > quantity)
                         return true;
                 }else{
                     if(ResourceLimits[resourceName] > quantity)
@@ -169,7 +161,7 @@ public class ResourceManager : Node
     public bool CheckDynamicLimit(string resourceName, int quantity){
         if(ResourceLimits.ContainsKey(resourceName)){
             if(HasResource(resourceName)){
-                if((ResourceLimits[resourceName] - Resources[resourceName].Value) > quantity)
+                if((ResourceLimits[resourceName] - Resources[resourceName]) > quantity)
                     return true;
             }else{
                 if(ResourceLimits[resourceName] > quantity)
@@ -192,23 +184,25 @@ public class ResourceManager : Node
                         
                 //     }
                 // }
-                foreach(Resource product in building.Products){
-                    if(!Resources.ContainsKey(product.Name)){
-                        if(product.Quantity<ResourceLimits[product.Name]){  // case for no resource limit may be required
+                foreach(string productName in building.Products.Keys){
+                    if(!Resources.ContainsKey(productName)){
+                        var quantity = building.Products[productName];
+                        if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
                             if(PayCost(building.ProductCost)){
-                                Resources.Add(product.Name, product);
+                                Resources.Add(productName, quantity);
                                 ResourcesChanged = true;
                             }
                         }
                     }else{
-                        if(Resources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
+                        var quantity = building.Products[productName];
+                        if(Resources[productName] + quantity<ResourceLimits[productName]){
                             if(PayCost(building.ProductCost)){
-                                Resources[product.Name].Value += product.Quantity;
+                                Resources[productName] += quantity;
                                 ResourcesChanged = true;
                             }
                         }else{
                             if(PayCost(building.ProductCost)){
-                                Resources[product.Name].Value = ResourceLimits[product.Name];
+                                Resources[productName] = ResourceLimits[productName];
                                 ResourcesChanged = true;
                             }
                         }
@@ -241,19 +235,19 @@ public class ResourceManager : Node
     }
 
         public void AddResource(Resource resource){
-                    if(Resources[resource.Name].Value + resource.Quantity<ResourceLimits[resource.Name]){
+                    if(Resources[resource.Name] + resource.Quantity<ResourceLimits[resource.Name]){
                             if(Resources.ContainsKey(resource.Name)){
-                                Resources[resource.Name].Value += resource.Quantity;
+                                Resources[resource.Name] += resource.Quantity;
                             }else{
-                                Resources.Add(resource.Name, resource);
+                                Resources.Add(resource.Name, resource.Quantity);
                             }
                             ResourcesChanged = true;
                         
                     }else{
                             if(Resources.ContainsKey(resource.Name)){
-                                Resources[resource.Name].Value = ResourceLimits[resource.Name];
+                                Resources[resource.Name] = ResourceLimits[resource.Name];
                             }else{
-                                Resources.Add(resource.Name, resource);
+                                Resources.Add(resource.Name, resource.Quantity);
                             }
                             ResourcesChanged = true;
                         
@@ -262,17 +256,17 @@ public class ResourceManager : Node
 
     public void AddResource(string resourceName, int quantity){
         if(Resources.ContainsKey(resourceName)){
-            if(Resources[resourceName].Value + quantity < ResourceLimits[resourceName]){
-                Resources[resourceName].Value += quantity;
+            if(Resources[resourceName] + quantity < ResourceLimits[resourceName]){
+                Resources[resourceName] += quantity;
             }else{
-                Resources[resourceName].Value = quantity;
+                Resources[resourceName] = quantity;
             }
         }else{
             if(quantity <= ResourceLimits[resourceName]){
-                var resource = new Resource();
-                resource.Value = quantity;
-                resource.Name =resourceName;
-                Resources.Add(resource.Name, resource);
+                // var resource = new Resource();
+                // resource.Value = quantity;
+                // resource.Name =resourceName;
+                Resources.Add(resourceName, quantity);
             }
         }
         ResourcesChanged = true;  

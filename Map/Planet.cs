@@ -55,8 +55,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Occupied
     }
 
-    //public TargetManager<Building> Construction { get; set; } = new TargetManager<Building>(); TO DO: create construction list, multiple simultanous constructions
-
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
     public bool BuildingsChanged { get; set; } = false;
@@ -289,17 +287,17 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         AddChild(BuildingsManager);
         AddChild(ResourcesManager);
         //Generate();
-        for(int i = 0; i<1; i++){
-            var building = new Building();
-            building.Name = "Building "+i;
-            var resource = new Resource();
-            resource.Name = "resource "+i;
-            resource.Quantity = 20;
-            building.Products.Add(resource);
-            building.ResourceLimit = 500;
-            BuildingsManager.Buildings.Add(building);
-            ResourcesManager.Resources.Add(resource.Name, resource);
-        }
+        // for(int i = 0; i<1; i++){
+        //     var building = new Building();
+        //     building.Name = "Building "+i;
+        //     var resource = new Resource();
+        //     resource.Name = "resource "+i;
+        //     resource.Quantity = 20;
+        //     building.Products.Add(resource.Name, resource.Quantity);
+        //     building.ResourceLimit = 500;
+        //     BuildingsManager.Buildings.Add(building);
+        //     ResourcesManager.Resources.Add(resource.Name, resource);
+        // }
         // foreach(Building building in BuildingsManager.Buildings)
         //     ResourcesManager.UpdateResourceLimit(building);
     }
@@ -319,6 +317,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             // ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
             BuildingsManager.ConstructionListChanged = false;
             BuildingsChanged = true;
+            // Controller.UpdateResourceLimit(this);
         }
     }
 }

@@ -5,17 +5,26 @@ using System.Collections.Generic;
 public class Building : Node
 {
 
-    public List<Resource> Resources { get; set; } = new List<Resource>();
+    // public List<Resource> Resources { get; set; } = new List<Resource>();
 
-    public List<Resource> Products { get; set; } = new List<Resource>();
+    public bool IsStarter { get; set; } = false;
 
-    public List<Resource> BuildCost { get; set; } = new List<Resource>();
+    public Godot.Collections.Dictionary<string, int> Products { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public List<Resource> ProductCost { get; set; } = new List<Resource>();
+    // public List<Resource> Products { get; set; } = new List<Resource>();
 
-    public bool HasProductCost { get; set; } = false;
+    public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public int ResourceLimit { get; set; }
+    // public List<Resource> BuildCost { get; set; } = new List<Resource>();
+
+    public Godot.Collections.Dictionary<string, int> ProductCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
+    // public List<Resource> ProductCost { get; set; } = new List<Resource>();
+
+    // public bool HasProductCost { get; set; } = false;
+
+    public Godot.Collections.Dictionary<string, int> ResourceLimits { get; set; } = new Godot.Collections.Dictionary<string, int>();
+
+    // public int ResourceLimit { get; set; }
 
     public int BuildTime { get; set; } = 5;
 
