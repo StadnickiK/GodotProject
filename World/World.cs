@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class World : Spatial
 {
@@ -48,18 +49,6 @@ private Data _data = null;
 
 	List<Player> PlayersList = new List<Player>();
 
-	private List<Building> _worldBuildings = new List<Building>();
-	public List<Building> WorldBuildings
-	{
-		get { return _worldBuildings; }
-	}
-	
-	private Dictionary<string, Resource> _wolrdResources = new Dictionary<string, Resource>();
-	public Dictionary<string, Resource> WorldResources
-	{
-		get { return _wolrdResources; }
-	}
-
 	public Dictionary<string, int> WorldGenParameters = new Dictionary<string, int>();
 
 	List<int> PlayerIDs = new List<int>();
@@ -78,7 +67,7 @@ private Data _data = null;
 
 	void _on_OpenPlanetInterface(Planet planet){
 		_UI.PInterface.Visible = true;
-		_UI.PInterface.UpdatePlanetInterface(planet, WorldBuildings);
+		_UI.PInterface.UpdatePlanetInterface(planet, _data.WorldBuildings);
 	}
 
 	void _on_CreateShip(Planet planet, Unit unit){
@@ -290,10 +279,10 @@ private Data _data = null;
 						if(resource.IsStarter == true && 
 						planet.Controller != null && 
 						(resource.ResourceType == Resource.Type.Ore)){
-							planet.ResourcesManager.Resources.Add(resource.Name, resource);
+							planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 						}else if((resource.ResourceType == Resource.Type.Ore)){
 							if(Rand.Next(0,100)>(100 - resource.Rarity))
-								planet.ResourcesManager.Resources.Add(resource.Name, resource);
+								planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 						}
 						// if(resource is Godot.Collections.Dictionary)
 							// GD.Print(resource);
@@ -343,59 +332,19 @@ private Data _data = null;
 	}
 
 	void InitWorldBuildings(){
-		for(int i = 1; i<6; i++){
-			var building = new Building();
-			building.Name = "Building "+i;
-			
-			Resource res = new Resource();
-			res.Name = "resource "+i;
-			building.BuildTime = 5+i;
-			
-			for(int j = 0; j<i;j++){
-				res = new Resource();
-				res.Name = "resource "+(j);
-				res.Quantity = i * 100;
-				building.BuildCost.Add(res);
+		var startBuildings = new List<Building>();
+		foreach(Building building in _data.WorldBuildings.Where(x => x.IsStarter == true)){
+			startBuildings.Add(building);			
+		}
+		foreach(Player player in Players.GetChildren()){
+			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){
+				planet.BuildingsManager.Buildings.AddRange(startBuildings);
+				planet.ResourcesManager.UpdateResourceLimit(planet.BuildingsManager.Buildings); // need to check if needed
+				planet.BuildingsManager.BuildingsChanged = true;
 			}
-
-			res = new Resource();
-			res.Quantity = (int)(25f/i);
-			res.Name = "resource "+i;
-			building.Products.Add(res);
-
-			res = new Resource();
-			res.Name = "resource "+(i-1);
-			res.Quantity = (int)(10f/i);
-			building.ProductCost.Add(res);
-
-			building.ResourceLimit = 200;
-
-			building.BuildTime = (i+1) * 5;
-			WorldBuildings.Add(building);
+			player.InitResourceLimit();
 		}
-
-		for(int i = 0; i<5; i++){
-			var building = new Building();
-			building.Name = "Storage "+i;
-			
-			Resource res = new Resource();
-			res.Name = "resource "+i;
-			
-			res = new Resource();
-			res.Name = "resource 0";
-			res.Quantity = 100+i * 100;
-			building.BuildCost.Add(res);
-
-			res = new Resource();
-			res.Name = "resource "+i;
-			building.Products.Add(res);
-
-			building.ResourceLimit = 1000;
-
-			building.BuildTime = (i+5) * 5;
-			WorldBuildings.Add(building);
-		}
-	}
+	}	
 
 	void InitWorld(){
 		InitRand();
