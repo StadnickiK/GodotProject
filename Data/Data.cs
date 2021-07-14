@@ -10,16 +10,27 @@ public class Data : Node
         get { return _resources; }
     }
 
+    private BuildingLoader _BuildingsLoader = null;
+    public BuildingLoader BuildingsLoader
+    {
+        get { return _BuildingsLoader; }
+    }
+    
+
     public Godot.Collections.Dictionary<string, Resource> WorldResources { get; } = new Godot.Collections.Dictionary<string, Resource>();
     
+    public List<Building> WorldBuildings { get; set; } = new List<Building>();
+
     public override void _Ready()
     {
         GetNodes();
         TranslateJSON();
+        WorldBuildings = _BuildingsLoader.WorldBuildings;
     }
 
     void GetNodes(){
         _resources = GetNode<JSONLoader>("Resources");
+        _BuildingsLoader = GetNode<BuildingLoader>("BuildingLoader");
     }
 
     void TranslateJSON(){
