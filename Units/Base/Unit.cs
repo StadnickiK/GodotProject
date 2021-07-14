@@ -10,7 +10,7 @@ public class Unit : Node
 
     public bool HasHitpoints { get; set; } = true;  
 
-    public List<Resource> BuildCost { get; set; } = new List<Resource>();
+    public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public Unit(){
         Random rand = new Random();
