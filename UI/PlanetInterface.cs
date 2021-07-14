@@ -115,9 +115,9 @@ public class PlanetInterface : Panel
 		label = new Label();
 		label.Text = "\nPlanet Resources: \n";
 		_overviewPanel.AddNodeToPanel("Overview", label);
-		foreach(Resource resource in planet.ResourcesManager.Resources.Values){
+		foreach(var resourceName in planet.ResourcesManager.Resources.Keys){
 			label = new Label();
-			label.Text = resource.Name;
+			label.Text = resourceName;
 			_overviewPanel.AddNodeToPanel("Overview", label);
 		}
 	}
@@ -189,7 +189,7 @@ public class PlanetInterface : Panel
 			_overviewPanel.GetPanel("Resource transfer").GetFoot().AddChild(button);
 
 			if(manager.ResourcesManager.Resources.Count > 0){
-				foreach(Resource resource in manager.ResourcesManager.Resources.Values){
+				foreach(var resource in manager.ResourcesManager.Resources.Values){
 					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
 					// if(planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
 					// 	label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, resource.Value );
@@ -275,8 +275,8 @@ public class PlanetInterface : Panel
 	}
 
 	bool CheckBuildingResources(Planet planet, Building building){
-		foreach(Resource resource in building.Products){
-			if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
+		foreach(var resName in building.Products.Keys){
+			if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
 				return false;
 			}
 		}
