@@ -133,7 +133,7 @@ public class Player : Node
         }
     }
 
-    void UpdateResourceLimit(Planet planet){
+    public void UpdateResourceLimit(Planet planet){
             if(planet.BuildingsChanged){
                 _resourceManager.UpdateResourceLimit(planet.BuildingsManager.GetLastBuilding());
                 planet.BuildingsChanged = false;
