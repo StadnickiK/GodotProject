@@ -46,6 +46,13 @@ public class Unit : Node
         Stats.Add(hp.StatName, hp);
     }
 
+    public Unit(string name, List<BaseStat> stats){
+        Name = name;
+        foreach(BaseStat stat in stats){
+            Stats.Add(stat.Name, stat);
+        }
+    }
+
     public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
     public void CalculateDamage(Unit unit){
