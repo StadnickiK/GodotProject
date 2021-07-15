@@ -14,3 +14,5 @@ Path = "res://Data/Resources.json"
 [node name="BuildingLoader" type="Node" parent="."]
 script = ExtResource( 3 )
 Path = "res://Data/Buildings.json"
+
+[node name="UnitsLoader" type="Node" parent="."]
