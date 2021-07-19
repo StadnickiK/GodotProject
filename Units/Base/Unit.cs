@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Unit : Node
+public class Unit : Node, IBuildTime
 {
 
     [Export]
@@ -10,19 +10,26 @@ public class Unit : Node
 
     public bool HasHitpoints { get; set; } = true;  
 
+    public int BuildTime { get; set; } = 0;
+
+    public int CurrentTime { get; set; } = 0;
+
     public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public Unit(){
-        Random rand = new Random();
-        BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
-        BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
-        BaseStat hp = new BaseStat("HitPoints", 200);
-        BaseStat storage = new BaseStat("Storage", 100);
-        Name = "Unit ";
-        Stats.Add(attack.StatName, attack);
-        Stats.Add(defence.StatName, defence);
-        Stats.Add(hp.StatName, hp);
-        Stats.Add(storage.StatName, storage);
+    public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+
+    // World - initStartFleets, InitResistance
+    public Unit(){  
+        // Random rand = new Random();
+        // BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
+        // BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
+        // BaseStat hp = new BaseStat("HitPoints", 200);
+        // BaseStat storage = new BaseStat("Storage", 100);
+        // Name = "Unit ";
+        // Stats.Add(attack.StatName, attack);
+        // Stats.Add(defence.StatName, defence);
+        // Stats.Add(hp.StatName, hp);
+        // Stats.Add(storage.StatName, storage);
     }
 
     public Unit(int hitPoints){
@@ -36,6 +43,7 @@ public class Unit : Node
         Stats.Add(hp.StatName, hp);
     }
 
+    // UI Planet Interface
     public Unit(int attack, int defence){
         BaseStat atck = new BaseStat("Attack", attack);
         BaseStat dfnce = new BaseStat("Defence", defence);
@@ -53,7 +61,15 @@ public class Unit : Node
         }
     }
 
-    public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+    public Unit(Unit unit){
+        Name = unit.Name;
+        Stats = new Dictionary<string, BaseStat>(unit.Stats);
+        BuildCost = new Godot.Collections.Dictionary<string, int>(unit.BuildCost);
+        BuildTime = unit.BuildTime;
+        ID_Owner = unit.ID_Owner;
+    }
+
+
 
     public void CalculateDamage(Unit unit){
         unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
