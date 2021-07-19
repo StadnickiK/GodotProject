@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Building : Node
+public class Building : Node, IBuilding
 {
 
     // public List<Resource> Resources { get; set; } = new List<Resource>();
