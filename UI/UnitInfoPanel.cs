@@ -61,7 +61,7 @@ void GetNodes(){
             _overviewPanel.AddNodeToPanel("Details", label);
             foreach(Unit unit in ship.Units){
                 label = new Label(); 
-                label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+                // label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
                 _overviewPanel.AddNodeToPanel("Details", label);
             }
         }

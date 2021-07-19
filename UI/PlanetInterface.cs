@@ -14,6 +14,8 @@ public class PlanetInterface : Panel
 
 	List<Building> _allBuildings = null;
 
+	List<Unit> _allUnits = null;
+
 	OverviewPanel _overviewPanel = null;
 
 	BuildingInterface _buildingInterface = null;
@@ -86,10 +88,11 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	public void UpdatePlanetInterface(Planet planet, List<Building> allBuildings){
+	public void UpdatePlanetInterface(Planet planet, List<Building> allBuildings,  List<Unit> worldUnits){
 		if(planet != null){
 			_planet = planet;
 			_allBuildings = allBuildings;
+			_allUnits = worldUnits;
 			SetTitle(planet.Name);
 			ClearPlanetInterface();
 			if(planet.Vision){
@@ -97,8 +100,10 @@ public class PlanetInterface : Panel
 				UpdateOrbit(planet);
 				UpdateBuildings(planet, allBuildings);
 				UpdateTransferPanel(planet);
+				UpdateConstruction(planet, worldUnits);
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
 				_overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
+				_overviewPanel.ConnectToGuiInputEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent));
 			}
 		}
 	}
@@ -288,6 +293,42 @@ public class PlanetInterface : Panel
 		return true;
 	}
 
+	void UpdateConstruction(Planet planet, List<Unit> WorldUnits){
+		_overviewPanel.ClearPanel("Construction");
+		if(planet.Controller != null){
+			if(planet.Controller.PlayerID == LocalPlayerID){
+				var tempLabel = new Label();
+				tempLabel.Text = "\n Construction list: \n";
+				_overviewPanel.AddNodeToPanel("Construction", tempLabel);
+				UpdateConstructionList(WorldUnits, planet);
+			}
+		}
+	}
+
+	void UpdateConstructionList(List<Unit> WorldUnits, Planet planet){
+		foreach(var unit in WorldUnits){
+			var label = (BuildingLabel)ItemScene.Instance();
+			label.SetMeta(unit.Name, unit);
+			label.Name = unit.Name;
+			label.Text = unit.Name;
+			_overviewPanel.AddNodeToPanel("Construction", label);
+			if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+				label.Progress.Value = unit.CurrentTime;
+				label.Progress.MaxValue = unit.BuildTime;
+			}
+			if(planet.CurrentUnit != null){
+				if(planet.CurrentUnit.Name == unit.Name){
+					label.Progress.Value = planet.CurrentUnit.CurrentTime;
+					label.Progress.MaxValue = planet.CurrentUnit.BuildTime;
+				}
+			}
+		}
+	}
+
+	void UpdatePlanetConstruction(Planet planet, List<Unit> WorldUnits){
+
+	}
+
 	public void _on_LabelGuiInputEvent(InputEvent input, Node node){
 		if(input is InputEventMouseButton button){
 			if(button.ButtonIndex == (int)ButtonList.Left){
@@ -300,11 +341,16 @@ public class PlanetInterface : Panel
 		if(input is InputEventMouseButton button){
 			if(button.ButtonIndex == (int)ButtonList.Left){
 				if(node is BuildingLabel label){
-					var building = (Building)label.GetMeta(label.Text);
-					if(building != null && _planet != null){
-						_buildingInterface.Visible = true;
-						_buildingInterface.UpdateInterface(building, _planet);
-						_selectedBuilding = label;
+					if(label.GetMeta(label.Text) is Building building)
+						if(building != null && _planet != null){
+							_buildingInterface.Visible = true;
+							_buildingInterface.UpdateInterface(building, _planet);
+							_selectedBuilding = label;
+						}
+					if(label.GetMeta(label.Text) is Unit unit){
+							_buildingInterface.Visible = true;
+							_buildingInterface.UpdateInterface(unit, _planet);
+							_selectedBuilding = label;
 					}
 				}
 			}
@@ -328,7 +374,8 @@ public class PlanetInterface : Panel
 		}
 		if(node is Unit unit){
 			if(unit != null && _planet != null){
-				_planet.ConstructUnit(unit);
+				_planet.StartConstruction(unit);
+				// _planet.ConstructUnit(unit);
 			}
 		}
 	}
@@ -344,6 +391,8 @@ public class PlanetInterface : Panel
 					UpdateBuildings(_planet, _allBuildings);
 					_planet.BuildingsManager.BuildingsChanged = false;
 				}
+				if(_planet.CurrentUnit != null)
+					UpdateConstruction(_planet, _allUnits);
 			}
 		}
 	}

@@ -72,6 +72,36 @@ public class BuildingInterface : Panel
         }
     }
 
+    public void UpdateInterface(Unit unit, Planet planet){
+        _building = null;
+        _unit = null;
+        _listPanel.ClearItems();
+        if(unit != null){
+            _unit = unit;
+            _header.SetTitle(unit.Name);
+            var label = new Label();
+            label.Text = "\nBuild Cost\n";
+            _listPanel.AddListItem(label);
+            foreach(var resName in unit.BuildCost.Keys){
+                label = new Label();
+                label.Text = resName + " " + unit.BuildCost[resName];
+                _listPanel.AddListItem(label);
+            }
+            label = new Label();
+            label.Text = "\nConstruction time: "+unit.BuildTime;
+            _listPanel.AddListItem(label);
+            label = new Label();
+            label.Text = "\nStatistics:\n";
+            _listPanel.AddListItem(label);
+            foreach(var stat in unit.Stats.Values){
+                label = new Label();
+                label.Text = stat.Name + ": " + stat.BaseValue;
+                _listPanel.AddListItem(label);
+            }
+        }
+    }
+
+
     public void UpdateInterface(){
         _listPanel.ClearItems();
         for(int i = 0; i < 5; i++){

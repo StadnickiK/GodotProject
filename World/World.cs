@@ -67,7 +67,7 @@ private Data _data = null;
 
 	void _on_OpenPlanetInterface(Planet planet){
 		_UI.PInterface.Visible = true;
-		_UI.PInterface.UpdatePlanetInterface(planet, _data.WorldBuildings);
+		_UI.PInterface.UpdatePlanetInterface(planet, _data.WorldBuildings, _data.WorldUnits);
 	}
 
 	void _on_CreateShip(Planet planet, Unit unit){
@@ -234,8 +234,8 @@ private Data _data = null;
 						for(int i = 0;i<5;i++){
 							var unit = new Unit();
 							ship.Units.Add(unit);
-							ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
-							ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
+							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
+							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
 						if(_Player != player){
 							//ship.Visible = false;

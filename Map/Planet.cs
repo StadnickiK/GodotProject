@@ -55,6 +55,13 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Occupied
     }
 
+    private Unit _unit;
+    public Unit CurrentUnit
+    {
+        get { return _unit; }
+    }
+    
+
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
     public bool BuildingsChanged { get; set; } = false;
@@ -172,6 +179,13 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         MapObjectName3 = GetNode<Text3>("Text3");
     }
 
+    public void StartConstruction(Unit unit){
+        if(Controller.ResManager.PayCost(unit.BuildCost)){
+            _unit = new Unit(unit);
+        }
+        return;
+    }
+
     public void ConstructUnit(Unit unit){
         if(Controller.ResManager.PayCost(unit.BuildCost)){
             var ship = GetLocalShip();
@@ -179,6 +193,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 ship.Units.Add(unit);
             }else{
                 EmitSignal(nameof(CreateShip), this, unit);
+                // unit.CurrentTime = 0;
             }
         }else{
             return;
@@ -318,6 +333,22 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             BuildingsManager.ConstructionListChanged = false;
             BuildingsChanged = true;
             // Controller.UpdateResourceLimit(this);
+        }
+        if(_unit != null){
+            if(_time > TimeStep){
+                _time = 0;
+                if(_unit.CurrentTime < _unit.BuildTime){
+                    _unit.CurrentTime++;
+                }else{
+                    var ship = GetLocalShip();
+                    if(ship != null){
+                        ship.Units.Add(_unit);
+                    }else{
+                        EmitSignal(nameof(CreateShip), this, _unit);
+                    }
+                    _unit = null;
+                }
+            }
         }
     }
 }
