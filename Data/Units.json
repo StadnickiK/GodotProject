@@ -1,0 +1,58 @@
+{
+  "Unit 1": {
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 10,
+    "HitPoints": 100,
+    "Attack": 10,
+    "Defence": 5
+  },
+  "Unit 2": {
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 20,
+    "HitPoints": 200,
+    "Attack": 20,
+    "Defence": 10
+  },
+  "Unit 3": {
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 20,
+    "HitPoints": 300,
+    "Attack": 30,
+    "Defence": 15
+  },
+  "Unit 4": {
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 30,
+    "HitPoints": 400,
+    "Attack": 40,
+    "Defence": 20
+  },
+  "Unit 5": {
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200}",
+    "BuildTime": 30,
+    "HitPoints": 500,
+    "Attack": 50,
+    "Defence": 25
+  },
+  "Unit 6": {
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200}",
+    "BuildTime": 40,
+    "HitPoints": 600,
+    "Attack": 60,
+    "Defence": 30
+  },
+  "Unit 7": {
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200, \"Resource 2\":200}",
+    "BuildTime": 40,
+    "HitPoints": 700,
+    "Attack": 70,
+    "Defence": 35
+  },
+  "Unit 8": {
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200, \"Resource 2\":200}",
+    "BuildTime": 50,
+    "HitPoints": 800,
+    "Attack": 80,
+    "Defence": 40
+  }
+}

@@ -16,9 +16,19 @@ public class Data : Node
     {
         get { return _ResourcesLoader; }
     }
+
+    private UnitsLoader _UnitsLoader = null;
+    public UnitsLoader UnitsLoader
+    {
+        get { return _UnitsLoader; }
+    }
     
 
     public Godot.Collections.Dictionary<string, Resource> WorldResources { get; } = new Godot.Collections.Dictionary<string, Resource>();
+
+    // public Godot.Collections.Dictionary<string, Unit> WorldUnits { get; } = new Godot.Collections.Dictionary<string, Unit>();
+
+    public List<Unit> WorldUnits { get; set; } = new List<Unit>();
     
     public List<Building> WorldBuildings { get; set; } = new List<Building>();
 
@@ -27,10 +37,12 @@ public class Data : Node
         GetNodes();
         
         WorldBuildings = _BuildingsLoader.WorldBuildings;
+        WorldUnits = _UnitsLoader.WorldUnits;
     }
 
     void GetNodes(){
         _ResourcesLoader = GetNode<ResourcesLoader>("ResourcesLoader");
+        _UnitsLoader = GetNode<UnitsLoader>("UnitsLoader");
         _BuildingsLoader = GetNode<BuildingLoader>("BuildingLoader");
     }
 

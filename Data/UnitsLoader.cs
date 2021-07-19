@@ -31,14 +31,18 @@ public class UnitsLoader : Node
                     buildCost = TranslateDictionary(_loader.StringToGodotDictionary((string)UnitData["BuildCost"]));
                 
                 var stats = new List<BaseStat>();
-                
+                // TO DO: secure it for null values
                 stats.Add(new BaseStat("HitPoints", (int)(float)UnitData["HitPoints"]));
                 stats.Add(new BaseStat("Attack", (int)(float)UnitData["Attack"]));
                 stats.Add(new BaseStat("Defence", (int)(float)UnitData["Defence"]));
-
+                // stats.Add(new BaseStat("BuildTime", (int)(float)UnitData["BuildTime"]));
                 var unit = new Unit(name, stats);
+
+                if(UnitData.Contains("BuildCost"))
+                    unit.BuildCost = TranslateDictionary(_loader.StringToGodotDictionary((string)UnitData["BuildCost"]));
+
+                unit.BuildTime = (int)(float)UnitData["BuildTime"];
                 WorldUnits.Add(unit);
-                // GD.Print(res);
             }
             return WorldUnits;
         }
