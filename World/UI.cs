@@ -25,7 +25,7 @@ public class UI : Spatial
         get { return _battlePanel; }
     }
     
-    
+    public AlertBox ABox { get; set; } = null;
 
     void GetNodes(){
         ResPanel = GetNode<ResourcePanel>("ResourcePanel");
@@ -34,6 +34,7 @@ public class UI : Spatial
         _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
         UInfo = GetNode<UnitInfoPanel>("UnitInfoPanel");
+        ABox = GetNode<AlertBox>("AlertBox");
     }
 
     public void UpdateUI(Player player){

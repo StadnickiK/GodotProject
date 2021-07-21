@@ -41,6 +41,7 @@
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
+    <Compile Include="UI\AlertBox.cs" />
     <Compile Include="UI\BattlePanel.cs" />
     <Compile Include="UI\BuildingLabel.cs" />
     <Compile Include="UI\BuildingInterface.cs" />

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Unit : Node, IBuildTime
+public class Unit : Node, IBuilding
 {
 
     [Export]
@@ -68,8 +68,6 @@ public class Unit : Node, IBuildTime
         BuildTime = unit.BuildTime;
         ID_Owner = unit.ID_Owner;
     }
-
-
 
     public void CalculateDamage(Unit unit){
         unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;

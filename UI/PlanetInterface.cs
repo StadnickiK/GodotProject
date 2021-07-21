@@ -363,16 +363,16 @@ public class PlanetInterface : Panel
 	}
 
 	void _on_StartConstruction(Node node){
-		if(node is Building building){
-			if(building != null && _planet != null){
-				if(_planet.Controller.ResManager.PayCost(building.BuildCost)){
-					_planet.BuildingsManager.ConstructBuilding(building);
-				}else{
+		// if(node is Building building){
+		// 	if(building != null && _planet != null){
+		// 		if(_planet.Controller.ResManager.PayCost(building.BuildCost)){
+		// 			_planet.BuildingsManager.ConstructBuilding(building);
+		// 		}else{
 
-				}
-			}
-		}
-		if(node is Unit unit){
+		// 		}
+		// 	}
+		// }
+		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
 				_planet.StartConstruction(unit);
 				// _planet.ConstructUnit(unit);

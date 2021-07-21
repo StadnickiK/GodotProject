@@ -78,6 +78,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     [Signal]
     public delegate void OpenPlanetInterface(Planet planet);
 
+    [Signal]
+    public delegate void GameAlert(World.GameAlert alert);
+
     public enum Type
     {
         Balanced,
@@ -182,6 +185,22 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public void StartConstruction(Unit unit){
         if(Controller.ResManager.PayCost(unit.BuildCost)){
             _unit = new Unit(unit);
+        }else{
+            EmitSignal(nameof(GameAlert), this);
+        }
+        return;
+    }
+
+    public void StartConstruction(IBuilding building){
+        if(Controller.ResManager.PayCost(building.BuildCost)){
+            if(building is Unit unit){
+                _unit = new Unit(unit);
+            }else{
+                if(building is Building b)
+                BuildingsManager.ConstructBuilding(b);
+            }
+        }else{
+            EmitSignal(nameof(GameAlert), this);
         }
         return;
     }

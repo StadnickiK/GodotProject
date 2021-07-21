@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://Map/Combat.cs" type="Script" id=14]
 [ext_resource path="res://UI/BattlePanel.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Menu/space.hdr" type="Texture" id=16]
+[ext_resource path="res://UI/AlertBox.tscn" type="PackedScene" id=17]
 [ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=18]
 
 [sub_resource type="PanoramaSky" id=1]
@@ -90,6 +91,9 @@ Options = [ "Overview", "Attacker", "Defender" ]
 [node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
 visible = false
 Options = [ "Overview", "Details" ]
+
+[node name="AlertBox" parent="UI" instance=ExtResource( 17 )]
+visible = false
 
 [node name="Map" type="Spatial" parent="."]
 script = ExtResource( 13 )

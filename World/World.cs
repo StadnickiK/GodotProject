@@ -6,6 +6,12 @@ using System.Linq;
 public class World : Spatial
 {
 
+
+	public enum GameAlert
+	{
+		NoResource
+	}
+
 private Map _map = null;
 public Map GetMap
 {
@@ -356,6 +362,23 @@ private Data _data = null;
 		InitStartResources();
 		InitResistance();
 		InitWorldBuildings();
+		ConnectPlanets();
+	}
+
+	void _on_Alert(World.GameAlert alert){
+		switch(alert){
+			case GameAlert.NoResource:
+				_UI.ABox.Visible = true;
+				break;
+		}
+	}
+
+	void ConnectPlanets(){
+		foreach(StarSystem system in Galaxy.StarSystems){
+			foreach(Planet planet in system.Planets){
+				planet.Connect("GameAlert", this, nameof(_on_Alert));
+			}
+		}
 	}
 
 	public override void _Ready()
