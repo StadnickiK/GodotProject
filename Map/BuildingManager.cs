@@ -12,16 +12,37 @@ public class BuildingManager : Node
 
     public bool ConstructionListChanged { get; set; } = false;
 
-    TargetManager<Building> ConstructionList = new TargetManager<Building>();
+    // TargetManager<Building> ConstructionList = new TargetManager<Building>();
 
-    public Building CurrentConstruction
+    ConstructionManager _constructions = new ConstructionManager();
+    public ConstructionManager Constructions
     {
-        get { return ConstructionList.currentTarget; }
+        get { return _constructions; }
+    }
+    
+
+    // public Building CurrentConstruction
+    // {
+    //     get { return _constructions.CurrentConstruction(); }
+    // }
+
+    public List<Building> CurrentConstruction(){
+        var currentConstruction = _constructions.CurrentConstruction();
+        var list = IbuildingToBuilding(currentConstruction);
+        return list;
+    }
+
+    List<Building> IbuildingToBuilding(List<IBuilding> originalList){
+        var list = new List<Building>();
+        foreach(IBuilding building in originalList){
+            list.Add((Building)building);
+        }
+        return list;
     }
 
     public void ConstructBuilding(Building building){
         if(building != null){
-            ConstructionList.AddTarget(building);
+            _constructions.ConstructionList.Add(building);
             // ConstructionListChanged = true;
         }
     }
@@ -32,15 +53,26 @@ public class BuildingManager : Node
         
     }
 
+    // void UpdateConstruction(){
+    //     if(CurrentConstruction != null){
+    //         CurrentConstruction.CurrentTime++;
+    //         if(CurrentConstruction.CurrentTime >= CurrentConstruction.BuildTime){
+    //             Buildings.Add(CurrentConstruction);
+    //             ConstructionList.NextTarget();
+    //             ConstructionListChanged = true;
+    //         }
+    //         BuildingsChanged = true;
+    //     }
+    // }
+
     void UpdateConstruction(){
-        if(CurrentConstruction != null){
-            CurrentConstruction.CurrentTime++;
-            if(CurrentConstruction.CurrentTime >= CurrentConstruction.BuildTime){
-                Buildings.Add(CurrentConstruction);
-                ConstructionList.NextTarget();
-                ConstructionListChanged = true;
+        if(_constructions.ConstructionList.Count > 0){
+            var list = _constructions.UpdateConstruction();
+            ConstructionListChanged = true;
+            if(list.Count>0){
+                Buildings.AddRange(IbuildingToBuilding(list));
+                BuildingsChanged = true;
             }
-            BuildingsChanged = true;
         }
     }
 
