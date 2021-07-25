@@ -387,9 +387,9 @@ public class PlanetInterface : Panel
 	public override void _Process(float delta){
 		if(Visible){
 			if(_planet != null && _allBuildings != null){
-				if(_planet.BuildingsManager.BuildingsChanged){
+				if(_planet.BuildingsManager.ConstructionListChanged){
 					UpdateBuildings(_planet, _allBuildings);
-					_planet.BuildingsManager.BuildingsChanged = false;
+					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
 				if(_planet.CurrentUnit != null)
 					UpdateConstruction(_planet, _allUnits);

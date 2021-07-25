@@ -37,11 +37,11 @@ public class Player : Node
         get { return _resourceManager; } 
     }
 
-    private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
-    public Dictionary<string, int> ResourceLimits
-    {
-        get { return _resourceLimits; }
-    }
+    // private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
+    // public Dictionary<string, int> ResourceLimits
+    // {
+    //     get { return _resourceLimits; }
+    // }
 
     public bool ResourcesChanged { get; set; } = false;
 
