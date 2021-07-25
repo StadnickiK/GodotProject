@@ -196,7 +196,6 @@ private Data _data = null;
 				}else{
 					planet.Vision = false;
 				}
-				player.InitResourceLimit();
 			}
 		}else{
 			var usedPlanetList = new List<Planet>();
@@ -215,7 +214,6 @@ private Data _data = null;
 				}else{
 					planet.Vision = false;
 				}
-				player.InitResourceLimit();
 			}
 		}
 	}
@@ -345,8 +343,6 @@ private Data _data = null;
 		foreach(Player player in Players.GetChildren()){
 			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){
 				planet.BuildingsManager.Buildings.AddRange(startBuildings);
-				planet.ResourcesManager.UpdateResourceLimit(planet.BuildingsManager.Buildings); // need to check if needed
-				planet.BuildingsManager.BuildingsChanged = true;
 			}
 			player.InitResourceLimit();
 		}
