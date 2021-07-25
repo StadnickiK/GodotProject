@@ -25,6 +25,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
+    <Compile Include="Map\ConstructionManager.cs" />
     <Compile Include="Map\IMap\IBuildCost.cs" />
     <Compile Include="Map\IMap\IBuilding.cs" />
     <Compile Include="Map\IMap\IBuildTime.cs" />

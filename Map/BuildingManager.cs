@@ -12,21 +12,21 @@ public class BuildingManager : Node
 
     public bool ConstructionListChanged { get; set; } = false;
 
-    TargetManager<Building> ConstructionList = new TargetManager<Building>();
+    TargetManager<IBuilding> ConstructionList = new TargetManager<IBuilding>();
 
-    public Building CurrentConstruction
+    public IBuilding CurrentConstruction
     {
         get { return ConstructionList.currentTarget; }
     }
 
-    public void ConstructBuilding(Building building){
+    public void ConstructBuilding(IBuilding building){
         if(building != null){
             ConstructionList.AddTarget(building);
             // ConstructionListChanged = true;
         }
     }
 
-    public List<Building> Buildings { get; } = new List<Building>();
+    public List<IBuilding> Buildings { get; } = new List<IBuilding>();
     public override void _Ready()
     {
         
@@ -44,7 +44,7 @@ public class BuildingManager : Node
         }
     }
 
-    public Building GetLastBuilding(){
+    public IBuilding GetLastBuilding(){
         return Buildings.LastOrDefault();
     }
 
