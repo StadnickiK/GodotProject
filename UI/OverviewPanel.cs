@@ -111,6 +111,11 @@ public class OverviewPanel : VBoxContainer
         listPanel.ConnectToOnGuiInput(node, methodName);
     }
 
+    public void ConnectToEvent(Node node, string nodeName, string methodName, string eventName){
+        var listPanel = GetNode<ListPanel>(nodeName);
+        listPanel.ConnectToEvent(node, methodName, eventName);
+    }
+
     public void DisconnectToGuiInputEvent(Node node, string nodeName, string methodName){
         var listPanel = GetNode<ListPanel>(nodeName);
         listPanel.DisconnectToOnGuiInput(node, methodName);

@@ -338,8 +338,8 @@ public class PlanetInterface : Panel
 	}
 
 	public void _on_BuildingLabelGuiInputEvent(InputEvent input, Node node){
-		if(input is InputEventMouseButton button){
-			if(button.ButtonIndex == (int)ButtonList.Left){
+		// if(input is InputEventMouseButton button){
+		// 	if(button.ButtonIndex == (int)ButtonList.Left){
 				if(node is BuildingLabel label){
 					if(label.GetMeta(label.Text) is Building building)
 						if(building != null && _planet != null){
@@ -353,8 +353,8 @@ public class PlanetInterface : Panel
 							_selectedBuilding = label;
 					}
 				}
-			}
-		}
+		// 	}
+		// }
 	}
 
 	void _on_XButton_button_up(){
