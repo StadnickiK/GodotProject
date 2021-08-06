@@ -1,9 +1,8 @@
 using Godot;
 using System;
 
-public class BuildingLabel : Label
+public class BuildingLabel : Button
 {
-
 
     public ProgressBar Progress { get; set; } = null;
 
