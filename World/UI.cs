@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class UI : Spatial
+public class UI : Control
 {
 
 
@@ -12,6 +12,8 @@ public class UI : Spatial
     public RightPanel RPanel { get; set; } = null;
  
     public UnitInfoPanel UInfo { get; set; } = null;
+
+    public SmallList OrbitList { get; set; } = null;
 
     private Control _menu = null;
     public Control WorldMenu
@@ -35,13 +37,14 @@ public class UI : Spatial
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
         UInfo = GetNode<UnitInfoPanel>("UnitInfoPanel");
         ABox = GetNode<AlertBox>("AlertBox");
+        OrbitList = GetNode<SmallList>("OrbitList");
     }
 
     public void UpdateUI(Player player){
         if(player.MapObjectsChanged){
             RPanel.UpdateRightPanel(player);
             player.MapObjectsChanged = false;
-            GD.Print("update r panel");
+            // GD.Print("update r panel");
         }
         if(player.ResourcesChanged){
             if(player.ResManager != null){
@@ -49,11 +52,23 @@ public class UI : Spatial
                 player.ResourcesChanged = false;
             }
         }
+        if(OrbitList.Visible){
+            var box = new Rect2(GetGlobalMousePosition(), new Vector2(1,1));
+            if(!box.Intersects(OrbitList.GetRect()))
+                OrbitList.Visible = false;
+        }
     }
 
     public override void _Ready()
     {
         GetNodes();
+    }
+
+    void _on_OrbitIconFocus(Node Orbit){
+        OrbitList.Visible = true;
+        var vec2 = GetGlobalMousePosition();
+        OrbitList.SetPosition(new Vector2(vec2.x-4, vec2.y-4));
+        OrbitList.UpdateOrbitInfo(Orbit);
     }
 
     //public void ConnectToLookAtObject(Node node, string methodName){

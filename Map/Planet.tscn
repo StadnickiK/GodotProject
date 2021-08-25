@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Map/Planet.cs" type="Script" id=1]
 [ext_resource path="res://Map/Orbit.cs" type="Script" id=2]
 [ext_resource path="res://PlanetMesh.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Text3.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Icon3D.tscn" type="PackedScene" id=5]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -81,4 +82,9 @@ script = ExtResource( 2 )
 
 [node name="Text3" parent="." instance=ExtResource( 4 )]
 transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 1.96895, 0 )
+
+[node name="IcoOrbit" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.967, 0 )
+visible = false
+
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]

@@ -29,8 +29,12 @@ private Data _data = null;
 	Galaxy Galaxy = null;
 	CameraGimbal Camera = null;
 
-	UI _UI = null;
-
+	private UI _UI = null;
+	public UI UInterface
+	{
+		get { return _UI; }
+	}
+	
 	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load("res://World/Player.tscn");
 
 	PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
@@ -126,6 +130,7 @@ private Data _data = null;
 		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
 		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
+		_UI.OrbitList.Connect("SelectObject", this, nameof(_on_SelectUnit));
 		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
@@ -271,6 +276,7 @@ private Data _data = null;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
 		ship.Units.Add(unit);
 		planet.System.AddMapObject(ship);
+		planet.Controller.AddMapObject(ship);
 		//planet.AddToOrbit(ship);
 		return ship;
 	}

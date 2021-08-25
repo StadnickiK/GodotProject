@@ -53,6 +53,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
 
+    SimpleFireControl _control = null;
+
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
             state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetManager.currentTarget.Transform.origin);
     }
@@ -196,11 +198,13 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 ResetVelocity(state);
             }
             UpdateShipVelocities(state, targetPos);
+            _control.Start();
         }else{
             state.AngularVelocity = Vector3.Zero;
             state.LinearVelocity = Vector3.Zero;
             Sleeping = true;
             state.Sleeping = true;
+            _control.Stop();
         }
     }
 
@@ -235,6 +239,12 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
             if(visionObject.Controller != Controller && visionObject.IsVisible() == false && body.GetParent() == GetParent()){
                 visionObject.ChangeVision();
             }
+            if(Controller != null)
+                if(body is Planet planet){ 
+                        if(Controller.IsLocal && planet.Orbit.GetChildren().Count > 0){
+                            planet.IcoOrbit.Visible = true;
+                        }
+                }
         }
         /*
         if(body is Ship ship){
@@ -254,6 +264,12 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
             if(visionObject.Controller != Controller && visionObject.IsVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
                 visionObject.ChangeVision();
             }
+            if(Controller != null)
+                if(body is Planet planet){
+                    if(Controller.IsLocal && visionObject.Controller != Controller){
+                        planet.IcoOrbit.Visible = false;
+                    }
+                }
         }
         /*
         if(body is Ship ship){
@@ -292,6 +308,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     void GetNodes(){
         _area = GetNode<VisionArea>("Area");
         Mesh = GetNode<MeshInstance>("ship model/Cube");
+        _control = GetNode<SimpleFireControl>("FireControl");
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){

@@ -37,6 +37,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public Text3 MapObjectName3 { get; set; } = null;
 
+    public Spatial IcoOrbit { get; set; } = null;
+
     public StarSystem System { get; set; } = null;
 
     private Orbit _orbit = null;
@@ -180,6 +182,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
         MapObjectName3 = GetNode<Text3>("Text3");
+        IcoOrbit = GetNode<Spatial>("IcoOrbit");
     }
 
     public void StartConstruction(Unit unit){
@@ -239,6 +242,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     }
 
     public void ChangeVision(){
+        var orbit = Orbit.GetChildren();
         if(Vision){
             Vision = false;
         }else{
@@ -256,6 +260,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         }
         Orbit.AddNode(ship);
         Orbit.OrbitChanged = true;
+        if(IsVisible())
+            IcoOrbit.Visible =  true;
+
     }
 
     public void RemoveFromOrbit(Ship ship){
@@ -270,6 +277,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 }
                 Orbit.OrbitChanged = true;
             }
+            if(Orbit.GetChildren().Count <= 0)
+                IcoOrbit.Visible = false;
         }
     }
 
@@ -312,6 +321,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         World w = GetNode<World>("/root/Game/World");
         w.ConnectTo_OpenPlanetInterface(this);
         Connect(nameof(CreateShip), w, "_on_CreateShip");
+        var arr = new Godot.Collections.Array();
+        arr.Add(Orbit);
+        IcoOrbit.Connect("mouse_entered", w.UInterface,"_on_OrbitIconFocus", arr);
         
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    

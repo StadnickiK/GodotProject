@@ -79,6 +79,10 @@ Right_click={
  ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [rendering]
 
 threads/thread_model=2

@@ -23,6 +23,7 @@
     <Compile Include="Data\ResourcesLoader.cs" />
     <Compile Include="Data\UnitsLoader.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="UI\SmallList.cs" />
     <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
     <Compile Include="Map\ConstructionManager.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Units\Base\IVisible.cs" />
     <Compile Include="Units\Base\IVision.cs" />
+    <Compile Include="Units\Base\SimpleFireControl.cs" />
     <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />

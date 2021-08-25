@@ -73,6 +73,7 @@ margin_right = 161.0
 margin_bottom = 76.5
 
 [node name="Background" parent="." instance=ExtResource( 1 )]
+
 [connection signal="button_up" from="Menu/NewGame" to="." method="_on_NewGame_button_up"]
 [connection signal="button_up" from="Menu/QuickGame" to="." method="_on_Play_button_up"]
 [connection signal="button_up" from="Menu/Exit" to="Menu/Exit" method="_on_Exit_button_up"]
