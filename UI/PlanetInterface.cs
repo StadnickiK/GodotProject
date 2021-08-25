@@ -102,8 +102,8 @@ public class PlanetInterface : Panel
 				UpdateTransferPanel(planet);
 				UpdateConstruction(planet, worldUnits);
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
-				_overviewPanel.ConnectToGuiInputEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent));
-				_overviewPanel.ConnectToGuiInputEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent));
+				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
+				_overviewPanel.ConnectToEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
 			}
 		}
 	}
@@ -251,7 +251,12 @@ public class PlanetInterface : Panel
 			var label = (BuildingLabel)ItemScene.Instance();
 			label.SetMeta(building.Name, building);
 			label.Name = building.Name;
-			label.Text = building.Name;
+			if(label.BButton != null){
+				label.BButton.Text = building.Name;
+			}else{
+				label.BButton = label.GetNode<Button>("Button");
+				label.BButton.Text = building.Name;
+			}
 			_overviewPanel.AddNodeToPanel("Buildings", label);
 			label.Progress.PercentVisible = false;
 			if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
@@ -268,7 +273,12 @@ public class PlanetInterface : Panel
 					var label = (BuildingLabel)ItemScene.Instance();
 					label.SetMeta(building.Name, building);
 					label.Name = building.Name;
-					label.Text = building.Name;
+					if(label.BButton != null){
+						label.BButton.Text = building.Name;
+					}else{
+						label.BButton = label.GetNode<Button>("Button");
+						label.BButton.Text = building.Name;
+					}
 					_overviewPanel.AddNodeToPanel("Buildings", label);
 					if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
 						label.Progress.Value = building.CurrentTime;
@@ -310,7 +320,12 @@ public class PlanetInterface : Panel
 			var label = (BuildingLabel)ItemScene.Instance();
 			label.SetMeta(unit.Name, unit);
 			label.Name = unit.Name;
-			label.Text = unit.Name;
+			if(label.BButton != null){
+				label.BButton.Text = unit.Name;
+			}else{
+				label.BButton = label.GetNode<Button>("Button");
+				label.BButton.Text = unit.Name;
+			}
 			_overviewPanel.AddNodeToPanel("Construction", label);
 			if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
 				label.Progress.Value = unit.CurrentTime;
@@ -337,17 +352,17 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(InputEvent input, Node node){
+	public void _on_BuildingLabelGuiInputEvent(Node node){
 		// if(input is InputEventMouseButton button){
 		// 	if(button.ButtonIndex == (int)ButtonList.Left){
 				if(node is BuildingLabel label){
-					if(label.GetMeta(label.Text) is Building building)
+					if(label.GetMeta(label.BButton.Text) is Building building)
 						if(building != null && _planet != null){
 							_buildingInterface.Visible = true;
 							_buildingInterface.UpdateInterface(building, _planet);
 							_selectedBuilding = label;
 						}
-					if(label.GetMeta(label.Text) is Unit unit){
+					if(label.GetMeta(label.BButton.Text) is Unit unit){
 							_buildingInterface.Visible = true;
 							_buildingInterface.UpdateInterface(unit, _planet);
 							_selectedBuilding = label;

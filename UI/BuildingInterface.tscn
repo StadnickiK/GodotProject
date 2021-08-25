@@ -35,4 +35,6 @@ text = "Build"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="gui_input" from="." to="." method="_on_BuildingInterface_gui_input"]
 [connection signal="button_up" from="Build" to="." method="_on_Build_button_up"]

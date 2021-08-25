@@ -126,6 +126,11 @@ public class BuildingInterface : Panel
         }
     }
 
+    void _on_BuildingInterface_gui_input(InputEvent e){
+        if(e is InputEventScreenDrag drag)
+            RectPosition += drag.Relative;
+    }
+
     public void ConnecToStartConstruction(Node node, string methodName){
         Connect(nameof(StartConstruction), node, methodName);
     }

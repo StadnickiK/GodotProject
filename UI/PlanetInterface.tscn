@@ -39,5 +39,7 @@ margin_bottom = 460.0
 
 [node name="BuildingInterface" parent="." instance=ExtResource( 4 )]
 visible = false
-margin_left = 335.0
-margin_right = 496.0
+margin_left = 559.492
+margin_top = 1.12247
+margin_right = 720.492
+margin_bottom = 273.122

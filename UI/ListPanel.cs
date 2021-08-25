@@ -75,11 +75,11 @@ public class ListPanel : VBoxContainer
 
     public void ConnectToEvent(Node node, string methodName, string eventName){
         foreach(Node child in _items.GetChildren()){
-            if(child is Label control){
-                if(!control.IsConnected(eventName, node, methodName)){
+            if(child is BuildingLabel control){
+                if(!control.BButton.IsConnected(eventName, node, methodName)){
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
-                    control.Connect(eventName, node, methodName, array);
+                    control.BButton.Connect(eventName, node, methodName, array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
                     //GD.Print("Already connected");
