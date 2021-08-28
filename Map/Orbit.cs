@@ -79,6 +79,16 @@ public class Orbit : Spatial
         return false;
     }
 
+    public bool HasEnemy(IMapObjectController controller){
+        foreach(var node in GetChildren()){
+            if(node is IMapObjectController player){
+                if(player.Controller != controller.Controller)
+                    return true;
+            }
+        }
+        return false;
+    }
+
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {
