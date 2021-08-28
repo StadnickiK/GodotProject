@@ -264,7 +264,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             IcoOrbit.Visible =  true;
             if(Orbit.GetChildren().Count == 1)
                 IcoOrbit.SetGreen();
-
     }
 
     public void RemoveFromOrbit(Ship ship){

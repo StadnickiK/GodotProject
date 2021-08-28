@@ -243,6 +243,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 if(body is Planet planet){ 
                         if(Controller.IsLocal && planet.Orbit.GetChildren().Count > 0){
                             planet.IcoOrbit.Visible = true;
+                            if(planet.Orbit.HasEnemy(this))
+                                planet.IcoOrbit.SetRed();
                         }
                 }
         }
