@@ -37,7 +37,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public Text3 MapObjectName3 { get; set; } = null;
 
-    public Spatial IcoOrbit { get; set; } = null;
+    public Icon3D IcoOrbit { get; set; } = null;
 
     public StarSystem System { get; set; } = null;
 
@@ -182,7 +182,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
         MapObjectName3 = GetNode<Text3>("Text3");
-        IcoOrbit = GetNode<Spatial>("IcoOrbit");
+        IcoOrbit = GetNode<Icon3D>("IcoOrbit");
     }
 
     public void StartConstruction(Unit unit){
@@ -262,6 +262,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Orbit.OrbitChanged = true;
         if(IsVisible())
             IcoOrbit.Visible =  true;
+            if(Orbit.GetChildren().Count == 1)
+                IcoOrbit.SetGreen();
 
     }
 
