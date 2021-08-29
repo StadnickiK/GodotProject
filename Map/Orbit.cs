@@ -82,10 +82,12 @@ public class Orbit : Spatial
     public bool HasEnemy(IMapObjectController controller){
         foreach(var node in GetChildren()){
             if(node is IMapObjectController player){
-                if(player.Controller != controller.Controller)
-                    return true;
+                if(controller != player)
+                    if(player.Controller != controller.Controller)
+                        return true;
             }
         }
+         
         return false;
     }
 
