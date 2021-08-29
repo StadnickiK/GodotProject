@@ -99,7 +99,7 @@ public class PlanetInterface : Panel
 				UpdateOverview(planet);
 				UpdateOrbit(planet);
 				UpdateBuildings(planet, allBuildings);
-				UpdateTransferPanel(planet);
+				// UpdateTransferPanel(planet);
 				UpdateConstruction(planet, worldUnits);
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
 				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
@@ -153,7 +153,7 @@ public class PlanetInterface : Panel
 	void _on_ResetTransferPanel(Planet planet){
 		_overviewPanel.ClearPanel("Resource transfer");
 		_overviewPanel.GetPanel("Resource transfer").GetHeader()?.GetChild(1)?.QueueFree(); // remove reset button
-		UpdateTransferPanel(planet);
+		// UpdateTransferPanel(planet);
 	}
 
 	void _on_TransferResources(PhysicsBody left, PhysicsBody body){
