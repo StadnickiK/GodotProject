@@ -15,6 +15,8 @@ public class UI : Control
 
     public SmallList OrbitList { get; set; } = null;
 
+    public CmdPanel CommandPanel { get; set; } = null;
+
     private Control _menu = null;
     public Control WorldMenu
     {
@@ -38,6 +40,7 @@ public class UI : Control
         UInfo = GetNode<UnitInfoPanel>("UnitInfoPanel");
         ABox = GetNode<AlertBox>("AlertBox");
         OrbitList = GetNode<SmallList>("OrbitList");
+        CommandPanel = GetNode<CmdPanel>("CmdPanel");
     }
 
     public void UpdateUI(Player player){
@@ -52,10 +55,15 @@ public class UI : Control
                 player.ResourcesChanged = false;
             }
         }
-        if(OrbitList.Visible){
+        HideIfLostFocus(OrbitList);
+        HideIfLostFocus(CommandPanel);
+    }
+
+    void HideIfLostFocus(Control control){
+        if(control.Visible){
             var box = new Rect2(GetGlobalMousePosition(), new Vector2(1,1));
-            if(!box.Intersects(OrbitList.GetRect()))
-                OrbitList.Visible = false;
+            if(!box.Intersects(control.GetRect()))
+                control.Visible = false;
         }
     }
 
@@ -70,6 +78,7 @@ public class UI : Control
         OrbitList.SetPosition(new Vector2(vec2.x-4, vec2.y-4));
         OrbitList.UpdateOrbitInfo(Orbit);
     }
+
 
     //public void ConnectToLookAtObject(Node node, string methodName){
         // to do if RPanel goes private

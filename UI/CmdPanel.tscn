@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/CmdPanel.cs" type="Script" id=1]
+
+[node name="CmdPanel" type="Panel"]
+margin_right = 178.0
+margin_bottom = 96.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 176.0
+margin_bottom = 96.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MoveButton" type="Button" parent="VBoxContainer"]
+margin_right = 176.0
+margin_bottom = 20.0
+text = "Move To"
+
+[node name="Conquer" type="Button" parent="VBoxContainer"]
+margin_top = 24.0
+margin_right = 176.0
+margin_bottom = 44.0
+text = "Conquer"
+
+[node name="Scan" type="Button" parent="VBoxContainer"]
+margin_top = 48.0
+margin_right = 176.0
+margin_bottom = 68.0
+text = "Scan"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bombard" type="Button" parent="VBoxContainer"]
+margin_top = 72.0
+margin_right = 176.0
+margin_bottom = 92.0
+text = "Bombard"
+__meta__ = {
+"_edit_use_anchors_": false
+}
