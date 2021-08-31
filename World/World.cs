@@ -375,6 +375,14 @@ private Data _data = null;
 		}
 	}
 
+	void _on_OpenPlanetCmdPanel(Planet planet){
+        if(_wcc.HasSelected()){
+			_UI.CommandPanel.ShowPanel();
+		}
+
+    }
+
+
 	void ConnectPlanets(){
 		foreach(StarSystem system in Galaxy.StarSystems){
 			foreach(Planet planet in system.Planets){
