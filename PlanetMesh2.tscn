@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=47 format=2]
 
 [sub_resource type="SphereMesh" id=1]
 
@@ -32,19 +32,19 @@ period = 68.5
 seamless = true
 noise = SubResource( 8 )
 
-[sub_resource type="VisualShaderNodeTexture" id=36]
+[sub_resource type="VisualShaderNodeTexture" id=10]
 output_port_for_preview = 0
 texture = SubResource( 9 )
 texture_type = 2
 
 [sub_resource type="Gradient" id=11]
-offsets = PoolRealArray( 0.151976, 0.367781, 0.6231, 0.720365, 0.781155 )
-colors = PoolColorArray( 0.089798, 0.106406, 0.214844, 1, 0.233459, 0.280273, 0.585938, 1, 0.292969, 0.22763, 0.00457764, 1, 0.644531, 0.0352478, 0.0352478, 1, 1, 1, 1, 1 )
+offsets = PoolRealArray( 0.130699, 0.279635, 0.349544, 0.641337 )
+colors = PoolColorArray( 0, 0.132813, 1, 1, 0.189647, 0.417969, 0.125717, 1, 0.378151, 0.177258, 0, 1, 0, 0, 0, 1 )
 
 [sub_resource type="GradientTexture" id=12]
 gradient = SubResource( 11 )
 
-[sub_resource type="VisualShaderNodeTexture" id=37]
+[sub_resource type="VisualShaderNodeTexture" id=13]
 output_port_for_preview = 0
 texture = SubResource( 12 )
 texture_type = 2
@@ -59,32 +59,62 @@ lacunarity = 4.0
 seamless = true
 noise = SubResource( 14 )
 
-[sub_resource type="VisualShaderNodeTexture" id=38]
+[sub_resource type="VisualShaderNodeTexture" id=16]
 output_port_for_preview = 0
 texture = SubResource( 15 )
 texture_type = 2
 
-[sub_resource type="VisualShaderNodeTexture" id=10]
+[sub_resource type="VisualShaderNodeIf" id=42]
+output_port_for_preview = 0
+default_input_values = [ 0, 0.0, 1, 0.5, 2, 1e-05, 3, Vector3( 0, 0, 0 ), 4, Vector3( 0, 0, 0 ), 5, Vector3( 0, 0, 0 ) ]
+
+[sub_resource type="OpenSimplexNoise" id=43]
+period = 82.5
+persistence = 1.0
+
+[sub_resource type="NoiseTexture" id=44]
+seamless = true
+noise = SubResource( 43 )
+
+[sub_resource type="VisualShaderNodeTexture" id=45]
+output_port_for_preview = 0
+texture = SubResource( 44 )
+
+[sub_resource type="VisualShaderNodeVectorOp" id=46]
+output_port_for_preview = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id=17]
 output_port_for_preview = 0
 texture = SubResource( 9 )
 
-[sub_resource type="VisualShaderNodeTexture" id=13]
+[sub_resource type="VisualShaderNodeIf" id=47]
+output_port_for_preview = 0
+default_input_values = [ 0, 0.0, 1, 0.5, 2, 1e-05, 3, Vector3( 0, 0, 0 ), 4, Vector3( 0, 0, 0 ), 5, Vector3( 0, 0, 0 ) ]
+
+[sub_resource type="VisualShaderNodeVectorOp" id=48]
+output_port_for_preview = 0
+
+[sub_resource type="VisualShaderNodeVectorOp" id=49]
+output_port_for_preview = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id=18]
 output_port_for_preview = 0
 texture = SubResource( 12 )
 
-[sub_resource type="VisualShaderNodeTexture" id=16]
+[sub_resource type="VisualShaderNodeTexture" id=19]
 output_port_for_preview = 0
 texture = SubResource( 15 )
 
-[sub_resource type="VisualShader" id=17]
+[sub_resource type="VisualShader" id=20]
 code = "shader_type spatial;
 render_mode specular_schlick_ggx;
 
+uniform sampler2D tex_frg_18;
 uniform sampler2D tex_frg_4;
 uniform sampler2D tex_frg_2;
 uniform sampler2D tex_frg_3;
-uniform sampler2D tex_frg_11;
-uniform sampler2D tex_frg_12 : hint_normal;
 
 
 
@@ -94,6 +124,11 @@ void vertex() {
 }
 
 void fragment() {
+// Texture:18
+	vec4 tex_frg_18_read = texture(tex_frg_18, UV.xy);
+	vec3 n_out18p0 = tex_frg_18_read.rgb;
+	float n_out18p1 = tex_frg_18_read.a;
+
 // Texture:4
 	vec4 tex_frg_4_read = texture(tex_frg_4, UV.xy);
 	vec3 n_out4p0 = tex_frg_4_read.rgb;
@@ -104,25 +139,60 @@ void fragment() {
 	vec3 n_out2p0 = tex_frg_2_read.rgb;
 	float n_out2p1 = tex_frg_2_read.a;
 
+// If:17
+	float n_in17p1 = 0.50000;
+	float n_in17p2 = 0.00001;
+	vec3 n_in17p3 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_in17p5 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_out17p0;
+	if(abs(dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333)) - n_in17p1) < n_in17p2)
+	{
+		n_out17p0 = n_in17p3;
+	}
+	else if(dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333)) < n_in17p1)
+	{
+		n_out17p0 = n_in17p5;
+	}
+	else
+	{
+		n_out17p0 = n_out2p0;
+	}
+
+// VectorOp:19
+	vec3 n_out19p0 = n_out18p0 * n_out17p0;
+
+// If:20
+	float n_in20p1 = 0.50000;
+	float n_in20p2 = 0.00001;
+	vec3 n_in20p3 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_in20p4 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_out20p0;
+	if(abs(dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333)) - n_in20p1) < n_in20p2)
+	{
+		n_out20p0 = n_in20p3;
+	}
+	else if(dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333)) < n_in20p1)
+	{
+		n_out20p0 = n_out2p0;
+	}
+	else
+	{
+		n_out20p0 = n_in20p4;
+	}
+
+// VectorOp:22
+	vec3 n_out22p0 = n_out18p0 * n_out20p0;
+
+// VectorOp:21
+	vec3 n_out21p0 = n_out19p0 + n_out22p0;
+
 // Texture:3
-	vec4 tex_frg_3_read = texture(tex_frg_3, n_out2p0.xy);
+	vec4 tex_frg_3_read = texture(tex_frg_3, n_out21p0.xy);
 	vec3 n_out3p0 = tex_frg_3_read.rgb;
 	float n_out3p1 = tex_frg_3_read.a;
 
-// Texture:11
-	vec4 tex_frg_11_read = texture(tex_frg_11, n_out3p0.xy);
-	vec3 n_out11p0 = tex_frg_11_read.rgb;
-	float n_out11p1 = tex_frg_11_read.a;
-
-// Texture:12
-	vec4 tex_frg_12_read = texture(tex_frg_12, UV.xy);
-	vec3 n_out12p0 = tex_frg_12_read.rgb;
-	float n_out12p1 = tex_frg_12_read.a;
-
 // Output:0
 	ALBEDO = n_out3p0;
-	EMISSION = n_out11p0;
-	NORMALMAP = n_out12p0;
 
 }
 
@@ -131,55 +201,67 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -628.298, 471.75 )
-nodes/fragment/0/position = Vector2( 580, 140 )
-nodes/fragment/2/node = SubResource( 10 )
-nodes/fragment/2/position = Vector2( -320, 100 )
-nodes/fragment/3/node = SubResource( 13 )
-nodes/fragment/3/position = Vector2( -60, 120 )
-nodes/fragment/4/node = SubResource( 16 )
+graph_offset = Vector2( -198.71, -322 )
+nodes/fragment/0/position = Vector2( 560, 120 )
+nodes/fragment/2/node = SubResource( 17 )
+nodes/fragment/2/position = Vector2( -380, 60 )
+nodes/fragment/3/node = SubResource( 18 )
+nodes/fragment/3/position = Vector2( 440, -160 )
+nodes/fragment/4/node = SubResource( 19 )
 nodes/fragment/4/position = Vector2( -620, 100 )
 nodes/fragment/11/node = SubResource( 4 )
-nodes/fragment/11/position = Vector2( 200, 240 )
+nodes/fragment/11/position = Vector2( 320, 200 )
 nodes/fragment/12/node = SubResource( 7 )
 nodes/fragment/12/position = Vector2( 200, 540 )
-nodes/fragment/13/node = SubResource( 36 )
+nodes/fragment/13/node = SubResource( 10 )
 nodes/fragment/13/position = Vector2( -320, 460 )
-nodes/fragment/14/node = SubResource( 37 )
-nodes/fragment/14/position = Vector2( -60, 480 )
-nodes/fragment/15/node = SubResource( 38 )
+nodes/fragment/14/node = SubResource( 13 )
+nodes/fragment/14/position = Vector2( -40, 480 )
+nodes/fragment/15/node = SubResource( 16 )
 nodes/fragment/15/position = Vector2( -620, 460 )
-nodes/fragment/connections = PoolIntArray( 4, 0, 2, 0, 3, 0, 0, 0, 3, 0, 11, 0, 12, 0, 0, 8, 2, 0, 3, 0, 11, 0, 0, 5, 15, 0, 13, 0, 13, 0, 14, 0 )
+nodes/fragment/17/node = SubResource( 42 )
+nodes/fragment/17/position = Vector2( -160, -220 )
+nodes/fragment/18/node = SubResource( 45 )
+nodes/fragment/18/position = Vector2( -500, -400 )
+nodes/fragment/19/node = SubResource( 46 )
+nodes/fragment/19/position = Vector2( 60, -260 )
+nodes/fragment/20/node = SubResource( 47 )
+nodes/fragment/20/position = Vector2( -180, 80 )
+nodes/fragment/21/node = SubResource( 48 )
+nodes/fragment/21/position = Vector2( 260, -140 )
+nodes/fragment/22/node = SubResource( 49 )
+nodes/fragment/22/position = Vector2( 20, 0 )
+nodes/fragment/connections = PoolIntArray( 4, 0, 2, 0, 3, 0, 11, 0, 15, 0, 13, 0, 13, 0, 14, 0, 14, 0, 12, 0, 3, 0, 0, 0, 2, 0, 17, 0, 2, 0, 17, 4, 17, 0, 19, 1, 18, 0, 19, 0, 2, 0, 20, 0, 2, 0, 20, 5, 19, 0, 21, 0, 21, 0, 3, 0, 20, 0, 22, 1, 18, 0, 22, 0, 22, 0, 21, 1 )
 
-[sub_resource type="ShaderMaterial" id=18]
-shader = SubResource( 17 )
+[sub_resource type="ShaderMaterial" id=21]
+shader = SubResource( 20 )
 
-[sub_resource type="SphereMesh" id=19]
+[sub_resource type="SphereMesh" id=22]
 
-[sub_resource type="Gradient" id=20]
+[sub_resource type="Gradient" id=23]
 offsets = PoolRealArray( 0.537994, 0.905775 )
 
-[sub_resource type="GradientTexture" id=21]
-gradient = SubResource( 20 )
-
-[sub_resource type="VisualShaderNodeTexture" id=22]
-output_port_for_preview = 0
-texture = SubResource( 21 )
-
-[sub_resource type="OpenSimplexNoise" id=23]
-seed = 160
-period = 65.1
-lacunarity = 3.0
-
-[sub_resource type="NoiseTexture" id=24]
-seamless = true
-noise = SubResource( 23 )
+[sub_resource type="GradientTexture" id=24]
+gradient = SubResource( 23 )
 
 [sub_resource type="VisualShaderNodeTexture" id=25]
 output_port_for_preview = 0
 texture = SubResource( 24 )
 
-[sub_resource type="VisualShader" id=26]
+[sub_resource type="OpenSimplexNoise" id=26]
+seed = 160
+period = 65.1
+lacunarity = 3.0
+
+[sub_resource type="NoiseTexture" id=27]
+seamless = true
+noise = SubResource( 26 )
+
+[sub_resource type="VisualShaderNodeTexture" id=28]
+output_port_for_preview = 0
+texture = SubResource( 27 )
+
+[sub_resource type="VisualShader" id=29]
 code = "shader_type spatial;
 render_mode specular_schlick_ggx;
 
@@ -216,36 +298,36 @@ void light() {
 "
 graph_offset = Vector2( -664.564, 0 )
 nodes/fragment/0/position = Vector2( 400, 140 )
-nodes/fragment/3/node = SubResource( 22 )
+nodes/fragment/3/node = SubResource( 25 )
 nodes/fragment/3/position = Vector2( 120, 160 )
-nodes/fragment/4/node = SubResource( 25 )
+nodes/fragment/4/node = SubResource( 28 )
 nodes/fragment/4/position = Vector2( -480, 80 )
 nodes/fragment/connections = PoolIntArray( 3, 0, 0, 1, 4, 0, 3, 0 )
 
-[sub_resource type="ShaderMaterial" id=27]
-shader = SubResource( 26 )
+[sub_resource type="ShaderMaterial" id=30]
+shader = SubResource( 29 )
 
-[sub_resource type="SphereMesh" id=28]
+[sub_resource type="SphereMesh" id=31]
 
-[sub_resource type="VisualShaderNodeFresnel" id=29]
+[sub_resource type="VisualShaderNodeFresnel" id=32]
 output_port_for_preview = 0
 default_input_values = [ 2, false, 3, 1.1 ]
 
-[sub_resource type="VisualShaderNodeInput" id=30]
+[sub_resource type="VisualShaderNodeInput" id=33]
 input_name = "normal"
 
-[sub_resource type="Gradient" id=31]
+[sub_resource type="Gradient" id=34]
 offsets = PoolRealArray( 0.592705, 1 )
 colors = PoolColorArray( 0, 0, 0, 1, 0.534351, 0.534351, 0.534351, 1 )
 
-[sub_resource type="GradientTexture" id=32]
-gradient = SubResource( 31 )
+[sub_resource type="GradientTexture" id=35]
+gradient = SubResource( 34 )
 
-[sub_resource type="VisualShaderNodeTexture" id=33]
+[sub_resource type="VisualShaderNodeTexture" id=36]
 output_port_for_preview = 0
-texture = SubResource( 32 )
+texture = SubResource( 35 )
 
-[sub_resource type="VisualShader" id=34]
+[sub_resource type="VisualShader" id=37]
 code = "shader_type spatial;
 render_mode specular_schlick_ggx;
 
@@ -280,32 +362,27 @@ void light() {
 "
 graph_offset = Vector2( -254.103, 0 )
 nodes/fragment/0/position = Vector2( 520, 100 )
-nodes/fragment/2/node = SubResource( 29 )
+nodes/fragment/2/node = SubResource( 32 )
 nodes/fragment/2/position = Vector2( -20, 120 )
-nodes/fragment/3/node = SubResource( 30 )
+nodes/fragment/3/node = SubResource( 33 )
 nodes/fragment/3/position = Vector2( -240, 140 )
-nodes/fragment/4/node = SubResource( 33 )
+nodes/fragment/4/node = SubResource( 36 )
 nodes/fragment/4/position = Vector2( 260, 120 )
 nodes/fragment/connections = PoolIntArray( 2, 0, 4, 0, 4, 0, 0, 1 )
 
-[sub_resource type="ShaderMaterial" id=35]
-shader = SubResource( 34 )
+[sub_resource type="ShaderMaterial" id=38]
+shader = SubResource( 37 )
 
 [node name="PlanetMesh2" type="MeshInstance"]
 mesh = SubResource( 1 )
-material/0 = SubResource( 18 )
-
-[node name="OmniLight" type="OmniLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.695142, 4.31297, 1.73003 )
-light_color = Color( 0.945098, 1, 0, 1 )
-light_energy = 10.5
+material/0 = SubResource( 21 )
 
 [node name="Clouds" type="MeshInstance" parent="."]
 transform = Transform( 1.00436, 0, 0, 0, 1.00436, 0, 0, 0, 1.00436, 0, 0, 0 )
-mesh = SubResource( 19 )
-material/0 = SubResource( 27 )
+mesh = SubResource( 22 )
+material/0 = SubResource( 30 )
 
 [node name="Atmosphere" type="MeshInstance" parent="."]
 transform = Transform( 1.00774, 0, 0, 0, 1.00774, 0, 0, 0, 1.00774, 0, 0, 0 )
-mesh = SubResource( 28 )
-material/0 = SubResource( 35 )
+mesh = SubResource( 31 )
+material/0 = SubResource( 38 )
