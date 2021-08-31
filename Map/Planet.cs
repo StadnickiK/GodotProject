@@ -25,6 +25,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public delegate void SelectTarget(RigidBody target);
 
     [Signal]
+    public delegate void OpenCmdPanel(Planet planet);
+
+    [Signal]
     public delegate void CreateShip(Planet planet, Unit unit);
    
     public Player Controller { get; set; } = null;
@@ -136,7 +139,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 EmitSignal(nameof(OpenPlanetInterface), this);
                 break;
             case ButtonList.Right:
-                EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+                // EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+                EmitSignal(nameof(OpenCmdPanel), this);
                 break;
         }
       } 
@@ -325,7 +329,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         var arr = new Godot.Collections.Array();
         arr.Add(Orbit);
         IcoOrbit.Connect("mouse_entered", w.UInterface,"_on_OrbitIconFocus", arr);
-        
+        var arr2 = new Godot.Collections.Array();
+        arr2.Add(this);
+        Connect(nameof(OpenCmdPanel), w, "_on_OpenPlanetCmdPanel");
         WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
         WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
