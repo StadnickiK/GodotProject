@@ -131,6 +131,7 @@ private Data _data = null;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
 		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
 		_UI.OrbitList.Connect("SelectObject", this, nameof(_on_SelectUnit));
+		_UI.CommandPanel.Connect("ShipCommand", this, nameof(_on_ShipCommand));
 		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
@@ -377,10 +378,21 @@ private Data _data = null;
 
 	void _on_OpenPlanetCmdPanel(Planet planet){
         if(_wcc.HasSelected()){
-			_UI.CommandPanel.ShowPanel();
+			_UI.CommandPanel.ShowPanel(planet);
 		}
-
     }
+
+	void _on_ShipCommand(CmdPanel.CmdPanelOption option, Planet planet){
+		switch(option){
+			case CmdPanel.CmdPanelOption.MoveTo:
+				WCC._SelectTarget(planet);
+				break;
+			case CmdPanel.CmdPanelOption.Conquer:
+				GD.Print("Conquer "+planet.Name);
+				break;
+		}
+		_UI.CommandPanel.Visible = false;
+	}
 
 
 	void ConnectPlanets(){

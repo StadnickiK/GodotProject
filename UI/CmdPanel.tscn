@@ -47,3 +47,8 @@ text = "Bombard"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="button_up" from="VBoxContainer/MoveButton" to="." method="_on_MoveButton_button_up"]
+[connection signal="button_up" from="VBoxContainer/Conquer" to="." method="_on_Conquer_button_up"]
+[connection signal="button_up" from="VBoxContainer/Scan" to="." method="_on_Scan_button_up"]
+[connection signal="button_up" from="VBoxContainer/Bombard" to="." method="_on_Bombard_button_up"]
