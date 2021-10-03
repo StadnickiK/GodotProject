@@ -53,6 +53,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     protected VelocityController _velocityController = new VelocityController();
     public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
 
+    public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
+
     SimpleFireControl _control = null;
 
     protected void UpdateLinearVelocity(PhysicsDirectBodyState state){

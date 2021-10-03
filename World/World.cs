@@ -269,7 +269,7 @@ private Data _data = null;
 		var transform = ship.Transform;
 		transform.origin = planet.Transform.origin;
 		transform.origin += new Vector3(3,0,3);
-		ship.MapObject = planet;
+		ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
 		ship.Transform = transform;
 		ship.Controller = planet.Controller;
 		ship.IsLocal = planet.Vision;
@@ -328,7 +328,7 @@ private Data _data = null;
 			foreach(Node node in system.StarSysObjects.GetChildren()){
 				if(node is Planet planet){
 					if(planet.Controller == null){
-						int amount = Rand.Next(10, 50);
+						int amount = 2;//Rand.Next(10, 20);
 						var unit = new Unit();
 						var ship = CreateShip(unit);
 						for(int i = 0; i < amount; i++){
@@ -388,7 +388,8 @@ private Data _data = null;
 				WCC._SelectTarget(planet);
 				break;
 			case CmdPanel.CmdPanelOption.Conquer:
-				GD.Print("Conquer "+planet.Name);
+				WCC.SetTask(planet, option);
+				// GD.Print("Conquer "+planet.Name);
 				break;
 		}
 		_UI.CommandPanel.Visible = false;

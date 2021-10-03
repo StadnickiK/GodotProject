@@ -68,14 +68,23 @@ public class Unit : Node, IBuilding
     }
 
     public void CalculateDamage(Unit unit){
-        unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
+        if(Stats["Attack"].BaseValue > unit.Stats["Defence"].BaseValue){
+            unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
+        }else{
+            unit.Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+        }
         if(Stats["HitPoints"].CurrentValue<0){
             HasHitpoints = false;
         }
         if(unit.Stats["HitPoints"].CurrentValue<=0){
             unit.HasHitpoints = false;
         }else{
+            if(unit.Stats["Attack"].BaseValue > Stats["Defence"].BaseValue){
                 Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
+            }else{
+                Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+            }
+            // Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
         }
     }
 

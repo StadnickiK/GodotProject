@@ -36,5 +36,6 @@ transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
 visible = false
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )
+
 [connection signal="input_event" from="." to="." method="_on_StarSystem_input_event"]
 [connection signal="button_up" from="XButton" to="." method="_on_XButton_button_up"]

@@ -54,21 +54,22 @@ public class BattlePanel : Panel
 
     void UpdateOverview(SpaceBattle battle){
         var progressBar = new ProgressBar();
-        progressBar.Value = (double)battle.Attacker.Power.CurrentValue/((double)battle.Attacker.Power.CurrentValue+(double)battle.Defender.Power.CurrentValue)*100;
+        progressBar.Value = (double)battle.AttackPower/((double)battle.AttackPower+(double)battle.DefPower)*100;
         progressBar.PercentVisible = true;
         _overviewPanel.AddNodeToPanel("Overview", progressBar);
-        for(int i =0; i<battle.Comabatants.Count; i +=2){
-            var label = new Label();
-            label.Text = battle.Comabatants[i].Name + " vs " + battle.Comabatants[i+1].Name;
-            _overviewPanel.AddNodeToPanel("Overview", label);
-        }
+        // for(int i =0; i<battle.Comabatants.Count; i +=2){
+        //     var label = new Label();
+        //     label.Text = battle.Comabatants[i].Name + " vs " + battle.Comabatants[i+1].Name;
+        //     _overviewPanel.AddNodeToPanel("Overview", label);
+        // }
     }
 
     void UpdateDefender(SpaceBattle battle){
         var label = new Label(); 
         label.Text = "Name / HP / Attack / Defence \n";
         _overviewPanel.AddNodeToPanel("Defender", label);
-        foreach(Unit unit in battle.Defender.Units){
+        foreach(Ship defender in battle.Defenders)
+            foreach(Unit unit in defender.Units){
             label = new Label(); 
             label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
             _overviewPanel.AddNodeToPanel("Defender", label);
@@ -79,11 +80,12 @@ public class BattlePanel : Panel
         var label = new Label(); 
         label.Text = "Name / HP / Attack / Defence \n";
         _overviewPanel.AddNodeToPanel("Attacker", label);
-        foreach(Unit unit in battle.Attacker.Units){
-            label = new Label(); 
-            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
-            _overviewPanel.AddNodeToPanel("Attacker", label);
-        }
+        foreach(Ship attacker in battle.Attackers)
+            foreach(Unit unit in attacker.Units){
+                label = new Label(); 
+                label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+                _overviewPanel.AddNodeToPanel("Attacker", label);
+            }
     }
 
     void _on_XButton_button_up(){

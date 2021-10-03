@@ -148,13 +148,15 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
         if(node is Ship ship)
-            if(GetParent() == ship.GetParent())
+            if(GetParent() == ship.GetParent() || ship.GetParent() == null)
                 if(!Orbit.GetChildren().Contains(ship) && ship.MapObject != this){
                     AddToOrbit(ship);
                     ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
-                    var transform = state.Transform;
-                    transform.origin = GlobalTransform.origin;
-                    state.Transform = transform;
+                    if(state != null){
+                        var transform = state.Transform;
+                        transform.origin = GlobalTransform.origin;
+                        state.Transform = transform;
+                    }
                     CheckOrbit(ship);
                     // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
                     //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));

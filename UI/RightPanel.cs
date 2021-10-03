@@ -47,7 +47,8 @@ public class RightPanel : Panel
     public void _on_LabelGuiInputEvent(InputEvent input, Node node){
         if(input is InputEventMouseButton button){
             if(button.ButtonIndex == (int)ButtonList.Left){
-                EmitSignal(nameof(LookAtObject), node);
+                if(node != null)
+                    EmitSignal(nameof(LookAtObject), node);
             }
         }
     }

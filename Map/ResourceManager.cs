@@ -93,16 +93,18 @@ public class ResourceManager : Node
 
     public bool PayCost(Godot.Collections.Dictionary<string, int> BuildCost){
         foreach(var resName in BuildCost.Keys){
-            if(Resources.ContainsKey(resName)){
-                if(Resources[resName] < BuildCost[resName]){
+            if(BuildCost[resName] > 0)
+                if(Resources.ContainsKey(resName)){
+                    if(Resources[resName] < BuildCost[resName]){
+                        return false;
+                    }
+                }else{
                     return false;
                 }
-            }else{
-                return false;
-            }
         }
         foreach(var resName in BuildCost.Keys){
-            Resources[resName] -= BuildCost[resName];
+            if(BuildCost[resName] > 0)
+                Resources[resName] -= BuildCost[resName];
         }
         return true;
     }

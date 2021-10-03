@@ -42,8 +42,12 @@ public class WorldCursorControl : Spatial
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(PhysicsBody unit){;
-        select.AddTarget(unit);
+    public void _SelectTarget(PhysicsBody target){;
+        select.AddTarget(target);
+    }
+
+    public void SetTask(PhysicsBody target, CmdPanel.CmdPanelOption task){;
+        select.AddTarget(target, task);
     }
 
     Vector3 GetMouseWorldPosition(){

@@ -49,8 +49,8 @@
     "Defence": 35
   },
   "Unit 8": {
-    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200, \"Resource 2\":200}",
-    "BuildTime": 50,
+    "BuildCost": "{\"Resource 0\": 2, \"Resource 1\":0, \"Resource 2\":0}",
+    "BuildTime": 5,
     "HitPoints": 800,
     "Attack": 80,
     "Defence": 40

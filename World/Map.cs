@@ -34,7 +34,7 @@ public class Map : Spatial
                 if(!combat.Combatants.Contains(ship) && !combat.Combatants.Contains(enemy)){
                     combat.Combatants.Add(ship);
                     combat.Combatants.Add(enemy);
-                    var battle = combat.CreateBattle(ship, enemy,parent);
+                    var battle = combat.CreateBattle(ship, enemy, parent);
                     battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
                 }
             }

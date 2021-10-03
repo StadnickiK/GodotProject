@@ -45,6 +45,8 @@ public class SmallList : Panel
             if(node is Ship ship){
                 AddItem(node);
             }
+            if(node is SpaceBattle battle)
+                AddItem(battle);
         }
     }
 

@@ -19,6 +19,7 @@ public class CmdPanel : Panel
 
     public enum CmdPanelOption
     {
+        None,
         MoveTo,
         Conquer,
         Scan,
@@ -49,7 +50,7 @@ public class CmdPanel : Panel
     }
 
     void _on_Conquer_button_up(){
-        EmitSignal("ShipCommand", CmdPanelOption.MoveTo, _currentPlanet);
+        EmitSignal("ShipCommand", CmdPanelOption.Conquer, _currentPlanet);
     }
 
     void _on_Scan_button_up(){
