@@ -60,6 +60,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Occupied
     }
 
+    Directory dir = new Directory();
+
     private Unit _unit;
     public Unit CurrentUnit
     {

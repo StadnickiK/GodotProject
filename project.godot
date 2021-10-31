@@ -28,8 +28,8 @@ StatManager="*res://Units/Stats/StatManager.cs"
 
 [display]
 
-window/size/width=1920
-window/size/height=1080
+window/size/width=1300
+window/size/height=700
 window/stretch/aspect="expand"
 
 [global]

@@ -43,5 +43,23 @@ public class JSONLoader : Node
         return null;
     }
 
+        bool Open(string dirPath){
+        Directory Dir = new Directory();
+        if(Dir.Open(dirPath) == Godot.Error.Ok){
+            Dir.ListDirBegin();
+
+            var fileName = Dir.GetNext();
+            while(fileName != "" || fileName != null){
+                if(!Dir.CurrentIsDir()){
+                    var scene = (PackedScene)GD.Load(fileName);   
+                }
+            }
+            fileName = Dir.GetNext();
+
+            Dir.ListDirEnd();
+            return true;
+        }
+        return false;
+    }
 
 }
