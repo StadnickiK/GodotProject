@@ -33,14 +33,14 @@ public class DataLoader : Node
             while(fileName != "" && fileName != null){
                 if(!Dir.CurrentIsDir()){
                     AddChild(
-                        GD.Load<PackedScene>(fileName).Instance()
+                        ResourceLoader.Load<PackedScene>(dirPath+fileName).Instance()
+                        
                     );
                 }
+                fileName = Dir.GetNext();
             }
-            fileName = Dir.GetNext();
-
             Dir.ListDirEnd();
-            return null;
+            return scenes;
         }
         return null;
     }
