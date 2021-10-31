@@ -44,6 +44,11 @@ public class Data : Node
         _ResourcesLoader = GetNode<ResourcesLoader>("ResourcesLoader");
         _UnitsLoader = GetNode<UnitsLoader>("UnitsLoader");
         _BuildingsLoader = GetNode<BuildingLoader>("BuildingLoader");
+        GetChildren();
+    }
+
+    public Godot.Collections.Array GetData(string nodeName){
+        return GetNode(nodeName).GetChildren();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

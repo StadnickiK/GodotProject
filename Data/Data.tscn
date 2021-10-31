@@ -23,4 +23,9 @@ Path = "res://Data/Units.json"
 
 [node name="Technology" type="Node" parent="."]
 script = ExtResource( 5 )
-Path = "res://Data/Technology/"
+
+[node name="Buildings" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="Resources" type="Node" parent="."]
+script = ExtResource( 5 )

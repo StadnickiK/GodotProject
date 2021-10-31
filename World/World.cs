@@ -286,37 +286,27 @@ private Data _data = null;
 		foreach(StarSystem system in _map.galaxy.StarSystems){
 			foreach(Node node in system.StarSysObjects.GetChildren()){
 				if(node is Planet planet){
-					foreach(var resource in _data.WorldResources.Values){
-						if(resource.IsStarter == true && 
-						planet.Controller != null && 
-						(resource.ResourceType == Resource.Type.Ore)){
-							planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
-						}else if((resource.ResourceType == Resource.Type.Ore)){
-							if(Rand.Next(0,100)>(100 - resource.Rarity))
-								planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
-						}
-						// if(resource is Godot.Collections.Dictionary)
-							// GD.Print(resource);
-					
-					// if(planet.Controller != null){
-						// var resource = new Resource("resource 0");
-						// if(!(planet.ResourcesManager.Resources.ContainsKey(resource.Name)))
-						// 	planet.ResourcesManager.Resources.Add(resource.Name, resource);
-						// do{
-						// 	resource = new Resource("resource "+ Rand.Next(1,5));
-						// }while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
-						// planet.ResourcesManager.Resources.Add(resource.Name, resource);
-					// }else{
-						// int amount = Rand.Next(1,5);
-						// while(amount>0){
-						// 	Resource resource = null;
-						// 	do{
-						// 		resource = new Resource("resource "+ Rand.Next(0,5));
-						// 	}while(planet.ResourcesManager.Resources.ContainsKey(resource.Name));
-						// 	planet.ResourcesManager.Resources.Add(resource.Name, resource);
-						// 	amount--;
-						// }
+					// foreach(var resource in _data.WorldResources.Values){
+					// 	if(resource.IsStarter == true && 
+					// 	planet.Controller != null && 
+					// 	(resource.ResourceType == Resource.Type.Ore)){
+					// 		planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+					// 	}else if((resource.ResourceType == Resource.Type.Ore)){
+					// 		if(Rand.Next(0,100)>(100 - resource.Rarity))
+					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+					// 	}
 					// }
+					foreach(var rNode in _data.GetData("Resources")){
+						if(rNode is Resource resource)
+							if(resource.IsStarter == true && 
+								planet.Controller != null && 
+								(resource.ResourceType == Resource.Type.Ore)
+							){
+								planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+							}else if((resource.ResourceType == Resource.Type.Ore)){
+								if(Rand.Next(0,100)>(100 - resource.Rarity))
+									planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+							}
 					}
 				}
 			}

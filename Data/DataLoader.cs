@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class DataLoader : Node
 {
     [Export]
-    public string Path { get; set; } = null;
+    public string DirPath { get; set; } = null;
 
     public override void _Ready()
     {
-        if(Path != null && Path != "")
-            GetScenes(Path);
+        if(DirPath != null && DirPath != "")
+            GetScenes(DirPath);
     }
 
     public Directory Dir { get; set; } = new Directory();
@@ -34,7 +34,6 @@ public class DataLoader : Node
                 if(!Dir.CurrentIsDir()){
                     AddChild(
                         ResourceLoader.Load<PackedScene>(dirPath+fileName).Instance()
-                        
                     );
                 }
                 fileName = Dir.GetNext();

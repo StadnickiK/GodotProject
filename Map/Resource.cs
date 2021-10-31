@@ -5,7 +5,6 @@ public class Resource : Node
 {
 
     //public int Quantity { get; set; } = 0;
-
     public int Quantity = 0;
 
     public int? QuantityCap { get; set; } = null;
@@ -14,11 +13,11 @@ public class Resource : Node
 
     private int _baseValue = 1;
     public int BaseValue { get => _baseValue; }
-
-public Type ResourceType { get; set; } = Type.Ore;
-
+    [Export]
+    public Type ResourceType { get; set; } = Type.Ore;
+    [Export]
     public int Rarity { get; set; } = 0;
-
+    [Export]
     public bool IsStarter { get; set; } = false;
 
     public Resource(){}
