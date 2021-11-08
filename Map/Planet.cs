@@ -220,7 +220,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         if(Controller.ResManager.PayCost(unit.BuildCost)){
             var ship = GetLocalShip();
             if(ship != null){
-                ship.Units.Add(unit);
+                ship.Units.AddChild(unit);
             }else{
                 EmitSignal(nameof(CreateShip), this, unit);
                 // unit.CurrentTime = 0;
@@ -384,7 +384,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 }else{
                     var ship = GetLocalShip();
                     if(ship != null){
-                        ship.Units.Add(_unit);
+                        ship.Units.AddChild(_unit);
                     }else{
                         EmitSignal(nameof(CreateShip), this, _unit);
                     }

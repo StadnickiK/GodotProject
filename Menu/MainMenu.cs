@@ -21,8 +21,6 @@ public class MainMenu : Control
         _newGameNode = GetNode<CanvasItem>("NewGame");
         _TitleLabel = GetNode<Label>("Menu/Label");
         _TitleLabel.Text = Title;
-        var parent = (Game)GetParent();
-        parent.ConnectToQuickGame(this);
     }
 
     public override void _Ready()

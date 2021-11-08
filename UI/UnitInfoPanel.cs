@@ -59,10 +59,12 @@ void GetNodes(){
             var label = new Label(); 
             label.Text = "Name / HP / Attack / Defence \n";
             _overviewPanel.AddNodeToPanel("Details", label);
-            foreach(Unit unit in ship.Units){
-                label = new Label(); 
-                label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
-                _overviewPanel.AddNodeToPanel("Details", label);
+            foreach(Node node in ship.Units.GetChildren()){
+                if(node is Unit unit){
+                    label = new Label(); 
+                    label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+                    _overviewPanel.AddNodeToPanel("Details", label);
+                }
             }
         }
     }

@@ -32,7 +32,8 @@ public class Game : Spatial
 
 	public void _on_QuickGame(){
 		_curerentWorld = (World)_worldScene.Instance();
-	   GetNode("MainMenu").QueueFree();
+	   var menu = GetNode("MainMenu");
+	   menu.QueueFree();
 	   AddChild(_curerentWorld);
 	}
 
@@ -44,6 +45,7 @@ public class Game : Spatial
 		var menu = (MainMenu)_mainMenuScene.Instance();
 	   GetNode("World").QueueFree();
 	   AddChild(menu);
+	   ConnectToQuickGame(menu);
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -69,11 +69,12 @@ public class BattlePanel : Panel
         label.Text = "Name / HP / Attack / Defence \n";
         _overviewPanel.AddNodeToPanel("Defender", label);
         foreach(Ship defender in battle.Defenders)
-            foreach(Unit unit in defender.Units){
-            label = new Label(); 
-            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
-            _overviewPanel.AddNodeToPanel("Defender", label);
-        }
+            foreach(Node node in defender.Units.GetChildren())
+                if(node is Unit unit){
+                    label = new Label(); 
+                    label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
+                    _overviewPanel.AddNodeToPanel("Defender", label);
+                }
     }
 
     void UpdateAttacker(SpaceBattle battle){
@@ -81,11 +82,12 @@ public class BattlePanel : Panel
         label.Text = "Name / HP / Attack / Defence \n";
         _overviewPanel.AddNodeToPanel("Attacker", label);
         foreach(Ship attacker in battle.Attackers)
-            foreach(Unit unit in attacker.Units){
+            foreach(Node node in attacker.Units.GetChildren())
+                if(node is Unit unit){
                 label = new Label(); 
                 label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue;
                 _overviewPanel.AddNodeToPanel("Attacker", label);
-            }
+                }
     }
 
     void _on_XButton_button_up(){

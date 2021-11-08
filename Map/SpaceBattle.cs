@@ -114,13 +114,13 @@ public class SpaceBattle : StaticBody, ISelectMapObject
         foreach(var attacker in Attackers){
             attacker.GetParent().RemoveChild(attacker);
             Participants.AddChild(attacker);
-            AttackPower += attacker.Power.CurrentValue;
+            AttackPower += attacker.Power;
         }
     }
 
     void UpdateAttackPower(){
         foreach(var attacker in Attackers){
-            AttackPower += attacker.Power.CurrentValue;
+            AttackPower += attacker.Power;
         }
     }
 
@@ -128,13 +128,13 @@ public class SpaceBattle : StaticBody, ISelectMapObject
         foreach(var defender in Defenders){
             defender.GetParent().RemoveChild(defender);
             Participants.AddChild(defender);
-            DefPower += defender.Power.CurrentValue;
+            DefPower += defender.Power;
         }
     }
 
     void UpdateDefPower(){
         foreach(var defender in Defenders){
-            DefPower += defender.Power.CurrentValue;
+            DefPower += defender.Power;
         }
     }
 
@@ -148,24 +148,28 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     }
 
     void Duel(Ship Attacker, Ship Defender){
-        var defenderCount = Defender.Units.Count - 1;
-        for(var i = Attacker.Units.Count-1;i>=0; i--){
-            var unit = Attacker.Units[i];
-            if(defenderCount>=0){
-                unit.CalculateDamage(Defender.Units[defenderCount]);
-                if(!Defender.Units[defenderCount].HasHitpoints){
-                    Defender.Units[defenderCount].QueueFree();
-                    Defender.Units.RemoveAt(defenderCount);
-                    defenderCount -= 1;
+        var defenderCount = Defender.Units.GetChildren().Count - 1;
+        for(var i = Attacker.Units.GetChildren().Count-1;i>=0; i--){
+            var node = Attacker.Units.GetChildren()[i];
+            if(node is Unit unit){
+                if(defenderCount>=0){
+                    node = Defender.Units.GetChildren()[defenderCount];
+                    if(node is Unit defender){
+                        unit.CalculateDamage(defender);
+                        if(!defender.HasHitpoints){
+                            defender.QueueFree();
+                            // Defender.Units.RemoveChild(defender);
+                            defenderCount -= 1;
+                        }
+                    }
                 }
-            }
-            if(!unit.HasHitpoints){
-                Attacker.Units[i].QueueFree();
-                Attacker.Units.Remove(unit);
+                if(!unit.HasHitpoints){
+                    unit.QueueFree();
+                }
             }
         }
         Attacker.UpdatePower();
-        if(Defender.Units.Count == 0){
+        if(Defender.Units.GetChildren().Count == 0){
             Defender.QueueFree();
             Defenders.Remove(Defender);
         }else{
@@ -178,7 +182,7 @@ public class SpaceBattle : StaticBody, ISelectMapObject
         var defendersCount = Defenders.Count - 1;
         for(int i = Attackers.Count-1; i>=0; i--){
             Duel(Attackers[i], Defenders[defendersCount]);
-            if(Attackers[i].Units.Count == 0){
+            if(Attackers[i].Units.GetChildren().Count == 0){
                 Attackers[i].QueueFree();
                 Attackers.RemoveAt(i);
             }
@@ -192,7 +196,7 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     void EndCombat(){
         foreach(Node node in Participants.GetChildren()){
             if(node is Ship ship){
-                if(ship.Units.Count == 0){
+                if(ship.Units.GetChildren().Count == 0){
                     if(ship.Controller != null){
                         ship.Controller.MapObjects.Remove(ship);
                         ship.Controller.MapObjectsChanged = true;

@@ -56,4 +56,5 @@ margin_left = 280.0
 margin_right = 321.0
 margin_bottom = 20.0
 text = "Start"
+
 [connection signal="button_up" from="VBoxContainer/ConfirmButton/Confirm" to="." method="_on_Confirm_button_up"]

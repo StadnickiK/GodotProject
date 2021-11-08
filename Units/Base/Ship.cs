@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, IResourceManager
+public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//, IResourceManager
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);
@@ -31,26 +31,24 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     public IEnterMapObject MapObject { get; set; } = null;
 
-    public StatManager StatManager { get; set; } = new StatManager();
+    public List<BaseStat> Stats { get; set; } = new List<BaseStat>(); // leak
 
-    public ResourceManager ResourcesManager { get; set; } = new ResourceManager();
+    //public List<Unit> Units { get; set; } = new List<Unit>(); // probably leak
 
-    public List<BaseStat> Stats { get; set; } = new List<BaseStat>();
-
-    public List<Unit> Units { get; set; } = new List<Unit>();
+    public Node Units { get; set; } = new Node();
 
     public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
     public MeshInstance Mesh { get; set; } = null;  
 
-    public BaseStat Power { get; set; } = new BaseStat("Power");
+    public int Power { get; set; }
 
     [Export]
     public int VisionRange { get; set; } = 4;
 
     public VisionArea _area { get; set; }
 
-    protected VelocityController _velocityController = new VelocityController();
+    protected VelocityController _velocityController = null;
     public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
 
     public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
@@ -97,6 +95,9 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         }
         if(target.GetParent() != starSysObj){   // check if target is in the same map object (f.e. star system)
             if(starSysObj.GetParent() is StarSystem system){
+                
+                // leak
+
                 var tempTarget = new Spatial(); // used as point to exit current system
                 var tempTrans = tempTarget.Transform;
                 tempTrans.origin = (target.Transform.origin-system.Transform.origin).Normalized()*(((float)system.Radius)*1.2f);
@@ -121,7 +122,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
-        var target = new Spatial();
+        var target = new Spatial(); // leak
         target.SetProcess(false);
         var transform = target.Transform;
         transform.origin = destination;
@@ -313,6 +314,9 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         _area = GetNode<VisionArea>("Area");
         Mesh = GetNode<MeshInstance>("ship model/Cube");
         _control = GetNode<SimpleFireControl>("FireControl");
+        _velocityController = GetNode<VelocityController>("VelocityController");
+        AddChild(Units);
+        AddChild(targetManager);
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){
@@ -324,10 +328,9 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     {
         //VisionRange = GetNode<Spatial>("VisionRange");
         //VisionRange.Scale = new Vector3(Range,0,Range);
-
-        _velocityController.Mass = 10;
         _ConnectSignal();
         GetNodes();
+        _velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
         //Stats.Add(new BaseStat("Attack", 5));
         //Stats.Add(new BaseStat("Defence", 3));
@@ -335,9 +338,10 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     }
 
     public void UpdatePower(){
-        Power.CurrentValue = 0;
-        foreach(Unit unit in Units){
-            Power.CurrentValue += unit.Stats["HitPoints"].CurrentValue;
+        Power = 0;
+        foreach(Node node in Units.GetChildren()){
+            if(node is Unit unit)
+                Power += unit.Stats["HitPoints"].CurrentValue;
         }
     }
 

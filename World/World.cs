@@ -243,7 +243,7 @@ private Data _data = null;
 						player.MapObjects.Add(ship);
 						for(int i = 0;i<5;i++){
 							var unit = new Unit();
-							ship.Units.Add(unit);
+							ship.Units.AddChild(unit);
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
@@ -260,7 +260,7 @@ private Data _data = null;
 
 	public Ship CreateShip(Unit unit){
 		var ship = (Ship)_ShipScene.Instance();
-		ship.Units.Add(unit);
+		ship.Units.AddChild(unit);
 		return ship;
 	}
 
@@ -275,7 +275,7 @@ private Data _data = null;
 		ship.IsLocal = planet.Vision;
 		ship.ID_Owner = ship.Controller.PlayerID;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
-		ship.Units.Add(unit);
+		ship.Units.AddChild(unit);
 		planet.System.AddMapObject(ship);
 		planet.Controller.AddMapObject(ship);
 		//planet.AddToOrbit(ship);
@@ -322,7 +322,7 @@ private Data _data = null;
 						var unit = new Unit();
 						var ship = CreateShip(unit);
 						for(int i = 0; i < amount; i++){
-							ship.Units.Add(new Unit());
+							ship.Units.AddChild(new Unit());
 						}
 						planet.AddToOrbit(ship);
 						//var transform = ship.Transform;
