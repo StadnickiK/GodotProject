@@ -40,9 +40,9 @@ public class BuildingInterface : Panel
             var label = new Label();
             label.Text = "\nBuild Cost\n";
             _listPanel.AddListItem(label);
-            foreach(Resource resource in building.BuildCost){
+            foreach(var resName in building.BuildCost.Keys){
                 label = new Label();
-                label.Text = resource.Name + " " + resource.Quantity;
+                label.Text = resName + " " + building.BuildCost[resName];
                 _listPanel.AddListItem(label);
             }
             label = new Label();
@@ -51,24 +51,56 @@ public class BuildingInterface : Panel
             label = new Label();
             label.Text = "\nProduction\n";
             _listPanel.AddListItem(label);
-            foreach(Resource resource in building.Products){
+            foreach(var resourceName in building.Products.Keys){
                 label = new Label();
-                label.Text = resource.Name + " " + resource.Quantity;
+                label.Text = resourceName + " " + building.Products[resourceName];
                 _listPanel.AddListItem(label);
             }
             label = new Label();
             label.Text = "\nProduction cost\n";
             _listPanel.AddListItem(label);
-            foreach(Resource resource in building.ProductCost){
+            foreach(string resName in building.ProductCost.Keys){
                 label = new Label();
-                label.Text = resource.Name + " " + resource.Quantity;
+                label.Text = resName + " " + building.ProductCost[resName];
+                _listPanel.AddListItem(label);
+            }
+            foreach(var resName in building.ResourceLimits.Keys){
+                label = new Label();
+                label.Text = "\nStorage capacity: "+building.ResourceLimits[resName]+"\n";
+                _listPanel.AddListItem(label);
+            }
+        }
+    }
+
+    public void UpdateInterface(Unit unit, Planet planet){
+        _building = null;
+        _unit = null;
+        _listPanel.ClearItems();
+        if(unit != null){
+            _unit = unit;
+            _header.SetTitle(unit.Name);
+            var label = new Label();
+            label.Text = "\nBuild Cost\n";
+            _listPanel.AddListItem(label);
+            foreach(var resName in unit.BuildCost.Keys){
+                label = new Label();
+                label.Text = resName + " " + unit.BuildCost[resName];
                 _listPanel.AddListItem(label);
             }
             label = new Label();
-            label.Text = "\nStorage capacity: "+building.ResourceLimit+"\n";
+            label.Text = "\nConstruction time: "+unit.BuildTime;
             _listPanel.AddListItem(label);
+            label = new Label();
+            label.Text = "\nStatistics:\n";
+            _listPanel.AddListItem(label);
+            foreach(var stat in unit.Stats.Values){
+                label = new Label();
+                label.Text = stat.Name + ": " + stat.BaseValue;
+                _listPanel.AddListItem(label);
+            }
         }
     }
+
 
     public void UpdateInterface(){
         _listPanel.ClearItems();
@@ -78,7 +110,7 @@ public class BuildingInterface : Panel
             Resource resource = new Resource();
             resource.Name = "resource "+i;
             resource.Quantity = 20 + i * 1;
-            unit.BuildCost.Add(resource);
+            unit.BuildCost.Add(resource.Name, resource.Quantity);
             var label = new Label(); 
             label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue 
             +"\n Cost: "+ resource.Name +": "+resource.Quantity;
@@ -92,6 +124,11 @@ public class BuildingInterface : Panel
                 _unit = unit;
             }
         }
+    }
+
+    void _on_BuildingInterface_gui_input(InputEvent e){
+        if(e is InputEventScreenDrag drag)
+            RectPosition += drag.Relative;
     }
 
     public void ConnecToStartConstruction(Node node, string methodName){

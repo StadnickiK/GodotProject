@@ -2,20 +2,24 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Unit : Node
+public class Unit : Node, IBuilding
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
     [Export]
     public int ID_Owner { get; set; }
 
     public bool HasHitpoints { get; set; } = true;  
 
-    public List<Resource> BuildCost { get; set; } = new List<Resource>();
+    public int BuildTime { get; set; } = 0;
 
-    public Unit(){
+    public int CurrentTime { get; set; } = 0;
+
+    public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
+
+    public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+
+    // World - initStartFleets, InitResistance
+    public Unit(){  
         Random rand = new Random();
         BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
         BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
@@ -37,6 +41,7 @@ public class Unit : Node
         Stats.Add(hp.StatName, hp);
     }
 
+    // UI Planet Interface
     public Unit(int attack, int defence){
         BaseStat atck = new BaseStat("Attack", attack);
         BaseStat dfnce = new BaseStat("Defence", defence);
@@ -47,29 +52,45 @@ public class Unit : Node
         Stats.Add(hp.StatName, hp);
     }
 
-    public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+    public Unit(string name, List<BaseStat> stats){
+        Name = name;
+        foreach(BaseStat stat in stats){
+            Stats.Add(stat.Name, stat);
+        }
+    }
+
+    public Unit(Unit unit){
+        Name = unit.Name;
+        Stats = new Dictionary<string, BaseStat>(unit.Stats);
+        BuildCost = new Godot.Collections.Dictionary<string, int>(unit.BuildCost);
+        BuildTime = unit.BuildTime;
+        ID_Owner = unit.ID_Owner;
+    }
 
     public void CalculateDamage(Unit unit){
-        unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
+        if(Stats["Attack"].BaseValue > unit.Stats["Defence"].BaseValue){
+            unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
+        }else{
+            unit.Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+        }
         if(Stats["HitPoints"].CurrentValue<0){
             HasHitpoints = false;
         }
         if(unit.Stats["HitPoints"].CurrentValue<=0){
             unit.HasHitpoints = false;
         }else{
+            if(unit.Stats["Attack"].BaseValue > Stats["Defence"].BaseValue){
                 Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
+            }else{
+                Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+            }
+            // Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
         }
     }
 
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
 
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }

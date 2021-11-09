@@ -2,26 +2,52 @@
 
 [ext_resource path="res://UI/BuildingLabel.cs" type="Script" id=1]
 
-[node name="BuildingLabel" type="Label"]
-margin_right = 161.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 161, 14 )
-hint_tooltip = "
-"
-mouse_filter = 1
-size_flags_vertical = 1
-text = "Item1"
+[node name="BuildingLabel" type="Container"]
+margin_right = 160.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 0, 22 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="Progress" type="ProgressBar" parent="."]
+visible = false
 show_behind_parent = true
-margin_right = 161.0
-margin_bottom = 14.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_top = 1.0
+margin_right = -1.0
+margin_bottom = -2.0
 mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
 step = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Button" type="Button" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -2.0
+margin_top = 1.0
+margin_right = -1.0
+margin_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 161, 14 )
+hint_tooltip = "
+"
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Item1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="value_changed" from="Progress" to="." method="_on_Progress_value_changed"]

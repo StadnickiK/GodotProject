@@ -5,10 +5,6 @@ using System.Collections.Generic;
 public class Combat : Node
 {
     public List<PhysicsBody> Combatants { get; set; } = new List<PhysicsBody>();
-    // Called when the node enters the scene tree for the first time.
-
-    public List<SpaceBattle> SpaceBattles {get; set; } = new List<SpaceBattle>();
-
     PackedScene _battleScene = (PackedScene)ResourceLoader.Load("res://Map/SpaceBattle.tscn");
 
     public SpaceBattle CreateBattle(PhysicsBody ship, PhysicsBody enemy, Node parent){

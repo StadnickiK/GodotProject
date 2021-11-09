@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : StaticBody
+public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 {
 
 	[Export]
@@ -16,7 +16,7 @@ public class StarSystem : StaticBody
 	public delegate void ViewStarSystem(StarSystem system);
 
 	[Signal]
-	public delegate void ViewGalaxy();
+	public delegate void ViewGalaxy(StarSystem system);
 
 	[Signal]
 	public delegate void SelectTarget(StarSystem target);
@@ -41,7 +41,7 @@ public class StarSystem : StaticBody
 
 	public String SystemName { get; set; }
 
-	public Text3D SystemName3D { get; set; }
+	public Text3 SystemName3D { get; set; } = null;
 
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
@@ -76,7 +76,7 @@ public class StarSystem : StaticBody
 
 	void GetNodes(){
 		_starSysObjects = GetNode<Spatial>("StarSysObjects");
-		SystemName3D = GetNode<Text3D>("Text3D");
+		SystemName3D = GetNode<Text3>("Placeholder/Text3");
 		Placeholder = GetNode<CollisionShape>("Placeholder");
 		XButton = GetNode<Button>("XButton");
 		_size = GetNode<MeshInstance>("StarSysObjects/Diameter");
@@ -141,7 +141,8 @@ public class StarSystem : StaticBody
 	}
 
 	public void AddMapObject(PhysicsBody body){
-		StarSysObjects.AddChild(body);
+		if(body.GetParent() != StarSysObjects)
+			StarSysObjects.AddChild(body);
 	}
 
 	void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
@@ -156,7 +157,7 @@ public class StarSystem : StaticBody
 
 	void _on_XButton_button_up(){
 		CloseSystem();
-		EmitSignal(nameof(ViewGalaxy));
+		EmitSignal(nameof(ViewGalaxy), this);
 	}
 
 	public void CloseSystem(){
@@ -168,6 +169,36 @@ public class StarSystem : StaticBody
 	protected void _ConnectSignal(){
 		WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
 		WCC.ConnectToSelectTarget(this);
+	}
+
+	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+		if(node != null){
+			if(node.GetParent() == GetParent())
+				if(node is Ship ship){
+					ship.GetParent().RemoveChild(ship);
+					_starSysObjects.AddChild(ship);
+					ship.NextTarget();
+					var trans = state.Transform;
+					trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
+					state.Transform = trans;
+					ship.MapObject = this;
+				}
+        }
+	}
+
+	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+		if(node is Ship ship)
+			if(ship.MapObject == this){
+				if(ship.Transform.origin.Length()>Radius){
+					StarSysObjects.RemoveChild(ship);
+					GetParent().AddChild(ship);
+					var trans = state.Transform;
+					trans.origin = Transform.origin;
+					state.Transform = trans;
+					ship.NextTarget();
+					ship.Visible = false;
+				}
+			}
 	}
 
 	// Called when the node enters the scene tree for the first time.

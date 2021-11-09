@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/3.2.3">
+﻿<Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -17,13 +17,38 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Data\BuildingLoader.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\DataLoader.cs" />
+    <Compile Include="Data\JSONLoader.cs" />
+    <Compile Include="Data\ResourcesLoader.cs" />
+    <Compile Include="Data\UnitsLoader.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Map\IMap\ITechReq.cs" />
+    <Compile Include="Data\Technology.cs" />
+    <Compile Include="UI\CmdPanel.cs" />
+    <Compile Include="UI\Icon3D.cs" />
+    <Compile Include="UI\SmallList.cs" />
+    <Compile Include="Map\BuildingManager.cs" />
     <Compile Include="Map\Combat.cs" />
+    <Compile Include="Map\ConstructionManager.cs" />
+    <Compile Include="Map\IMap\IBuildCost.cs" />
+    <Compile Include="Map\IMap\IBuilding.cs" />
+    <Compile Include="Map\IMap\IBuildTime.cs" />
+    <Compile Include="Map\IMap\IEnterMapObject.cs" />
+    <Compile Include="Map\IMap\IExitMapObject.cs" />
+    <Compile Include="Map\IMap\IMapObject.cs" />
+    <Compile Include="Map\IMap\IMapObjectControllerChanger.cs" />
+    <Compile Include="Map\IMap\IResourceManager.cs" />
+    <Compile Include="Map\IMap\ISelectMapObject.cs" />
     <Compile Include="Map\Orbit.cs" />
+    <Compile Include="Map\ResourceManager.cs" />
     <Compile Include="Map\SpaceBattle.cs" />
+    <Compile Include="Map\IMap\IMapObjectController.cs" />
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
+    <Compile Include="UI\AlertBox.cs" />
     <Compile Include="UI\BattlePanel.cs" />
     <Compile Include="UI\BuildingLabel.cs" />
     <Compile Include="UI\BuildingInterface.cs" />
@@ -36,6 +61,9 @@
     <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
+    <Compile Include="UI\Text3.cs" />
+    <Compile Include="UI\TransferLabel.cs" />
+    <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
     <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
@@ -57,6 +85,10 @@
     <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
+    <Compile Include="Units\Base\IVisible.cs" />
+    <Compile Include="Units\Base\IVision.cs" />
+    <Compile Include="Units\Base\SimpleFireControl.cs" />
+    <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />
     <Compile Include="World\Player.cs" />
@@ -73,7 +105,6 @@
     <Compile Include="World\UI.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
-    <Compile Include="UI\Text3D.cs" />
     <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup />

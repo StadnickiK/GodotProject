@@ -26,7 +26,7 @@ public class Orbit : Spatial
             if(GetParent() is Planet planet){
                 switch(planet.PlanetStatus){
                     case Planet.Status.None:
-                    planet.PlanetOwner = ship.ShipOwner;
+                    planet.Controller = ship.Controller;
                         break;
                     default:
                         return;
@@ -40,7 +40,7 @@ public class Orbit : Spatial
             if(GetParent() is Planet planet){
                 switch(planet.PlanetStatus){
                     case Planet.Status.Occupied:
-                    planet.PlanetOwner = ship.ShipOwner;
+                    planet.Controller = ship.Controller;
                         break;
                     default:
                         return;
@@ -76,6 +76,18 @@ public class Orbit : Spatial
                 if(battle.IsLocal)
                     return true;
         }
+        return false;
+    }
+
+    public bool HasEnemy(IMapObjectController controller){
+        foreach(var node in GetChildren()){
+            if(node is IMapObjectController player){
+                if(controller != player)
+                    if(player.Controller != controller.Controller)
+                        return true;
+            }
+        }
+         
         return false;
     }
 

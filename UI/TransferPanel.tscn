@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/TransferPanel.cs" type="Script" id=1]
+
+[node name="TransferPanel" type="ScrollContainer"]
+margin_right = 500.0
+margin_bottom = 231.0
+rect_min_size = Vector2( 0, 250 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="VBoxContainer" parent="."]
+margin_right = 500.0
+margin_bottom = 250.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Top" type="HBoxContainer" parent="Container"]
+margin_right = 500.0
+margin_bottom = 28.0
+rect_min_size = Vector2( 0, 28 )
+size_flags_horizontal = 3
+
+[node name="Local" type="Label" parent="Container/Top"]
+margin_top = 7.0
+margin_right = 40.0
+margin_bottom = 21.0
+text = "Planet"
+
+[node name="Guest" type="Label" parent="Container/Top"]
+margin_left = 462.0
+margin_top = 7.0
+margin_right = 500.0
+margin_bottom = 21.0
+size_flags_horizontal = 10
+text = "Guest"

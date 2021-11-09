@@ -8,3 +8,5 @@ script = ExtResource( 3 )
 
 [node name="MainMenu" parent="." instance=ExtResource( 1 )]
 Title = "RTS 4X"
+
+[connection signal="QuickGame" from="MainMenu" to="." method="_on_QuickGame"]

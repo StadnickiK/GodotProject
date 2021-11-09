@@ -20,12 +20,24 @@ public class ListPanel : VBoxContainer
     }
 
     void GetNodes(){
-        _titleLabel = GetNode<Label>("Title");
+        _titleLabel = GetNode<Label>("Header/Title");
         _items = GetNode("ItemList/Items");
     }
 
     public void SetTitle(string title){
         _titleLabel.Text = title;
+    }
+
+    public Label GetTitle(){
+        return _titleLabel;
+    }
+
+    public Node GetHeader(){
+        return GetNode("Header");
+    }
+
+    public Node GetFoot(){
+        return GetNode("Foot");
     }
 
     public void AddListItem(Node item){
@@ -53,6 +65,21 @@ public class ListPanel : VBoxContainer
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
                     control.Connect("gui_input", node, methodName, array);
+                    control.MouseFilter = MouseFilterEnum.Stop;
+                }else{
+                    //GD.Print("Already connected");
+                }
+            }
+        }
+    }
+
+    public void ConnectToEvent(Node node, string methodName, string eventName){
+        foreach(Node child in _items.GetChildren()){
+            if(child is BuildingLabel control){
+                if(!control.BButton.IsConnected(eventName, node, methodName)){
+                    Godot.Collections.Array array = new Godot.Collections.Array();
+                    array.Add(control);
+                    control.BButton.Connect(eventName, node, methodName, array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
                     //GD.Print("Already connected");

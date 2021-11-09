@@ -1,37 +1,48 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Units/Base/Ship.cs" type="Script" id=1]
 [ext_resource path="res://Models/ship model.glb" type="PackedScene" id=2]
+[ext_resource path="res://Units/Base/VisionArea.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Effects/Fire.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Units/Base/SimpleFireControl.cs" type="Script" id=5]
+[ext_resource path="res://Controllers/VelocityController.cs" type="Script" id=6]
 
 [sub_resource type="BoxShape" id=1]
 
-[sub_resource type="CylinderShape" id=2]
-
-[node name="Ship" type="RigidBody" groups=[
-"Selectable",
-"Targetable",
-]]
+[node name="Ship" type="RigidBody" groups=["Selectable", "Targetable"]]
 collision_mask = 2
 gravity_scale = 0.0
 script = ExtResource( 1 )
-VisionRange = 10
+
+[node name="VelocityController" type="Node" parent="."]
+script = ExtResource( 6 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( -2.44381e-07, 0, 1, 0, 2.1, 0, -1.5, 0, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 1 )
 
-[node name="Area" type="Area" parent="."]
-transform = Transform( 10, 0, 0, 0, 0.1, 0, 0, 0, 10, 0, 0, 0 )
-input_ray_pickable = false
-monitorable = false
-collision_layer = 3
-collision_mask = 3
-
-[node name="CollisionShape" type="CollisionShape" parent="Area"]
-shape = SubResource( 2 )
+[node name="Area" parent="." instance=ExtResource( 3 )]
 
 [node name="ship model" parent="." instance=ExtResource( 2 )]
 transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
+
+[node name="FireControl" type="Spatial" parent="."]
+script = ExtResource( 5 )
+
+[node name="Fire" parent="FireControl" instance=ExtResource( 4 )]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, 0.297499, -1.33494 )
+
+[node name="Fire4" parent="FireControl" instance=ExtResource( 4 )]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, -0.290623, -1.33494 )
+
+[node name="Fire2" parent="FireControl" instance=ExtResource( 4 )]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.33494 )
+
+[node name="Fire3" parent="FireControl" instance=ExtResource( 4 )]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494 )
+
+[node name="Units" type="Node" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_Ship_body_entered"]
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]

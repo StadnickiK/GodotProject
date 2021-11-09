@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://UI/ResourcePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/RightPanel.tscn" type="PackedScene" id=2]
@@ -9,13 +9,17 @@
 [ext_resource path="res://UI/FreeCamera.tscn" type="PackedScene" id=7]
 [ext_resource path="res://UI/PlanetInterface.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Map/FOW_Shader.tres" type="Material" id=9]
+[ext_resource path="res://Data/Data.tscn" type="PackedScene" id=10]
 [ext_resource path="res://World/UI.cs" type="Script" id=11]
 [ext_resource path="res://World/MapObjects.cs" type="Script" id=12]
 [ext_resource path="res://World/Map.cs" type="Script" id=13]
 [ext_resource path="res://Map/Combat.cs" type="Script" id=14]
 [ext_resource path="res://UI/BattlePanel.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Menu/space.hdr" type="Texture" id=16]
+[ext_resource path="res://UI/AlertBox.tscn" type="PackedScene" id=17]
 [ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=18]
+[ext_resource path="res://UI/SmallList.tscn" type="PackedScene" id=19]
+[ext_resource path="res://UI/CmdPanel.tscn" type="PackedScene" id=20]
 
 [sub_resource type="PanoramaSky" id=1]
 panorama = ExtResource( 16 )
@@ -46,20 +50,28 @@ subdivide_depth = 500
 [node name="World" type="Spatial"]
 script = ExtResource( 5 )
 
+[node name="Data" parent="." instance=ExtResource( 10 )]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
 
 [node name="WorldCursorControl" parent="." instance=ExtResource( 4 )]
 
-[node name="UI" type="Spatial" parent="."]
+[node name="UI" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 600, 600 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ResourcePanel" parent="UI" instance=ExtResource( 1 )]
-anchor_left = 0.5
-anchor_right = 0.5
 margin_left = -512.0
 margin_right = 512.0
-size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource( 5 )
 
@@ -75,7 +87,13 @@ visible = false
 
 [node name="PlanetInterface" parent="UI" instance=ExtResource( 8 )]
 visible = false
-Options = [ "Overview", "Buildings", "Orbit" ]
+Options = {
+"Buildings": null,
+"Construction": null,
+"Orbit": null,
+"Overview": null,
+"Resource transfer": null
+}
 
 [node name="BattlePanel" parent="UI" instance=ExtResource( 15 )]
 visible = false
@@ -84,6 +102,15 @@ Options = [ "Overview", "Attacker", "Defender" ]
 [node name="UnitInfoPanel" parent="UI" instance=ExtResource( 18 )]
 visible = false
 Options = [ "Overview", "Details" ]
+
+[node name="AlertBox" parent="UI" instance=ExtResource( 17 )]
+visible = false
+
+[node name="OrbitList" parent="UI" instance=ExtResource( 19 )]
+visible = false
+
+[node name="CmdPanel" parent="UI" instance=ExtResource( 20 )]
+visible = false
 
 [node name="Map" type="Spatial" parent="."]
 script = ExtResource( 13 )
@@ -103,4 +130,5 @@ material/0 = ExtResource( 9 )
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
+
 [connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

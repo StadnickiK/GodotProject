@@ -2,18 +2,24 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SpaceBattle : StaticBody
+public class SpaceBattle : StaticBody, ISelectMapObject
 {
 
-    public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
+    // public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
 
     public Node Participants = null;
 
-    public List<PhysicsBody> Debris { get; set; } = new List<PhysicsBody>();
+    // public Ship Attacker { get; set; } = null;
 
-    public Ship Attacker { get; set; } = null;
+    public List<Ship> Attackers { get; set; } = new List<Ship>();
 
-    public Ship Defender { get; set; } = null;
+    public int AttackPower { get; set; }
+
+    // public Ship Defender { get; set; } = null;
+
+    public List<Ship> Defenders { get; set; } = new List<Ship>();
+
+    public int DefPower { get; set; }
 
     public bool IsLocal { get; set; } = false;
 
@@ -40,35 +46,47 @@ public class SpaceBattle : StaticBody
         Transform = trans;
     }
 
-    public void AddCombatant(PhysicsBody body){
-        Comabatants.Add(body);
-    }
-
     public void AddCombatants(params PhysicsBody[] body){
         foreach(PhysicsBody b in body){
             if(b is Ship ship){
                 if(ship.IsLocal)
                     IsLocal = true;
                 if(!ZeroOne){
-                    Attacker = ship;
+                    Attackers.Add(ship);
                     ZeroOne = true;
                 }else{
-                    Defender = ship;
+                    Defenders.Add(ship);
                     ZeroOne = false;
                 }
             }
         }
     }
 
+    public void AddAttackers(params PhysicsBody[] body){
+        foreach(PhysicsBody b in body){
+            if(b is Ship ship){
+                Attackers.Add(ship);
+            }
+        }
+    }
+
+    public void AddADefenders(params PhysicsBody[] body){
+        foreach(PhysicsBody b in body){
+            if(b is Ship ship){
+                Defenders.Add(ship);
+            }
+        }
+    }
+
     public void GenerateMesh(){
-        if(Attacker != null && Defender != null){
+        if(Attackers.Count > 0 && Defenders.Count > 0){
                 _placeholder.QueueFree();
-                MeshInstance mesh = (MeshInstance)Attacker.Mesh.Duplicate();
+                MeshInstance mesh = (MeshInstance)Attackers[0].Mesh.Duplicate();
                 var transform = mesh.Transform;
                 transform.origin = new Vector3(2,0,0);
                 mesh.Transform = transform;
                 _mesh.AddChild(mesh);
-                mesh = (MeshInstance)Defender.Mesh.Duplicate();
+                mesh = (MeshInstance)Defenders[0].Mesh.Duplicate();
                 transform = mesh.Transform;
                 transform.origin = new Vector3(-2,0,0);
                 mesh.Transform = transform;
@@ -76,10 +94,6 @@ public class SpaceBattle : StaticBody
                 _mesh.AddChild(mesh);
                 _mesh.Scale = new Vector3(0.5f,0.5f,0.5f);
         }
-    }
-   
-    public void RemoveCombatant(PhysicsBody body){
-        Comabatants.Remove(body);
     }
 
     void GetNodes(){
@@ -92,62 +106,108 @@ public class SpaceBattle : StaticBody
     {
         GetNodes();
         GenerateMesh();
-        foreach(PhysicsBody b in Comabatants){
-            b.GetParent().RemoveChild(b);
-            Participants.AddChild(b);
+        InitAttackers();
+        InitDefenders();
+    }
+
+    void InitAttackers(){
+        foreach(var attacker in Attackers){
+            attacker.GetParent().RemoveChild(attacker);
+            Participants.AddChild(attacker);
+            AttackPower += attacker.Power;
         }
-        Attacker.GetParent().RemoveChild(Attacker);
-        Participants.AddChild(Attacker);
-        Defender.GetParent().RemoveChild(Defender);
-        Participants.AddChild(Defender);
-        Comabatants.Add(Attacker);
-        Comabatants.Add(Defender);
+    }
+
+    void UpdateAttackPower(){
+        foreach(var attacker in Attackers){
+            AttackPower += attacker.Power;
+        }
+    }
+
+    void InitDefenders(){
+        foreach(var defender in Defenders){
+            defender.GetParent().RemoveChild(defender);
+            Participants.AddChild(defender);
+            DefPower += defender.Power;
+        }
+    }
+
+    void UpdateDefPower(){
+        foreach(var defender in Defenders){
+            DefPower += defender.Power;
+        }
+    }
+
+    void UpdatePower(){
+        UpdateAttackPower();
+        UpdateDefPower();
     }
 
     public void ConnectToOpenBattlePanel(Node node, string method){
         Connect(nameof(OpenBattlePanel),node, method);
     }
 
-    void Combat(){
-        var defenderCount = Defender.Units.Count - 1;
-        for(var i = Attacker.Units.Count-1;i>=0; i--){
-            var unit = Attacker.Units[i];
-            if(defenderCount>=0){
-                unit.CalculateDamage(Defender.Units[defenderCount]);
-                if(!Defender.Units[defenderCount].HasHitpoints){
-                    Defender.Units[defenderCount].QueueFree();
-                    Defender.Units.RemoveAt(defenderCount);
-                    defenderCount -= 1;
+    void Duel(Ship Attacker, Ship Defender){
+        var defenderCount = Defender.Units.GetChildren().Count - 1;
+        for(var i = Attacker.Units.GetChildren().Count-1;i>=0; i--){
+            var node = Attacker.Units.GetChildren()[i];
+            if(node is Unit unit){
+                if(defenderCount>=0){
+                    node = Defender.Units.GetChildren()[defenderCount];
+                    if(node is Unit defender){
+                        unit.CalculateDamage(defender);
+                        if(!defender.HasHitpoints){
+                            defender.QueueFree();
+                            // Defender.Units.RemoveChild(defender);
+                            defenderCount -= 1;
+                        }
+                    }
                 }
-            }
-            if(!unit.HasHitpoints){
-                Attacker.Units[i].QueueFree();
-                Attacker.Units.Remove(unit);
-            }
-            if(Attacker.Units.Count == 0 || Defender.Units.Count == 0){
-                EndCombat();
+                if(!unit.HasHitpoints){
+                    unit.QueueFree();
+                }
             }
         }
         Attacker.UpdatePower();
-        Defender.UpdatePower();
+        if(Defender.Units.GetChildren().Count == 0){
+            Defender.QueueFree();
+            Defenders.Remove(Defender);
+        }else{
+            Defender.UpdatePower();
+        }
         PowerChanged = true;
     }
 
+    void Combat(){
+        var defendersCount = Defenders.Count - 1;
+        for(int i = Attackers.Count-1; i>=0; i--){
+            Duel(Attackers[i], Defenders[defendersCount]);
+            if(Attackers[i].Units.GetChildren().Count == 0){
+                Attackers[i].QueueFree();
+                Attackers.RemoveAt(i);
+            }
+            if(Attackers.Count == 0 || Defenders.Count == 0){
+                EndCombat();
+            }
+        }
+        UpdatePower();
+    }
+
     void EndCombat(){
-        foreach(Node node in Comabatants){
+        foreach(Node node in Participants.GetChildren()){
             if(node is Ship ship){
-                if(ship.Units.Count == 0){
-                    if(ship.IsLocal){
-                        ship.ShipOwner.MapObjects.Remove(ship);
-                        ship.ShipOwner.MapObjectsChanged = true;
+                if(ship.Units.GetChildren().Count == 0){
+                    if(ship.Controller != null){
+                        ship.Controller.MapObjects.Remove(ship);
+                        ship.Controller.MapObjectsChanged = true;
                     }
                     ship.QueueFree();
                 }else{
                     Participants.RemoveChild(ship);
-                    GetParent().AddChild(ship);
-                    if(GetParent() is Orbit orbit){
-                        var planet = (Planet)orbit.GetParent();
-                        planet.ChangePlanetOwner(ship.ShipOwner);
+                    if(GetParent().GetParent() is Planet planet){
+                        planet.EnterMapObject(ship, Vector3.Zero, null);
+                        if(ship.Task == CmdPanel.CmdPanelOption.Conquer)
+                            planet.ChangeController(ship.Controller);
                     }
                     if(ship.IsLocal){
                         ship.Visible = true;
@@ -159,11 +219,15 @@ public class SpaceBattle : StaticBody
         _endCombat = true;
     }
 
+    public void SelectMapObject(){
+        EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
+    }
+
     public void _on_SpaceBattle_input_event(Camera camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
         if(input is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
           case ButtonList.Left:
-            EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
+            SelectMapObject();
             break;
           case ButtonList.Right:
             //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
@@ -174,7 +238,7 @@ public class SpaceBattle : StaticBody
 
     public override void _Process(float delta){
         if(!_endCombat){
-            if(Attacker != null&& Defender != null){
+            if(Attackers.Count > 0 && Defenders.Count > 0){
                 if(_time >= TimeStep){  
                     Combat();
                     _time = 0;

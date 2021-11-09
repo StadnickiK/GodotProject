@@ -34,7 +34,7 @@ public class Map : Spatial
                 if(!combat.Combatants.Contains(ship) && !combat.Combatants.Contains(enemy)){
                     combat.Combatants.Add(ship);
                     combat.Combatants.Add(enemy);
-                    var battle = combat.CreateBattle(ship, enemy,parent);
+                    var battle = combat.CreateBattle(ship, enemy, parent);
                     battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
                 }
             }
@@ -49,83 +49,32 @@ public class Map : Spatial
         EmitSignal(nameof(ShowBattlePanel), battle);
     }
 
-    public void ConnectToEnterSystem(Node node){
-        node.Connect("EnterSystem", this, nameof(_on_Ship_EnterSystem));
+    public void ConnectToEnterMapObject(Node node){
+        node.Connect("SignalEnterMapObject", this, nameof(_on_Enter_MapObject));
     }
 
-    void _on_Ship_EnterSystem(Ship ship, StarSystem System, Vector3 aproachVec, PhysicsDirectBodyState state){
-        MoveShipToSystem(ship,System, aproachVec, state);
+    void _on_Enter_MapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+        MoveToMapObject(mapObject, targetMapObject, aproachVec, state);
     }
 
-    void MoveShipToSystem(Ship ship, StarSystem system, Vector3 aproachVec, PhysicsDirectBodyState state){
-        if(system != null && ship != null){
-            galaxy.RemoveChild(ship);
-            system.GetNode("StarSysObjects").AddChild(ship);
-            ship.NextTarget();
-            var trans = state.Transform;
-            trans.origin = system.Radius*0.9f*(-aproachVec)+system.GlobalTransform.origin;
-            state.Transform = trans;
-            ship.System = system;
+    void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+        if(targetMapObject is IEnterMapObject enterMapObject){
+            enterMapObject.EnterMapObject(mapObject, aproachVec, state);
         }
     }
 
-    public void ConnectToLeaveSystem(Node node){
-         node.Connect("LeaveSystem", this, nameof(_on_Ship_LeaveSystem));
+    public void ConnectToExitMapObject(Node node){
+        node.Connect("SignalExitMapObject", this ,nameof(_on_Exit_MapObject));
     }
 
-    void _on_Ship_LeaveSystem(Ship ship, Vector3 currentVec, PhysicsDirectBodyState state){
-        ShipLeaveSystem(ship, currentVec, state);
-    }
-
-    void ShipLeaveSystem(Ship ship, Vector3 currentVec, PhysicsDirectBodyState state){
-        if(ship.System != null && ship != null){
-            ship.GetParent().RemoveChild(ship);
-            galaxy.AddChild(ship);
-            var trans = state.Transform;
-            trans.origin = ship.System.Transform.origin;
-            state.Transform = trans;
-            ship.NextTarget();
-            ship.System = null;
-            ship.Visible = false;
+    void _on_Exit_MapObject(Node mapObject, Node parentMapObject, Vector3 exitVec = default(Vector3), PhysicsDirectBodyState state = null){
+        if(parentMapObject is IExitMapObject exitMapObject){
+            exitMapObject.ExitMapObject(mapObject, exitVec, state);
         }
     }
-
-    public void ConnectToEnterPlanet(Node node){
-        node.Connect("EnterPlanet", this, nameof(_on_Ship_EnterPlanet));
-    }
-
-    public void ConnectToLeavePlanet(Node node){
-        node.Connect("LeavePlanet", this, nameof(_on_Ship_LeavePlanet));
-    }
-
-    void _on_Ship_EnterPlanet(Ship ship, Planet planet){
-        if(!planet.Orbit.GetChildren().Contains(ship)){
-            planet.AddToOrbit(ship);
-            //ship.Visible = false;
-            ship._Planet = planet;
-            ship.PlanetPos = (planet.Transform.origin - ship.GlobalTransform.origin);
-            planet.CheckOrbit(ship);
-            // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
-            //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
-            // }
-        }
-    }
-
-    void _on_Ship_LeavePlanet(Ship ship){
-        if(ship != null){
-            ship._Planet.RemoveFromOrbit(ship);
-            ship._Planet = null;
-            ship.Visible = true;
-        }
-    }
-
     public void _on_UInfo_ChangeStance(Node node, string stance){
         if(node is Ship ship){
-            if(ship._Planet != null){
-                if(ship._Planet.PlanetOwner == null){
-                    //ship._Planet.ChangePlanetOwner(ship.ShipOwner);
-                }
-            }
+
         }
     }
 

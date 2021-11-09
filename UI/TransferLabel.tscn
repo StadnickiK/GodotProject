@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/TransferLabel.cs" type="Script" id=1]
+
+[node name="TransferLabel" type="HBoxContainer"]
+margin_right = 480.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 480, 22 )
+size_flags_horizontal = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftText" type="Label" parent="."]
+margin_top = 5.0
+margin_right = 139.0
+margin_bottom = 19.0
+text = "Resource 0 : 1000000"
+
+[node name="FastLeft" type="Button" parent="."]
+margin_left = 143.0
+margin_right = 171.0
+margin_bottom = 24.0
+text = "<<"
+
+[node name="Left" type="Button" parent="."]
+margin_left = 175.0
+margin_right = 195.0
+margin_bottom = 24.0
+text = "<"
+
+[node name="Control" type="Control" parent="."]
+margin_left = 199.0
+margin_right = 281.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NumInput" type="SpinBox" parent="Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -37.0
+margin_top = -12.0
+margin_right = 37.0
+margin_bottom = 12.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Right" type="Button" parent="."]
+margin_left = 285.0
+margin_right = 305.0
+margin_bottom = 24.0
+size_flags_horizontal = 8
+text = ">"
+
+[node name="FastRight" type="Button" parent="."]
+margin_left = 309.0
+margin_right = 337.0
+margin_bottom = 24.0
+text = ">>"
+
+[node name="RightText" type="Label" parent="."]
+margin_left = 341.0
+margin_top = 5.0
+margin_right = 480.0
+margin_bottom = 19.0
+text = "Resource 0 : 1000000"
+[connection signal="button_up" from="FastLeft" to="." method="_on_FastLeft_button_up"]
+[connection signal="button_up" from="Left" to="." method="_on_Left_button_up"]
+[connection signal="button_up" from="Right" to="." method="_on_Right_button_up"]
+[connection signal="button_up" from="FastRight" to="." method="_on_FastRight_button_up"]

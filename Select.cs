@@ -76,6 +76,22 @@ public class Select : Node
         }
     }
 
+    public void AddTarget(PhysicsBody target, CmdPanel.CmdPanelOption task){
+        foreach(PhysicsBody rigidB in selectManager.SelectedUnits){
+            if(rigidB is Ship){
+                Ship ship = (Ship)rigidB;
+                if(ship.targetManager.HasTarget){
+                    ship.targetManager.AddTarget(target);
+                    ship.Task = task;
+                }else{
+                    ship.targetManager.SetTarget(target);
+                    ship.Task = task;
+                    ship.MoveToTarget(target);
+                }
+            }
+        }
+    }
+
     public void ClearTarget(){
         foreach(PhysicsBody k in selectManager.SelectedUnits){
             if(k is Ship){

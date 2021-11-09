@@ -8,7 +8,6 @@ public class WorldCursorControl : Spatial
 
     public int LocalPlayerID { get; set; }
     public Camera camera = null;
-    // Called when the node enters the scene tree for the first time.
 
     [Signal]
     public delegate void Deselect();
@@ -43,8 +42,12 @@ public class WorldCursorControl : Spatial
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(PhysicsBody unit){;
-        select.AddTarget(unit);
+    public void _SelectTarget(PhysicsBody target){;
+        select.AddTarget(target);
+    }
+
+    public void SetTask(PhysicsBody target, CmdPanel.CmdPanelOption task){;
+        select.AddTarget(target, task);
     }
 
     Vector3 GetMouseWorldPosition(){
@@ -61,11 +64,9 @@ public class WorldCursorControl : Spatial
         return p;
     }
 
-    
-
     void _on_Ground_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton button){
-            if(select.HasSelected()){ // mouse
+            if(HasSelected()){ // mouse
                 if((ButtonList)button.ButtonIndex == ButtonList.Right){   // right click
                     select.MoveToPosition(GetMouseWorldPosition());
                 }
@@ -78,7 +79,7 @@ public class WorldCursorControl : Spatial
     }
 
      public override void _Input(InputEvent inputEvent){
-        if(select.HasSelected()){
+        if(HasSelected()){
             if(inputEvent is InputEventMouseButton button){ // mouse
                 if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
                     //select.ClearSelection();
@@ -87,6 +88,11 @@ public class WorldCursorControl : Spatial
             }
         }
     }
+
+    public bool HasSelected(){
+        return select.HasSelected();
+    }
+
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {

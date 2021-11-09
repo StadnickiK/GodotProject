@@ -1,0 +1,54 @@
+{
+  "Building 0": {
+    "Starter": true,
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 10,
+    "Products": "{\"Resource 0\": 20}",
+    "ProductCapacity": 300
+  },
+  "Storage 0": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 20,
+    "ProductCapacity": 500
+  },
+  "Building 1": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 20,
+    "Products": "{\"Resource 1\": 20}",
+    "ProductCapacity": 300
+  },
+  "Storage 1": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200}",
+    "BuildTime": 30,
+    "ProductCapacity": 500
+  },
+  "Building 2": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200}",
+    "BuildTime": 30,
+    "Products": "{\"Resource 2\": 20}",
+    "ProductCapacity": 300
+  },
+  "Storage 2": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200}",
+    "BuildTime": 40,
+    "ProductCapacity": 500
+  },
+  "Building 3": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200, \"Resource 2\":200}",
+    "BuildTime": 40,
+    "Products": "{\"Resource 3\": 20}",
+    "ProductCapacity": 300
+  },
+  "Storage 3": {
+    "Starter": false,
+    "BuildCost": "{\"Resource 0\": 200, \"Resource 1\":200, \"Resource 2\":200}",
+    "BuildTime": 50,
+    "ProductCapacity": 500
+  }
+}
