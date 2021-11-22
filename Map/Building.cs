@@ -11,6 +11,12 @@ public class Building : Node, IBuilding
     public bool IsStarter { get; set; } = false;
 
     [Export]
+    public int BuildTime { get; set; } = 5;
+    
+    [Export]
+    public int CurrentTime { get; set; } = 0;
+
+    [Export]
     public Godot.Collections.Dictionary<string, int> Products { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     // public List<Resource> Products { get; set; } = new List<Resource>();
@@ -27,11 +33,8 @@ public class Building : Node, IBuilding
     public Godot.Collections.Dictionary<string, int> ResourceLimits { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     // public int ResourceLimit { get; set; }
-    [Export]
-    public int BuildTime { get; set; } = 5;
-    
-    [Export]
-    public int CurrentTime { get; set; } = 0;
+
+    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
 
     public override void _Ready()
     {
