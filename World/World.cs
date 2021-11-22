@@ -77,7 +77,7 @@ private Data _data = null;
 
 	void _on_OpenPlanetInterface(Planet planet){
 		_UI.PInterface.Visible = true;
-		_UI.PInterface.UpdatePlanetInterface(planet, _data.WorldBuildings, _data.WorldUnits);
+		_UI.PInterface.UpdatePlanetInterface(planet, _data.GetData("Buildings"), _data.WorldUnits);
 	}
 
 	void _on_CreateShip(Planet planet, Unit unit){
@@ -300,8 +300,8 @@ private Data _data = null;
 						if(rNode is Resource resource)
 							if(resource.IsStarter == true && 
 								planet.Controller != null && 
-								(resource.ResourceType == Resource.Type.Ore)
-							){
+								(resource.ResourceType == Resource.Type.Ore))
+							{
 								planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 							}else if((resource.ResourceType == Resource.Type.Ore)){
 								if(Rand.Next(0,100)>(100 - resource.Rarity))
@@ -334,8 +334,10 @@ private Data _data = null;
 
 	void InitWorldBuildings(){
 		var startBuildings = new List<Building>();
-		foreach(Building building in _data.WorldBuildings.Where(x => x.IsStarter == true)){
-			startBuildings.Add(building);			
+		foreach(Node node in _data.GetData("Buildings")){
+			if(node is Building building)
+				if(building.IsStarter == true)
+					startBuildings.Add(building);			
 		}
 		foreach(Player player in Players.GetChildren()){
 			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){

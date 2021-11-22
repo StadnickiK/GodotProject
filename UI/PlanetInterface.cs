@@ -12,7 +12,7 @@ public class PlanetInterface : Panel
 
 	Planet _planet = null;
 
-	List<Building> _allBuildings = null;
+	Godot.Collections.Array _allBuildings = null;
 
 	List<Unit> _allUnits = null;
 
@@ -88,7 +88,7 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	public void UpdatePlanetInterface(Planet planet, List<Building> allBuildings,  List<Unit> worldUnits){
+	public void UpdatePlanetInterface(Planet planet, Godot.Collections.Array allBuildings,  List<Unit> worldUnits){
 		if(planet != null){
 			_planet = planet;
 			_allBuildings = allBuildings;
@@ -233,7 +233,7 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void UpdateBuildings(Planet planet, List<Building> allBuildings){
+	void UpdateBuildings(Planet planet, Godot.Collections.Array allBuildings){
 		_overviewPanel.ClearPanel("Buildings");
 		UpdatePlanetBuildings(planet.BuildingsManager.Buildings);
 		if(planet.Controller != null){
@@ -266,26 +266,27 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void UpdateAllBuildings(List<Building> buildings, Planet planet){
-		foreach(Building building in buildings){
-			if(CheckBuildingResources(planet, building)){
-				if(!_planet.BuildingsManager.Buildings.Contains(building)){
-					var label = (BuildingLabel)ItemScene.Instance();
-					label.SetMeta(building.Name, building);
-					label.Name = building.Name;
-					if(label.BButton != null){
-						label.BButton.Text = building.Name;
-					}else{
-						label.BButton = label.GetNode<Button>("Button");
-						label.BButton.Text = building.Name;
-					}
-					_overviewPanel.AddNodeToPanel("Buildings", label);
-					if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-						label.Progress.Value = building.CurrentTime;
-						label.Progress.MaxValue = building.BuildTime;
+	void UpdateAllBuildings(Godot.Collections.Array buildings, Planet planet){
+		foreach(Node node in buildings){
+			if(node is Building building)
+				if(CheckBuildingResources(planet, building)){
+					if(!_planet.BuildingsManager.Buildings.Contains(building)){
+						var label = (BuildingLabel)ItemScene.Instance();
+						label.SetMeta(building.Name, building);
+						label.Name = building.Name;
+						if(label.BButton != null){
+							label.BButton.Text = building.Name;
+						}else{
+							label.BButton = label.GetNode<Button>("Button");
+							label.BButton.Text = building.Name;
+						}
+						_overviewPanel.AddNodeToPanel("Buildings", label);
+						if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+							label.Progress.Value = building.CurrentTime;
+							label.Progress.MaxValue = building.BuildTime;
+						}
 					}
 				}
-			}
 		}
 	}
 

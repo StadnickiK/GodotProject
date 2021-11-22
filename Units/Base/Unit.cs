@@ -8,15 +8,15 @@ public class Unit : Node, IBuilding
     [Export]
     public int ID_Owner { get; set; }
 
-    [Export]
-    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
-
     public bool HasHitpoints { get; set; } = true;  
 
     [Export]
     public int BuildTime { get; set; } = 0;
 
     public int CurrentTime { get; set; } = 0;
+
+    [Export]
+    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
 
     [Export]
     public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();

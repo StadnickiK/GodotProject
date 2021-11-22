@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Map/Building.cs" type="Script" id=1]
+
+[node name="Building 2" type="Node"]
+script = ExtResource( 1 )
+BuildTime = 10
+Products = {
+"Resource 2": 20
+}
+BuildCost = {
+"Resource 0": 200,
+"Resource 1": 200
+}
+ResourceLimits = {
+"Resource 2": 300
+}

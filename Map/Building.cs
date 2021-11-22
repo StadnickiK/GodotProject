@@ -13,7 +13,6 @@ public class Building : Node, IBuilding
     [Export]
     public int BuildTime { get; set; } = 5;
     
-    [Export]
     public int CurrentTime { get; set; } = 0;
 
     [Export]
@@ -34,6 +33,7 @@ public class Building : Node, IBuilding
 
     // public int ResourceLimit { get; set; }
 
+    [Export]
     public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
 
     public override void _Ready()

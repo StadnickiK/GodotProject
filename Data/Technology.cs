@@ -12,7 +12,6 @@ public class Technology : Node, IRequirements, IBuilding
 
     [Export]
     public int BuildTime { get; set; } = 0;
-
     public int CurrentTime { get; set; } = 0;
     
     [Export]
