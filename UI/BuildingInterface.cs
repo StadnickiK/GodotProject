@@ -93,10 +93,12 @@ public class BuildingInterface : Panel
             label = new Label();
             label.Text = "\nStatistics:\n";
             _listPanel.AddListItem(label);
-            foreach(var stat in unit.Stats.Values){
-                label = new Label();
-                label.Text = stat.Name + ": " + stat.BaseValue;
-                _listPanel.AddListItem(label);
+            foreach(var node in unit.Stats.GetChildren()){
+                if(node is BaseStat stat){
+                    label = new Label();
+                    label.Text = stat.Name + ": " + stat.BaseValue;
+                    _listPanel.AddListItem(label);
+                }
             }
         }
     }
@@ -112,7 +114,7 @@ public class BuildingInterface : Panel
             resource.Quantity = 20 + i * 1;
             unit.BuildCost.Add(resource.Name, resource.Quantity);
             var label = new Label(); 
-            label.Text = unit.Name +" " + unit.Stats["HitPoints"].CurrentValue +" "+ unit.Stats["Attack"].CurrentValue + " " + unit.Stats["Defence"].CurrentValue 
+            label.Text = unit.Name +" " + unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue +" "+ unit.Stats.GetNode<BaseStat>("Attack").CurrentValue + " " + unit.Stats.GetNode<BaseStat>("Defence").CurrentValue 
             +"\n Cost: "+ resource.Name +": "+resource.Quantity;
             _listPanel.AddListItem(label, this, nameof(_on_gui_input), unit);
         }

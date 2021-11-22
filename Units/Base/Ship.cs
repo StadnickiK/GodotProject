@@ -341,7 +341,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
         Power = 0;
         foreach(Node node in Units.GetChildren()){
             if(node is Unit unit)
-                Power += unit.Stats["HitPoints"].CurrentValue;
+                Power += unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue;
         }
     }
 

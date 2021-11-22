@@ -16,7 +16,9 @@ public class Unit : Node, IBuilding
 
     public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+    //public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
+
+    public Node Stats { get; set; } = new Node();
 
     // World - initStartFleets, InitResistance
     public Unit(){  
@@ -25,9 +27,9 @@ public class Unit : Node, IBuilding
         BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
         BaseStat hp = new BaseStat("HitPoints", 200);
         Name = "Unit ";
-        Stats.Add(attack.StatName, attack);
-        Stats.Add(defence.StatName, defence);
-        Stats.Add(hp.StatName, hp);
+        Stats.AddChild(attack);
+        Stats.AddChild(defence);
+        Stats.AddChild(hp);
     }
 
     public Unit(int hitPoints){
@@ -36,55 +38,58 @@ public class Unit : Node, IBuilding
         BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
         BaseStat hp = new BaseStat("HitPoints", hitPoints);
         Name = "Unit ";
-        Stats.Add(attack.StatName, attack);
-        Stats.Add(defence.StatName, defence);
-        Stats.Add(hp.StatName, hp);
+        Stats.AddChild(attack);
+        Stats.AddChild(defence);
+        Stats.AddChild(hp);
     }
 
     // UI Planet Interface
     public Unit(int attack, int defence){
-        BaseStat atck = new BaseStat("Attack", attack);
-        BaseStat dfnce = new BaseStat("Defence", defence);
+        BaseStat a = new BaseStat("Attack", attack);
+        BaseStat d = new BaseStat("Defence", defence);
         BaseStat hp = new BaseStat("HitPoints", 200);
         Name = "Unit ";
-        Stats.Add(atck.StatName, atck);
-        Stats.Add(dfnce.StatName, dfnce);
-        Stats.Add(hp.StatName, hp);
+        Stats.AddChild(a);
+        Stats.AddChild(d);
+        Stats.AddChild(hp);
     }
 
     public Unit(string name, List<BaseStat> stats){
         Name = name;
         foreach(BaseStat stat in stats){
-            Stats.Add(stat.Name, stat);
+            Stats.AddChild(stat);
         }
     }
 
     public Unit(Unit unit){
         Name = unit.Name;
-        Stats = new Dictionary<string, BaseStat>(unit.Stats);
+        Stats.QueueFree();
+        RemoveChild(Stats);
+        Stats = unit.Stats; 
+        AddChild(unit.Stats);
         BuildCost = new Godot.Collections.Dictionary<string, int>(unit.BuildCost);
         BuildTime = unit.BuildTime;
         ID_Owner = unit.ID_Owner;
     }
 
     public void CalculateDamage(Unit unit){
-        if(Stats["Attack"].BaseValue > unit.Stats["Defence"].BaseValue){
-            unit.Stats["HitPoints"].CurrentValue -= Stats["Attack"].BaseValue - unit.Stats["Defence"].BaseValue;
+        if(Stats.GetNode<BaseStat>("Attack").BaseValue > unit.Stats.GetNode<BaseStat>("Defence").BaseValue){
+            unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= Stats.GetNode<BaseStat>("Attack").BaseValue - unit.Stats.GetNode<BaseStat>("Defence").BaseValue;
         }else{
-            unit.Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+            unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
         }
-        if(Stats["HitPoints"].CurrentValue<0){
+        if(Stats.GetNode<BaseStat>("HitPoints").CurrentValue<0){
             HasHitpoints = false;
         }
-        if(unit.Stats["HitPoints"].CurrentValue<=0){
+        if(unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue<=0){
             unit.HasHitpoints = false;
         }else{
-            if(unit.Stats["Attack"].BaseValue > Stats["Defence"].BaseValue){
-                Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
+            if(unit.Stats.GetNode<BaseStat>("Attack").BaseValue > Stats.GetNode<BaseStat>("Defence").BaseValue){
+                Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= unit.Stats.GetNode<BaseStat>("Attack").BaseValue - Stats.GetNode<BaseStat>("Defence").BaseValue;
             }else{
-                Stats["HitPoints"].CurrentValue--; // if defence is higher than attack deal minimal dmg
+                Stats.GetNode<BaseStat>("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
             }
-            // Stats["HitPoints"].CurrentValue -= unit.Stats["Attack"].BaseValue - Stats["Defence"].BaseValue;
+            // Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= unit.Stats.GetNode<BaseStat>("Attack").BaseValue - Stats.GetNode<BaseStat>("Defence").BaseValue;
         }
     }
 
