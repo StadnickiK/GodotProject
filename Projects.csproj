@@ -17,6 +17,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Behaviour Tree\Inverter.cs" />
+    <Compile Include="Behaviour Tree\Parallel.cs" />
+    <Compile Include="Behaviour Tree\Selector.cs" />
+    <Compile Include="Behaviour Tree\Sequence.cs" />
+    <Compile Include="Behaviour Tree\Timer.cs" />
+    <Compile Include="Behaviour Tree\Tree.cs" />
+    <Compile Include="Behaviour Tree\TreeNode.cs" />
     <Compile Include="Data\BuildingLoader.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\DataLoader.cs" />
