@@ -29,11 +29,13 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 	}
 	
 
-	private int _radius;
-	public int Radius
-	{
-		get { return _radius; }
-	}
+private int _radius;
+public int Radius
+{
+	get { return _radius; }
+	set { _radius = value; }
+}
+
 
 	MeshInstance _size = null;
 
@@ -46,18 +48,15 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
 
-	private Spatial _starSysObjects = null;
+	private Spatial _starSysObjects;
 	public Spatial StarSysObjects
 	{
 		get { return _starSysObjects; }
+		set { _starSysObjects = value; }
 	}
-	
 
 	CollisionShape Placeholder = null;
 	Button XButton = null;
-
-	PackedScene SunScene = null;
-	PackedScene PlanetScene = null;
 
 	private List<Planet> _planets = new List<Planet>();
 	public List<Planet> Planets
@@ -69,45 +68,13 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	public Random Rand { get; set; } = new Random();
 
-	void LoadScenes(){
-		SunScene = (PackedScene)GD.Load("res://Map/Star.tscn");
-		PlanetScene = (PackedScene)GD.Load("res://Map/Planet.tscn");
-	}
-
-	void GetNodes(){
+	public void GetNodes(){
 		_starSysObjects = GetNode<Spatial>("StarSysObjects");
 		SystemName3D = GetNode<Text3>("Placeholder/Text3");
 		Placeholder = GetNode<CollisionShape>("Placeholder");
 		XButton = GetNode<Button>("XButton");
 		_size = GetNode<MeshInstance>("StarSysObjects/Diameter");
 		_mask = GetNode<Spatial>("Placeholder/Mask");
-	}
-
-	void Generate(){
-		var sun = SunScene.Instance();
-		StarSysObjects.AddChild(sun);
-		SystemStar = (Star)sun;
-		SystemName3D.UpdateText(SystemName);
-		int dist = Rand.Next(5, 15);
-		float angle = Rand.Next(0, 70);
-		for(int i = 0;i < Size; i++){
-			RotateY(angle);
-			var pos = Transform.basis.Xform(new Vector3(0, 0, dist));
-			var planet = (Planet)PlanetScene.Instance();
-			planet.PlanetName = SystemName +" "+ i;
-			planet.Rand = Rand;
-			planet.System = this;
-			var temp = planet.Transform;
-			temp.origin = pos;
-			planet.Transform = temp;
-			StarSysObjects.AddChild(planet);
-			_planets.Add(planet);
-			dist += Rand.Next(4, 10);
-			angle += Rand.Next(0,50);
-		}
-		_radius = (int)(dist*1.2f);
-		StarSysObjects.Visible = false;
-		Rotation = Vector3.Zero;
 	}
 
 	void GenerateMesh(){
@@ -205,9 +172,6 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 	public override void _Ready()
 	{
 		SetPhysicsProcess(false);
-		LoadScenes();
-		GetNodes();
-		Generate();
 		_size.Scale = new Vector3(_radius,1,_radius);
 		_ConnectSignal();
 		GenerateMesh();

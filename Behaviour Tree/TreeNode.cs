@@ -97,4 +97,6 @@ public class TreeNode : Node
 
     public virtual NodeState Evaluate() => NodeState.Failure;
 
+    //public virtual Task<NodeState> TEvaluate() => NodeState.Failure;
+
 }

@@ -31,6 +31,7 @@
     <Compile Include="Data\ResourcesLoader.cs" />
     <Compile Include="Data\UnitsLoader.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Map\Generator.cs" />
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="UI\CmdPanel.cs" />

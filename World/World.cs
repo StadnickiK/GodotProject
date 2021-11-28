@@ -169,13 +169,10 @@ private Data _data = null;
 	}
 
 	void InitGalaxy(){
-		Galaxy = (Galaxy)_GalaxyScene.Instance();
-		if(WorldGenParameters != null){
-			if(WorldGenParameters.ContainsKey("Systems")){
-				Galaxy.StarSystemNumber = WorldGenParameters["Systems"];
-			}
-		}
-		Galaxy.Rand = Rand;
+		var generator = new Generator();
+		generator.InitGenerator(this, Rand, WorldGenParameters);
+		Galaxy = generator.GenerateGalaxy();
+		generator.QueueFree();
 		_map.AddChild(Galaxy);
 		_map.galaxy = Galaxy;
 		Galaxy.Connect("CameraLookAt",this, nameof(_on_CameraLookAt));
@@ -239,6 +236,7 @@ private Data _data = null;
 						ship.ID_Owner = player.GetIndex();
 						ship.Name = planet.Name +" "+1;
 						ship.MapObject = planet.System;
+						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);
 						for(int i = 0;i<5;i++){
@@ -260,6 +258,7 @@ private Data _data = null;
 
 	public Ship CreateShip(Unit unit){
 		var ship = (Ship)_ShipScene.Instance();
+		ConnectShip(ship);
 		ship.Units.AddChild(unit);
 		return ship;
 	}
@@ -277,9 +276,18 @@ private Data _data = null;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
 		ship.Units.AddChild(unit);
 		planet.System.AddMapObject(ship);
+		ConnectShip(ship);
 		planet.Controller.AddMapObject(ship);
 		//planet.AddToOrbit(ship);
 		return ship;
+	}
+
+	void ConnectShip(Ship ship){
+		ConnectToSelectUnit(ship);
+        WCC.ConnectToSelectTarget(ship);
+        _map.ConnectToEnterCombat(ship);
+        _map.ConnectToEnterMapObject(ship);
+        _map.ConnectToExitMapObject(ship);
 	}
 
 	void InitStartResources(){
