@@ -2,6 +2,6 @@
 
 [ext_resource path="res://Map/Resource.cs" type="Script" id=1]
 
-[node name="Resource 3" type="Node"]
+[node name="Resource 2" type="Node"]
 script = ExtResource( 1 )
 Rarity = 45
