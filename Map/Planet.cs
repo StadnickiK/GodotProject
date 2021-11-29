@@ -186,7 +186,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         state.Transform = transform;
     }
 
-    void GetNodes(){
+    public void GetNodes(){
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
         MapObjectName3 = GetNode<Text3>("Text3");
@@ -325,19 +325,18 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
-        GetNodes();
         GenerateMesh();
-        World w = GetNode<World>("/root/Game/World");
-        w.ConnectTo_OpenPlanetInterface(this);
-        Connect(nameof(CreateShip), w, "_on_CreateShip");
-        var arr = new Godot.Collections.Array();
-        arr.Add(Orbit);
-        IcoOrbit.Connect("mouse_entered", w.UInterface,"_on_OrbitIconFocus", arr);
-        var arr2 = new Godot.Collections.Array();
-        arr2.Add(this);
-        Connect(nameof(OpenCmdPanel), w, "_on_OpenPlanetCmdPanel");
-        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-        WCC.ConnectToSelectTarget(this);    
+        // World w = GetNode<World>("/root/Game/World");
+        // w.ConnectTo_OpenPlanetInterface(this);
+        // Connect(nameof(CreateShip), w, "_on_CreateShip");
+        // var arr = new Godot.Collections.Array();
+        // arr.Add(Orbit);
+        // IcoOrbit.Connect("mouse_entered", w.UInterface,"_on_OrbitIconFocus", arr);
+        // var arr2 = new Godot.Collections.Array();
+        // arr2.Add(this);
+        // Connect(nameof(OpenCmdPanel), w, "_on_OpenPlanetCmdPanel");
+        // WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
+        // WCC.ConnectToSelectTarget(this);    
         Name = PlanetName;
         MapObjectName3.UpdateText(Name);
 

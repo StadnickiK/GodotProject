@@ -25,7 +25,7 @@ public class Turret : Ship
 
     protected Node projectiles;
 
-    protected Timer timer;
+    protected Godot.Timer timer;
 
     protected bool timerStarted = false;
 
@@ -52,7 +52,7 @@ public class Turret : Ship
     }
 
     protected void SetTimer(){
-        timer = GetNode<Timer>("Timer");
+        timer = GetNode<Godot.Timer>("Timer");
         timer.WaitTime = 60/(float)FireRate;
     }
 

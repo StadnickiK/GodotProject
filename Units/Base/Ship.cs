@@ -171,6 +171,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
             }else{
                 targetPos = targetManager.currentTarget.Transform.origin;
             }
+
+
             if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
                 MapObject = targetObject;
@@ -200,6 +202,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                 targetManager.ClearTargets();
                 ResetVelocity(state);
             }
+
+
             UpdateShipVelocities(state, targetPos);
             _control.Start();
         }else{
@@ -300,14 +304,14 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
     }
 
     protected void _ConnectSignal(){
-        World world = GetNode<World>("/root/Game/World");
-        world.ConnectToSelectUnit(this);
-        WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-        WCC.ConnectToSelectTarget(this);
-        Map map = GetNode<Map>("/root/Game/World/Map/");
-        map.ConnectToEnterCombat(this);
-        map.ConnectToEnterMapObject(this);
-        map.ConnectToExitMapObject(this);
+        // World world = GetNode<World>("/root/Game/World");
+        // world.ConnectToSelectUnit(this);
+        // WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
+        // WCC.ConnectToSelectTarget(this);
+        // Map map = GetNode<Map>("/root/Game/World/Map/");
+        // map.ConnectToEnterCombat(this);
+        // map.ConnectToEnterMapObject(this);
+        // map.ConnectToExitMapObject(this);
     }
 
     void GetNodes(){
@@ -328,7 +332,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
     {
         //VisionRange = GetNode<Spatial>("VisionRange");
         //VisionRange.Scale = new Vector3(Range,0,Range);
-        _ConnectSignal();
         GetNodes();
         _velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);

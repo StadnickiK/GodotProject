@@ -13,8 +13,8 @@ public class Select : Node
     public void MoveToPosition(Vector3 destination){
         if(selectManager.SelectedUnits.Count != 0){
             _destination = destination;
-            foreach(Ship s in selectManager.SelectedUnits){
-                s.MoveToPos(destination);
+            foreach(Ship ship in selectManager.SelectedUnits){
+                ship.MoveToPos(destination);
             }
         }
     }

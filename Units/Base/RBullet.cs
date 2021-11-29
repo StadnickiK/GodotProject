@@ -21,7 +21,7 @@ public class RBullet : RigidBody
     public Node Parent { get; set; }
     public Vector3 Dir { get; set; } = new Vector3(0,0,0);
 
-    Timer timer; 
+    Godot.Timer timer; 
 
     VelocityController _veloctiyController;
 
@@ -74,7 +74,7 @@ public class RBullet : RigidBody
         //Translate(new Vector3(0,10,0));
         _veloctiyController = new VelocityController();
         SetProcess(false);
-        timer = GetNode<Timer>("Timer");
+        timer = GetNode<Godot.Timer>("Timer");
         timer.WaitTime = LifeTime;
     }
 
