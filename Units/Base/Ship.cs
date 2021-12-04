@@ -163,8 +163,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
         }
     }
 
-    PhysicsDirectBodyState _state = null;
-
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;
@@ -174,7 +172,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                 targetPos = targetManager.currentTarget.Transform.origin;
             }
 
-            _state = state;
 
             if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
@@ -182,24 +179,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                 NextTarget();
             }
             if(MapObject != null){
-                //if(MapObject is StarSystem)
                     EmitSignal(nameof(SignalExitMapObject), this, MapObject, DirToCurrentTarget(), state);
             }
-            /*
-            if(System != null){
-                if(Transform.origin.Length()>System.Radius){
-                    EmitSignal(nameof(LeaveSystem), this, DirToCurrentTarget(), state);
-                    System = null;
-                }
-            }
-            ///
-            if(GetParent().Name == "Orbit" && _Planet != null && ((_Planet.Transform.origin - GlobalTransform.origin) - PlanetPos).Length()>2){
-                var transform = Transform;
-                transform.origin = _Planet.GlobalTransform.origin;
-                EmitSignal(nameof(LeavePlanet), this);
-                state.Transform = transform;
-            }
-            //*/
             if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
                 targetManager.ClearTargets();
@@ -258,17 +239,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                         }
                 }
         }
-        /*
-        if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == false && ship.GetParent() == GetParent() && !ship.IsLocal){
-                ship.Visible = true;
-            }
-        }
-        if(body is Planet planet){
-            if(planet.Vision == false && planet.Controller != Controller && planet.GetParent() == GetParent() ){
-                planet.Vision = true;
-            }
-        }*/
     }
 
     void _on_Area_body_exited(Node body){
@@ -283,18 +253,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                     }
                 }
         }
-        /*
-        if(body is Ship ship){
-            if(ship.ID_Owner != ID_Owner && ship.Visible == true && ship.GetParent() == GetParent()  && !ship.IsLocal){
-                ship.Visible = false;
-            }
-        }
-        if(body is Planet planet){
-            if(planet.Vision == true && planet.Controller != Controller && planet.System == System){
-                planet.Vision = false;
-            }
-        }
-        */
     }
 
     void _on_Ship_body_entered(Node node){
@@ -319,17 +277,11 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
          Connect("EnterCombat", node, methodName);
     }
 
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //VisionRange = GetNode<Spatial>("VisionRange");
-        //VisionRange.Scale = new Vector3(Range,0,Range);
         GetNodes();
         _velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
-        //Stats.Add(new BaseStat("Attack", 5));
-        //Stats.Add(new BaseStat("Defence", 3));
-        //Stats.Add(new BaseStat("Hit points", 100));
     }
 
     public void UpdatePower(){

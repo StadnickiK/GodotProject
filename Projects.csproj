@@ -92,6 +92,7 @@
     <Compile Include="Units\Base\ShipBT.cs" />
     <Compile Include="Units\Base\SimpleFireControl.cs" />
     <Compile Include="Units\Base\VisionArea.cs" />
+    <Compile Include="World\AIPLayer.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />
     <Compile Include="World\Player.cs" />
