@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
+    <Compile Include="Behaviour Tree\ActionTN.cs" />
     <Compile Include="Data\BuildingLoader.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\DataLoader.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="Map\Galaxy.cs" />
     <Compile Include="Map\Planet.cs" />
     <Compile Include="Map\Tile.cs" />
-	<Compile Include="Map\Generator.cs" />
+    <Compile Include="Map\Generator.cs" />
     <Compile Include="Map\StarSystem.cs" />
     <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
@@ -104,13 +105,13 @@
     <Compile Include="Units\Stats\StatManager.cs" />
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
-	<Compile Include="Behaviour Tree\BehaviourTree.cs" />
-	<Compile Include="Behaviour Tree\TreeNode.cs" />
-	<Compile Include="Behaviour Tree\Sequence.cs" />
-	<Compile Include="Behaviour Tree\Selector.cs" />
-	<Compile Include="Behaviour Tree\Timer.cs" />
-	<Compile Include="Behaviour Tree\Parallel.cs" />
-	<Compile Include="Behaviour Tree\Inverter.cs" />
+    <Compile Include="Behaviour Tree\BehaviourTree.cs" />
+    <Compile Include="Behaviour Tree\TreeNode.cs" />
+    <Compile Include="Behaviour Tree\Sequence.cs" />
+    <Compile Include="Behaviour Tree\Selector.cs" />
+    <Compile Include="Behaviour Tree\Timer.cs" />
+    <Compile Include="Behaviour Tree\Parallel.cs" />
+    <Compile Include="Behaviour Tree\Inverter.cs" />
     <Compile Include="World\UI.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
