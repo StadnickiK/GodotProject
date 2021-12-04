@@ -163,6 +163,8 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
         }
     }
 
+    PhysicsDirectBodyState _state = null;
+
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;
@@ -172,6 +174,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                 targetPos = targetManager.currentTarget.Transform.origin;
             }
 
+            _state = state;
 
             if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
@@ -301,17 +304,6 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
                 ResetVelocity();
             }
         }
-    }
-
-    protected void _ConnectSignal(){
-        // World world = GetNode<World>("/root/Game/World");
-        // world.ConnectToSelectUnit(this);
-        // WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-        // WCC.ConnectToSelectTarget(this);
-        // Map map = GetNode<Map>("/root/Game/World/Map/");
-        // map.ConnectToEnterCombat(this);
-        // map.ConnectToEnterMapObject(this);
-        // map.ConnectToExitMapObject(this);
     }
 
     void GetNodes(){
