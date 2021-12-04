@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public abstract class Tree : Node
+public abstract class BehaviourTree : Node
 {
     TreeNode _root = null;
 

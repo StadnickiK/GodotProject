@@ -17,13 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
-    <Compile Include="Behaviour Tree\Inverter.cs" />
-    <Compile Include="Behaviour Tree\Parallel.cs" />
-    <Compile Include="Behaviour Tree\Selector.cs" />
-    <Compile Include="Behaviour Tree\Sequence.cs" />
-    <Compile Include="Behaviour Tree\Timer.cs" />
-    <Compile Include="Behaviour Tree\Tree.cs" />
-    <Compile Include="Behaviour Tree\TreeNode.cs" />
     <Compile Include="Data\BuildingLoader.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\DataLoader.cs" />
@@ -31,7 +24,6 @@
     <Compile Include="Data\ResourcesLoader.cs" />
     <Compile Include="Data\UnitsLoader.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Map\Generator.cs" />
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="UI\CmdPanel.cs" />
@@ -89,12 +81,14 @@
     <Compile Include="Map\Galaxy.cs" />
     <Compile Include="Map\Planet.cs" />
     <Compile Include="Map\Tile.cs" />
+	<Compile Include="Map\Generator.cs" />
     <Compile Include="Map\StarSystem.cs" />
     <Compile Include="Map\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Units\Base\IVisible.cs" />
     <Compile Include="Units\Base\IVision.cs" />
+    <Compile Include="Units\Base\ShipBT.cs" />
     <Compile Include="Units\Base\SimpleFireControl.cs" />
     <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\Map.cs" />
@@ -110,6 +104,13 @@
     <Compile Include="Units\Stats\StatManager.cs" />
     <Compile Include="Units\Base\Ship.cs" />
     <Compile Include="Units\Base\Turret.cs" />
+	<Compile Include="Behaviour Tree\BehaviourTree.cs" />
+	<Compile Include="Behaviour Tree\TreeNode.cs" />
+	<Compile Include="Behaviour Tree\Sequence.cs" />
+	<Compile Include="Behaviour Tree\Selector.cs" />
+	<Compile Include="Behaviour Tree\Timer.cs" />
+	<Compile Include="Behaviour Tree\Parallel.cs" />
+	<Compile Include="Behaviour Tree\Inverter.cs" />
     <Compile Include="World\UI.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />

@@ -8,8 +8,6 @@ public class Timer : TreeNode
 
     private float _time;
 
-
-
     public delegate void TickEnded();
 
     public event TickEnded onTickEnded;
