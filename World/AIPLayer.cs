@@ -9,6 +9,23 @@ public class AIPlayer : Player
 
     Dictionary<string, object> blackBoard = new Dictionary<string, object>();
 
+    void _on_MapObject_Entered(Node node){
+        
+    }
+
+    void _on_MapObject_Exited(Node node){
+        
+    }
+
+    public void ConnectSignals(){
+        foreach(Node node in MapObjects){
+            if(node is Ship ship){
+                ship._area.Connect("body_entered", this, nameof(_on_MapObject_Entered));
+                ship._area.Connect("body_exited", this, nameof(_on_MapObject_Exited));
+            }
+        }
+    }
+
     public override void _Ready()
     {
         root = SetupTree();
@@ -46,6 +63,7 @@ public class AIPlayer : Player
     TreeNode SetupTree(){
         TreeNode root = null;
         blackBoard.Add("Player", this);
+        blackBoard.Add("Map", new Dictionary<string, Planet>());
         root = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
             new ScoutSystem(blackBoard)

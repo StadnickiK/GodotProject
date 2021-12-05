@@ -32,6 +32,7 @@ main_run_args="--verbose"
 
 .net=false
 net=false
+verbose=false
 
 [input]
 

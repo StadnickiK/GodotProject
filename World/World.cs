@@ -168,6 +168,14 @@ private Data _data = null;
 		}
 	}
 
+	void ConnectPlayers(){
+		foreach(var player in PlayersList){
+			if(player is AIPlayer ai){
+				ai.ConnectSignals();
+			}
+		}
+	}
+
 	void InitGalaxy(){
 		var generator = new Generator();
 		generator.InitGenerator(this, Rand, WorldGenParameters);
@@ -366,6 +374,7 @@ private Data _data = null;
 		InitResistance();
 		InitWorldBuildings();
 		ConnectPlanets();
+		ConnectPlayers();
 	}
 
 	void _on_Alert(World.GameAlert alert){
