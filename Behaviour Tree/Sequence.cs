@@ -9,7 +9,7 @@ public class Sequence : TreeNode
 
     public Sequence() : base(){}
 
-    public Sequence(bool isRandom) : base(){ _isRandom = isRandom; }
+    //public Sequence(bool isRandom) : base(){ _isRandom = isRandom; }
 
     public Sequence(List<TreeNode> nodes, bool isRandom = false) : base(nodes){
         _isRandom = isRandom;

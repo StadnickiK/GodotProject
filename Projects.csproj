@@ -27,6 +27,8 @@
     <Compile Include="Game.cs" />
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
+    <Compile Include="PlayerBT\GetIdleShip.cs" />
+    <Compile Include="PlayerBT\ScoutSystem.cs" />
     <Compile Include="UI\CmdPanel.cs" />
     <Compile Include="UI\Icon3D.cs" />
     <Compile Include="UI\SmallList.cs" />

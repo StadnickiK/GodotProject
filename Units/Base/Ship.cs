@@ -85,6 +85,15 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
         return Vector3.Zero;
     }
 
+    public Spatial GetTempWaypoint(Vector3 position){
+        var tempTarget = new Spatial(); // used as point to exit current system
+        var tempTrans = tempTarget.Transform;
+        tempTrans.origin = position;
+        tempTarget.Transform = tempTrans;
+        tempTarget.Name = "tempTarget";
+        return tempTarget;
+    }
+
     public void MoveToTarget(Spatial target){
         Sleeping = false;
         Node starSysObj = null;
@@ -97,12 +106,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//
             if(starSysObj.GetParent() is StarSystem system){
                 
                 // leak
-
-                var tempTarget = new Spatial(); // used as point to exit current system
-                var tempTrans = tempTarget.Transform;
-                tempTrans.origin = (target.Transform.origin-system.Transform.origin).Normalized()*(((float)system.Radius)*1.2f);
-                tempTarget.Transform = tempTrans;
-                tempTarget.Name = "tempTarget";
+                var tempTarget = GetTempWaypoint((target.Transform.origin-system.Transform.origin).Normalized()*(((float)system.Radius)*1.2f));
                 targetManager.SetTarget(tempTarget);    // set temp target to leave star system
                 if(target.GetParent().GetParent() is StarSystem targetSystem){
                     targetManager.AddTarget(targetSystem);

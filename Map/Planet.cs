@@ -325,37 +325,12 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public override void _Ready()
     {
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
-        GenerateMesh();
-        // World w = GetNode<World>("/root/Game/World");
-        // w.ConnectTo_OpenPlanetInterface(this);
-        // Connect(nameof(CreateShip), w, "_on_CreateShip");
-        // var arr = new Godot.Collections.Array();
-        // arr.Add(Orbit);
-        // IcoOrbit.Connect("mouse_entered", w.UInterface,"_on_OrbitIconFocus", arr);
-        // var arr2 = new Godot.Collections.Array();
-        // arr2.Add(this);
-        // Connect(nameof(OpenCmdPanel), w, "_on_OpenPlanetCmdPanel");
-        // WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-        // WCC.ConnectToSelectTarget(this);    
+        GenerateMesh(); 
         Name = PlanetName;
         MapObjectName3.UpdateText(Name);
 
         AddChild(BuildingsManager);
         AddChild(ResourcesManager);
-        //Generate();
-        // for(int i = 0; i<1; i++){
-        //     var building = new Building();
-        //     building.Name = "Building "+i;
-        //     var resource = new Resource();
-        //     resource.Name = "resource "+i;
-        //     resource.Quantity = 20;
-        //     building.Products.Add(resource.Name, resource.Quantity);
-        //     building.ResourceLimit = 500;
-        //     BuildingsManager.Buildings.Add(building);
-        //     ResourcesManager.Resources.Add(resource.Name, resource);
-        // }
-        // foreach(Building building in BuildingsManager.Buildings)
-        //     ResourcesManager.UpdateResourceLimit(building);
     }
 
     public override void _Process(float delta){

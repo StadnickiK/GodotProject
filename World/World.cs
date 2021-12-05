@@ -156,7 +156,7 @@ private Data _data = null;
 			}
 		}
 		for(int i = 0; i<PlayerNumber;i++){
-			var player = (Player)_PlayerScene.Instance();
+			var player = new AIPlayer();//(Player)_PlayerScene.Instance();
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
 			if(i == 0){
