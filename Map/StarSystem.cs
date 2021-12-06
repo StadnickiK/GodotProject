@@ -8,7 +8,6 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 	[Export]
 	int Size = 10;
 
-
 	[Export]
 	int Wealth = 5;
 
@@ -20,14 +19,6 @@ public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
 
 	[Signal]
 	public delegate void SelectTarget(StarSystem target);
-
-	private MeshInstance myVar;
-	public MeshInstance MyProperty
-	{
-		get { return myVar; }
-		set { myVar = value; }
-	}
-	
 
 private int _radius;
 public int Radius

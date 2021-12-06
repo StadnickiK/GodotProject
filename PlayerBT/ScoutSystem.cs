@@ -20,6 +20,17 @@ public class ScoutSystem : TreeNode
             var planet = player.GetPlanet();
             if(planet != null){
                 if(planet.System != null){
+                    var mapObj = GetGlobalData("Map");
+                    if(mapObj != null){
+                        var map = (Dictionary<string, List<int>>)mapObj;
+                        if(map.ContainsKey(planet.System.Name)){
+                            var list = map[planet.System.Name];
+                            if(list.Count == planet.System.Planets.Count){
+                                State = NodeState.Succes;
+                                return NodeState.Succes;  
+                            }
+                        }
+                    }
                     foreach(Node node in planet.System.StarSysObjects.GetChildren()){
                         if(node is Planet targetPlanet && node != planet){
                             var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.origin);
