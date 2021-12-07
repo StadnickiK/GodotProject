@@ -92,6 +92,16 @@ public class ResourceManager : Node
     }
 
     public bool PayCost(Godot.Collections.Dictionary<string, int> BuildCost){
+        if(!CanPayCost(BuildCost)) 
+            return false;
+        foreach(var resName in BuildCost.Keys){
+            if(BuildCost[resName] > 0)
+                Resources[resName] -= BuildCost[resName];
+        }
+        return true;
+    }
+
+    public bool CanPayCost(Godot.Collections.Dictionary<string, int> BuildCost){
         foreach(var resName in BuildCost.Keys){
             if(BuildCost[resName] > 0)
                 if(Resources.ContainsKey(resName)){
@@ -100,11 +110,7 @@ public class ResourceManager : Node
                     }
                 }else{
                     return false;
-                }
-        }
-        foreach(var resName in BuildCost.Keys){
-            if(BuildCost[resName] > 0)
-                Resources[resName] -= BuildCost[resName];
+            }
         }
         return true;
     }

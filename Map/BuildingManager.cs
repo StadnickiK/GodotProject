@@ -80,6 +80,12 @@ public class BuildingManager : Node
         return Buildings.LastOrDefault();
     }
 
+    public bool HasBuilding(Building building){
+        if(Buildings.Contains(building)) 
+            return true;
+        return false;
+    }
+
     public override void _Process(float delta){
         _time += delta;
         if(_time >= 1){

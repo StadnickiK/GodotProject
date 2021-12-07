@@ -129,6 +129,61 @@ public class AIPlayer : Player
         return TreeNode.NodeState.Failure;
     }
 
+    TreeNode.NodeState HasResources(){
+
+        var BuildCost = ((Building)_data.GetData("Buildings")[0]).BuildCost;
+        var resReqObj = blackBoard["ResourceRequirements"]; // resReq - resource requirements
+        var resReq = (Dictionary<string, int>)resReqObj;
+        int count = resReq.Count;
+        foreach(var resName in BuildCost.Keys){
+            if(BuildCost[resName] > 0)
+                if(ResManager.Resources.ContainsKey(resName)){
+                    if(ResManager.Resources[resName] < BuildCost[resName]){
+                        if(!resReq.ContainsKey(resName)){
+                            resReq.Add(resName, BuildCost[resName]);
+                        }else{
+                            resReq[resName] += (BuildCost[resName] - resReq[resName]);
+                        }
+                    }
+                }else{
+                    if(!resReq.ContainsKey(resName)){
+                        resReq.Add(resName, BuildCost[resName]);
+                    }else{
+                        resReq[resName] += (resReq[resName]);
+                    }
+                }
+        }
+        
+        if(count > resReq.Count)
+            return TreeNode.NodeState.Failure;
+
+        return TreeNode.NodeState.Succes;
+    }
+
+    public bool HasResources(Godot.Collections.Dictionary<string, int> BuildCost){
+
+        foreach(var resName in BuildCost.Keys){
+            if(BuildCost[resName] > 0)
+                if(ResManager.Resources.ContainsKey(resName)){
+                    if(ResManager.Resources[resName] < BuildCost[resName]){
+                        return false;
+                    }
+                }else{
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    bool CheckBuildingResources(Planet planet, Building building){
+		foreach(var resName in building.Products.Keys){
+			if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+				return false;
+			}
+		}
+		return true;
+	}
+
     TreeNode.NodeState ConstructUnit(){
         if(blackBoard.ContainsKey("UnitConstructor")){
             var planetObj = blackBoard["UnitConstructor"];
@@ -140,13 +195,36 @@ public class AIPlayer : Player
         }
         return TreeNode.NodeState.Failure;
     }
+
+    TreeNode.NodeState ChooseBuildToConstruct(){
+        if(blackBoard.ContainsKey("BuildConstructor")){
+            var planetObj = blackBoard["BuildConstructor"];
+            var planet = (Planet)planetObj;
+            if(_data.GetNode("Buildings").GetChildren().Count >0)
+                if(planet.StartConstruction((Building)_data.GetData("Buildings")[0])){
+                    return TreeNode.NodeState.Succes;
+                }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState HasBuilding(){
+        if(blackBoard.ContainsKey("BuildConstructor")){
+            var planetObj = blackBoard["BuildConstructor"];
+            var planet = (Planet)planetObj;
+            var building = (Building)_data.GetNode("Buildings").GetChildren()[0];
+            if(planet.BuildingsManager.HasBuilding(building))
+                return TreeNode.NodeState.Failure;
+        }
+        return TreeNode.NodeState.Succes;
+    }
     
     TreeNode.NodeState ConstructBuilding(){
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planet = (Planet)planetObj;
-            if(_data.WorldUnits.Count >0)
-                if(planet.StartConstruction(null)){
+            if(_data.GetNode("Buildings").GetChildren().Count >0)
+                if(planet.StartConstruction((Building)_data.GetNode("Buildings").GetChildren()[0])){
                     return TreeNode.NodeState.Succes;
                 }
         }
@@ -158,6 +236,8 @@ public class AIPlayer : Player
         blackBoard.Add("Player", this);
         blackBoard.Add("ConstructUnitID", 0);
         blackBoard.Add("Map", new Dictionary<string, List<int>>());
+        blackBoard.Add("ResourceRequirements", new Dictionary<string, int>());
+
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
             new ScoutSystem(blackBoard)
@@ -169,7 +249,9 @@ public class AIPlayer : Player
         });
 
         TreeNode buildBuild = new Sequence(new List<TreeNode> {
-            new ActionTN(HasIdleBuildConstructionPlanet)
+            new ActionTN(HasIdleBuildConstructionPlanet),
+            new ActionTN(HasBuilding),
+            new ActionTN(ConstructBuilding)
         });
 
         root = new Parallel(new List<TreeNode> {
