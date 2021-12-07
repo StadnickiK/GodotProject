@@ -144,6 +144,26 @@ public class ResourceManager : Node
         return false;  
     }
 
+    public bool HasResource(Dictionary<string, int> resources){
+        foreach(var name in resources.Keys){
+            if(!HasResource(name))
+                return false;
+            if(Resources[name] < resources[name])
+                return false;
+        }
+        return true;
+    }
+
+    public bool HasResource(Godot.Collections.Dictionary<string, int> resources){
+        foreach(var name in resources.Keys){
+            if(!HasResource(name))
+                return false;
+            if(Resources[name] < resources[name])
+                return false;
+        }
+        return true;
+    }
+
     public bool HasLimit(string resourceName, int quantity){
         if(TotalResourceLimit < 0){
             if(ResourceLimits.ContainsKey(resourceName))

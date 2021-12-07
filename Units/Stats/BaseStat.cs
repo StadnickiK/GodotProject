@@ -5,6 +5,13 @@ public class BaseStat : Node{
 
     public BaseStat(){}
 
+    public BaseStat(BaseStat stat){
+        Name = stat.Name;
+        _name = stat.Name;
+        _baseValue = stat.BaseValue;
+        _currentValue = _baseValue;
+    }
+
     public BaseStat(string name){
         _name = name;
         Name = name;

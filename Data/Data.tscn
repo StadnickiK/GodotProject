@@ -9,6 +9,7 @@ script = ExtResource( 1 )
 
 [node name="Units" type="Node" parent="."]
 script = ExtResource( 5 )
+DirPath = "res://Data/Units/"
 
 [node name="UnitsLoader" type="Node" parent="."]
 script = ExtResource( 4 )

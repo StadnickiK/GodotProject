@@ -60,9 +60,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Occupied
     }
 
-    Directory dir = new Directory();
-
-    private Unit _unit;
+    private Unit _unit = null;
     public Unit CurrentUnit
     {
         get { return _unit; }
@@ -193,27 +191,31 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         IcoOrbit = GetNode<Icon3D>("IcoOrbit");
     }
 
-    public void StartConstruction(Unit unit){
+    public bool StartConstruction(Unit unit){
         if(Controller.ResManager.PayCost(unit.BuildCost)){
             _unit = new Unit(unit);
+            return true;
         }else{
             EmitSignal(nameof(GameAlert), this);
         }
-        return;
+        return false;
     }
 
-    public void StartConstruction(IBuilding building){
+    public bool StartConstruction(IBuilding building){
         if(Controller.ResManager.PayCost(building.BuildCost)){
             if(building is Unit unit){
                 _unit = new Unit(unit);
+                return true;
             }else{
-                if(building is Building b)
-                BuildingsManager.ConstructBuilding(b);
+                if(building is Building b){
+                    BuildingsManager.ConstructBuilding(b);
+                    return true;
+                }
             }
         }else{
             EmitSignal(nameof(GameAlert), this);
         }
-        return;
+        return false;
     }
 
     public void ConstructUnit(Unit unit){

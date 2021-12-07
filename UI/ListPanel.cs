@@ -100,6 +100,7 @@ public class ListPanel : VBoxContainer
 
     public void ClearItems(){
         foreach(Node n in _items.GetChildren()){
+            n.Name = "Remove"; // if i need to reuse the name of the node it is better to rename it before using qfree
             n.QueueFree();
         }
     }

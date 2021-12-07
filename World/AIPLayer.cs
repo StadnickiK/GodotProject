@@ -5,7 +5,15 @@ using System.Collections.Generic;
 public class AIPlayer : Player
 {
 
+    Data _data = null;
+
     TreeNode root = null;
+
+    public AIPlayer() : base(){}
+
+    public AIPlayer(Data data) : base(){
+        _data = data;
+    }
 
     Dictionary<string, object> blackBoard = new Dictionary<string, object>();
 
@@ -13,7 +21,7 @@ public class AIPlayer : Player
         if(node is Planet planet){
             if(blackBoard.ContainsKey("Map")){
                 var MapObject = blackBoard["Map"];
-                var map = (Dictionary<string, object>)MapObject;
+                var map = (Dictionary<string, List<int>>)MapObject;
                 if(planet.System != null){
                     if(!map.ContainsKey(planet.System.Name)){
                         List<int> list = new List<int>();
@@ -76,13 +84,79 @@ public class AIPlayer : Player
         return null;
     }
 
+    public Planet GetIdleShipConstructionPlanet(){
+        foreach(Node node in MapObjects){
+            if(node is Planet planet)
+                if(planet.CurrentUnit == null)
+                    return planet;
+        }
+        return null;
+    }
+
+    public Planet GetIdleBuildConstructionPlanet(){
+        foreach(Node node in MapObjects){
+            if(node is Planet planet)
+                if(planet.BuildingsManager.Constructions.ConstructionList.Count != 0)
+                    return planet;
+        }
+        return null;
+    }
+
     public TreeNode.NodeState GetShip(){
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState HasIdleUnitConstructionPlanet(){
+
+        var planet = GetIdleShipConstructionPlanet();
+        if(planet != null){
+            if(!blackBoard.ContainsKey("UnitConstructor")){
+                blackBoard.Add("UnitConstructor", planet);
+            }
+            return TreeNode.NodeState.Succes;
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState HasIdleBuildConstructionPlanet(){
+        var planet = GetIdleBuildConstructionPlanet();
+        if(planet != null){
+            if(!blackBoard.ContainsKey("BuildConstructor")){
+                blackBoard.Add("BuildConstructor", planet);
+            }
+            return TreeNode.NodeState.Succes;
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ConstructUnit(){
+        if(blackBoard.ContainsKey("UnitConstructor")){
+            var planetObj = blackBoard["UnitConstructor"];
+            var planet = (Planet)planetObj;
+            if(_data.WorldUnits.Count >0)
+                if(planet.StartConstruction(_data.WorldUnits[0])){
+                    return TreeNode.NodeState.Succes;
+                }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+    
+    TreeNode.NodeState ConstructBuilding(){
+        if(blackBoard.ContainsKey("BuildConstructor")){
+            var planetObj = blackBoard["BuildConstructor"];
+            var planet = (Planet)planetObj;
+            if(_data.WorldUnits.Count >0)
+                if(planet.StartConstruction(null)){
+                    return TreeNode.NodeState.Succes;
+                }
+        }
         return TreeNode.NodeState.Failure;
     }
 
     TreeNode SetupTree(){
         TreeNode root = null;
         blackBoard.Add("Player", this);
+        blackBoard.Add("ConstructUnitID", 0);
         blackBoard.Add("Map", new Dictionary<string, List<int>>());
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
@@ -90,7 +164,16 @@ public class AIPlayer : Player
         });
 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
-            
+            new ActionTN(HasIdleUnitConstructionPlanet),
+            new ActionTN(ConstructUnit)
+        });
+
+        TreeNode buildBuild = new Sequence(new List<TreeNode> {
+            new ActionTN(HasIdleBuildConstructionPlanet)
+        });
+
+        root = new Parallel(new List<TreeNode> {
+            scout, buildUnits
         });
 
         return root;

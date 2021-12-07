@@ -68,13 +68,19 @@ public class Unit : Node, IBuilding
 
     public Unit(Unit unit){
         Name = unit.Name;
-        Stats.QueueFree();
-        RemoveChild(Stats);
-        Stats = unit.Stats; 
-        AddChild(unit.Stats);
+        CopyStats(unit.Stats);
         BuildCost = new Godot.Collections.Dictionary<string, int>(unit.BuildCost);
         BuildTime = unit.BuildTime;
         ID_Owner = unit.ID_Owner;
+    }
+
+    void CopyStats(Node stats){
+        foreach(Node node in stats.GetChildren()){
+            if(node is BaseStat stat){
+                var statCopy = new BaseStat(stat);
+                Stats.AddChild(statCopy);
+            }
+        }
     }
 
     public void CalculateDamage(Unit unit){
