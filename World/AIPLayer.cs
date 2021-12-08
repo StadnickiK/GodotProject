@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class AIPlayer : Player
 {
@@ -223,10 +224,46 @@ public class AIPlayer : Player
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planet = (Planet)planetObj;
-            if(_data.GetNode("Buildings").GetChildren().Count >0)
-                if(planet.StartConstruction((Building)_data.GetNode("Buildings").GetChildren()[0])){
-                    return TreeNode.NodeState.Succes;
+
+            var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
+            var reqBuildings = (Dictionary<string, Building>)reqBuildingsObj;
+            var targetBuilding = reqBuildings.Last().Value;
+            if(planet.StartConstruction(targetBuilding)){
+                reqBuildings.Remove(targetBuilding.Name);
+                return TreeNode.NodeState.Succes;
+            }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    object GetBlackBoardObj(string name){
+        if(blackBoard.ContainsKey(name))
+            return blackBoard[name];
+        return null;
+    }
+
+    TreeNode.NodeState GetRequiredResourceBuilding(){
+        if(blackBoard.ContainsKey("ResourceRequirements")){
+            var reqResObj = GetBlackBoardObj("ResourceRequirements");
+            var reqRes = (Dictionary<string, int>)reqResObj;
+            blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+            var reqBuildObj = GetBlackBoardObj("BuildingRequirements");
+            var reqBuildings = (Dictionary<string, Building>)reqBuildObj;
+
+            var resName = reqRes.Last().Key;
+            var allBuildings = _data.GetNode("Buildings").GetChildren();
+            var count = reqBuildings.Count;
+            if(allBuildings.Count > 0){
+                foreach(Node node in allBuildings){
+                    if(node is Building building){
+                        if(building.Products.ContainsKey(resName))
+                            reqBuildings.Add(building.Name, building);
+                    }   
                 }
+            }
+            if(reqBuildings.Count > count)
+                return TreeNode.NodeState.Succes;
         }
         return TreeNode.NodeState.Failure;
     }
@@ -237,6 +274,7 @@ public class AIPlayer : Player
         blackBoard.Add("ConstructUnitID", 0);
         blackBoard.Add("Map", new Dictionary<string, List<int>>());
         blackBoard.Add("ResourceRequirements", new Dictionary<string, int>());
+        blackBoard.Add("BuildingRequirements", new Dictionary<string, Building>());
 
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
@@ -251,6 +289,7 @@ public class AIPlayer : Player
         TreeNode buildBuild = new Sequence(new List<TreeNode> {
             new ActionTN(HasIdleBuildConstructionPlanet),
             new ActionTN(HasBuilding),
+            new ActionTN(HasResources),
             new ActionTN(ConstructBuilding)
         });
 
