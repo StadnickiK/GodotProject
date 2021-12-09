@@ -22,17 +22,16 @@ public class AIPlayer : Player
         if(node is Planet planet){
             if(blackBoard.ContainsKey("Map")){
                 var MapObject = blackBoard["Map"];
-                var map = (Dictionary<string, List<int>>)MapObject;
+                var map = (Dictionary<string, List<Planet>>)MapObject;
                 if(planet.System != null){
                     if(!map.ContainsKey(planet.System.Name)){
-                        List<int> list = new List<int>();
-                        list.Add(planet.GetIndex());
+                        List<Planet> list = new List<Planet>();
+                        list.Add(planet);
                         map.Add(planet.System.Name, list);
                     }else{
-                        var listObj = map[planet.System.Name];
-                        var list = (List<int>)listObj;
-                        if(!list.Contains(planet.GetIndex())){
-                            list.Add(planet.GetIndex());
+                        var list = map[planet.System.Name];
+                        if(!list.Contains(planet)){
+                            list.Add(planet);
                         }else{
 
                         }
@@ -268,13 +267,34 @@ public class AIPlayer : Player
         return TreeNode.NodeState.Failure;
     }
 
+    TreeNode.NodeState GetTargetResourcePlanet(){
+        var mapObj = blackBoard["Map"];
+        var map = (Dictionary<string, List<Planet>>)mapObj; 
+        var targetsObj = blackBoard["ColonyTargets"];
+        var targets = (Dictionary<Planet, int>)targetsObj;
+        var resReqObj = blackBoard["ColonyTargets"];
+        var reqRes = (Dictionary<string, int>)resReqObj; 
+        blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        foreach(string s in map.Keys){
+            foreach(Planet planet in map[s]){
+                if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())){
+                    targets.Add(planet, 1);
+                    return TreeNode.NodeState.Succes;
+                }
+            }
+        }
+
+        return TreeNode.NodeState.Failure;
+    }
+
     TreeNode SetupTree(){
         TreeNode root = null;
         blackBoard.Add("Player", this);
         blackBoard.Add("ConstructUnitID", 0);
-        blackBoard.Add("Map", new Dictionary<string, List<int>>());
+        blackBoard.Add("Map", new Dictionary<string, List<Planet>>());
         blackBoard.Add("ResourceRequirements", new Dictionary<string, int>());
         blackBoard.Add("BuildingRequirements", new Dictionary<string, Building>());
+        blackBoard.Add("ColonyTargets", new Dictionary<Planet, int>());
 
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
