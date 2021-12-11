@@ -22,7 +22,7 @@ public class ScoutSystem : TreeNode
                 if(planet.System != null){
                     var mapObj = GetGlobalData("Map");
                     if(mapObj != null){
-                        var map = (Dictionary<string, List<int>>)mapObj;
+                        var map = (Dictionary<string, List<Planet>>)mapObj;
                         if(map.ContainsKey(planet.System.Name)){
                             var list = map[planet.System.Name];
                             if(list.Count == planet.System.Planets.Count){

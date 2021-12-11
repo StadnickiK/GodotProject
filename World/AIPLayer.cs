@@ -96,7 +96,7 @@ public class AIPlayer : Player
     public Planet GetIdleBuildConstructionPlanet(){
         foreach(Node node in MapObjects){
             if(node is Planet planet)
-                if(planet.BuildingsManager.Constructions.ConstructionList.Count != 0)
+                if(planet.BuildingsManager.Constructions.ConstructionList.Count == 0)
                     return planet;
         }
         return null;
@@ -130,33 +130,36 @@ public class AIPlayer : Player
     }
 
     TreeNode.NodeState HasResources(){
-
-        var BuildCost = ((Building)_data.GetData("Buildings")[0]).BuildCost;
-        var resReqObj = blackBoard["ResourceRequirements"]; // resReq - resource requirements
-        var resReq = (Dictionary<string, int>)resReqObj;
-        int count = resReq.Count;
-        foreach(var resName in BuildCost.Keys){
-            if(BuildCost[resName] > 0)
-                if(ResManager.Resources.ContainsKey(resName)){
-                    if(ResManager.Resources[resName] < BuildCost[resName]){
+        var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
+        var reqBuildings = (Dictionary<Building, int>)reqBuildingsObj;
+        blackBoard["BuildingRequirements"] = reqBuildings = reqBuildings.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        if(reqBuildings.Count > 0){
+            var BuildCost = reqBuildings.Keys.Last().BuildCost;
+            var resReqObj = blackBoard["ResourceRequirements"]; // resReq - resource requirements
+            var resReq = (Dictionary<string, int>)resReqObj;
+            int count = resReq.Count;
+            foreach(var resName in BuildCost.Keys){
+                if(BuildCost[resName] > 0)
+                    if(ResManager.Resources.ContainsKey(resName)){
+                        if(ResManager.Resources[resName] < BuildCost[resName]){
+                            if(!resReq.ContainsKey(resName)){
+                                resReq.Add(resName, BuildCost[resName]);
+                            }else{
+                                resReq[resName] += (BuildCost[resName] - resReq[resName]);
+                            }
+                        }
+                    }else{
                         if(!resReq.ContainsKey(resName)){
                             resReq.Add(resName, BuildCost[resName]);
                         }else{
-                            resReq[resName] += (BuildCost[resName] - resReq[resName]);
+                            resReq[resName] += (resReq[resName]);
                         }
                     }
-                }else{
-                    if(!resReq.ContainsKey(resName)){
-                        resReq.Add(resName, BuildCost[resName]);
-                    }else{
-                        resReq[resName] += (resReq[resName]);
-                    }
-                }
+            }
+            
+            if(count > resReq.Count)
+                return TreeNode.NodeState.Failure;
         }
-        
-        if(count > resReq.Count)
-            return TreeNode.NodeState.Failure;
-
         return TreeNode.NodeState.Succes;
     }
 
@@ -212,11 +215,21 @@ public class AIPlayer : Player
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planet = (Planet)planetObj;
-            var building = (Building)_data.GetNode("Buildings").GetChildren()[0];
-            if(planet.BuildingsManager.HasBuilding(building))
-                return TreeNode.NodeState.Failure;
+            var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
+            var reqBuildings = (Dictionary<Building, int>)reqBuildingsObj;
+            if(reqBuildings.Count > 0){
+                blackBoard["BuildingRequirements"] = reqBuildings = reqBuildings.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
+                for(int i = 0; i < reqBuildings.Keys.Count; i++){
+                    if(planet.BuildingsManager.HasBuilding(reqBuildings.Keys.ElementAt(i))){
+                        reqBuildings.Remove(reqBuildings.Keys.ElementAt(i));
+                    }else{
+                        return TreeNode.NodeState.Succes;
+                    }
+                }
+            }
         }
-        return TreeNode.NodeState.Succes;
+        return TreeNode.NodeState.Failure;
+        
     }
     
     TreeNode.NodeState ConstructBuilding(){
@@ -225,10 +238,10 @@ public class AIPlayer : Player
             var planet = (Planet)planetObj;
 
             var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
-            var reqBuildings = (Dictionary<string, Building>)reqBuildingsObj;
-            var targetBuilding = reqBuildings.Last().Value;
+            var reqBuildings = (Dictionary<Building, int>)reqBuildingsObj;
+            var targetBuilding = reqBuildings.Last().Key;
             if(planet.StartConstruction(targetBuilding)){
-                reqBuildings.Remove(targetBuilding.Name);
+                reqBuildings.Remove(targetBuilding);
                 return TreeNode.NodeState.Succes;
             }
         }
@@ -241,49 +254,56 @@ public class AIPlayer : Player
         return null;
     }
 
-    TreeNode.NodeState GetRequiredResourceBuilding(){
+    TreeNode.NodeState GetReqResourceBuilding(){
         if(blackBoard.ContainsKey("ResourceRequirements")){
             var reqResObj = GetBlackBoardObj("ResourceRequirements");
             var reqRes = (Dictionary<string, int>)reqResObj;
             blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
             var reqBuildObj = GetBlackBoardObj("BuildingRequirements");
-            var reqBuildings = (Dictionary<string, Building>)reqBuildObj;
-
-            var resName = reqRes.Last().Key;
-            var allBuildings = _data.GetNode("Buildings").GetChildren();
-            var count = reqBuildings.Count;
-            if(allBuildings.Count > 0){
-                foreach(Node node in allBuildings){
-                    if(node is Building building){
-                        if(building.Products.ContainsKey(resName))
-                            reqBuildings.Add(building.Name, building);
-                    }   
+            var reqBuildings = (Dictionary<Building, int>)reqBuildObj;
+            if( reqRes.Count > 0){
+                var resName = reqRes.Last().Key;
+                var allBuildings = _data.GetNode("Buildings").GetChildren();
+                var count = reqBuildings.Count;
+                if(allBuildings.Count > 0){
+                    foreach(Node node in allBuildings){
+                        if(node is Building building){
+                            if(
+                                (building.Products.ContainsKey(resName) 
+                                || building.ResourceLimits.ContainsKey(resName))
+                                && !reqBuildings.ContainsKey(building))
+                                    reqBuildings.Add(building, 1);
+                        }   
+                    }
                 }
+                if(reqBuildings.Count > count)
+                    return TreeNode.NodeState.Succes;
             }
-            if(reqBuildings.Count > count)
-                return TreeNode.NodeState.Succes;
         }
         return TreeNode.NodeState.Failure;
     }
 
-    TreeNode.NodeState GetTargetResourcePlanet(){
+    TreeNode.NodeState GetReqResourcePlanet(){
         var mapObj = blackBoard["Map"];
         var map = (Dictionary<string, List<Planet>>)mapObj; 
         var targetsObj = blackBoard["ColonyTargets"];
         var targets = (Dictionary<Planet, int>)targetsObj;
-        var resReqObj = blackBoard["ColonyTargets"];
-        var reqRes = (Dictionary<string, int>)resReqObj; 
-        blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-        foreach(string s in map.Keys){
-            foreach(Planet planet in map[s]){
-                if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())){
-                    targets.Add(planet, 1);
-                    return TreeNode.NodeState.Succes;
+        var resReqObj = blackBoard["ResourceRequirements"];
+        var reqRes = (Dictionary<string, int>)resReqObj;
+        if(reqRes.Count > 0){ 
+            blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            foreach(string s in map.Keys){
+                foreach(Planet planet in map[s]){
+                    if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())
+                        && !targets.ContainsKey(planet)
+                    ){
+                        targets.Add(planet, 1);
+                        return TreeNode.NodeState.Succes;
+                    }
                 }
             }
         }
-
         return TreeNode.NodeState.Failure;
     }
 
@@ -291,9 +311,9 @@ public class AIPlayer : Player
         TreeNode root = null;
         blackBoard.Add("Player", this);
         blackBoard.Add("ConstructUnitID", 0);
-        blackBoard.Add("Map", new Dictionary<string, List<Planet>>());
+        blackBoard.Add("Map", new Dictionary<string, List<Planet>>{});
         blackBoard.Add("ResourceRequirements", new Dictionary<string, int>());
-        blackBoard.Add("BuildingRequirements", new Dictionary<string, Building>());
+        blackBoard.Add("BuildingRequirements", new Dictionary<Building, int>(){{(Building)_data.GetData("Buildings")[2], 1}});
         blackBoard.Add("ColonyTargets", new Dictionary<Planet, int>());
 
         TreeNode scout = new Sequence(new List<TreeNode> {
@@ -302,8 +322,8 @@ public class AIPlayer : Player
         });
 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
-            new ActionTN(HasIdleUnitConstructionPlanet),
-            new ActionTN(ConstructUnit)
+            //new ActionTN(HasIdleUnitConstructionPlanet),
+            //new ActionTN(ConstructUnit)
         });
 
         TreeNode buildBuild = new Sequence(new List<TreeNode> {
@@ -313,8 +333,13 @@ public class AIPlayer : Player
             new ActionTN(ConstructBuilding)
         });
 
+        TreeNode getReq = new Parallel(new List<TreeNode>{
+            new ActionTN(GetReqResourceBuilding),
+            new ActionTN(GetReqResourcePlanet)
+        });
+
         root = new Parallel(new List<TreeNode> {
-            scout, buildUnits
+            scout, getReq, buildBuild, buildUnits
         });
 
         return root;

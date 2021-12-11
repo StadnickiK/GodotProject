@@ -21,7 +21,7 @@ DirPath = "res://Data/Technology/"
 
 [node name="Buildings" type="Node" parent="."]
 script = ExtResource( 5 )
-DirPath = "res://Data/Building/"
+DirPath = "res://Data/Buildings/"
 
 [node name="Resources" type="Node" parent="."]
 script = ExtResource( 5 )
