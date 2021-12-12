@@ -113,10 +113,10 @@ public class Player : Node
     //         ResourcesChanged = true;
     // }
 
-    void UpdatePlayerResources(){
+    protected void UpdatePlayerResources(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-                _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
                 UpdateResourceLimit(planet);
+                _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
                 ResourcesChanged = true;
         }
     }
@@ -127,16 +127,17 @@ public class Player : Node
         }
     }
 
-    void UpdateResourceLimit(){
+    protected void UpdateResourceLimit(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
             UpdateResourceLimit(planet);
         }
     }
 
     public void UpdateResourceLimit(Planet planet){
-            if(planet.BuildingsChanged){
+            if(planet.BuildingsManager.BuildingsChanged){
                 _resourceManager.UpdateResourceLimit(planet.BuildingsManager.GetLastBuilding());
                 planet.BuildingsChanged = false;
+                planet.BuildingsManager.BuildingsChanged = false;
             }
     }
 

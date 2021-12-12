@@ -214,23 +214,24 @@ public class ResourceManager : Node
                 // }
                 foreach(string productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
-                        if(productName == "Resource 1"){
-                            GD.Print();
-                        }
                         var quantity = building.Products[productName];
-                        if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
-                            if(PayCost(building.ProductCost)){
-                                Resources.Add(productName, quantity);
-                                ResourcesChanged = true;
+                        if(productName == "Resource 1")
+                            GD.Print();
+                        if(ResourceLimits.ContainsKey(productName))
+                            if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
+                                if(PayCost(building.ProductCost)){
+                                    Resources.Add(productName, quantity);
+                                    ResourcesChanged = true;
+                                }
                             }
-                        }
                     }else{
                         var quantity = building.Products[productName];
-                        if(Resources[productName] + quantity<ResourceLimits[productName]){
-                            if(PayCost(building.ProductCost)){
-                                Resources[productName] += quantity;
-                                ResourcesChanged = true;
-                            }
+                        if(ResourceLimits.ContainsKey(productName))
+                            if(Resources[productName] + quantity<ResourceLimits[productName]){
+                                if(PayCost(building.ProductCost)){
+                                    Resources[productName] += quantity;
+                                    ResourcesChanged = true;
+                                }
                         }else{
                             if(PayCost(building.ProductCost)){
                                 Resources[productName] = ResourceLimits[productName];

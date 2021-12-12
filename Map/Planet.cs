@@ -346,12 +346,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 Vision = true;
             }
         }
-        if(BuildingsManager.BuildingsChanged){
-            // ResourcesManager.UpdateResourceLimit(BuildingsManager.GetLastBuilding());
-            BuildingsManager.BuildingsChanged = false;
-            BuildingsChanged = true;
-            // Controller.UpdateResourceLimit(this);
-        }
         if(_unit != null){
             if(_time > TimeStep){
                 _time = 0;

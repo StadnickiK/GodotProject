@@ -56,8 +56,8 @@ public class AIPlayer : Player
 
     public override void _Ready()
     {
-        root = SetupTree();
-        AddChild(root);
+        //root = SetupTree();
+        //AddChild(root);
     }
 
     public override void _Process(float delta){

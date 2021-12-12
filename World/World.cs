@@ -380,7 +380,7 @@ private Data _data = null;
 	void _on_Alert(World.GameAlert alert){
 		switch(alert){
 			case GameAlert.NoResource:
-				_UI.ABox.Visible = true;
+				//_UI.ABox.Visible = true;
 				break;
 		}
 	}
