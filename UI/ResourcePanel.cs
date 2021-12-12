@@ -14,6 +14,8 @@ public class ResourcePanel : Panel
     [Export]
     public string ScenePath { get; set; } = "res://UI/ResourceLabel.tscn";
 
+    Dictionary<string, ResourceLabel> resLabels = new Dictionary<string, ResourceLabel>();
+
     void GetNodes(){
         _hBox = GetNode<Control>("ScrollContainer/HBox");
     }
@@ -26,7 +28,14 @@ public class ResourcePanel : Panel
 
     public void UpdatePanel(Dictionary<string, int> Resources){
         if(Initialized){
-            foreach(Node node in _hBox.GetChildren()){
+            foreach(string resName in Resources.Keys){
+                if(resLabels.ContainsKey(resName)){
+                    resLabels[resName].SetValue(Resources[resName]);
+                }else{
+                    CreateResourceLabel(resName, Resources[resName]);
+                }
+            }
+            foreach(Node node in _hBox.GetChildren()){ // horizontalBox
                 if(node is ResourceLabel label){
                     if(Resources.ContainsKey(label.ResourceName.Text)){
                         //label.SetValue(Resources[label.ResourceName.Text].Quantity);
@@ -38,24 +47,29 @@ public class ResourcePanel : Panel
             }
         }else{
             foreach(KeyValuePair<string, int> resource in Resources){
-                var label = (ResourceLabel)ResourceLabelScene.Instance();
-                _hBox.AddChild(label);
-                if(Theme != null){
-                    label.SetLabelTheme(Theme);
-                }else{
-                    Theme = new Theme();
-                    var font = new DynamicFont();
-                    font.Size = 20;
-                    font.UseFilter = true;
-                    Theme.DefaultFont = font;
-                    label.SetLabelTheme(Theme);
-                }
-                label.ResourceName.Text = resource.Key;
-                //label.Value.Text = resource.Value.Quantity.ToString();
-                label.Value.Text = resource.Value.ToString();
-                Initialized = true; 
+                CreateResourceLabel(resource.Key, resource.Value);
             }
+            Initialized = true; 
         }
+    }
+
+    ResourceLabel CreateResourceLabel(string resName, int quantity = 0){
+         var label = (ResourceLabel)ResourceLabelScene.Instance();
+        resLabels.Add(resName, label);
+        _hBox.AddChild(label);
+        if(Theme != null){
+            label.SetLabelTheme(Theme);
+        }else{
+            Theme = new Theme();
+            var font = new DynamicFont();
+            font.Size = 20;
+            font.UseFilter = true;
+            Theme.DefaultFont = font;
+            label.SetLabelTheme(Theme);
+        }
+        label.ResourceName.Text = resName;
+        label.Value.Text = quantity.ToString();
+        return label;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
