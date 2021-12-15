@@ -56,8 +56,8 @@ public class AIPlayer : Player
 
     public override void _Ready()
     {
-        //root = SetupTree();
-        //AddChild(root);
+        root = SetupTree();
+        AddChild(root);
     }
 
     public override void _Process(float delta){
@@ -87,7 +87,7 @@ public class AIPlayer : Player
     public Planet GetIdleShipConstructionPlanet(){
         foreach(Node node in MapObjects){
             if(node is Planet planet)
-                if(planet.CurrentUnit == null)
+                if(!planet.Constructions.HasConstruct())
                     return planet;
         }
         return null;
@@ -162,22 +162,7 @@ public class AIPlayer : Player
         }
         return TreeNode.NodeState.Succes;
     }
-
-    public bool HasResources(Godot.Collections.Dictionary<string, int> BuildCost){
-
-        foreach(var resName in BuildCost.Keys){
-            if(BuildCost[resName] > 0)
-                if(ResManager.Resources.ContainsKey(resName)){
-                    if(ResManager.Resources[resName] < BuildCost[resName]){
-                        return false;
-                    }
-                }else{
-                    return false;
-            }
-        }
-        return true;
-    }
-
+    
     bool CheckBuildingResources(Planet planet, Building building){
 		foreach(var resName in building.Products.Keys){
 			if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
@@ -238,8 +223,19 @@ public class AIPlayer : Player
             var planet = (Planet)planetObj;
 
             var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
-            var reqBuildings = (Dictionary<Building, int>)reqBuildingsObj;
-            var targetBuilding = reqBuildings.Last().Key;
+            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj).Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var targetBuilding = reqBuildings.First().Key;
+            if(targetBuilding.Products.Count > 0)
+                foreach(Building building in reqBuildings.Keys){
+                    foreach(string resName in building.Products.Keys){
+                        if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+                            var temp = reqBuildings[building];
+                            reqBuildings.Remove(targetBuilding);
+                            reqBuildings.Add(targetBuilding, temp);
+                        }
+
+                    }
+                }
             if(planet.StartConstruction(targetBuilding)){
                 reqBuildings.Remove(targetBuilding);
                 return TreeNode.NodeState.Succes;
@@ -321,9 +317,11 @@ public class AIPlayer : Player
             new ScoutSystem(blackBoard)
         });
 
+
+        // todo: Add has resources, add recruitment queue based on target planet Reapeter?? 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
-            //new ActionTN(HasIdleUnitConstructionPlanet),
-            //new ActionTN(ConstructUnit)
+            new ActionTN(HasIdleUnitConstructionPlanet),
+            new ActionTN(ConstructUnit)
         });
 
         TreeNode buildBuild = new Sequence(new List<TreeNode> {

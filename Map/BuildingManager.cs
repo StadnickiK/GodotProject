@@ -50,7 +50,7 @@ public class BuildingManager : Node
     public List<Building> Buildings { get; } = new List<Building>();
     public override void _Ready()
     {
-        
+        AddChild(_constructions);
     }
 
     // void UpdateConstruction(){

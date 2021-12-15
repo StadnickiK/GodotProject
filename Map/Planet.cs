@@ -60,13 +60,12 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Occupied
     }
 
-    private Unit _unit = null;
-    public Unit CurrentUnit
+    ConstructionManager _constructions = new ConstructionManager();
+    public ConstructionManager Constructions
     {
-        get { return _unit; }
+        get { return _constructions; }
     }
     
-
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
     public bool BuildingsChanged { get; set; } = false;
@@ -193,7 +192,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public bool StartConstruction(Unit unit){
         if(Controller.ResManager.PayCost(unit.BuildCost)){
-            _unit = new Unit(unit);
+            _constructions.ConstructBuilding(new Unit(unit));
             return true;
         }else{
             EmitSignal(nameof(GameAlert), this);
@@ -204,7 +203,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public bool StartConstruction(IBuilding building){
         if(Controller.ResManager.PayCost(building.BuildCost)){
             if(building is Unit unit){
-                _unit = new Unit(unit);
+                _constructions.ConstructBuilding(new Unit(unit));
                 return true;
             }else{
                 if(building is Building b){
@@ -346,21 +345,20 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 Vision = true;
             }
         }
-        if(_unit != null){
-            if(_time > TimeStep){
-                _time = 0;
-                if(_unit.CurrentTime < _unit.BuildTime){
-                    _unit.CurrentTime++;
-                }else{
-                    var ship = GetLocalShip();
+        var list = _constructions.UpdateConstruction();
+
+        if(list.Count > 0){
+            var ship = GetLocalShip();
+            foreach(IBuilding ib in list){
+                if(ib is Unit unit){
                     if(ship != null){
-                        ship.Units.AddChild(_unit);
+                        ship.Units.AddChild(unit);
                     }else{
-                        EmitSignal(nameof(CreateShip), this, _unit);
+                        EmitSignal(nameof(CreateShip), this, unit);
                     }
-                    _unit = null;
                 }
-            }
+            }   
+
         }
     }
 }

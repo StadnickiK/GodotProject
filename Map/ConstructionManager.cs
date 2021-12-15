@@ -28,6 +28,10 @@ public class ConstructionManager : Node
         
     }
 
+    /// <summary>
+    ///     Update all IBuilding objects in the construction list and return a list of finished ones.
+    /// </summary>
+    /// <returns>List<IBuilding></returns>
     public List<IBuilding> UpdateConstruction(){
         var count = ConstructionList.Count;
         var list = new List<IBuilding>();
@@ -75,5 +79,10 @@ public class ConstructionManager : Node
             }
         }
         return list;
+    }
+
+    public bool HasConstruct(){
+        if(_constructionList.Count > 0) return true;    
+        return false;
     }
 }

@@ -316,6 +316,8 @@ public class PlanetInterface : Panel
 		}
 	}
 
+
+	// todo: Reimplement with construction list instead of constList[0]
 	void UpdateConstructionList(List<Unit> WorldUnits, Planet planet){
 		foreach(var unit in WorldUnits){
 			var label = (BuildingLabel)ItemScene.Instance();
@@ -332,10 +334,13 @@ public class PlanetInterface : Panel
 				label.Progress.Value = unit.CurrentTime;
 				label.Progress.MaxValue = unit.BuildTime;
 			}
-			if(planet.CurrentUnit != null){
-				if(planet.CurrentUnit.Name == unit.Name){
-					label.Progress.Value = planet.CurrentUnit.CurrentTime;
-					label.Progress.MaxValue = planet.CurrentUnit.BuildTime;
+			var constList = planet.Constructions.CurrentConstruction();
+			if(constList.Count > 0){
+				if(constList[0] is Unit currentUnit){
+					if(currentUnit.Name == unit.Name){
+						label.Progress.Value = currentUnit.CurrentTime;
+						label.Progress.MaxValue = currentUnit.BuildTime;
+					}
 				}
 			}
 		}
@@ -407,7 +412,7 @@ public class PlanetInterface : Panel
 					UpdateBuildings(_planet, _allBuildings);
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
-				if(_planet.CurrentUnit != null)
+				if(_planet.Constructions.HasConstruct())
 					UpdateConstruction(_planet, _allUnits);
 			}
 		}
