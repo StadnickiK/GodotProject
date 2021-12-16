@@ -335,14 +335,15 @@ public class PlanetInterface : Panel
 				label.Progress.MaxValue = unit.BuildTime;
 			}
 			var constList = planet.Constructions.CurrentConstruction();
-			if(constList.Count > 0){
-				if(constList[0] is Unit currentUnit){
-					if(currentUnit.Name == unit.Name){
-						label.Progress.Value = currentUnit.CurrentTime;
-						label.Progress.MaxValue = currentUnit.BuildTime;
+			if(constList != null)
+				if(constList.Count > 0){
+					if(constList[0] is Unit currentUnit){
+						if(currentUnit.Name == unit.Name){
+							label.Progress.Value = currentUnit.CurrentTime;
+							label.Progress.MaxValue = currentUnit.BuildTime;
+						}
 					}
 				}
-			}
 		}
 	}
 

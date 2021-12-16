@@ -200,6 +200,11 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         return false;
     }
 
+    /// <summary>
+    /// Start construction of IBuilding, return true if IBuildCost was payed, or false if construction didnt start.
+    /// </summary>
+    /// <param name="building">IBuilding</param>
+    /// <returns>bool</returns>
     public bool StartConstruction(IBuilding building){
         if(Controller.ResManager.PayCost(building.BuildCost)){
             if(building is Unit unit){

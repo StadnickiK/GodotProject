@@ -226,14 +226,17 @@ public class AIPlayer : Player
             var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj).Reverse().ToDictionary(x => x.Key, x => x.Value);
             var targetBuilding = reqBuildings.First().Key;
             if(targetBuilding.Products.Count > 0)
-                foreach(Building building in reqBuildings.Keys){
-                    foreach(string resName in building.Products.Keys){
-                        if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
-                            var temp = reqBuildings[building];
-                            reqBuildings.Remove(targetBuilding);
-                            reqBuildings.Add(targetBuilding, temp);
+                for(int i = 0; i < reqBuildings.Count(); i ++){ // foreach throws because indexer changes
+                    var building = reqBuildings.Keys.ElementAt(i);
+                    if(building != targetBuilding){
+                        foreach(string resName in building.Products.Keys){
+                            if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+                                var temp = reqBuildings[building];
+                                reqBuildings.Remove(targetBuilding); // remove fist element
+                                reqBuildings.Add(targetBuilding, temp); // add removed element as last
+                                targetBuilding = reqBuildings.First().Key; // set new target building
+                            }
                         }
-
                     }
                 }
             if(planet.StartConstruction(targetBuilding)){
