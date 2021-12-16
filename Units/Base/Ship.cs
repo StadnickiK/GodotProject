@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision//, IResourceManager
+public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, IMapObject//, IResourceManager
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);

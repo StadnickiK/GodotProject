@@ -29,6 +29,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     [Signal]
     public delegate void CreateShip(Planet planet, Unit unit);
+
+    [Signal]
+    public delegate void CreateShips(Planet planet, List<IBuilding> units);
    
     public Player Controller { get; set; } = null;
 
@@ -206,19 +209,20 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     /// <param name="building">IBuilding</param>
     /// <returns>bool</returns>
     public bool StartConstruction(IBuilding building){
-        if(Controller.ResManager.PayCost(building.BuildCost)){
-            if(building is Unit unit){
-                _constructions.ConstructBuilding(new Unit(unit));
-                return true;
-            }else{
-                if(building is Building b){
-                    BuildingsManager.ConstructBuilding(b);
+        if(building != null)
+            if(Controller.ResManager.PayCost(building.BuildCost)){
+                if(building is Unit unit){
+                    _constructions.ConstructBuilding(new Unit(unit));
                     return true;
+                }else{
+                    if(building is Building b){
+                        BuildingsManager.ConstructBuilding(b);
+                        return true;
+                    }
                 }
+            }else{
+                EmitSignal(nameof(GameAlert), this);
             }
-        }else{
-            EmitSignal(nameof(GameAlert), this);
-        }
         return false;
     }
 
@@ -274,6 +278,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         }
         Orbit.AddNode(ship);
         Orbit.OrbitChanged = true;
+        if(ship is IMapObject mapObject)
+            mapObject.MapObject = this;
         if(IsVisible())
             IcoOrbit.Visible =  true;
             if(Orbit.GetChildren().Count == 1)

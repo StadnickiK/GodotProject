@@ -205,8 +205,9 @@ public class AIPlayer : Player
             if(reqBuildings.Count > 0){
                 blackBoard["BuildingRequirements"] = reqBuildings = reqBuildings.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
                 for(int i = 0; i < reqBuildings.Keys.Count; i++){
-                    if(planet.BuildingsManager.HasBuilding(reqBuildings.Keys.ElementAt(i))){
-                        reqBuildings.Remove(reqBuildings.Keys.ElementAt(i));
+                    var building = reqBuildings.Keys.ElementAt(i);
+                    if(planet.BuildingsManager.HasBuilding(building)){
+                        reqBuildings.Remove(building);
                     }else{
                         return TreeNode.NodeState.Succes;
                     }
@@ -217,27 +218,34 @@ public class AIPlayer : Player
         
     }
     
+
+    // todo: change the way buildings are passed to Planet, add a filter or smth
     TreeNode.NodeState ConstructBuilding(){
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planet = (Planet)planetObj;
 
             var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
-            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj).Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
             var targetBuilding = reqBuildings.First().Key;
+            if(ResManager.Resources.ContainsKey("Resource 1")){
+                if(ResManager.Resources["Resource 1"] > 180){
+                    GD.Print();
+                }
+            }
             if(targetBuilding.Products.Count > 0)
                 for(int i = 0; i < reqBuildings.Count(); i ++){ // foreach throws because indexer changes
                     var building = reqBuildings.Keys.ElementAt(i);
-                    if(building != targetBuilding){
                         foreach(string resName in building.Products.Keys){
                             if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
                                 var temp = reqBuildings[building];
                                 reqBuildings.Remove(targetBuilding); // remove fist element
-                                reqBuildings.Add(targetBuilding, temp); // add removed element as last
-                                targetBuilding = reqBuildings.First().Key; // set new target building
+                                //reqBuildings.Add(targetBuilding, temp); // add removed element as last
+                                reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
+                                targetBuilding = reqBuildings.FirstOrDefault().Key; // set new target building
+                                break;
                             }
                         }
-                    }
                 }
             if(planet.StartConstruction(targetBuilding)){
                 reqBuildings.Remove(targetBuilding);
@@ -340,7 +348,7 @@ public class AIPlayer : Player
         });
 
         root = new Parallel(new List<TreeNode> {
-            scout, getReq, buildBuild, buildUnits
+            scout, getReq, buildBuild//, buildUnits
         });
 
         return root;

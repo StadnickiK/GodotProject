@@ -275,7 +275,7 @@ private Data _data = null;
 		var ship = (Ship)_ShipScene.Instance();
 		var transform = ship.Transform;
 		transform.origin = planet.Transform.origin;
-		transform.origin += new Vector3(3,0,3);
+		//transform.origin += new Vector3(3,0,3);
 		ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
 		ship.Transform = transform;
 		ship.Controller = planet.Controller;
@@ -283,10 +283,10 @@ private Data _data = null;
 		ship.ID_Owner = ship.Controller.PlayerID;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
 		ship.Units.AddChild(unit);
-		planet.System.AddMapObject(ship);
+		//planet.System.AddMapObject(ship);
 		ConnectShip(ship);
 		planet.Controller.AddMapObject(ship);
-		//planet.AddToOrbit(ship);
+		planet.AddToOrbit(ship);
 		return ship;
 	}
 
