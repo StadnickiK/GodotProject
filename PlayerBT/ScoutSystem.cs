@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ScoutSystem : TreeNode
 {
@@ -9,28 +10,29 @@ public class ScoutSystem : TreeNode
 
     public ScoutSystem(Dictionary<string, object> globalContext) : base(globalContext){}
 
+    Ship ChooseScout(Dictionary<Ship, int> fleets){
+        return fleets.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.ElementAt(0);
+    }
+
     public override TreeNode.NodeState Evaluate(){
 
         var playerObject = GetGlobalData("Player");
-        var scoutObject = GetGlobalData("Scout");
+        var fleetsObject = GetGlobalData("IdleFleets");
 
-        if(playerObject != null && scoutObject != null){
+        if(playerObject != null && fleetsObject != null){
             var player = (AIPlayer)playerObject;
-            var scout = (Ship)scoutObject;
+            var fleets = (Dictionary<Ship, int>)fleetsObject;
             var planet = player.GetPlanet();
-            if(planet != null){
+            if(planet != null && fleets.Count > 0){
                 if(planet.System != null){
                     var mapObj = GetGlobalData("Map");
-                    if(mapObj != null){
-                        var map = (Dictionary<string, List<Planet>>)mapObj;
-                        if(map.ContainsKey(planet.System.Name)){
-                            var list = map[planet.System.Name];
-                            if(list.Count == planet.System.Planets.Count){
-                                State = NodeState.Succes;
-                                return NodeState.Succes;  
-                            }
+                    var scoutMissionsObj = GetGlobalData("ScoutMissions");
+                    var scoutMissions = (Dictionary<Ship, string>)scoutMissionsObj;
+                        if(scoutMissions.ContainsValue(planet.System.Name)){
+                            State = NodeState.Succes;
+                            return NodeState.Succes;  
                         }
-                    }
+                    var scout = ChooseScout(fleets);
                     foreach(Node node in planet.System.StarSysObjects.GetChildren()){
                         if(node is Planet targetPlanet && node != planet){
                             var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.origin);
@@ -41,6 +43,8 @@ public class ScoutSystem : TreeNode
                             }
                         }
                     }
+                    fleets.Remove(scout);
+                    scoutMissions.Add(scout, planet.System.Name);
                     State = NodeState.Running;
                     return NodeState.Running;
                 }

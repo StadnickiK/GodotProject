@@ -11,14 +11,18 @@ public class GetIdleShip : TreeNode
     public override TreeNode.NodeState Evaluate(){
 
         var playerObject = GetGlobalData("Player");
+        var idleFleetsObj = GetGlobalData("IdleFleets");
 
-        if(playerObject != null){
+        if(playerObject != null && idleFleetsObj != null){
             var player = (AIPlayer)playerObject;
             var ship = player.GetIdleShip();
             if(ship != null){
-                SetGlobalData("Scout", ship);
-                State = NodeState.Succes;
-                return NodeState.Succes;
+                var fleets = (Dictionary<Ship, int>)idleFleetsObj;
+                if(!fleets.ContainsKey(ship)){
+                    fleets.Add(ship, ship.Units.GetChildCount());
+                    State = NodeState.Succes;
+                    return NodeState.Succes;
+                }
             }
         }
 

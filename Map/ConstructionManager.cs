@@ -16,9 +16,10 @@ public class ConstructionManager : Node
 
     public int ConstructionSlots { get; set; } = 1;
 
-    public void ConstructBuilding(IBuilding building){
+    public void ConstructBuilding(IBuilding building, int count = 1){
         if(building != null){
-            ConstructionList.Add(building);
+            for(int i = 0; i<count;i++)
+                ConstructionList.Add(building);
             // ConstructionListChanged = true;
         }
     }

@@ -57,7 +57,8 @@ public class Orbit : Spatial
     }
 
     public Ship GetLocal(){
-        foreach(Node node in GetChildren()){
+        var list = GetChildren();
+        foreach(Node node in list){
             if(node is Ship ship){
                 if(ship.IsLocal)
                     return ship;

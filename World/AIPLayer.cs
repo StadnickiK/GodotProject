@@ -10,6 +10,9 @@ public class AIPlayer : Player
 
     TreeNode root = null;
 
+    [Export]
+    public float FleetStrengthMul { get; set; } = 1.1f;
+
     public AIPlayer() : base(){}
 
     public AIPlayer(Data data) : base(){
@@ -48,8 +51,10 @@ public class AIPlayer : Player
     public void ConnectSignals(){
         foreach(Node node in MapObjects){
             if(node is Ship ship){
-                ship._area.Connect("body_entered", this, nameof(_on_MapObject_Entered));
-                ship._area.Connect("body_exited", this, nameof(_on_MapObject_Exited));
+                if(!ship._area.IsConnected("body_entered", this, nameof(_on_MapObject_Entered)))
+                    ship._area.Connect("body_entered", this, nameof(_on_MapObject_Entered));
+                if(!ship._area.IsConnected("body_exited", this, nameof(_on_MapObject_Exited)))
+                    ship._area.Connect("body_exited", this, nameof(_on_MapObject_Exited));
             }
         }
     }
@@ -64,6 +69,9 @@ public class AIPlayer : Player
         base._Process(delta);
         if(root != null)
             root.Evaluate();
+        if(MapObjectsChanged){
+            ConnectSignals();
+        }
     }
 
     public Ship GetIdleShip(){
@@ -172,14 +180,47 @@ public class AIPlayer : Player
 		return true;
 	}
 
-    TreeNode.NodeState ConstructUnit(){
+    // todo: remove leak when a ship has a number of tempPoints and they get canceled, to reproduce add a number of tempTargets and then add a new command
+
+    TreeNode.NodeState CreateFleetRequest(){
+        var targetsObj = blackBoard["ColonyTargets"];
+        var targets = (Dictionary<Planet, int>)targetsObj;
+        if(targets.Count() > 0){
+            var unitsObj = blackBoard["UnitsToRecruit"];
+            var units = (Dictionary<Unit, int>)unitsObj;
+            blackBoard["ColonyTargets"] = targets = targets.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var enemies = targets.Keys.First().Orbit.GetChildren();
+            int count = 0;
+            foreach(Node node in enemies){
+                if(node is Ship ship)
+                    count += ship.Units.GetChildren().Count;
+            }
+            if(!units.ContainsKey(_data.WorldUnits[0]) && count > 0){
+                count = (int)Math.Ceiling((float)count*FleetStrengthMul);
+                units.Add(_data.WorldUnits[0], count);
+            }
+            return TreeNode.NodeState.Succes;
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ConstructFleet(){
         if(blackBoard.ContainsKey("UnitConstructor")){
             var planetObj = blackBoard["UnitConstructor"];
             var planet = (Planet)planetObj;
-            if(_data.WorldUnits.Count >0)
-                if(planet.StartConstruction(_data.WorldUnits[0])){
+            var unitsObj = blackBoard["UnitsToRecruit"];
+            var units = (Dictionary<Unit, int>)unitsObj;
+            var constObj = blackBoard["FleetConstructionPlanet"];
+            var constructor = (Dictionary<string, int>)constObj;
+            if(units.Count >0){
+                var count = planet.StartConstruction(units.Keys.ElementAt(0), units.Values.ElementAt(0));
+                if(!constructor.ContainsKey(planet.Name))
+                    constructor.Add(planet.Name, units.Values.ElementAt(0));
+                if(count == units.Values.ElementAt(0)){
                     return TreeNode.NodeState.Succes;
                 }
+                units[units.Keys.ElementAt(0)] -= count; 
+            }
         }
         return TreeNode.NodeState.Failure;
     }
@@ -215,7 +256,53 @@ public class AIPlayer : Player
             }
         }
         return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState PlanInvasion(){
+        var targetsObj = blackBoard["ColonyTargets"];
+        var targets = (Dictionary<Planet, int>)targetsObj;
+        var fleetsObject = blackBoard["IdleFleets"];
+        var fleets = (Dictionary<Ship, int>)fleetsObject;
+        if(targets.Count() > 0 && fleets.Count > 0){
+            blackBoard["ColonyTargets"] = targets = targets.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var enemies = targets.Keys.First().Orbit.GetChildren();
+            int count = 0;
+            foreach(Node node in enemies){
+                if(node is Ship ship)
+                    count += ship.Units.GetChildren().Count;
+            }
+            for(int i = 0; i < fleets.Count(); i++){
+                var ship = fleets.Keys.ElementAt(i);
+                if(ship.Units.GetChildCount() > targets.ElementAt(0).Key.Orbit.GetChildCount()){
+                    var invasionsObject = blackBoard["InvasionPlans"];
+                    var invasions = (Dictionary<Ship, Planet>)invasionsObject;
+                    invasions.Add(ship, targets.Keys.ElementAt(0));
+                    targets.Remove(targets.Keys.ElementAt(0));
+                    fleets.Remove(ship);
+                    return TreeNode.NodeState.Succes;
+                }
+            }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ExecuteInvasionPlan(){
+        var plansObject = blackBoard["InvasionPlans"];
+        var plans = (Dictionary<Ship, Planet>)plansObject;
+        if(plans.Count > 0){
+            var invasionsObject = blackBoard["InvasionsInProgress"];
+            var invasions = (Dictionary<Ship, Spatial>)invasionsObject;
+            for(int i = 0; i < plans.Count; i++){
+                var plan = plans.ElementAt(i);
+                plan.Key.targetManager.AddTarget(plan.Value);
+                plans.Remove(plan.Key);
+                if(!invasions.ContainsKey(plan.Key))
+                    invasions.Add(plan.Key, plan.Value);
+            }
+            return TreeNode.NodeState.Succes;
+        }
         
+        return TreeNode.NodeState.Failure;
     }
     
 
@@ -228,11 +315,6 @@ public class AIPlayer : Player
             var reqBuildingsObj = GetBlackBoardObj("BuildingRequirements");
             var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
             var targetBuilding = reqBuildings.First().Key;
-            if(ResManager.Resources.ContainsKey("Resource 1")){
-                if(ResManager.Resources["Resource 1"] > 180){
-                    GD.Print();
-                }
-            }
             if(targetBuilding.Products.Count > 0)
                 for(int i = 0; i < reqBuildings.Count(); i ++){ // foreach throws because indexer changes
                     var building = reqBuildings.Keys.ElementAt(i);
@@ -305,7 +387,7 @@ public class AIPlayer : Player
                     if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())
                         && !targets.ContainsKey(planet)
                     ){
-                        targets.Add(planet, 1);
+                        targets.Add(planet, planet.ResourcesManager.Resources.Count());
                         return TreeNode.NodeState.Succes;
                     }
                 }
@@ -322,6 +404,13 @@ public class AIPlayer : Player
         blackBoard.Add("ResourceRequirements", new Dictionary<string, int>());
         blackBoard.Add("BuildingRequirements", new Dictionary<Building, int>(){{(Building)_data.GetData("Buildings")[2], 1}});
         blackBoard.Add("ColonyTargets", new Dictionary<Planet, int>());
+        blackBoard.Add("UnitsToRecruit", new Dictionary<Unit, int>()); // unit and amount to recruit
+        blackBoard.Add("UnitsRecruitPrio", new Dictionary<string, int>()); // prioriutu for unit construction
+        blackBoard.Add("FleetConstructionPlanet", new Dictionary<string, int>()); // planet name and unit quantity
+        blackBoard.Add("IdleFleets", new Dictionary<Ship, int>()); // ship and its unit count
+        blackBoard.Add("InvasionPlans", new Dictionary<Ship, Planet>()); // ship and its target
+        blackBoard.Add("InvasionsInProgress", new Dictionary<Ship, Spatial>()); // ship and its target
+        blackBoard.Add("ScoutMissions", new Dictionary<Ship, string>()); // ship and its target
 
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
@@ -332,7 +421,8 @@ public class AIPlayer : Player
         // todo: Add has resources, add recruitment queue based on target planet Reapeter?? 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
             new ActionTN(HasIdleUnitConstructionPlanet),
-            new ActionTN(ConstructUnit)
+            new ActionTN(CreateFleetRequest),
+            new ActionTN(ConstructFleet)
         });
 
         TreeNode buildBuild = new Sequence(new List<TreeNode> {
@@ -347,8 +437,13 @@ public class AIPlayer : Player
             new ActionTN(GetReqResourcePlanet)
         });
 
+        TreeNode executeInvasion = new Sequence(new List<TreeNode>{
+            new ActionTN(PlanInvasion),
+            new ActionTN(ExecuteInvasionPlan)
+        });
+
         root = new Parallel(new List<TreeNode> {
-            scout, getReq, buildBuild//, buildUnits
+            scout, getReq, buildBuild, buildUnits, executeInvasion
         });
 
         return root;

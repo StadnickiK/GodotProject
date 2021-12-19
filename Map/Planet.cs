@@ -194,13 +194,27 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     }
 
     public bool StartConstruction(Unit unit){
-        if(Controller.ResManager.PayCost(unit.BuildCost)){
-            _constructions.ConstructBuilding(new Unit(unit));
-            return true;
-        }else{
-            EmitSignal(nameof(GameAlert), this);
+            if(Controller.ResManager.PayCost(unit.BuildCost)){
+                _constructions.ConstructBuilding(new Unit(unit));
+                return true;
+            }else{
+                EmitSignal(nameof(GameAlert), this);
+                return false;
+            }
+    }
+
+    public int StartConstruction(Unit unit, int count = 1){
+        int build = 0;
+        for(int i = 0; i < count; i++){
+            if(Controller.ResManager.PayCost(unit.BuildCost)){
+                _constructions.ConstructBuilding(new Unit(unit), count);
+                build++;
+            }else{
+                EmitSignal(nameof(GameAlert), this);
+                return build;
+            }
         }
-        return false;
+        return build;
     }
 
     /// <summary>
@@ -363,6 +377,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             foreach(IBuilding ib in list){
                 if(ib is Unit unit){
                     if(ship != null){
+                        if(unit.GetParent() != null){
+                            unit.GetParent().RemoveChild(unit);
+                        }
                         ship.Units.AddChild(unit);
                     }else{
                         EmitSignal(nameof(CreateShip), this, unit);
