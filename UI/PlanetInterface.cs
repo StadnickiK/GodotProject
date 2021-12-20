@@ -258,9 +258,9 @@ public class PlanetInterface : Panel
 				label.BButton.Text = building.Name;
 			}
 			_overviewPanel.AddNodeToPanel("Buildings", label);
-			label.Progress.PercentVisible = false;
+			label.Progress.Visible = false;
 			if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-				label.Progress.Value = building.CurrentTime;
+				label.Progress.Value = 0;							// has to be 0 otherwise progress is visible
 				label.Progress.MaxValue = building.BuildTime;
 			}
 		}
