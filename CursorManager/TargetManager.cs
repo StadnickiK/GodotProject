@@ -14,6 +14,7 @@ using System.Collections.Generic;
 
         public override void _Ready()
         {    
+            Name = "TargetManager";
             SetProcess(false);
         }
 

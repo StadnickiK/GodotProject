@@ -382,14 +382,15 @@ public class AIPlayer : Player
         var reqRes = (Dictionary<string, int>)resReqObj;
         if(reqRes.Count > 0){ 
             blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-            foreach(string s in map.Keys){
-                foreach(Planet planet in map[s]){
-                    if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())
-                        && !targets.ContainsKey(planet)
-                    ){
-                        targets.Add(planet, planet.ResourcesManager.Resources.Count());
-                        return TreeNode.NodeState.Succes;
-                    }
+            foreach(string systemName in map.Keys){
+                foreach(Planet planet in map[systemName]){
+                    if(!MapObjects.Contains(planet))
+                        if(planet.ResourcesManager.Resources.ContainsKey(reqRes.Keys.Last())
+                            && !targets.ContainsKey(planet)
+                        ){
+                            targets.Add(planet, planet.ResourcesManager.Resources.Count());
+                            return TreeNode.NodeState.Succes;
+                        }
                 }
             }
         }
@@ -414,7 +415,7 @@ public class AIPlayer : Player
 
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
-            new ScoutSystem(blackBoard)
+            //new ScoutSystem(blackBoard)
         });
 
 

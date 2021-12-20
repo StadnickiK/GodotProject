@@ -94,6 +94,9 @@ private Data _data = null;
 		if(obj.GetParent().GetParent() is StarSystem system){
 			system.OpenStarSystem();
 		}
+		if(obj.GetParent().GetParent() is Planet planet){
+			planet.System.OpenStarSystem();
+		}
 		if(obj is Spatial spatial){
 			Camera.LookAt(spatial.GlobalTransform.origin);
 		}
@@ -282,8 +285,10 @@ private Data _data = null;
 		ship.IsLocal = planet.Vision;
 		ship.ID_Owner = ship.Controller.PlayerID;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
+		var parent = unit.GetParent();
+		if(parent != null)
+			parent.RemoveChild(unit);
 		ship.Units.AddChild(unit);
-		//planet.System.AddMapObject(ship);
 		ConnectShip(ship);
 		planet.Controller.AddMapObject(ship);
 		planet.AddToOrbit(ship);

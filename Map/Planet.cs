@@ -294,26 +294,27 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Orbit.OrbitChanged = true;
         if(ship is IMapObject mapObject)
             mapObject.MapObject = this;
-        if(IsVisible())
+        if(IsVisible()){
             IcoOrbit.Visible =  true;
             if(Orbit.GetChildren().Count == 1)
                 IcoOrbit.SetGreen();
+        }
     }
 
     public void RemoveFromOrbit(Ship ship){
         if(ship != null){
-            if(Orbit.GetChildren().Contains(ship)){
-                Orbit.RemoveChild(ship);
-                if(GetParent().GetParent() is StarSystem system){
-                    system.AddMapObject(ship);
-                    ship.MapObject = system;
-                }else{
-                    GetParent().AddChild(ship);
+                if(Orbit.GetChildren().Contains(ship)){
+                    Orbit.RemoveChild(ship);
+                    if(GetParent().GetParent() is StarSystem system){
+                        system.AddMapObject(ship);
+                        ship.MapObject = system;
+                    }else{
+                        GetParent().AddChild(ship);
+                    }
+                    Orbit.OrbitChanged = true;
                 }
-                Orbit.OrbitChanged = true;
-            }
-            if(Orbit.GetChildren().Count <= 0)
-                IcoOrbit.Visible = false;
+                if(Orbit.GetChildren().Count <= 0)
+                    IcoOrbit.Visible = false;
         }
     }
 

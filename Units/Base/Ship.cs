@@ -183,7 +183,12 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 NextTarget();
             }
             if(MapObject != null){
+                if(MapObject != targetManager.currentTarget){
                     EmitSignal(nameof(SignalExitMapObject), this, MapObject, DirToCurrentTarget(), state);
+                }else
+                {
+                    targetManager.NextTarget();
+                }
             }
             if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){
                 EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
@@ -247,15 +252,16 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     void _on_Area_body_exited(Node body){
         if(body is IVisible visionObject){
-            if(visionObject.Controller != Controller && visionObject.IsVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
-                visionObject.ChangeVision();
-            }
-            if(Controller != null)
+            if(Controller != null){
+                if(visionObject.Controller != Controller && visionObject.IsVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
+                    visionObject.ChangeVision();
+                }
                 if(body is Planet planet){
                     if(Controller.IsLocal && visionObject.Controller != Controller){
                         planet.IcoOrbit.Visible = false;
                     }
                 }
+            }
         }
     }
 
