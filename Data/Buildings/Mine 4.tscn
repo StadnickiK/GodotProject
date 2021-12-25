@@ -2,15 +2,18 @@
 
 [ext_resource path="res://Map/Building.cs" type="Script" id=1]
 
-[node name="Building 1" type="Node"]
+[node name="Mine 4" type="Node"]
 script = ExtResource( 1 )
 BuildTime = 10
 Products = {
-"Resource 1": 20
+"Resource 4": 20
 }
 BuildCost = {
-"Resource 0": 200
+"Resource 0": 200,
+"Resource 1": 200,
+"Resource 2": 200,
+"Resource 3": 200
 }
 ResourceLimits = {
-"Resource 1": 300
+"Resource 4": 300
 }

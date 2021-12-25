@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Map/Building.cs" type="Script" id=1]
 
-[node name="Building 3" type="Node"]
+[node name="Mine 3" type="Node"]
 script = ExtResource( 1 )
 BuildTime = 10
 Products = {

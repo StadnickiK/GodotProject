@@ -2,16 +2,13 @@
 
 [ext_resource path="res://Map/Building.cs" type="Script" id=1]
 
-[node name="Building 0" type="Node"]
+[node name="Stockpile 0" type="Node"]
 script = ExtResource( 1 )
-IsStarter = true
 BuildTime = 10
-Products = {
-"Resource 0": 20
-}
 BuildCost = {
 "Resource 0": 200
 }
 ResourceLimits = {
-"Resource 0": 300
+"Resource 0": 1000
 }
+Type = 1

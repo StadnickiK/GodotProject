@@ -36,6 +36,20 @@ public class Building : Node, IBuilding
     [Export]
     public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
 
+    [Export]
+    public BType Type { get; set; }
+
+    public enum BType
+    {
+        Mine,
+        Storage,
+        Production,
+        Construction,
+        Recruitment,
+        Research,
+        Growth
+    }
+
     public override void _Ready()
     {
         
