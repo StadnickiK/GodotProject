@@ -2,6 +2,6 @@
 
 [ext_resource path="res://Map/Resource.tscn" type="PackedScene" id=1]
 
-[node name="Resource 1" instance=ExtResource( 1 )]
-Rarity = 80
-IsStarter = true
+[node name="Energy" instance=ExtResource( 1 )]
+ResourceType = 3
+Location = 1
