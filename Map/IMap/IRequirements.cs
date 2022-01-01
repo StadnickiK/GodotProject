@@ -3,6 +3,6 @@ using System;
 
 public interface IRequirements
 {
-    Godot.Collections.Array<string[]> Requirements { get; set; }
+    Godot.Collections.Dictionary<string, string[]> Requirements { get; set; }
 
 }
