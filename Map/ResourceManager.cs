@@ -17,6 +17,14 @@ public class ResourceManager : Node
         get { return _resourceLimits; }
     }
 
+    public Dictionary<string, int> Upkeep { get; set; } = new Dictionary<string, int>();
+
+    public bool UpkeepChanged { get; set; } = false;
+
+    public Dictionary<string, int> Production { get; set; } = new Dictionary<string, int>();
+
+    public bool ProductionChanged { get; set; } = false;
+
     public int TotalResourceLimit { get; set; } = -1; // used for dynamaic resource limit allocation, -1 if not used
 
     public bool ResourceLimitChanged { get; set; } = false;
@@ -44,6 +52,46 @@ public class ResourceManager : Node
                 return true;
             }
         return false;
+    }
+
+    public void UpdateUpkeep(List<Building> buildings){
+        foreach(var building in buildings)
+            UpdateUpkeep(building);
+    }
+
+    public void UpdateUpkeep(string resName , int quantity){
+        if(Upkeep.ContainsKey(resName)){
+            Upkeep[resName] += quantity;
+        }else
+        {
+            Upkeep.Add(resName, quantity);
+        }
+    }
+
+    public void UpdateUpkeep(IUpkeep upkeep){
+        foreach(var pair in upkeep.Upkeep){
+            UpdateUpkeep(pair.Key, pair.Value);
+        }
+    }
+
+    public void RemoveUpkeep(IUpkeep upkeep){
+        foreach(var pair in upkeep.Upkeep){
+            RemoveUpkeep(pair.Key, pair.Value);
+        }
+    }
+
+    public void RemoveUpkeep(string resName , int quantity){
+        if(Upkeep.ContainsKey(resName)){
+            if(Upkeep[resName] - quantity > 0){
+                Upkeep[resName] -= quantity;
+            }else
+            {
+                Upkeep[resName] = 0;
+            }
+        }else
+        {
+            Upkeep.Add(resName, 0);
+        }
     }
 
     public void UpdateResourceLimit(List<Building> buildings){  
@@ -206,17 +254,9 @@ public class ResourceManager : Node
 
     public void UpdateResources(List<Building> buildings){
             foreach(Building building in buildings){
-                // foreach(Resource resource in building.ProductCost){  TO DO: product cost, linq?
-                //     var Quantity = Resources[resource.Name].Quantity; 
-                //     if(0 >=(Quantity-resource.Quantity)){
-                        
-                //     }
-                // }
                 foreach(string productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
-                        if(productName == "Resource 1")
-                            GD.Print();
                         if(ResourceLimits.ContainsKey(productName))
                             if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
                                 if(PayCost(building.ProductCost)){
@@ -239,29 +279,38 @@ public class ResourceManager : Node
                             }
                         }
                     }
-                    // if(Resources[product.Name].Value + product.Quantity<ResourceLimits[product.Name]){
-                    //     if(PayCost(building.ProductCost)){
-                    //         if(Resources.ContainsKey(product.Name)){
-                    //             //int temp = product.Quantity;
-                    //             //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                    //             Resources[product.Name].Value += product.Quantity;
-                    //         }else{
-                    //             Resources.Add(product.Name, product);
-                    //         }
-                    //         ResourcesChanged = true;
-                    //     }
-                    // }else{
-                    //     if(PayCost(building.ProductCost)){
-                    //         if(Resources.ContainsKey(product.Name)){
-                    //             //int temp = product.Quantity;
-                    //             //Resources[product.Name].Quantity = Resources[product.Name].Quantity + product.Quantity;
-                    //             Resources[product.Name].Value = ResourceLimits[product.Name];
-                    //         }else{
-                    //             Resources.Add(product.Name, product);
-                    //         }
-                    //         ResourcesChanged = true;
-                    //     }
-                    // }
+                }
+            }
+    }
+
+    public void UpdateResources(Planet planet ){
+            foreach(Building building in planet.BuildingsManager.Buildings){
+                
+                foreach(string productName in building.Products.Keys){
+                    if(!Resources.ContainsKey(productName)){
+                        var quantity = building.Products[productName];
+                        if(ResourceLimits.ContainsKey(productName))
+                            if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
+                                if(PayCost(building.ProductCost)){
+                                    Resources.Add(productName, quantity);
+                                    ResourcesChanged = true;
+                                }
+                            }
+                    }else{
+                        var quantity = building.Products[productName];
+                        if(ResourceLimits.ContainsKey(productName))
+                            if(Resources[productName] + quantity<ResourceLimits[productName]){
+                                if(PayCost(building.ProductCost)){
+                                    Resources[productName] += quantity;
+                                    ResourcesChanged = true;
+                                }
+                        }else{
+                            if(PayCost(building.ProductCost)){
+                                Resources[productName] = ResourceLimits[productName];
+                                ResourcesChanged = true;
+                            }
+                        }
+                    }
                 }
             }
     }

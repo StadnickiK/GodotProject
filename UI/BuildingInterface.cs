@@ -9,6 +9,8 @@ public class BuildingInterface : Panel
 
     Building _building = null;
 
+    Technology _technology = null;
+
     Unit _unit = null;
 
     Ship _ship = null; 
@@ -30,6 +32,28 @@ public class BuildingInterface : Panel
         _header.ConnectToButtonUp(this, nameof(_on_ButtonUp));
     }
 
+    public void UpdateInterface(Technology technology){
+        _building = null;
+        _unit = null;
+        _technology = null;
+        _listPanel.ClearItems();
+        if(technology != null){
+            _technology = technology;
+            _header.SetTitle(technology.Name);
+            var label = new Label();
+            label.Text = "\nBuild Cost\n";
+            _listPanel.AddListItem(label);
+            foreach(var resName in technology.BuildCost.Keys){
+                label = new Label();
+                label.Text = resName + " " + technology.BuildCost[resName];
+                _listPanel.AddListItem(label);
+            }
+            label = new Label();
+            label.Text = "\nConstruction time: " + technology.BuildTime;
+            _listPanel.AddListItem(label);
+        }
+    }
+
     public void UpdateInterface(Building building, Planet planet){
         _building = null;
         _unit = null;
@@ -46,7 +70,7 @@ public class BuildingInterface : Panel
                 _listPanel.AddListItem(label);
             }
             label = new Label();
-            label.Text = "\nConstruction time: "+building.BuildTime;
+            label.Text = "\nConstruction time: " + building.BuildTime;
             _listPanel.AddListItem(label);
             label = new Label();
             label.Text = "\nProduction\n";
@@ -66,7 +90,7 @@ public class BuildingInterface : Panel
             }
             foreach(var resName in building.ResourceLimits.Keys){
                 label = new Label();
-                label.Text = "\nStorage capacity: "+building.ResourceLimits[resName]+"\n";
+                label.Text = "\nStorage capacity: " + building.ResourceLimits[resName]+"\n";
                 _listPanel.AddListItem(label);
             }
         }

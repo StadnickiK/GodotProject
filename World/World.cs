@@ -428,8 +428,11 @@ private Data _data = null;
 		_wcc.Connect("Deselect", this, nameof(_on_Deselect));
 		ConnectSignals();
 		InitWorld();
-		if(_Player != null)
+		if(_Player != null){
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
+			_UI.TopLeft._Player = _Player;
+			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
+		}
 
 	}
 	public override void _Process(float delta)

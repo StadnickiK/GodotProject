@@ -71,8 +71,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
-    public bool BuildingsChanged { get; set; } = false;
-
     private MeshInstance _mesh = null;
     public MeshInstance Mesh
     {
@@ -177,8 +175,9 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                     if(((Transform.origin - ship.GlobalTransform.origin) - ship.PlanetPos).Length()>2){
                         ship.MapObject = null; 
                         RemoveFromOrbit(ship);
-                        ship.Visible = true; 
-                        ship.targetManager.ClearTargets();
+                        ship.Visible = ship.IsLocal; 
+                        //ship.targetManager.NextTarget();
+                        //ship.targetManager.ClearTargets();
                     }
                 }
 
@@ -203,6 +202,38 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             }
     }
 
+    public void ProduceResources(ResourceManager playerResManager){
+            foreach(Building building in BuildingsManager.Buildings){
+                foreach(string productName in building.Products.Keys){
+                    if(!playerResManager.Resources.ContainsKey(productName)){
+                        var quantity = building.Products[productName];
+                        if(playerResManager.ResourceLimits.ContainsKey(productName))
+                            if(quantity < playerResManager.ResourceLimits[productName]){  // case for no resource limit may be required
+                                if(playerResManager.PayCost(building.ProductCost)){
+                                    playerResManager.Resources.Add(productName, quantity);
+                                    playerResManager.ResourcesChanged = true;
+                                }
+                            }
+                    }else{
+                        var quantity = building.Products[productName];
+                        if(playerResManager.ResourceLimits.ContainsKey(productName))
+                            if(playerResManager.Resources[productName] + quantity<playerResManager.ResourceLimits[productName]){
+                                if(playerResManager.PayCost(building.ProductCost)){
+                                    playerResManager.Resources[productName] += quantity;
+                                    playerResManager.ResourcesChanged = true;
+                                }
+                        }else{
+                            if(playerResManager.PayCost(building.ProductCost)){
+                                playerResManager.Resources[productName] = playerResManager.ResourceLimits[productName];
+                                playerResManager.ResourcesChanged = true;
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    
     public int StartConstruction(Unit unit, int count = 1){
         int build = 0;
         for(int i = 0; i < count; i++){
@@ -247,7 +278,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 ship.Units.AddChild(unit);
             }else{
                 EmitSignal(nameof(CreateShip), this, unit);
-                // unit.CurrentTime = 0;
             }
         }else{
             return;

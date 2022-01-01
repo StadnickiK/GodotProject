@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-public class Technology : Node, IRequirements, IBuilding
+public class Technology : Node, IBuilding
 {
 
     public override void _Ready()
@@ -23,6 +23,6 @@ public class Technology : Node, IRequirements, IBuilding
     /// <typeparam name="string[]"></typeparam>
     /// <returns>Array<string[]></returns>
     [Export]
-    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
+    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
 
 }

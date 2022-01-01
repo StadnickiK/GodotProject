@@ -20,6 +20,9 @@ public class Resource : Node
     [Export]
     public bool IsStarter { get; set; } = false;
 
+    [Export]
+    public Localisation Location { get; set; } = Localisation.Global;
+
     public Resource(){}
 
     public Resource(string name){
@@ -42,7 +45,14 @@ public class Resource : Node
         Ore,
         Gas,
         Liquid,
+        Product,
         Other
+    }
+
+    public enum Localisation
+    {
+        Global,
+        Local
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

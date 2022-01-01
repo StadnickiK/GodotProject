@@ -27,6 +27,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
+    <Compile Include="Map\IMap\IUpkeep.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
     <Compile Include="UI\CmdPanel.cs" />
@@ -64,7 +65,9 @@
     <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
+    <Compile Include="UI\TechnologyInterface.cs" />
     <Compile Include="UI\Text3.cs" />
+    <Compile Include="UI\TopLeftPanel.cs" />
     <Compile Include="UI\TransferLabel.cs" />
     <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
@@ -115,7 +118,7 @@
     <Compile Include="Behaviour Tree\Timer.cs" />
     <Compile Include="Behaviour Tree\Parallel.cs" />
     <Compile Include="Behaviour Tree\Inverter.cs" />
-    <Compile Include="World\UI.cs" />
+    <Compile Include="UI\UI.cs" />
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
     <Compile Include="World\World.cs" />

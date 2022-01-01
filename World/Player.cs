@@ -16,6 +16,11 @@ public class Player : Node
     [Export]
     public int TimeStep { get; set; } = 1;
 
+    [Export]
+    public List<Technology> Technologies { get; set; } = new List<Technology>();
+
+    public ConstructionManager Research { get; set; } = new ConstructionManager();
+
     float _time = 0;
 
     private List<PhysicsBody> _MapObejcts = new List<PhysicsBody>();
@@ -86,7 +91,8 @@ public class Player : Node
         PlayerID = GetIndex();
         PlayerName = "Player "+ PlayerID;
         Name = PlayerName;
-
+        AddChild(ResManager);
+        AddChild(Research);
         // for(int i = 0; i<5; i++){
         //     var resource = new Resource();
         //     resource.Name = "resource "+i;
@@ -115,15 +121,15 @@ public class Player : Node
 
     protected void UpdatePlayerResources(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-                UpdateResourceLimit(planet);
-                _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
-                ResourcesChanged = true;
+            UpdateResourceLimit(planet);
+            _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
+            ResourcesChanged = true;
         }
     }
 
     public void InitResourceLimit(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-                _resourceManager.UpdateResourceLimit(planet.BuildingsManager.Buildings);
+            _resourceManager.UpdateResourceLimit(planet.BuildingsManager.Buildings);
         }
     }
 
@@ -134,17 +140,28 @@ public class Player : Node
     }
 
     public void UpdateResourceLimit(Planet planet){
-            if(planet.BuildingsManager.BuildingsChanged){
-                _resourceManager.UpdateResourceLimit(planet.BuildingsManager.GetLastBuilding());
-                planet.BuildingsManager.BuildingsChanged = false;
-            }
+        if(planet.BuildingsManager.BuildingsChanged){
+            var buildings = planet.BuildingsManager.LastBuilding;
+            _resourceManager.UpdateResourceLimit(buildings);
+            _resourceManager.UpdateUpkeep(buildings);
+            planet.BuildingsManager.BuildingsChanged = false;
+        }
+    }
+
+    List<Technology> IBuildingToTechnology(List<IBuilding> ibuildings){
+        var list = new List<Technology>();
+        foreach(var ibuilding in ibuildings){
+            if(ibuilding is Technology technology)
+                list.Add(technology);
+        }
+        return list;
     }
 
     public override void _Process(float delta){
         _time += delta;
         if(_time >= TimeStep){
             UpdatePlayerResources();
-            // UpdateTempResources();
+            Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
             _time = 0;
         }
     }

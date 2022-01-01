@@ -8,23 +8,17 @@ public class BuildingManager : Node
 
     float _time = 0;
 
-    public bool BuildingsChanged { get; set; } = false;
+    public bool BuildingsChanged { get; set; } = false; // changed when build is finished
 
-    public bool ConstructionListChanged { get; set; } = false;
-
-    // TargetManager<Building> ConstructionList = new TargetManager<Building>();
+    public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
 
     ConstructionManager _constructions = new ConstructionManager();
     public ConstructionManager Constructions
     {
         get { return _constructions; }
     }
-    
 
-    // public Building CurrentConstruction
-    // {
-    //     get { return _constructions.CurrentConstruction(); }
-    // }
+    public List<Building> LastBuilding { get; set; } = new List<Building>();
 
     public List<Building> CurrentConstruction(){
         var currentConstruction = _constructions.CurrentConstruction();
@@ -67,10 +61,10 @@ public class BuildingManager : Node
 
     void UpdateConstruction(){
         if(_constructions.ConstructionList.Count > 0){
-            var list = _constructions.UpdateConstruction();
+            LastBuilding = IbuildingToBuilding(_constructions.UpdateConstruction());
             ConstructionListChanged = true;
-            if(list.Count>0){
-                Buildings.AddRange(IbuildingToBuilding(list));
+            if(LastBuilding.Count>0){
+                Buildings.AddRange(LastBuilding);
                 BuildingsChanged = true;
             }
         }

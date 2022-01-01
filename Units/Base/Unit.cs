@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Unit : Node, IBuilding
+public class Unit : Node, IBuilding, IUpkeep
 {
 
     [Export]
@@ -16,10 +16,13 @@ public class Unit : Node, IBuilding
     public int CurrentTime { get; set; } = 0;
 
     [Export]
-    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
+    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
 
     [Export]
     public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
+
+    [Export]
+    public Dictionary<string, int> Upkeep { get; set; } = new Dictionary<string, int>();
 
     //public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 

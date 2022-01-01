@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Building : Node, IBuilding
+public class Building : Node, IBuilding, IUpkeep
 {
 
     // public List<Resource> Resources { get; set; } = new List<Resource>();
@@ -31,15 +31,22 @@ public class Building : Node, IBuilding
     [Export]
     public Godot.Collections.Dictionary<string, int> ResourceLimits { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    // public int ResourceLimit { get; set; }
+    [Export]
+    public Dictionary<string, int> Upkeep { get; set; } = new Dictionary<string, int>();
 
     [Export]
-    public Godot.Collections.Array<string[]> Requirements { get; set; } = new Godot.Collections.Array<string[]>();
+    public Dictionary<string, int> OperationCost { get; set; } = new Dictionary<string, int>();
 
     [Export]
-    public BType Type { get; set; }
+    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
 
-    public enum BType
+    [Export]
+    public bool Enabled { get; set; } = true;
+
+    [Export]
+    public Category Type { get; set; }
+
+    public enum Category
     {
         Mine,
         Storage,

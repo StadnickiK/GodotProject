@@ -178,16 +178,15 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
 
             if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
-                EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
-                MapObject = targetObject;
+                if(MapObject != targetObject){
+                    EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
+                    MapObject = targetObject;
+                }
                 NextTarget();
             }
             if(MapObject != null){
                 if(MapObject != targetManager.currentTarget){
                     EmitSignal(nameof(SignalExitMapObject), this, MapObject, DirToCurrentTarget(), state);
-                }else
-                {
-                    targetManager.NextTarget();
                 }
             }
             if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){

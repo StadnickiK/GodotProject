@@ -32,9 +32,7 @@ public class DataLoader : Node
             var fileName = Dir.GetNext();
             while(fileName != "" && fileName != null){
                 if(!Dir.CurrentIsDir()){
-                    AddChild(
-                        ResourceLoader.Load<PackedScene>(dirPath+fileName).Instance()
-                    );
+                    AddChild(ResourceLoader.Load<PackedScene>(dirPath+fileName).Instance());
                 }
                 fileName = Dir.GetNext();
             }
