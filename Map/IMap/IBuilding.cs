@@ -3,5 +3,5 @@ using System;
 
 public interface IBuilding : IBuildTime, IBuildCost, IRequirements
 {
-    // string Name { get; set; }
+    string Name { get; set; }
 }

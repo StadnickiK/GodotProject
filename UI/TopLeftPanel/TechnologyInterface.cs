@@ -3,16 +3,24 @@ using System;
 
 public class TechnologyInterface : Panel
 {
+
+    [Signal]
+    public delegate void StartResearch();
+
+    private Button _acceptButton;
+    public Button AcceptButton
+    {
+        get { return _acceptButton; }
+    }
     
-    Button _acceptButton = null;
     Header _header = null;
 
     Technology _technology = null;
 
     ListPanel _listPanel = null;
 
-    [Signal]
-    public delegate void StartResearch(Technology technology);
+    public Player _Player { get; set; }
+
 
     void GetNodes(){
         _header = GetNode<Header>("Header");
@@ -57,14 +65,11 @@ public class TechnologyInterface : Panel
     }
 
     void _on_Build_button_up(){
-        if(_technology != null){
-            EmitSignal(nameof(StartResearch), _technology);
-        }
+        EmitSignal(nameof(StartResearch), _technology);
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {
-//      
+
 //  }
 }

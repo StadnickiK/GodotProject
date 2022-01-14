@@ -87,4 +87,6 @@ transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 1.96895, 0 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.967, 0 )
 visible = false
 
+[node name="Populations" type="Node" parent="."]
+
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]

@@ -28,6 +28,7 @@
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Map\IMap\IUpkeep.cs" />
+    <Compile Include="Map\Population.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
     <Compile Include="UI\CmdPanel.cs" />
@@ -65,9 +66,10 @@
     <Compile Include="UI\ResourceLabel.cs" />
     <Compile Include="UI\ResourcePanel.cs" />
     <Compile Include="UI\RightPanel.cs" />
-    <Compile Include="UI\TechnologyInterface.cs" />
+    <Compile Include="UI\TopLeftPanel\TechnologyInterface.cs" />
     <Compile Include="UI\Text3.cs" />
-    <Compile Include="UI\TopLeftPanel.cs" />
+    <Compile Include="UI\TopLeftPanel\TechnologyPanel.cs" />
+    <Compile Include="UI\TopLeftPanel\TopLeftPanel.cs" />
     <Compile Include="UI\TransferLabel.cs" />
     <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />

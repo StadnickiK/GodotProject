@@ -162,6 +162,9 @@ public class Player : Node
         if(_time >= TimeStep){
             UpdatePlayerResources();
             Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
+            if(Research != null)
+                if(Research.HasConstruct())
+                    Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
             _time = 0;
         }
     }
