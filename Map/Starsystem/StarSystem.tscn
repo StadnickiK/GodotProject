@@ -1,8 +1,9 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Map/StarSystem.cs" type="Script" id=1]
+[ext_resource path="res://Map/Starsystem/StarSystem.cs" type="Script" id=1]
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Text3.tscn" type="PackedScene" id=4]
+
 
 [sub_resource type="BoxShape" id=1]
 

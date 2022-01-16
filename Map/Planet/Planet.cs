@@ -47,6 +47,8 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public StarSystem System { get; set; } = null;
 
+    public Populations Pops { get; set; } = null;
+
     private Orbit _orbit = null;
     public Orbit Orbit
     {
@@ -190,6 +192,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         _orbit = GetNode<Orbit>("Orbit");
         MapObjectName3 = GetNode<Text3>("Text3");
         IcoOrbit = GetNode<Icon3D>("IcoOrbit");
+        Pops = GetNode<Populations>("Populations");
     }
 
     public bool StartConstruction(Unit unit){

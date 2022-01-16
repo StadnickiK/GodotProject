@@ -337,17 +337,19 @@ public class ResourceManager : Node
 
     public void AddResource(string resourceName, int quantity){
         if(Resources.ContainsKey(resourceName)){
-            if(Resources[resourceName] + quantity < ResourceLimits[resourceName]){
-                Resources[resourceName] += quantity;
-            }else{
-                Resources[resourceName] = quantity;
-            }
+            if(ResourceLimits.ContainsKey(resourceName))
+                if(Resources[resourceName] + quantity <= ResourceLimits[resourceName]){
+                    Resources[resourceName] += quantity;
+                }else{
+                    Resources[resourceName] = ResourceLimits[resourceName];
+                }
         }else{
-            if(quantity <= ResourceLimits[resourceName]){
-                // var resource = new Resource();
-                // resource.Value = quantity;
-                // resource.Name =resourceName;
-                Resources.Add(resourceName, quantity);
+            if(ResourceLimits.ContainsKey(resourceName)){
+                if(quantity <= ResourceLimits[resourceName]){
+                    Resources.Add(resourceName, quantity);
+                }
+            }else{
+                Resources.Add(resourceName, 0);
             }
         }
         ResourcesChanged = true;  

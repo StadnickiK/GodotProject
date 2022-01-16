@@ -15,11 +15,11 @@ public class Generator : Node
 
     PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
 
-    PackedScene StarSystemScene = (PackedScene)GD.Load("res://Map/StarSystem.tscn");
+    PackedScene StarSystemScene = (PackedScene)GD.Load("res://Map/Starsystem/StarSystem.tscn");
 
-    PackedScene SunScene = (PackedScene)GD.Load("res://Map/Star.tscn");
+    PackedScene SunScene = (PackedScene)GD.Load("res://Map/StarSystem/Star.tscn");
 
-    PackedScene PlanetScene = (PackedScene)GD.Load("res://Map/Planet.tscn");
+    PackedScene PlanetScene = (PackedScene)GD.Load("res://Map/Planet/Planet.tscn");
 
     public void InitGenerator(World world, Random random, Dictionary<string, int> Parameters){
         Rand = random;

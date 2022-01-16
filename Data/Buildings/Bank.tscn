@@ -2,14 +2,13 @@
 
 [ext_resource path="res://Map/Planet/Building.cs" type="Script" id=1]
 
-[node name="Stockpile 2" type="Node"]
+[node name="Bank" type="Node"]
 script = ExtResource( 1 )
-BuildTime = 10
+IsStarter = true
 BuildCost = {
-"Resource 0": 200,
-"Resource 1": 200
+"Resource 0": 500
 }
 ResourceLimits = {
-"Resource 2": 1000
+"Credits": 40000
 }
 Type = 1

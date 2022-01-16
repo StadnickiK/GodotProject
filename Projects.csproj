@@ -28,7 +28,8 @@
     <Compile Include="Map\IMap\IRequirements.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Map\IMap\IUpkeep.cs" />
-    <Compile Include="Map\Population.cs" />
+    <Compile Include="Map\Planet\Population.cs" />
+    <Compile Include="Map\Planet\Populations.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
     <Compile Include="UI\CmdPanel.cs" />
@@ -46,7 +47,7 @@
     <Compile Include="Map\IMap\IMapObjectControllerChanger.cs" />
     <Compile Include="Map\IMap\IResourceManager.cs" />
     <Compile Include="Map\IMap\ISelectMapObject.cs" />
-    <Compile Include="Map\Orbit.cs" />
+    <Compile Include="Map\Planet\Orbit.cs" />
     <Compile Include="Map\ResourceManager.cs" />
     <Compile Include="Map\SpaceBattle.cs" />
     <Compile Include="Map\IMap\IMapObjectController.cs" />
@@ -85,13 +86,13 @@
     <Compile Include="InnerGimbal.cs" />
     <Compile Include="KinematicBody.cs" />
     <Compile Include="KinematicCube.cs" />
-    <Compile Include="Map\Building.cs" />
+    <Compile Include="Map\Planet\Building.cs" />
     <Compile Include="Map\Galaxy.cs" />
-    <Compile Include="Map\Planet.cs" />
+    <Compile Include="Map\Planet\Planet.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\Generator.cs" />
-    <Compile Include="Map\StarSystem.cs" />
-    <Compile Include="Map\Star.cs" />
+    <Compile Include="Map\Starsystem\StarSystem.cs" />
+    <Compile Include="Map\Starsystem\Star.cs" />
     <Compile Include="Menu\ExitButton.cs" />
     <Compile Include="Menu\PlayButton.cs" />
     <Compile Include="Units\Base\IVisible.cs" />

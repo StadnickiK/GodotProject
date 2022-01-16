@@ -1,6 +1,7 @@
 [gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://Map/Star.cs" type="Script" id=1]
+[ext_resource path="res://Map/Starsystem/Star.cs" type="Script" id=1]
+
 
 [sub_resource type="OpenSimplexNoise" id=1]
 period = 31.0

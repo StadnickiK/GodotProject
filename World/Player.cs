@@ -122,7 +122,9 @@ public class Player : Node
     protected void UpdatePlayerResources(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
             UpdateResourceLimit(planet);
+            _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
             _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
+            
             ResourcesChanged = true;
         }
     }
