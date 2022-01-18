@@ -62,7 +62,7 @@ void GetNodes(){
             foreach(Node node in ship.Units.GetChildren()){
                 if(node is Unit unit){
                     label = new Label(); 
-                    label.Text = unit.Name +" " + unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue +" "+ unit.Stats.GetNode<BaseStat>("Attack").CurrentValue + " " + unit.Stats.GetNode<BaseStat>("Defence").CurrentValue;
+                    label.Text = unit.Name +" " + unit.GetStat("HitPoints").CurrentValue +" "+ unit.GetStat("Attack").CurrentValue + " " + unit.GetStat("Defence").CurrentValue;
                     _overviewPanel.AddNodeToPanel("Details", label);
                 }
             }

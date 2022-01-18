@@ -250,9 +250,9 @@ private Data _data = null;
 						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);
+						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").Filename;
 						for(int i = 0;i<5;i++){
-							var unit = new Unit();
-							ship.Units.AddChild(unit);
+							ship.Units.AddChild(((PackedScene)GD.Load(unitFileName)).Instance());
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
@@ -340,10 +340,12 @@ private Data _data = null;
 				if(node is Planet planet){
 					if(planet.Controller == null){
 						int amount = 2;//Rand.Next(10, 20);
-						var unit = new Unit();
-						var ship = CreateShip(unit);
-						for(int i = 0; i < amount; i++){
-							ship.Units.AddChild(new Unit());
+						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").Filename;
+						var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instance());
+						for(int i = 0;i<amount;i++){
+							var unit = ((PackedScene)GD.Load(unitFileName)).Instance();
+							var stat = unit.GetNode<BaseStat>("Stats/Attack");
+							ship.Units.AddChild(unit);
 						}
 						planet.AddToOrbit(ship);
 						//var transform = ship.Transform;

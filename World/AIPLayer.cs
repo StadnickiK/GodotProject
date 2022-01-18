@@ -209,7 +209,7 @@ public class AIPlayer : Player
             }
             if(!units.ContainsKey(_data.WorldUnits[0]) && count > 0){
                 count = (int)Math.Ceiling((float)count*FleetStrengthMul);
-                units.Add(_data.WorldUnits[0], count);
+                units.Add((Unit)((PackedScene)GD.Load(((Unit)_data.GetData("Units")[0]).Filename)).Instance(), count);
             }
             return TreeNode.NodeState.Succes;
         }

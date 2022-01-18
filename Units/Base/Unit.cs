@@ -30,25 +30,6 @@ public class Unit : Node, IBuilding, IUpkeep
 
     // World - initStartFleets, InitResistance
     public Unit(){  
-        Random rand = new Random();
-        BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
-        BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
-        BaseStat hp = new BaseStat("HitPoints", 200);
-        Name = "Unit ";
-        Stats.AddChild(attack);
-        Stats.AddChild(defence);
-        Stats.AddChild(hp);
-    }
-
-    public Unit(int hitPoints){
-        Random rand = new Random();
-        BaseStat attack = new BaseStat("Attack", rand.Next(10,15));
-        BaseStat defence = new BaseStat("Defence", rand.Next(0,5));
-        BaseStat hp = new BaseStat("HitPoints", hitPoints);
-        Name = "Unit ";
-        Stats.AddChild(attack);
-        Stats.AddChild(defence);
-        Stats.AddChild(hp);
     }
 
     // UI Planet Interface
@@ -87,29 +68,33 @@ public class Unit : Node, IBuilding, IUpkeep
     }
 
     public void CalculateDamage(Unit unit){
-        if(Stats.GetNode<BaseStat>("Attack").BaseValue > unit.Stats.GetNode<BaseStat>("Defence").BaseValue){
-            unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= Stats.GetNode<BaseStat>("Attack").BaseValue - unit.Stats.GetNode<BaseStat>("Defence").BaseValue;
+        if(GetStat("Attack").BaseValue > unit.GetStat("Defence").BaseValue){
+            unit.GetStat("HitPoints").CurrentValue -= GetStat("Attack").BaseValue - unit.GetStat("Defence").BaseValue;
         }else{
-            unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
+            unit.GetStat("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
         }
-        if(Stats.GetNode<BaseStat>("HitPoints").CurrentValue<0){
+        if(GetStat("HitPoints").CurrentValue<0){
             HasHitpoints = false;
         }
-        if(unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue<=0){
+        if(unit.GetStat("HitPoints").CurrentValue<=0){
             unit.HasHitpoints = false;
         }else{
-            if(unit.Stats.GetNode<BaseStat>("Attack").BaseValue > Stats.GetNode<BaseStat>("Defence").BaseValue){
-                Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= unit.Stats.GetNode<BaseStat>("Attack").BaseValue - Stats.GetNode<BaseStat>("Defence").BaseValue;
+            if(unit.GetStat("Attack").BaseValue > GetStat("Defence").BaseValue){
+                GetStat("HitPoints").CurrentValue -= unit.GetStat("Attack").BaseValue - GetStat("Defence").BaseValue;
             }else{
-                Stats.GetNode<BaseStat>("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
+                GetStat("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
             }
-            // Stats.GetNode<BaseStat>("HitPoints").CurrentValue -= unit.Stats.GetNode<BaseStat>("Attack").BaseValue - Stats.GetNode<BaseStat>("Defence").BaseValue;
+            // GetStat("HitPoints").CurrentValue -= unit.GetStat("Attack").BaseValue - GetStat("Defence").BaseValue;
         }
     }
 
     public override void _Ready()
     {
+        Stats = GetNode("Stats");
+    }
 
+    public BaseStat GetStat(string name){
+        return GetNode<BaseStat>("Stats/"+name);
     }
 
 }

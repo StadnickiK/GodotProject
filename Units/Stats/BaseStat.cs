@@ -50,6 +50,7 @@ public class BaseStat : Node{
         get { return _name; }
     }
     
+    [Export]
     private int _baseValue = 0;
     public int BaseValue
     {
@@ -62,17 +63,18 @@ public class BaseStat : Node{
         get { return _currentValue; }
         set { _currentValue = value; }
     }
-    
+    [Export]
     public bool HasMaxValue { get; set; } = false;
 
+    [Export]
     private int _maxValue;
     public int MaxValue
     {
         get { return _maxValue; }
     }
-
+    [Export]
     public bool HasMinValue { get; set; } = false; 
-
+    [Export]
     private int _minValue;
     public int MinValue
     {
@@ -82,6 +84,7 @@ public class BaseStat : Node{
 
     public override void _Ready()
     {
-
+        if(Name.Length < 1)
+            _name = Name;
     }
 }
