@@ -16,6 +16,8 @@ public class PlanetInterface : Panel
 
 	List<Unit> _allUnits = null;
 
+	public Data _data { get; set; }
+
 	OverviewPanel _overviewPanel = null;
 
 	BuildingInterface _buildingInterface = null;
@@ -101,6 +103,24 @@ public class PlanetInterface : Panel
 				UpdateBuildings(planet, allBuildings);
 				// UpdateTransferPanel(planet);
 				UpdateConstruction(planet, worldUnits);
+				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
+				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
+				_overviewPanel.ConnectToEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
+			}
+		}
+	}
+
+	public void UpdatePlanetInterface(Planet planet){
+		if(planet != null){
+			_planet = planet;
+			SetTitle(planet.Name);
+			ClearPlanetInterface();
+			if(planet.Vision){
+				UpdateOverview(planet);
+				UpdateOrbit(planet);
+				UpdateBuildings(planet, _data.GetData("Buildings"));
+				// UpdateTransferPanel(planet);
+				UpdateConstruction(planet, _data.GetData("Units"));
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
 				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
 				_overviewPanel.ConnectToEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
@@ -316,6 +336,18 @@ public class PlanetInterface : Panel
 		}
 	}
 
+		void UpdateConstruction(Planet planet, Godot.Collections.Array WorldUnits){
+		_overviewPanel.ClearPanel("Construction");
+		if(planet.Controller != null){
+			if(planet.Controller.PlayerID == LocalPlayerID){
+				var tempLabel = new Label();
+				tempLabel.Text = "\n Construction list: \n";
+				_overviewPanel.AddNodeToPanel("Construction", tempLabel);
+				//UpdateConstructionList(WorldUnits, planet);
+			}
+		}
+	}
+
 
 	// todo: Reimplement with construction list instead of constList[0]
 	void UpdateConstructionList(List<Unit> WorldUnits, Planet planet){
@@ -385,15 +417,6 @@ public class PlanetInterface : Panel
 	}
 
 	void _on_StartConstruction(Node node){
-		// if(node is Building building){
-		// 	if(building != null && _planet != null){
-		// 		if(_planet.Controller.ResManager.PayCost(building.BuildCost)){
-		// 			_planet.BuildingsManager.ConstructBuilding(building);
-		// 		}else{
-
-		// 		}
-		// 	}
-		// }
 		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
 				_planet.StartConstruction(unit);
