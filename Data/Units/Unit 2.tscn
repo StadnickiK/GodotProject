@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Units/Base/Unit.cs" type="Script" id=1]
+[ext_resource path="res://Units/Stats/BaseStat.cs" type="Script" id=2]
+
+[node name="Unit 2" type="Node"]
+script = ExtResource( 1 )
+
+[node name="Stats" type="Node" parent="."]
+
+[node name="Attack" type="Node" parent="Stats"]
+script = ExtResource( 2 )
+
+[node name="Defence" type="Node" parent="Stats"]
+script = ExtResource( 2 )
+
+[node name="HitPoints" type="Node" parent="Stats"]
+script = ExtResource( 2 )
