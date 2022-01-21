@@ -5,6 +5,12 @@
 
 [node name="Unit 2" type="Node"]
 script = ExtResource( 1 )
+BuildTime = 10
+BuildCost = {
+"Credits": 7000,
+"Resource 0": 300,
+"Resource 1": 200
+}
 
 [node name="Stats" type="Node" parent="."]
 

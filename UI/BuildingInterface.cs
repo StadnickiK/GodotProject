@@ -129,19 +129,6 @@ public class BuildingInterface : Panel
 
 
     public void UpdateInterface(){
-        _listPanel.ClearItems();
-        for(int i = 0; i < 5; i++){
-            Unit unit = new Unit(5+i*8,2+i*2);
-            unit.Name = "Unit "+i;
-            Resource resource = new Resource();
-            resource.Name = "resource "+i;
-            resource.Quantity = 20 + i * 1;
-            unit.BuildCost.Add(resource.Name, resource.Quantity);
-            var label = new Label(); 
-            label.Text = unit.Name +" " + unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue +" "+ unit.Stats.GetNode<BaseStat>("Attack").CurrentValue + " " + unit.Stats.GetNode<BaseStat>("Defence").CurrentValue 
-            +"\n Cost: "+ resource.Name +": "+resource.Quantity;
-            _listPanel.AddListItem(label, this, nameof(_on_gui_input), unit);
-        }
     }
 
     void _on_gui_input(InputEvent input, Node node){

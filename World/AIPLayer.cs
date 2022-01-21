@@ -207,7 +207,7 @@ public class AIPlayer : Player
                 if(node is Ship ship)
                     count += ship.Units.GetChildren().Count;
             }
-            if(!units.ContainsKey(_data.WorldUnits[0]) && count > 0){
+            if(count > 0){
                 count = (int)Math.Ceiling((float)count*FleetStrengthMul);
                 units.Add((Unit)((PackedScene)GD.Load(((Unit)_data.GetData("Units")[0]).Filename)).Instance(), count);
             }

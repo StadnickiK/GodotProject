@@ -197,7 +197,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
     public bool StartConstruction(Unit unit){
             if(Controller.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding(new Unit(unit));
+                _constructions.ConstructBuilding(unit);
                 return true;
             }else{
                 EmitSignal(nameof(GameAlert), this);
@@ -241,7 +241,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         int build = 0;
         for(int i = 0; i < count; i++){
             if(Controller.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding(new Unit(unit), count);
+                _constructions.ConstructBuilding((unit), count);
                 build++;
             }else{
                 EmitSignal(nameof(GameAlert), this);
@@ -260,7 +260,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         if(building != null)
             if(Controller.ResManager.PayCost(building.BuildCost)){
                 if(building is Unit unit){
-                    _constructions.ConstructBuilding(new Unit(unit));
+                    _constructions.ConstructBuilding((unit));
                     return true;
                 }else{
                     if(building is Building b){

@@ -90,26 +90,6 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	public void UpdatePlanetInterface(Planet planet, Godot.Collections.Array allBuildings,  List<Unit> worldUnits){
-		if(planet != null){
-			_planet = planet;
-			_allBuildings = allBuildings;
-			_allUnits = worldUnits;
-			SetTitle(planet.Name);
-			ClearPlanetInterface();
-			if(planet.Vision){
-				UpdateOverview(planet);
-				UpdateOrbit(planet);
-				UpdateBuildings(planet, allBuildings);
-				// UpdateTransferPanel(planet);
-				UpdateConstruction(planet, worldUnits);
-				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
-				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
-				_overviewPanel.ConnectToEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
-			}
-		}
-	}
-
 	public void UpdatePlanetInterface(Planet planet){
 		if(planet != null){
 			_planet = planet;
@@ -118,9 +98,9 @@ public class PlanetInterface : Panel
 			if(planet.Vision){
 				UpdateOverview(planet);
 				UpdateOrbit(planet);
-				UpdateBuildings(planet, _data.GetData("Buildings"));
+				UpdateBuildings(planet);
 				// UpdateTransferPanel(planet);
-				UpdateConstruction(planet, _data.GetData("Units"));
+				UpdateConstruction(planet);
 				_overviewPanel.ConnectToGuiInputEvent(this, "Orbit", nameof(_on_LabelGuiInputEvent));
 				_overviewPanel.ConnectToEvent(this, "Buildings", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
 				_overviewPanel.ConnectToEvent(this, "Construction", nameof(_on_BuildingLabelGuiInputEvent), "button_up");
@@ -147,20 +127,7 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void _on_orbitButton_up(){
-		_buildingInterface.Visible = true;
-		_buildingInterface.UpdateInterface();
-	}
-
 	void UpdateOrbit(Planet planet){
-		if(planet.Controller != null){
-			if(planet.Controller.PlayerID == LocalPlayerID){
-				var button = new Button();
-				button.Text = "Orbit build menu";
-				button.Connect("button_up",this,nameof(_on_orbitButton_up));
-				_overviewPanel.AddNodeToPanel("Orbit", button);
-			}
-		}
 		foreach(PhysicsBody body in planet.Orbit.GetChildren()){
 			var label = new Label();
 			label.Name = label.Text = body.Name;
@@ -253,7 +220,7 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void UpdateBuildings(Planet planet, Godot.Collections.Array allBuildings){
+	void UpdateBuildings(Planet planet){
 		_overviewPanel.ClearPanel("Buildings");
 		UpdatePlanetBuildings(planet.BuildingsManager.Buildings);
 		if(planet.Controller != null){
@@ -261,7 +228,7 @@ public class PlanetInterface : Panel
 				var tempLabel = new Label();
 				tempLabel.Text = "\n Construction list: \n";
 				_overviewPanel.AddNodeToPanel("Buildings", tempLabel);
-				UpdateAllBuildings(allBuildings, planet);
+				UpdateAllBuildings(planet);
 			}
 		}
 	}
@@ -286,8 +253,8 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void UpdateAllBuildings(Godot.Collections.Array buildings, Planet planet){
-		foreach(Node node in buildings){
+	void UpdateAllBuildings(Planet planet){
+		foreach(Node node in _data.GetData("Buildings")){
 			if(node is Building building)
 				if(CheckBuildingResources(planet, building)){
 					if(!_planet.BuildingsManager.Buildings.Contains(building)){
@@ -324,14 +291,14 @@ public class PlanetInterface : Panel
 		return true;
 	}
 
-	void UpdateConstruction(Planet planet, List<Unit> WorldUnits){
+	void UpdateConstruction(Planet planet){
 		_overviewPanel.ClearPanel("Construction");
 		if(planet.Controller != null){
 			if(planet.Controller.PlayerID == LocalPlayerID){
 				var tempLabel = new Label();
 				tempLabel.Text = "\n Construction list: \n";
 				_overviewPanel.AddNodeToPanel("Construction", tempLabel);
-				UpdateConstructionList(WorldUnits, planet);
+				UpdateConstructionList(planet);
 			}
 		}
 	}
@@ -377,6 +344,36 @@ public class PlanetInterface : Panel
 					}
 				}
 		}
+	}
+
+	void UpdateConstructionList(Planet planet){
+		foreach(var node in _data.GetData("Units"))
+			if(node is Unit unit){
+				var label = (BuildingLabel)ItemScene.Instance();
+				label.SetMeta(unit.Name, unit);
+				label.Name = unit.Name;
+				if(label.BButton != null){
+					label.BButton.Text = unit.Name;
+				}else{
+					label.BButton = label.GetNode<Button>("Button");
+					label.BButton.Text = unit.Name;
+				}
+				_overviewPanel.AddNodeToPanel("Construction", label);
+				if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+					label.Progress.Value = unit.CurrentTime;
+					label.Progress.MaxValue = unit.BuildTime;
+				}
+				var constList = planet.Constructions.CurrentConstruction();
+				if(constList != null)
+					if(constList.Count > 0){
+						if(constList[0] is Unit currentUnit){
+							if(currentUnit.Name == unit.Name){
+								label.Progress.Value = currentUnit.CurrentTime;
+								label.Progress.MaxValue = currentUnit.BuildTime;
+							}
+						}
+					}
+			}
 	}
 
 	void UpdatePlanetConstruction(Planet planet, List<Unit> WorldUnits){
@@ -433,11 +430,11 @@ public class PlanetInterface : Panel
 		if(Visible){
 			if(_planet != null && _allBuildings != null){
 				if(_planet.BuildingsManager.ConstructionListChanged){
-					UpdateBuildings(_planet, _allBuildings);
+					UpdateBuildings(_planet);
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
 				if(_planet.Constructions.HasConstruct())
-					UpdateConstruction(_planet, _allUnits);
+					UpdateConstruction(_planet);
 			}
 		}
 	}

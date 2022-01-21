@@ -77,7 +77,7 @@ private Data _data = null;
 
 	void _on_OpenPlanetInterface(Planet planet){
 		_UI.PInterface.Visible = true;
-		_UI.PInterface.UpdatePlanetInterface(planet, _data.GetData("Buildings"), _data.WorldUnits);
+		_UI.PInterface.UpdatePlanetInterface(planet);
 	}
 
 	void _on_CreateShip(Planet planet, Unit unit){
@@ -132,6 +132,7 @@ private Data _data = null;
 	void ConnectSignals(){
 		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
+		_UI.PInterface._data = _data;
 		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
 		_UI.OrbitList.Connect("SelectObject", this, nameof(_on_SelectUnit));
 		_UI.CommandPanel.Connect("ShipCommand", this, nameof(_on_ShipCommand));

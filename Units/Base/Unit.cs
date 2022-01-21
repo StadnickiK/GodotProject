@@ -26,21 +26,10 @@ public class Unit : Node, IBuilding, IUpkeep
 
     //public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
-    public Node Stats { get; set; } = new Node();
+    public Node Stats { get; set; }
 
     // World - initStartFleets, InitResistance
     public Unit(){  
-    }
-
-    // UI Planet Interface
-    public Unit(int attack, int defence){
-        BaseStat a = new BaseStat("Attack", attack);
-        BaseStat d = new BaseStat("Defence", defence);
-        BaseStat hp = new BaseStat("HitPoints", 200);
-        Name = "Unit ";
-        Stats.AddChild(a);
-        Stats.AddChild(d);
-        Stats.AddChild(hp);
     }
 
     public Unit(string name, List<BaseStat> stats){
@@ -48,14 +37,6 @@ public class Unit : Node, IBuilding, IUpkeep
         foreach(BaseStat stat in stats){
             Stats.AddChild(stat);
         }
-    }
-
-    public Unit(Unit unit){
-        Name = unit.Name;
-        CopyStats(unit.Stats);
-        BuildCost = new Godot.Collections.Dictionary<string, int>(unit.BuildCost);
-        BuildTime = unit.BuildTime;
-        ID_Owner = unit.ID_Owner;
     }
 
     void CopyStats(Node stats){
