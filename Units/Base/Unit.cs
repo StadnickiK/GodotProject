@@ -11,7 +11,7 @@ public class Unit : Node, IBuilding, IUpkeep
     public bool HasHitpoints { get; set; } = true;  
 
     [Export]
-    public int BuildTime { get; set; } = 0;
+    public int BuildTime { get; set; } = 10;
 
     public int CurrentTime { get; set; } = 0;
 

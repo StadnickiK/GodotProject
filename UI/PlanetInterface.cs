@@ -253,11 +253,12 @@ public class PlanetInterface : Panel
 		}
 	}
 
-	void UpdateAllBuildings(Planet planet){
+	void UpdateAllBuildings(Planet planet){ // todo: Separate construction and building list into separate nodes for better organization
+		var construction = planet.BuildingsManager.CurrentConstruction();
 		foreach(Node node in _data.GetData("Buildings")){
 			if(node is Building building)
 				if(CheckBuildingResources(planet, building)){
-					if(!_planet.BuildingsManager.Buildings.Contains(building)){
+					if(_planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null){
 						var label = (BuildingLabel)ItemScene.Instance();
 						label.SetMeta(building.Name, building);
 						label.Name = building.Name;
@@ -268,9 +269,12 @@ public class PlanetInterface : Panel
 							label.BButton.Text = building.Name;
 						}
 						_overviewPanel.AddNodeToPanel("Buildings", label);
-						if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-							label.Progress.Value = building.CurrentTime;
-							label.Progress.MaxValue = building.BuildTime;
+						if(label.Progress != null && construction.Count > 0){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
+							var currentBuilding = construction.Find(x => x.Name == building.Name);
+							if(currentBuilding != null){
+								label.Progress.Value = currentBuilding.CurrentTime;
+								label.Progress.MaxValue = currentBuilding.BuildTime;
+							}
 						}
 					}
 				}
@@ -303,49 +307,6 @@ public class PlanetInterface : Panel
 		}
 	}
 
-		void UpdateConstruction(Planet planet, Godot.Collections.Array WorldUnits){
-		_overviewPanel.ClearPanel("Construction");
-		if(planet.Controller != null){
-			if(planet.Controller.PlayerID == LocalPlayerID){
-				var tempLabel = new Label();
-				tempLabel.Text = "\n Construction list: \n";
-				_overviewPanel.AddNodeToPanel("Construction", tempLabel);
-				//UpdateConstructionList(WorldUnits, planet);
-			}
-		}
-	}
-
-
-	// todo: Reimplement with construction list instead of constList[0]
-	void UpdateConstructionList(List<Unit> WorldUnits, Planet planet){
-		foreach(var unit in WorldUnits){
-			var label = (BuildingLabel)ItemScene.Instance();
-			label.SetMeta(unit.Name, unit);
-			label.Name = unit.Name;
-			if(label.BButton != null){
-				label.BButton.Text = unit.Name;
-			}else{
-				label.BButton = label.GetNode<Button>("Button");
-				label.BButton.Text = unit.Name;
-			}
-			_overviewPanel.AddNodeToPanel("Construction", label);
-			if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-				label.Progress.Value = unit.CurrentTime;
-				label.Progress.MaxValue = unit.BuildTime;
-			}
-			var constList = planet.Constructions.CurrentConstruction();
-			if(constList != null)
-				if(constList.Count > 0){
-					if(constList[0] is Unit currentUnit){
-						if(currentUnit.Name == unit.Name){
-							label.Progress.Value = currentUnit.CurrentTime;
-							label.Progress.MaxValue = currentUnit.BuildTime;
-						}
-					}
-				}
-		}
-	}
-
 	void UpdateConstructionList(Planet planet){
 		foreach(var node in _data.GetData("Units"))
 			if(node is Unit unit){
@@ -374,10 +335,6 @@ public class PlanetInterface : Panel
 						}
 					}
 			}
-	}
-
-	void UpdatePlanetConstruction(Planet planet, List<Unit> WorldUnits){
-
 	}
 
 	public void _on_LabelGuiInputEvent(InputEvent input, Node node){
@@ -416,7 +373,7 @@ public class PlanetInterface : Panel
 	void _on_StartConstruction(Node node){
 		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
-				_planet.StartConstruction(unit);
+				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.Filename)).Instance());
 				// _planet.ConstructUnit(unit);
 			}
 		}
@@ -428,7 +385,7 @@ public class PlanetInterface : Panel
 
 	public override void _Process(float delta){
 		if(Visible){
-			if(_planet != null && _allBuildings != null){
+			if(_planet != null && _data != null){
 				if(_planet.BuildingsManager.ConstructionListChanged){
 					UpdateBuildings(_planet);
 					_planet.BuildingsManager.ConstructionListChanged = false;

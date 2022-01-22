@@ -195,16 +195,6 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
         Pops = GetNode<Populations>("Populations");
     }
 
-    public bool StartConstruction(Unit unit){
-            if(Controller.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding(unit);
-                return true;
-            }else{
-                EmitSignal(nameof(GameAlert), this);
-                return false;
-            }
-    }
-
     public void ProduceResources(ResourceManager playerResManager){
             foreach(Building building in BuildingsManager.Buildings){
                 foreach(string productName in building.Products.Keys){
@@ -236,6 +226,15 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
             }
     }
 
+    public bool StartConstruction(Unit unit){
+            if(Controller.ResManager.PayCost(unit.BuildCost)){
+                _constructions.ConstructBuilding(unit);
+                return true;
+            }else{
+                EmitSignal(nameof(GameAlert), this);
+                return false;
+            }
+    }
     
     public int StartConstruction(Unit unit, int count = 1){
         int build = 0;
@@ -404,23 +403,25 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                 Vision = true;
             }
         }
-        var list = _constructions.UpdateConstruction();
-
-        if(list.Count > 0){
-            var ship = GetLocalShip();
-            foreach(IBuilding ib in list){
-                if(ib is Unit unit){
-                    if(ship != null){
-                        if(unit.GetParent() != null){
-                            unit.GetParent().RemoveChild(unit);
+        if(_time >= TimeStep){
+            var list = _constructions.UpdateConstruction();
+            if(list.Count > 0){
+                var ship = GetLocalShip();
+                foreach(IBuilding ib in list){
+                    if(ib is Unit unit){
+                        if(ship != null){
+                            if(unit.GetParent() != null){
+                                unit.GetParent().RemoveChild(unit);
+                            }
+                            ship.Units.AddChild(unit);
+                        }else{
+                            EmitSignal(nameof(CreateShip), this, unit);
                         }
-                        ship.Units.AddChild(unit);
-                    }else{
-                        EmitSignal(nameof(CreateShip), this, unit);
                     }
-                }
-            }   
+                }   
 
+            }
+            _time = 0;
         }
     }
 }

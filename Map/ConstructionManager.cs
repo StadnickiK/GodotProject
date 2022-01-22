@@ -66,9 +66,8 @@ public class ConstructionManager : Node
 
     public List<IBuilding> CurrentConstruction(){
         var count = ConstructionList.Count;
-        List<IBuilding> list = null;
+        List<IBuilding> list = new List<IBuilding>();
         if(count > 0){
-            list = new List<IBuilding>();
             if(count > ConstructionSlots){
                 for(int i = 0; i < ConstructionSlots; i++){
                     list.Add(ConstructionList[i]);
