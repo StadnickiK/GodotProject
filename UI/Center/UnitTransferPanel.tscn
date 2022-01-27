@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://UI/Header.tscn" type="PackedScene" id=1]
+[ext_resource path="res://UI/Center/UnitTransferPanel.cs" type="Script" id=2]
+
+[node name="UnitTransferPanel" type="PanelContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -135.5
+margin_top = -147.5
+margin_right = 135.5
+margin_bottom = 147.5
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 264.0
+margin_bottom = 288.0
+
+[node name="Header" parent="VBoxContainer" instance=ExtResource( 1 )]
+margin_right = 257.0
+Title = "Unit Transfer"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 46.0
+margin_right = 257.0
+margin_bottom = 233.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftScroll" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+margin_right = 126.0
+margin_bottom = 187.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Left" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftScroll"]
+
+[node name="RightScroll" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+margin_left = 130.0
+margin_right = 257.0
+margin_bottom = 187.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Right" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightScroll"]
+
+[node name="Merge" type="Button" parent="VBoxContainer"]
+margin_top = 237.0
+margin_right = 257.0
+margin_bottom = 257.0
+text = "Merge"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ConfrimButton" type="Button" parent="VBoxContainer"]
+margin_top = 261.0
+margin_right = 257.0
+margin_bottom = 281.0
+text = "Confirm"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="button_up" from="VBoxContainer/Merge" to="." method="_on_Merge_button_up"]
+[connection signal="button_up" from="VBoxContainer/ConfrimButton" to="." method="_on_ConfrimButton_button_up"]

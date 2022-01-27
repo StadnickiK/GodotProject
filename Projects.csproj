@@ -28,6 +28,7 @@
     <Compile Include="Map\Planet\Populations.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
+    <Compile Include="UI\Center\UnitTransferPanel.cs" />
     <Compile Include="UI\CmdPanel.cs" />
     <Compile Include="UI\Icon3D.cs" />
     <Compile Include="UI\SmallList.cs" />

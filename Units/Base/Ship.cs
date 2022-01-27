@@ -19,6 +19,9 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     [Signal]
     public delegate void SignalExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state); 
 
+    [Signal]
+    public delegate void OpenUnitTransferPanel(Ship left, Ship right);
+
     [Export]
     public int effectiveRange = 10;
 
@@ -190,7 +193,11 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 }
             }
             if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){
-                EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
+                if(ship.Controller != Controller){
+                    EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
+                }else{
+                    EmitSignal(nameof(OpenUnitTransferPanel), this, ship);
+                }
                 targetManager.ClearTargets();
                 ResetVelocity(state);
             }

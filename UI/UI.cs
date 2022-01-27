@@ -33,6 +33,8 @@ public class UI : Control
     
     public AlertBox ABox { get; set; } = null;
 
+    public UnitTransferPanel UnitTransferP { get; set; }
+
     void GetNodes(){
         ResPanel = GetNode<ResourcePanel>("ResourcePanel");
         PInterface = GetNode<PlanetInterface>("PlanetInterface");
@@ -44,6 +46,7 @@ public class UI : Control
         OrbitList = GetNode<SmallList>("OrbitList");
         CommandPanel = GetNode<CmdPanel>("CmdPanel");
         TopLeft = GetNode<TopLeftPanel>("TopLeftPanel");
+        UnitTransferP = GetNode<UnitTransferPanel>("UnitTransferPanel");
     }
 
     public void UpdateUI(Player player){

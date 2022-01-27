@@ -302,6 +302,9 @@ private Data _data = null;
         _map.ConnectToEnterCombat(ship);
         _map.ConnectToEnterMapObject(ship);
         _map.ConnectToExitMapObject(ship);
+		if(ship.Controller == _Player){
+			ship.Connect(nameof(Ship.OpenUnitTransferPanel), _UI.UnitTransferP, "_on_OpenTransferPanel");
+		}
 	}
 
 	void InitStartResources(){
