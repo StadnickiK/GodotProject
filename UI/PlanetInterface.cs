@@ -18,6 +18,8 @@ public class PlanetInterface : Panel
 
 	public Data _data { get; set; }
 
+	bool Cleanup = false;
+
 	OverviewPanel _overviewPanel = null;
 
 	BuildingInterface _buildingInterface = null;
@@ -308,6 +310,7 @@ public class PlanetInterface : Panel
 	}
 
 	void UpdateConstructionList(Planet planet){
+		Cleanup = true;
 		foreach(var node in _data.GetData("Units"))
 			if(node is Unit unit){
 				var label = (BuildingLabel)ItemScene.Instance();
@@ -320,12 +323,8 @@ public class PlanetInterface : Panel
 					label.BButton.Text = unit.Name;
 				}
 				_overviewPanel.AddNodeToPanel("Construction", label);
-				if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-					label.Progress.Value = unit.CurrentTime;
-					label.Progress.MaxValue = unit.BuildTime;
-				}
 				var constList = planet.Constructions.CurrentConstruction();
-				if(constList != null)
+				if(constList != null){
 					if(constList.Count > 0){
 						if(constList[0] is Unit currentUnit){
 							if(currentUnit.Name == unit.Name){
@@ -333,7 +332,12 @@ public class PlanetInterface : Panel
 								label.Progress.MaxValue = currentUnit.BuildTime;
 							}
 						}
+					}else{
+						label.Progress.Value = 0;
+						label.Progress.MaxValue = unit.BuildTime;
+						Cleanup = false;
 					}
+				}
 			}
 	}
 
@@ -390,8 +394,9 @@ public class PlanetInterface : Panel
 					UpdateBuildings(_planet);
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
-				if(_planet.Constructions.HasConstruct())
+				if(_planet.Constructions.HasConstruct() || Cleanup == true){
 					UpdateConstruction(_planet);
+				}
 			}
 		}
 	}
