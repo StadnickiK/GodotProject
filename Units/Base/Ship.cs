@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, IMapObject//, IResourceManager
+public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
 {
     [Signal]
     public delegate void SelectUnit(RigidBody unit);
@@ -218,6 +218,20 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
     }
 
+    public void GetTotalUpkeep(Dictionary<string, int> costs){
+        foreach(var node in Units.GetChildren()){
+            if(node is IUpkeep upkeep){
+                foreach(var resource in upkeep.Upkeep.Keys){
+                    if(costs.ContainsKey(resource)){
+                        costs[resource] += upkeep.Upkeep[resource];
+                    }else{
+                        costs.Add(resource, upkeep.Upkeep[resource]);
+                    }
+                }
+            }
+        }
+    }
+
     void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
         switch((ButtonList)eventMouseButton.ButtonIndex){
@@ -308,9 +322,9 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         }
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
+    //  public override void _Process(float delta)
+    //  {
+    //      
+    //  }
 }

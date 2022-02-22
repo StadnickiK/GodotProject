@@ -148,7 +148,8 @@ public int Radius
 		if(node is Ship ship)
 			if(ship.MapObject == this){
 				if(ship.Transform.origin.Length()>Radius){
-					StarSysObjects.RemoveChild(ship);
+					//StarSysObjects.RemoveChild(ship);
+					ship.GetParent().RemoveChild(ship);
 					GetParent().AddChild(ship);
 					var trans = state.Transform;
 					trans.origin = Transform.origin;

@@ -8,10 +8,23 @@ public class AIPlayer : Player
 
     Data _data = null;
 
+    Map _worldMap;
+
     TreeNode root = null;
 
     [Export]
     public float FleetStrengthMul { get; set; } = 1.1f;
+
+    [Export]
+    public Dictionary<Building.Category, float> BuildingPriorityList { get; set; } = new Dictionary<Building.Category, float>(){
+        {Building.Category.Mine, 7},
+        {Building.Category.Production, 6},
+        {Building.Category.Growth, 5},
+        {Building.Category.Storage, 4},
+        {Building.Category.Research, 3},
+        {Building.Category.Construction, 2},
+        {Building.Category.Recruitment, 1}
+    };
 
     public AIPlayer() : base(){}
 
@@ -20,6 +33,11 @@ public class AIPlayer : Player
     }
 
     Dictionary<string, object> blackBoard = new Dictionary<string, object>();
+
+    public void SetMap(Map map){
+        _worldMap = map;
+        blackBoard.Add("WorldMap", map);
+    }
 
     void _on_MapObject_Entered(Node node, Ship ship){
         if(node is Planet planet){
@@ -63,8 +81,8 @@ public class AIPlayer : Player
 
     public override void _Ready()
     {
-        //root = SetupTree();
-        //AddChild(root);
+        root = SetupTree();
+        AddChild(root);
     }
 
     public override void _Process(float delta){
@@ -86,7 +104,44 @@ public class AIPlayer : Player
         return null;
     }
 
-    public Planet GetPlanet(){
+    public TreeNode.NodeState ClearFinishedScoutMissions(){
+        var scoutMissions = (Dictionary<Ship, string>)blackBoard["ScoutMissions"];
+        var map = (Dictionary<string, List<Planet>>)blackBoard["Map"];
+        if(scoutMissions.Count <= 0){
+            foreach(Ship s in scoutMissions.Keys){
+                if(map.ContainsKey(scoutMissions[s])){
+                    if(map[scoutMissions[s]].Count == (_worldMap.galaxy.StarSystems.Find( x => x.Name == scoutMissions[s])).Planets.Count){
+                        scoutMissions.Remove(s);
+                    }
+
+                }
+            }
+            return TreeNode.NodeState.Succes;
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    public TreeNode.NodeState ClearFinishedInvasionMissions(){
+        var invasions = (Dictionary<Ship, Spatial>)blackBoard["InvasionsInProgress"];
+        var invPlans = (Dictionary<Ship, Planet>)blackBoard["InvasionPlans"];
+        if(invasions.Count <= 0){
+            foreach(var pair in invasions){
+                if(pair.Value != null){
+                    if(pair.Value is IMapObjectController controller){
+                        if(controller.Controller == this)
+                            invasions.Remove(pair.Key);
+                    }
+                }else{
+                    invasions.Remove(pair.Key);
+                }
+
+            }
+            return TreeNode.NodeState.Succes;
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    public Planet GetFirstPlanet(){
         foreach(Node node in MapObjects){
             if(node is Planet planet)
                 return planet;
@@ -120,10 +175,6 @@ public class AIPlayer : Player
                     list.Add(planet);
         }
         return list;
-    }
-
-    public TreeNode.NodeState GetShip(){
-        return TreeNode.NodeState.Failure;
     }
 
     TreeNode.NodeState HasIdleUnitConstructionPlanet(){
@@ -191,6 +242,38 @@ public class AIPlayer : Player
 		}
 		return true;
 	}
+
+    public StarSystem GetClosestStarSystem(StarSystem system){
+        var children = _worldMap.galaxy.GetChildren();
+        var map = (Dictionary<string, List<Planet>>)blackBoard["Map"];
+        var scoutMissions = (Dictionary<Ship, string>)blackBoard["ScoutMissions"];
+        StarSystem target = null;
+        foreach(Node node in children){
+            if(node is StarSystem starSystem){
+                if(!map.Keys.Contains(starSystem.Name) && !scoutMissions.Values.Contains(starSystem.Name))
+                    if(target == null){
+                        target = starSystem;
+                    }else{
+                        if(system.Transform.origin.DistanceTo(target.Transform.origin) > system.Transform.origin.DistanceTo(starSystem.Transform.origin))
+                            target = starSystem;
+                    }
+            }
+        }
+        return target;
+    }
+
+    // public IMapObject NextScoutTarget(){
+    //     var starSystems = _worldMap.galaxy.GetChildren();
+    //     var map = (Dictionary<string, List<Planet>>)blackBoard["Map"];
+    //     var scoutMissions = (Dictionary<Ship, string>)blackBoard["ScoutMissions"];
+    //     if(){
+
+    //     }else{
+
+    //     }
+
+    //     return null;
+    // }
 
     // todo: remove leak when a ship has a number of tempPoints and they get canceled, to reproduce add a number of tempTargets and then add a new command
 
@@ -367,6 +450,35 @@ public class AIPlayer : Player
         return null;
     }
 
+    bool PlanetHasResourceBuilding(Planet planet, string resName){
+        foreach(Building building in planet.BuildingsManager.Buildings){
+            if(building.Products.ContainsKey(resName))
+                return true;
+        }
+        return false;   
+    }
+
+    TreeNode.NodeState CreateResourceRequest(){
+        var constructors = (List<Planet>)blackBoard["BuildConstructor"];
+        var resReqObj = blackBoard["ResourceRequirements"]; // resReq - resource requirements
+        var resReq = (Dictionary<string, int>)resReqObj;
+        if(constructors.Count > 0){
+            foreach(Planet planet in constructors){
+                foreach(var resName in planet.ResourcesManager.Resources.Keys){
+                    if(!PlanetHasResourceBuilding(planet, resName))
+                        if(resReq.ContainsKey(resName)){
+                            resReq[resName] += 100;
+                        }else{
+                            resReq.Add(resName, 100);
+                        }
+                }
+            }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+
+
     TreeNode.NodeState GetReqResourceBuilding(){
         if(blackBoard.ContainsKey("ResourceRequirements")){
             var reqResObj = GetBlackBoardObj("ResourceRequirements");
@@ -438,28 +550,36 @@ public class AIPlayer : Player
         blackBoard.Add("InvasionPlans", new Dictionary<Ship, Planet>()); // ship and its target
         blackBoard.Add("InvasionsInProgress", new Dictionary<Ship, Spatial>()); // ship and its target
         blackBoard.Add("ScoutMissions", new Dictionary<Ship, string>()); // ship and its target
+        blackBoard.Add("BuildingPriorityList", BuildingPriorityList);
+
+        var scoutSystem = new ScoutSystem(blackBoard);
+        scoutSystem._worldMap = _worldMap;
+
+        TreeNode clear = new Parallel( new List<TreeNode> {
+            new ActionTN(ClearFinishedScoutMissions), 
+            new ActionTN(ClearFinishedInvasionMissions)
+        });
 
         TreeNode scout = new Sequence(new List<TreeNode> {
             new GetIdleShip(blackBoard),
-            new ScoutSystem(blackBoard)
+            scoutSystem
         });
-
 
         // todo: Add has resources, add recruitment queue based on target planet Reapeter?? 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
-            new ActionTN(HasIdleUnitConstructionPlanet),
             new ActionTN(CreateFleetRequest),
             new ActionTN(ConstructFleet)
         });
 
         TreeNode buildBuild = new Sequence(new List<TreeNode> {
-            new ActionTN(HasIdleBuildConstructionPlanets),
             new ActionTN(HasBuilding),
             new ActionTN(HasResources),
             new ActionTN(ConstructBuilding)
         });
 
         TreeNode getReq = new Parallel(new List<TreeNode>{
+            new ActionTN(HasIdleUnitConstructionPlanet),
+            new ActionTN(HasIdleBuildConstructionPlanets),
             new ActionTN(GetReqResourceBuilding),
             new ActionTN(GetReqResourcePlanet)
         });
@@ -470,7 +590,7 @@ public class AIPlayer : Player
         });
 
         root = new Parallel(new List<TreeNode> {
-            scout, getReq, buildBuild, buildUnits, executeInvasion
+            clear, scout, getReq, buildBuild, buildUnits, executeInvasion
         });
 
         return root;

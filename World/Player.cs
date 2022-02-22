@@ -119,14 +119,33 @@ public class Player : Node
     //         ResourcesChanged = true;
     // }
 
-    protected void UpdatePlayerResources(){
-        foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-            UpdateResourceLimit(planet);
-            _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
-            _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
+    // protected void UpdatePlayerResources(){
+    //     foreach(Planet planet in MapObjects.Where( x => x is Planet )){
+    //         UpdateResourceLimit(planet);
+    //         _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
+    //         _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
             
-            ResourcesChanged = true;
+    //         ResourcesChanged = true;
+    //     }
+    // }
+
+    protected void UpdatePlayerResources(){
+        _resourceManager.Upkeep.Clear();
+        foreach(var node in MapObjects){
+            if(node is Planet planet){
+                UpdateResourceLimit(planet);
+                _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
+                _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
+                ResourcesChanged = true;
+            }
+            if(node is IGetTotalUpkeep upkeep){
+                upkeep.GetTotalUpkeep(_resourceManager.Upkeep);
+            }
+            if(node is IGetTotalProdCost prodCost){
+                prodCost.GetTotalProdCost(_resourceManager.ProdCost);
+            }
         }
+        _resourceManager.PayUpkeep(_resourceManager.Upkeep);
     }
 
     public void InitResourceLimit(){

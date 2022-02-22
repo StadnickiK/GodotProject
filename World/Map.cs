@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public class Map : Spatial
 {
@@ -76,6 +77,23 @@ public class Map : Spatial
         if(node is Ship ship){
 
         }
+    }
+
+    public StarSystem GetClosestStarSystem(StarSystem system){
+        var children = galaxy.GetChildren();
+        
+        StarSystem target = null;
+        foreach(Node node in children){
+            if(node is StarSystem starSystem){
+                if(target == null){
+                    target = starSystem;
+                }else{
+                    if(system.Transform.origin.DistanceTo(target.Transform.origin) > system.Transform.origin.DistanceTo(starSystem.Transform.origin))
+                        target = starSystem;
+                }
+            }
+        }
+        return target;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

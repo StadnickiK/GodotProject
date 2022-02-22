@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager
+public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
 {
 
     [Export]
@@ -422,6 +422,32 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
 
             }
             _time = 0;
+        }
+    }
+
+    public void GetTotalUpkeep(Dictionary<string, int> costs)
+    {
+        foreach(var building in BuildingsManager.Buildings){
+            foreach(var resource in building.Upkeep.Keys){
+                if(costs.ContainsKey(resource)){
+                    costs[resource] += building.Upkeep[resource];
+                }else{
+                    costs.Add(resource, building.Upkeep[resource]);
+                }
+            }
+        }
+    }
+
+    public void GetTotalProdCost(Dictionary<string, int> costs)
+    {
+        foreach(var building in BuildingsManager.Buildings){
+            foreach(var resource in building.ProductCost.Keys){
+                if(costs.ContainsKey(resource)){
+                    costs[resource] += building.ProductCost[resource];
+                }else{
+                    costs.Add(resource, building.ProductCost[resource]);
+                }
+            }
         }
     }
 }

@@ -9,6 +9,9 @@ BuildCost = {
 "Credits": 5000,
 "Resource 0": 200
 }
+Upkeep = {
+"Credits": 1000
+}
 
 [node name="Stats" type="Node" parent="."]
 

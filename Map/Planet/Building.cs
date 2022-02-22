@@ -49,12 +49,12 @@ public class Building : Node, IBuilding, IUpkeep
     public enum Category
     {
         Mine,
-        Storage,
         Production,
         Construction,
         Recruitment,
         Research,
-        Growth
+        Growth,
+        Storage
     }
 
     public override void _Ready()

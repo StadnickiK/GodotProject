@@ -21,6 +21,10 @@ public class ResourceManager : Node
 
     public bool UpkeepChanged { get; set; } = false;
 
+    public Dictionary<string, int> ProdCost { get; set; } = new Dictionary<string, int>();
+
+    public bool ProdCostChanged { get; set; } = false;
+
     public Dictionary<string, int> Production { get; set; } = new Dictionary<string, int>();
 
     public bool ProductionChanged { get; set; } = false;
@@ -149,6 +153,25 @@ public class ResourceManager : Node
         return true;
     }
 
+    public bool PayUpkeep(Dictionary<string, int> upkeep){
+        bool payed = true;
+        foreach(var resName in upkeep.Keys){
+            if(Resources.ContainsKey(resName)){
+                if((Resources[resName] - upkeep[resName])  >= 0){
+                    Resources[resName] -= upkeep[resName];
+                }else{
+                    Resources[resName] = 0;
+                    payed = false;
+                }
+            }else{
+                payed = false;
+            }
+        }
+        return payed;
+    }
+
+    
+
     public bool CanPayCost(Godot.Collections.Dictionary<string, int> BuildCost){
         foreach(var resName in BuildCost.Keys){
             if(BuildCost[resName] > 0)
@@ -250,6 +273,13 @@ public class ResourceManager : Node
             }
         }
         return false;
+    }
+
+    public int GetResourceFillPercent(string resName){
+        if(ResourceLimits.ContainsKey(resName) && Resources.ContainsKey(resName)){
+            return Resources[resName] / ResourceLimits[resName];
+        }
+        return 0;
     }
 
     public void UpdateResources(List<Building> buildings){

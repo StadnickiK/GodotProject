@@ -161,6 +161,7 @@ private Data _data = null;
 		}
 		for(int i = 0; i<PlayerNumber;i++){
 			var player = new AIPlayer(_data);//(Player)_PlayerScene.Instance();
+			player.SetMap(_map);
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
 			if(i == 0){
