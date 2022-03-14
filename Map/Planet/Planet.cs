@@ -414,6 +414,7 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
                                 unit.GetParent().RemoveChild(unit);
                             }
                             ship.Units.AddChild(unit);
+                            var count = ship.Units.GetChildCount();
                         }else{
                             EmitSignal(nameof(CreateShip), this, unit);
                         }

@@ -16,7 +16,7 @@ public class Unit : Node, IBuilding, IUpkeep
     public int CurrentTime { get; set; } = 0;
 
     [Export]
-    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
+    public Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
 
     [Export]
     public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();

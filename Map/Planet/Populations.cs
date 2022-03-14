@@ -9,7 +9,8 @@ public class Populations : Node, IRequirements
     public int TotalQuantity { get; set; } = 1000000;
 
     public Random Rand { get; set; } = null;
-    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
+
+    Godot.Collections.Dictionary<string, List<string>> IRequirements.Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
 
     public override void _Ready()
     {

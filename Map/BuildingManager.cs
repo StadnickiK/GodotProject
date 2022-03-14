@@ -80,6 +80,10 @@ public class BuildingManager : Node
         return false;
     }
 
+    public bool HasBuilding(string name){
+        return (Buildings.FirstOrDefault(x => x.Name == name) != null);
+    }
+
     public override void _Process(float delta){
         _time += delta;
         if(_time >= 1){

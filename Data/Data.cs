@@ -14,8 +14,17 @@ public class Data : Node
     void GetNodes(){
     }
 
+    /// <summary>
+    /// GetNode(nodeName).GetChildren();
+    /// </summary>
+    /// <param name="nodeName"></param>
+    /// <returns></returns>
     public Godot.Collections.Array GetData(string nodeName){
         return GetNode(nodeName).GetChildren();
+    }
+
+    public Node GetData(string dataName, string name){
+        return GetNode(dataName + "/" + name);
     }
 
     public List<Building> GetBuildingsByRequiredTech(string[] requiredTech){

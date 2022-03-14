@@ -5,3 +5,6 @@
 [node name="Technology 1" type="Node"]
 script = ExtResource( 1 )
 BuildTime = 10
+BuildCost = {
+"Research points": 100
+}

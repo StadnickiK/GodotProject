@@ -3,6 +3,7 @@
 [ext_resource path="res://Data/Buildings/Mine 0.tscn" type="PackedScene" id=1]
 
 [node name="Research facility 1" instance=ExtResource( 1 )]
+IsStarter = false
 Products = {
 "Research points": 20
 }

@@ -1,8 +1,8 @@
 using Godot;
-using System;
+using System.Collections.Generic;
 
 public interface IRequirements
 {
-    Godot.Collections.Dictionary<string, string[]> Requirements { get; set; }
+    Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; }
 
 }

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 
 public class Technology : Node, IBuilding
@@ -23,6 +24,6 @@ public class Technology : Node, IBuilding
     /// <typeparam name="string[]"></typeparam>
     /// <returns>Array<string[]></returns>
     [Export]
-    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
+    public Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
 
 }

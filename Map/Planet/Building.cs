@@ -38,7 +38,7 @@ public class Building : Node, IBuilding, IUpkeep
     public Dictionary<string, int> OperationCost { get; set; } = new Dictionary<string, int>();
 
     [Export]
-    public Godot.Collections.Dictionary<string, string[]> Requirements { get; set; } = new Godot.Collections.Dictionary<string, string[]>();
+    public Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
 
     [Export]
     public bool Enabled { get; set; } = true;
