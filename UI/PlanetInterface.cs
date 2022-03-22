@@ -284,11 +284,12 @@ public class PlanetInterface : Panel
 	}
 
 	bool CheckBuildingResources(Planet planet, Building building){
-		foreach(var resName in building.Products.Keys){
-			if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
-				return false;
+		if(building.Type == Building.Category.Mine)
+			foreach(var resName in building.Products.Keys){
+				if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+					return false;
+				}
 			}
-		}
 		// foreach(Resource resource in building.ProductCost){
 		// 	if(!planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
 		// 		//return false;

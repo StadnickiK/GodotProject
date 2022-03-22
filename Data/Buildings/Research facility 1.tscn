@@ -14,3 +14,4 @@ BuildCost = {
 ResourceLimits = {
 "Research points": 300
 }
+Type = 1

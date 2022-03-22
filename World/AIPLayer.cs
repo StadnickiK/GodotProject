@@ -293,7 +293,8 @@ public class AIPlayer : Player
     TreeNode.NodeState CreateFleetRequest(){
         var targetsObj = blackBoard["ColonyTargets"];
         var targets = (Dictionary<Planet, int>)targetsObj;
-        if(targets.Count() > 0){
+        if(targets.Count() > 0 && ResManager.Resources.ContainsKey("Resource 0")){
+            if(ResManager.Resources["Resource 0"] < 300) return TreeNode.NodeState.Failure; // Recruit units onlu on good resource number or high planet development
             var unitsObj = blackBoard["UnitsToRecruit"];
             var units = (Dictionary<string, int>)unitsObj;
             blackBoard["ColonyTargets"] = targets = targets.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
@@ -570,9 +571,9 @@ public class AIPlayer : Player
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planets = (List<Planet>)planetObj;
-            if(planets.Count > 0){
-                var reqBuildingsObj = GetBlackBoardObj("BuildingsToBuild");
-                var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var reqBuildingsObj = GetBlackBoardObj("BuildingsToBuild");
+            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            if(planets.Count > 0 && reqBuildings.Count > 0){
                 var targetBuilding = reqBuildings.Last().Key;
                 foreach(var planet in planets){
                     if(targetBuilding.Products.Count > 0)
@@ -649,8 +650,7 @@ public class AIPlayer : Player
                 if(allBuildings.Count > 0){
                     foreach(Node node in allBuildings){
                         if(node is Building building){
-                            if((building.Products.ContainsKey(resName) 
-                                || building.ResourceLimits.ContainsKey(resName))
+                            if(building.Products.ContainsKey(resName) 
                                 && !reqBuildings.ContainsKey(building))
                                     reqBuildings.Add(building, reqRes[resName]);
                         }   
@@ -661,6 +661,33 @@ public class AIPlayer : Player
             }
         }
         return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState GetReqResourceBuildingStockpile(){
+
+        var state = TreeNode.NodeState.Failure;
+        if(blackBoard.ContainsKey("ResourceRequirements")){
+            var reqResObj = GetBlackBoardObj("ResourceRequirements");
+            var reqRes = (Dictionary<string, int>)reqResObj;
+            //blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            foreach(var res in ResManager.Resources.Keys){
+                if(!reqRes.ContainsKey(res)){
+                    var stockpiles = _data.GetBuildingsList().FirstOrDefault(x => (x.Products.Count == 0 && !x.ResourceLimits.ContainsKey(reqRes.Last().Key)));
+                    if(stockpiles != null){
+                        var reqBuildObj = GetBlackBoardObj("BuildingsToBuild");
+                        var reqBuildings = (Dictionary<Building, int>)reqBuildObj;
+                        if(reqBuildings.ContainsKey(stockpiles)){
+                            reqBuildings[stockpiles] += 10;
+                        }else{
+                            reqBuildings.Add(stockpiles, 10);
+                        }
+                        state = TreeNode.NodeState.Succes;
+                    }
+                }
+            }
+
+        }
+        return state;
     }
 
     TreeNode.NodeState CreateBuildingPlan(){
@@ -830,7 +857,9 @@ public class AIPlayer : Player
             new ActionTN(HasIdleUnitConstructionPlanet),
             new ActionTN(HasIdleBuildConstructionPlanets),
             new ActionTN(GetReqResourceBuilding),
-            new ActionTN(GetReqResourcePlanet)
+            new ActionTN(GetReqResourcePlanet),
+            new ActionTN(GetReqResourceBuildingStockpile),
+            new ActionTN(CreateResourceRequest)
         });
 
         TreeNode executeInvasion = new Sequence(new List<TreeNode>{
@@ -838,8 +867,12 @@ public class AIPlayer : Player
             new ActionTN(ExecuteInvasionPlan)
         });
 
+        // root = new Parallel(new List<TreeNode> {
+        //     clear, scout, getReq, research, buildBuild, buildUnits, executeInvasion
+        // });
+
         root = new Parallel(new List<TreeNode> {
-            clear, scout, getReq, research, buildBuild, buildUnits, executeInvasion
+            clear, getReq, research, buildBuild
         });
 
         return root;
