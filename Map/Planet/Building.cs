@@ -29,7 +29,7 @@ public class Building : Node, IBuilding, IUpkeep
 
     // public bool HasProductCost { get; set; } = false;
     [Export]
-    public Godot.Collections.Dictionary<string, int> ResourceLimits { get; set; } = new Godot.Collections.Dictionary<string, int>();
+    public Dictionary<string, int> ResourceLimits { get; set; } = new Dictionary<string, int>();
 
     [Export]
     public Dictionary<string, int> Upkeep { get; set; } = new Dictionary<string, int>();
@@ -38,7 +38,7 @@ public class Building : Node, IBuilding, IUpkeep
     public Dictionary<string, int> OperationCost { get; set; } = new Dictionary<string, int>();
 
     [Export]
-    public Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
+    public Dictionary<string, List<string>> Requirements { get; set; } = new Dictionary<string, List<string>>();
 
     [Export]
     public bool Enabled { get; set; } = true;

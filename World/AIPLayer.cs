@@ -207,9 +207,11 @@ public class AIPlayer : Player
         if(planets != null){
             if(blackBoard.ContainsKey("BuildConstructor")){
                 var list = (List<Planet>)blackBoard["BuildConstructor"];
-                list.AddRange(planets);
+                foreach(var planet in planets){
+                    if(!list.Contains(planet))
+                        list.Add(planet);
+                }
             }
-            
             return TreeNode.NodeState.Succes;
         }
         return TreeNode.NodeState.Failure;
@@ -221,7 +223,7 @@ public class AIPlayer : Player
         blackBoard["BuildingsToBuild"] = reqBuildings = reqBuildings.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             var BuildCost = reqBuildings.Keys.Last().BuildCost;
             var resReq = (Dictionary<string, int>)blackBoard["ResourceRequirements"]; // resReq - resource requirements
-            bool noResource = false;
+            
             foreach(var resName in BuildCost.Keys){
                 if(BuildCost[resName] > 0)
                     if(ResManager.Resources.ContainsKey(resName)){
@@ -231,7 +233,7 @@ public class AIPlayer : Player
                             }else{
                                 resReq[resName] += (BuildCost[resName] - resReq[resName]);
                             }
-                            noResource = true;
+                            
                         }
                     }else{
                         if(!resReq.ContainsKey(resName)){
@@ -242,8 +244,7 @@ public class AIPlayer : Player
                     }
             }
             
-            if(noResource)
-                return TreeNode.NodeState.Failure;
+            
         return TreeNode.NodeState.Succes;
     }
     
@@ -474,24 +475,39 @@ public class AIPlayer : Player
 
         //var count = 0;
         foreach(var building in buildings.Keys){
-            foreach(var reqName in building.Requirements.Keys){
-                if(reqName == "Technology")
-                    foreach(var name in building.Requirements[reqName]){
-                        if(Technologies.FirstOrDefault(x => x.Name == name) != null){
-                            if(buildingReq.ContainsKey(building.Name))
-                                buildingReq[building.Name][reqName].Remove(name);
+            for(int j = 0; j < building.Requirements.Count; j++){
+                var reqName = building.Requirements.Keys.ElementAt(j);
+                if(reqName == "Technology"){
+                    for(int i = 0; i < building.Requirements[reqName].Count; i++){
+                        var techName = building.Requirements[reqName][i];
+                        if(Technologies.FirstOrDefault(x => x.Name == techName) != null){
+                            if(buildingReq.ContainsKey(building.Name)){
+                                if(buildingReq[building.Name][reqName].Contains(techName))
+                                    buildingReq[building.Name][reqName].Remove(techName);
+                            }else{
+                                buildingReq.Add(building.Name, new Dictionary<string, List<string>>(){ { reqName, new List<string>(building.Requirements[reqName]) } });
+                                buildingReq[building.Name][reqName].Remove(techName);
+                            }
                         }else{
-                            var tech = (Technology)_data.GetData("Technology", name);
+                            var tech = (Technology)_data.GetData("Technology", techName);
                             if(!technologies.ContainsKey(tech))
                                 technologies.Add(tech, buildings[building]+1);
                         }
                     }
+                }
+                if(buildingReq.ContainsKey(building.Name)){
+                        if(buildingReq[building.Name].ContainsKey(reqName))
+                            if(buildingReq[building.Name][reqName].Count <= 0)
+                                buildingReq[building.Name].Remove(reqName);
+                }
                 // need to rework building plan to per planet
                 // if(reqName == "Building")
                 //     foreach(var name in building.Requirements[reqName]){
                 //         buildings.Add((Building)_data.GetData("Building", name),buildings[building]+1);
                 //     }
             }
+            if(!buildingReq.ContainsKey(building.Name))
+                buildingReq.Add(building.Name, building.Requirements);
         }
         return TreeNode.NodeState.Succes;
     }
@@ -539,11 +555,11 @@ public class AIPlayer : Player
                         if(!resReq.ContainsKey(resName)){
                             resReq.Add(resName, tech.BuildCost[resName]);
                         }else{
-                            resReq[resName] += (resReq[resName]);
+                            resReq[resName] += tech.BuildCost[resName];
                         }
                     }
             }
-            if(noResource == false)
+            if(noResource == true)
                 return TreeNode.NodeState.Failure;
         }
         return TreeNode.NodeState.Succes;
@@ -553,13 +569,18 @@ public class AIPlayer : Player
         if(blackBoard.ContainsKey("TechnologyToBuild")){
             var technology = (Dictionary<Technology, int>)blackBoard["TechnologyToBuild"];
             technology.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
-            foreach(var tech in technology.Keys){
-                if(!Technologies.Contains(tech))
+            for(int i = technology.Count - 1; i >= 0; i--){
+                var tech = technology.Keys.ElementAt(i);
+                if(!Technologies.Contains(tech)){
                     if(ResManager.PayCost(tech.BuildCost)){
                         Research.ConstructBuilding(tech);
+                        technology.Remove(tech);
                     }else{
                         return TreeNode.NodeState.Failure;
                     }
+                }else{
+                    technology.Remove(tech);
+                }
             }
             
         }
@@ -575,8 +596,9 @@ public class AIPlayer : Player
             var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
             if(planets.Count > 0 && reqBuildings.Count > 0){
                 var targetBuilding = reqBuildings.Last().Key;
+                if(targetBuilding != null)
                 foreach(var planet in planets){
-                    if(targetBuilding.Products.Count > 0)
+                    if(targetBuilding.Products.Count > 0 && targetBuilding.Type == Building.Category.Mine)
                         for(int i = 0; i < reqBuildings.Count(); i ++){ // foreach throws because indexer changes
                             var building = reqBuildings.Keys.ElementAt(i);
                                 foreach(string resName in building.Products.Keys){
@@ -593,6 +615,65 @@ public class AIPlayer : Player
                         if(planet.StartConstruction(targetBuilding)){
                             reqBuildings.Remove(targetBuilding);
                             return TreeNode.NodeState.Succes;
+                        }
+                }
+            }
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ConstructBuilding(Dictionary<Building, int> reqBuildings, Planet planet, Building targetBuilding){
+        if(!planet.BuildingsManager.HasBuilding(targetBuilding)){ // needee if the dictionary contains only 1 item
+            return ConstructBuildingIfNotHave(reqBuildings, planet, targetBuilding);
+        }else{
+            var temp = reqBuildings[targetBuilding];
+            reqBuildings.Remove(targetBuilding); // remove fist element
+            reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
+        }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ConstructBuildingIfNotHave(Dictionary<Building, int> reqBuildings, Planet planet, Building targetBuilding){
+            if(planet.StartConstruction(targetBuilding)){
+                reqBuildings.Remove(targetBuilding);
+                return TreeNode.NodeState.Succes;
+            }else{
+                var temp = reqBuildings[targetBuilding];
+                reqBuildings.Remove(targetBuilding); // remove fist element
+                reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
+            }
+        return TreeNode.NodeState.Failure;
+    }
+
+    TreeNode.NodeState ConstructBuilding2(){
+        if(blackBoard.ContainsKey("BuildConstructor")){
+            var planetObj = blackBoard["BuildConstructor"];
+            var planets = (List<Planet>)planetObj;
+            var reqBuildingsObj = GetBlackBoardObj("BuildingsToBuild");
+            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            var buildingReq = (Dictionary<string, Dictionary<string, List<string>>>)blackBoard["BuildingRequirements"];
+            if(planets.Count > 0 && reqBuildings.Count > 0){
+                foreach(var planet in planets){
+                        for(int i = reqBuildings.Count() - 1; i > -1; i --){ // foreach throws because indexer changes
+                            var building = reqBuildings.Keys.ElementAt(i);
+                            if(buildingReq[building.Name].Count <= 0)
+                                if(building.Products.Count > 0 && building.Type == Building.Category.Mine){
+                                    int j = 0;
+                                    foreach(string resName in building.Products.Keys){
+                                        if(planet.ResourcesManager.Resources.ContainsKey(resName) && !planet.BuildingsManager.HasBuilding(building)){
+                                            j ++;
+                                        }
+                                    }
+                                    if( j != building.Products.Count){
+                                        var temp = reqBuildings[building];
+                                        reqBuildings.Remove(building); // remove fist element
+                                        reqBuildings.Add(building, temp);
+                                    }else{
+                                        return ConstructBuildingIfNotHave(reqBuildings, planet, building);
+                                    }
+                                }else{
+                                    return ConstructBuilding(reqBuildings, planet, building);
+                                }
                         }
                 }
             }
@@ -644,23 +725,23 @@ public class AIPlayer : Player
             var reqBuildObj = GetBlackBoardObj("BuildingsToBuild");
             var reqBuildings = (Dictionary<Building, int>)reqBuildObj;
             if( reqRes.Count > 0){
-                var resName = reqRes.Last().Key;
-                var allBuildings = _data.GetNode("Buildings").GetChildren();
-                var count = reqBuildings.Count;
-                if(allBuildings.Count > 0){
-                    foreach(Node node in allBuildings){
-                        if(node is Building building){
-                            if(building.Products.ContainsKey(resName) 
-                                && !reqBuildings.ContainsKey(building))
-                                    reqBuildings.Add(building, reqRes[resName]);
-                        }   
+                for(int i = reqRes.Count - 1; i >= 0; i--){
+                    var resName = reqRes.ElementAt(i).Key;
+                    var allBuildings = _data.GetNode("Buildings").GetChildren();
+                    var count = reqBuildings.Count;
+                    if(allBuildings.Count > 0){
+                        foreach(Node node in allBuildings){
+                            if(node is Building building){
+                                if(building.Products.ContainsKey(resName) 
+                                    && !reqBuildings.ContainsKey(building))
+                                        reqBuildings.Add(building, reqRes[resName]);
+                            }   
+                        }
                     }
                 }
-                if(reqBuildings.Count > count)
-                    return TreeNode.NodeState.Succes;
             }
         }
-        return TreeNode.NodeState.Failure;
+        return TreeNode.NodeState.Succes;
     }
 
     TreeNode.NodeState GetReqResourceBuildingStockpile(){
@@ -840,11 +921,12 @@ public class AIPlayer : Player
             new ActionTN(ConstructFleet)
         });
 
-        TreeNode buildBuild = new Sequence(new List<TreeNode> {
+        TreeNode buildBuildings = new Sequence(new List<TreeNode> {
             //new ActionTN(HasBuilding),
             new ActionTN(HasBuildingRequirements),
             new ActionTN(HasResources),
-            new ActionTN(ConstructBuilding)
+            //new ActionTN(ConstructBuilding)
+            new ActionTN(ConstructBuilding2)
         });
 
         TreeNode research = new Sequence(new List<TreeNode> {
@@ -872,7 +954,7 @@ public class AIPlayer : Player
         // });
 
         root = new Parallel(new List<TreeNode> {
-            clear, getReq, research, buildBuild
+            clear, getReq, research, buildBuildings
         });
 
         return root;

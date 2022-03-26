@@ -24,6 +24,6 @@ public class Technology : Node, IBuilding
     /// <typeparam name="string[]"></typeparam>
     /// <returns>Array<string[]></returns>
     [Export]
-    public Godot.Collections.Dictionary<string, List<string>> Requirements { get; set; } = new Godot.Collections.Dictionary<string, List<string>>();
+    public Dictionary<string, List<string>> Requirements { get; set; } = new Dictionary<string, List<string>>();
 
 }
