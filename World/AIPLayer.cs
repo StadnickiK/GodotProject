@@ -750,13 +750,11 @@ public class AIPlayer : Player
         if(blackBoard.ContainsKey("ResourceRequirements")){
             var reqResObj = GetBlackBoardObj("ResourceRequirements");
             var reqRes = (Dictionary<string, int>)reqResObj;
-            //blackBoard["ResourceRequirements"] = reqRes = reqRes.OrderBy( x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             foreach(var res in ResManager.Resources.Keys){
-                if(!reqRes.ContainsKey(res)){
-                    var stockpiles = _data.GetBuildingsList().FirstOrDefault(x => (x.Products.Count == 0 && !x.ResourceLimits.ContainsKey(reqRes.Last().Key)));
+                if(ResManager.Resources[res] >= ResManager.ResourceLimits[res]){
+                    var stockpiles = _data.GetBuildingsList().FirstOrDefault(x => (x.Products.Count == 0 && x.ResourceLimits.ContainsKey(res)));
                     if(stockpiles != null){
-                        var reqBuildObj = GetBlackBoardObj("BuildingsToBuild");
-                        var reqBuildings = (Dictionary<Building, int>)reqBuildObj;
+                        var reqBuildings = (Dictionary<Building, int>)GetBlackBoardObj("BuildingsToBuild");
                         if(reqBuildings.ContainsKey(stockpiles)){
                             reqBuildings[stockpiles] += 10;
                         }else{
@@ -766,7 +764,6 @@ public class AIPlayer : Player
                     }
                 }
             }
-
         }
         return state;
     }
