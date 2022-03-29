@@ -889,7 +889,6 @@ public class AIPlayer : Player
             //new ActionTN(HasBuilding),
             new ActionTN(HasBuildingRequirements),
             new ActionTN(HasResources),
-            //new ActionTN(ConstructBuilding)
             new ActionTN(ConstructBuilding)
         });
 
@@ -918,7 +917,7 @@ public class AIPlayer : Player
         // });
 
         root = new Parallel(new List<TreeNode> {
-            clear, getReq, research, buildBuildings
+            clear, scout//getReq, research, buildBuildings
         });
 
         return root;
