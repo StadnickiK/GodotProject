@@ -588,40 +588,7 @@ public class AIPlayer : Player
     }
 
     // todo: change the way buildings are passed to Planet, add a filter or smth
-    TreeNode.NodeState ConstructBuilding(){
-        if(blackBoard.ContainsKey("BuildConstructor")){
-            var planetObj = blackBoard["BuildConstructor"];
-            var planets = (List<Planet>)planetObj;
-            var reqBuildingsObj = GetBlackBoardObj("BuildingsToBuild");
-            var reqBuildings = ((Dictionary<Building, int>)reqBuildingsObj);//.Reverse().ToDictionary(x => x.Key, x => x.Value);
-            if(planets.Count > 0 && reqBuildings.Count > 0){
-                var targetBuilding = reqBuildings.Last().Key;
-                if(targetBuilding != null)
-                foreach(var planet in planets){
-                    if(targetBuilding.Products.Count > 0 && targetBuilding.Type == Building.Category.Mine)
-                        for(int i = 0; i < reqBuildings.Count(); i ++){ // foreach throws because indexer changes
-                            var building = reqBuildings.Keys.ElementAt(i);
-                                foreach(string resName in building.Products.Keys){
-                                    if(!planet.ResourcesManager.Resources.ContainsKey(resName) || planet.BuildingsManager.HasBuilding(building)){
-                                        var temp = reqBuildings[building];
-                                        reqBuildings.Remove(targetBuilding); // remove fist element
-                                        reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
-                                        targetBuilding = reqBuildings.FirstOrDefault().Key; // set new target building
-                                        break;
-                                    }
-                                }
-                        }
-                    if(!planet.BuildingsManager.HasBuilding(targetBuilding)) // needee if the dictionary contains only 1 item
-                        if(planet.StartConstruction(targetBuilding)){
-                            reqBuildings.Remove(targetBuilding);
-                            return TreeNode.NodeState.Succes;
-                        }
-                }
-            }
-        }
-        return TreeNode.NodeState.Failure;
-    }
-
+ 
     TreeNode.NodeState ConstructBuilding(Dictionary<Building, int> reqBuildings, Planet planet, Building targetBuilding){
         if(!planet.BuildingsManager.HasBuilding(targetBuilding)){ // needee if the dictionary contains only 1 item
             return ConstructBuildingIfNotHave(reqBuildings, planet, targetBuilding);
@@ -645,7 +612,7 @@ public class AIPlayer : Player
         return TreeNode.NodeState.Failure;
     }
 
-    TreeNode.NodeState ConstructBuilding2(){
+    TreeNode.NodeState ConstructBuilding(){
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planets = (List<Planet>)planetObj;
@@ -923,7 +890,7 @@ public class AIPlayer : Player
             new ActionTN(HasBuildingRequirements),
             new ActionTN(HasResources),
             //new ActionTN(ConstructBuilding)
-            new ActionTN(ConstructBuilding2)
+            new ActionTN(ConstructBuilding)
         });
 
         TreeNode research = new Sequence(new List<TreeNode> {
