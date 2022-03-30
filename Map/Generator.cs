@@ -76,6 +76,7 @@ public class Generator : Node
             starSystem.Rand = Rand;
             starSystem.SystemID = i;
             starSystem.SystemName = "System " + i;
+            starSystem.Name = "System " + i;
             starSystem.Connect("ViewStarSystem", galaxy, ("_on_ViewStarSystem"));
             starSystem.Connect("ViewGalaxy", galaxy, ("_on_ViewGalaxy"));
             var temp = starSystem.Transform;

@@ -120,11 +120,22 @@ public class AIPlayer : Player
     public TreeNode.NodeState ClearFinishedScoutMissions(){
         var scoutMissions = (Dictionary<Ship, string>)blackBoard["ScoutMissions"];
         var map = (Dictionary<string, List<Planet>>)blackBoard["Map"];
-        if(scoutMissions.Count <= 0){
-            foreach(Ship s in scoutMissions.Keys){
-                if(map.ContainsKey(scoutMissions[s])){
-                    if(map[scoutMissions[s]].Count == (_worldMap.galaxy.StarSystems.Find( x => x.Name == scoutMissions[s])).Planets.Count){
-                        scoutMissions.Remove(s);
+        if(scoutMissions.Count > 0){
+            for(int i = 0; i < scoutMissions.Keys.Count; i++){
+                var scout = scoutMissions.ElementAt(i).Key;
+                var systemName = scoutMissions.ElementAt(i).Value;
+                if(map.ContainsKey(systemName)){
+                    if(map[systemName].Count > 0){
+                        var planet = map[systemName].ElementAt(0);
+                        var sysPlanets = planet.System.Planets;
+                        foreach(var p in sysPlanets){
+                            if(p.Controller == this && !map[systemName].Contains(p))
+                                map[systemName].Add(p);
+                        }
+                    }
+                    var count = (_worldMap.galaxy.StarSystems.FirstOrDefault( x => x.Name == systemName)).Planets.Count;
+                    if(map[systemName].Count == count){
+                        scoutMissions.Remove(scout);
                     }
 
                 }
@@ -874,11 +885,6 @@ public class AIPlayer : Player
             new ActionTN(ClearFinishedInvasionMissions)
         });
 
-        TreeNode scout = new Sequence(new List<TreeNode> {
-            new GetIdleShip(blackBoard),
-            scoutSystem
-        });
-
         // todo: Add has resources, add recruitment queue based on target planet Reapeter?? 
         TreeNode buildUnits = new Sequence(new List<TreeNode> {
             new ActionTN(CreateFleetRequest),
@@ -904,6 +910,7 @@ public class AIPlayer : Player
             new ActionTN(GetReqResourceBuilding),
             new ActionTN(GetReqResourcePlanet),
             new ActionTN(GetReqResourceBuildingStockpile),
+            new GetIdleShip(blackBoard),
             new ActionTN(CreateResourceRequest)
         });
 
@@ -913,11 +920,11 @@ public class AIPlayer : Player
         });
 
         // root = new Parallel(new List<TreeNode> {
-        //     clear, scout, getReq, research, buildBuild, buildUnits, executeInvasion
+        //     clear, scoutSystem, getReq, research, buildBuild, buildUnits, executeInvasion
         // });
 
         root = new Parallel(new List<TreeNode> {
-            clear, scout//getReq, research, buildBuildings
+            clear, getReq, scoutSystem //, research, buildBuildings
         });
 
         return root;

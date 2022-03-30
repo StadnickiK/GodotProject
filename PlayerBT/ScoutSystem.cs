@@ -88,14 +88,19 @@ public class ScoutSystem : TreeNode
                         }
                     var scout = ChooseScout(fleets);
                     StarSystem system;
-                    if(scoutMissions.ContainsValue(planet.System.Name)){
-                        system = GetUnscoutedStarSystem(position);
+                    if(map.ContainsKey(planet.System.Name)){
+                        var count = (_worldMap.galaxy.StarSystems.FirstOrDefault( x => x.Name == planet.System.Name)).Planets.Count;
+                        if(map[planet.System.Name].Count == count){
+                            system = GetUnscoutedStarSystem(position);
+                        }else{
+                            system = planet.System;
+                        }
                     }else{
                         system = planet.System;
                     }
                     if(system != null){
                         if(scout.MapObject != system){
-                            scout.targetManager.AddTarget(system);
+                            scout.MoveToTarget(system);
                         }
                         foreach(Node node in system.StarSysObjects.GetChildren()){
                             if(node is Planet targetPlanet && node != planet){
@@ -108,7 +113,7 @@ public class ScoutSystem : TreeNode
                             }
                         }
                         fleets.Remove(scout);
-                        scoutMissions.Add(scout, planet.System.Name);
+                        scoutMissions.Add(scout, system.Name);
                         State = NodeState.Succes;
                         return NodeState.Succes;
                     }
