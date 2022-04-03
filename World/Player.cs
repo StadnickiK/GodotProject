@@ -19,6 +19,10 @@ public class Player : Node
     [Export]
     public List<Technology> Technologies { get; set; } = new List<Technology>();
 
+    public List<Planet> Planets { get; set; } = new List<Planet>();
+
+    public List<Ship> Ships { get; set; } = new List<Ship>();
+
     public ConstructionManager Research { get; set; } = new ConstructionManager();
 
     float _time = 0;
@@ -77,11 +81,19 @@ public class Player : Node
 
     public void AddMapObject(PhysicsBody mapObject){
         MapObjects.Add(mapObject);
+        if(mapObject is Ship ship)
+            Ships.Add(ship);
+        if(mapObject is Planet planet)
+            Planets.Add(planet);
         MapObjectsChanged = true;
     }
 
     public void RemoveMapObject(PhysicsBody mapObject){
         MapObjects.Remove(mapObject);
+        if(mapObject is Ship ship)
+            Ships.Remove(ship);
+        if(mapObject is Planet planet)
+            Planets.Remove(planet);
         MapObjectsChanged = true;
     }
 
@@ -145,7 +157,7 @@ public class Player : Node
                 prodCost.GetTotalProdCost(_resourceManager.ProdCost);
             }
         }
-        _resourceManager.PayUpkeep(_resourceManager.Upkeep);
+        //_resourceManager.PayUpkeep(_resourceManager.Upkeep);
     }
 
     public void InitResourceLimit(){

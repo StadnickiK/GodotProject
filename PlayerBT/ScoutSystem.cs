@@ -16,7 +16,7 @@ public class ScoutSystem : TreeNode
         return fleets.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.ElementAt(0);
     }
 
-        StarSystem GetUnscoutedStarSystem(){
+    StarSystem GetUnscoutedStarSystem(){
         var starSystems = new Godot.Collections.Array(_worldMap.galaxy.GetChildren());
         var map = (Dictionary<string, List<Planet>>)GetGlobalData("Map");
         var scoutMissions = (Dictionary<Ship, string>)GetGlobalData("ScoutMissions");
@@ -50,11 +50,17 @@ public class ScoutSystem : TreeNode
             if(node is StarSystem starSystem){
                 if(!scoutMissions.Values.Contains(starSystem.Name))
                     if(target == null){
-                        target = starSystem;
+                        if(map.ContainsKey(starSystem.Name)){
+                            var planetList = map[starSystem.Name];
+                            if(planetList.Count < starSystem.Planets.Count)
+                                    target = starSystem;
+                        }else{
+                                target = starSystem;
+                        } 
                     }else{
                         if(map.ContainsKey(starSystem.Name)){
                             var planetList = map[starSystem.Name];
-                            if(planetList.Count <= starSystem.Planets.Count)
+                            if(planetList.Count < starSystem.Planets.Count)
                                 if(target.Transform.origin.DistanceTo(position) < starSystem.Transform.origin.DistanceTo(position))
                                     target = starSystem;
                         }else{
@@ -112,6 +118,7 @@ public class ScoutSystem : TreeNode
                                 }
                             }
                         }
+                        //if(scoutMissions)
                         fleets.Remove(scout);
                         scoutMissions.Add(scout, system.Name);
                         State = NodeState.Succes;

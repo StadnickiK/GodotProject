@@ -105,6 +105,12 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         }else{
             starSysObj = GetParent();
         }
+        if(target == starSysObj.GetParent() && GetParent().GetParent() is Planet planet){
+            var tempTarget = GetTempWaypoint(planet.Transform.origin);
+            targetManager.SetTarget(tempTarget);    // set temp target to leave orbit
+            targetManager.AddTarget(target);
+            return;
+        }
         if(target.GetParent() != starSysObj){   // check if target is in the same map object (f.e. star system)
             if(starSysObj.GetParent() is StarSystem system){
                 
