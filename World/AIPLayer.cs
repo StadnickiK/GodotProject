@@ -60,6 +60,22 @@ public class AIPlayer : Player
         blackBoard.Add("WorldMap", map);
     }
 
+    public override void _Ready()
+    {
+        // root = SetupTree();
+        // AddChild(root);
+    }
+
+    public override void _Process(float delta){
+        base._Process(delta);
+        if(root != null)
+            root.Evaluate();
+        if(MapObjectsChanged){
+            ConnectSignals();
+        }
+    }
+
+
     void _on_MapObject_Entered(Node node, Ship ship){
         if(node is Planet planet){
             if(ship.MapObject == planet.GetParent().GetParent())
@@ -97,21 +113,6 @@ public class AIPlayer : Player
                 if(!ship._area.IsConnected("body_exited", this, nameof(_on_MapObject_Exited)))
                     ship._area.Connect("body_exited", this, nameof(_on_MapObject_Exited));
             }
-        }
-    }
-
-    public override void _Ready()
-    {
-        root = SetupTree();
-        AddChild(root);
-    }
-
-    public override void _Process(float delta){
-        base._Process(delta);
-        if(root != null)
-            root.Evaluate();
-        if(MapObjectsChanged){
-            ConnectSignals();
         }
     }
 

@@ -95,6 +95,12 @@ public int Radius
 		StarSysObjects.Visible = true;
 		XButton.Visible = true;
 		Placeholder.Visible = false;
+		foreach(var node in StarSysObjects.GetChildren()){
+			if(node is Ship ship){
+				if(ship.IsLocal && !ship.Visible)
+					ship.Visible = true;
+			}
+		}
 		EmitSignal(nameof(ViewStarSystem), this);
 	}
 
