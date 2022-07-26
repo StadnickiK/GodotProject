@@ -31,8 +31,8 @@ mouse_filter = 0
 size_flags_horizontal = 3
 Text = "Star Systems"
 ValueName = "Systems"
-_minValue = 5
-_maxValue = 40
+_minValue = 20
+_maxValue = 60
 
 [node name="ValueSlider2" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource( 3 )]
 margin_top = 21.0
@@ -42,7 +42,7 @@ mouse_filter = 0
 Text = "Players "
 ValueName = "Players"
 _minValue = 1
-_maxValue = 10
+_maxValue = 50
 
 [node name="ConfirmButton" type="HBoxContainer" parent="VBoxContainer" index="1"]
 margin_top = 41.0

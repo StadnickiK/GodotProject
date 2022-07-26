@@ -28,6 +28,9 @@ public class AIPlayer : Player
     public float PlanetDevelopmentLvl { get; set; } = 0.6f;
 
     [Export]
+    public int AICount { get; set; } = 50;
+
+    [Export]
     public int MineWeight { get; set; } = 3;
 
     public float AvgPlanetDevelopmentLvl { get; set; } = 0f;
@@ -66,10 +69,24 @@ public class AIPlayer : Player
         AddChild(root);
     }
 
+    float _time = 0;
+
+    int counter = 0;
+
     public override void _Process(float delta){
         base._Process(delta);
         if(root != null)
-            root.Evaluate();
+            if(PlayerID == counter){
+                root.Evaluate();
+                if(counter >= 50)
+                    counter = -1;
+                _time = 0;
+            }else{
+                _time += delta;
+            }
+            if(counter >= 50)
+                counter = -1;
+            counter++;
         if(MapObjectsChanged){
             ConnectSignals();
         }
@@ -136,7 +153,7 @@ public class AIPlayer : Player
             for(int i = 0; i < scoutMissions.Keys.Count; i++){
                 var scout = scoutMissions.ElementAt(i).Key;
                 var systemName = scoutMissions.ElementAt(i).Value;
-                if(map.ContainsKey(systemName)){
+                if(map.ContainsKey(systemName) && IsInstanceValid(scout)){
                     if(map[systemName].Count > 0){
                         var planet = map[systemName].ElementAt(0);
                         var sysPlanets = planet.System.Planets;
@@ -1033,7 +1050,7 @@ public class AIPlayer : Player
             new ActionTN(GetAvgPlanetDevLvl)
         });
 
-        TreeNode executeInvasion = new Sequence(new List<TreeNode>{
+        TreeNode executeInvasion = new Parallel(new List<TreeNode>{
             new ActionTN(PlanInvasion),
             new ActionTN(ExecuteInvasionPlan)
         });

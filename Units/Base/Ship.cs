@@ -176,6 +176,16 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         }
     }
 
+    public void Merge(Ship ship){
+        foreach(Unit unit in ship.Units.GetChildren()){
+            unit.GetParent().RemoveChild(unit);
+            Units.AddChild(unit);
+        }
+        ship.Controller.RemoveMapObject(ship);
+        ship.Controller.MapObjectsChanged = true;
+        ship.QueueFree();
+    }
+
     public override void _IntegrateForces(PhysicsDirectBodyState state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;

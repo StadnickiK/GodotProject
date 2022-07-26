@@ -77,13 +77,7 @@ public class UnitTransferPanel : PanelContainer
     }
 
     void _on_Merge_button_up(){
-        foreach(Unit unit in right.Units.GetChildren()){
-            unit.GetParent().RemoveChild(unit);
-            left.Units.AddChild(unit);
-        }
-        right.Controller.RemoveMapObject(right);
-        right.Controller.MapObjectsChanged = true;
-        right.QueueFree();
+        left.Merge(right);
         Visible = false;
     }
 

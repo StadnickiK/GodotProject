@@ -45,7 +45,7 @@ private Data _data = null;
 	public Random Rand { get; set; }
 
 	void InitRand(){
-		Seed = Guid.NewGuid().GetHashCode();
+		Seed = -1991794247; //Guid.NewGuid().GetHashCode();
 		Rand = new Random(Seed);
 ;   }
 

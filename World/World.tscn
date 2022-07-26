@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://UI/UI.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Data/Counter.cs" type="Script" id=2]
 [ext_resource path="res://World/WorldCursorControl.tscn" type="PackedScene" id=4]
 [ext_resource path="res://World/World.cs" type="Script" id=5]
 [ext_resource path="res://StaticGround.tscn" type="PackedScene" id=6]
@@ -56,5 +57,8 @@ material/0 = ExtResource( 9 )
 
 [node name="Ground" parent="." instance=ExtResource( 6 )]
 transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0 )
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource( 2 )
 
 [connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

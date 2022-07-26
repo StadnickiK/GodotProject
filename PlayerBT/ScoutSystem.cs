@@ -82,8 +82,8 @@ public class ScoutSystem : TreeNode
             var player = (AIPlayer)playerObject;
             var fleets = (Dictionary<Ship, int>)fleetsObject;
             var planet = player.GetFirstPlanet();
-            var position = GetPlanetSystemPosition(planet);
             if(planet != null && fleets.Count > 0){
+                var position = GetPlanetSystemPosition(planet);
                 if(planet.System != null){
                     var map = (Dictionary<string, List<Planet>>)GetGlobalData("Map");
                     var scoutMissionsObj = GetGlobalData("ScoutMissions");
@@ -118,16 +118,16 @@ public class ScoutSystem : TreeNode
                                 }
                             }
                         }
-                        //if(scoutMissions)
-                        fleets.Remove(scout);
-                        scoutMissions.Add(scout, system.Name);
-                        State = NodeState.Succes;
-                        return NodeState.Succes;
+                        if(!scoutMissions.ContainsKey(scout)){
+                            fleets.Remove(scout);
+                            scoutMissions.Add(scout, system.Name);
+                            State = NodeState.Succes;
+                            return NodeState.Succes;
+                        }
                     }
                 }
             }
         }
-
         State = NodeState.Failure;
         return NodeState.Failure;
     }
