@@ -145,7 +145,7 @@ public class PlanetInterface : Panel
 		// UpdateTransferPanel(planet);
 	}
 
-	void _on_TransferResources(PhysicsBody left, PhysicsBody body){
+	void _on_TransferResources(CollisionObject left, CollisionObject body){
 		if(left is Planet planet && body is Ship ship){
 			///*
 			foreach(TransferLabel label in _overviewPanel.GetPanel("Resource transfer").GetNode("ItemList/Items").GetChildren()){

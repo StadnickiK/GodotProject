@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Select : Node
 {
 
-    SelectManager<PhysicsBody> selectManager;
+    SelectManager<CollisionObject> selectManager;
     PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect3.tscn");
 
     Vector3 _destination;
@@ -28,14 +28,14 @@ public class Select : Node
         }
     }
 
-    void AddSelectEffect(PhysicsBody unit){
+    void AddSelectEffect(CollisionObject unit){
             var selectEffectNode = (MeshInstance)SelectEffect.Instance();
             selectEffectNode.Scale = (unit.Scale*2);
             unit.AddChild(selectEffectNode);
     }
 
     void RemoveSelectEffect(){
-        foreach(PhysicsBody c in selectManager.SelectedUnits){
+        foreach(CollisionObject c in selectManager.SelectedUnits){
             if(c != null){
                 c.RemoveChild(c.GetNode("SelectEffect"));
             }else{
@@ -44,7 +44,7 @@ public class Select : Node
         }
     }
 
-    public void SelectUnit(PhysicsBody unit){
+    public void SelectUnit(CollisionObject unit){
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
@@ -52,19 +52,19 @@ public class Select : Node
         }
     }
 
-    public void AddSelectedUnit(PhysicsBody unit){
+    public void AddSelectedUnit(CollisionObject unit){
         if(unit.GetNodeOrNull("SelectEffect") == null){
             selectManager.AddSelectedUnit(unit);
             AddSelectEffect(unit);
         }
     }
 
-    public void AddSelectedUnits(List<PhysicsBody> units){
+    public void AddSelectedUnits(List<CollisionObject> units){
         selectManager.AddSelectedUnits(units);
     }
 
-    public void AddTarget(PhysicsBody target){
-        foreach(PhysicsBody rigidB in selectManager.SelectedUnits){
+    public void AddTarget(CollisionObject target){
+        foreach(CollisionObject rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
@@ -77,8 +77,8 @@ public class Select : Node
         }
     }
 
-    public void AddTarget(PhysicsBody target, CmdPanel.CmdPanelOption task){
-        foreach(PhysicsBody rigidB in selectManager.SelectedUnits){
+    public void AddTarget(CollisionObject target, CmdPanel.CmdPanelOption task){
+        foreach(CollisionObject rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
@@ -94,7 +94,7 @@ public class Select : Node
     }
 
     public void ClearTarget(){
-        foreach(PhysicsBody k in selectManager.SelectedUnits){
+        foreach(CollisionObject k in selectManager.SelectedUnits){
             if(k is Ship){
                 Ship ship = (Ship)k;
                 ship.targetManager.ClearTargets();
@@ -115,8 +115,8 @@ public class Select : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        SetProcess(false);   
-        selectManager = new SelectManager<PhysicsBody>();
+        // SetProcess(false);   
+        selectManager = new SelectManager<CollisionObject>();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

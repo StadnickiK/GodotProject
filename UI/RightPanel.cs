@@ -33,7 +33,7 @@ public class RightPanel : Panel
         //_overviewPanel.DisconnectToGuiInputEvent(this, panelName, nameof(_on_GuiInputEvent));
         _overviewPanel.ClearPanel(panelName);
         _overviewPanel.ClearPanel("Fleets");
-        foreach(PhysicsBody body in player.MapObjects){
+        foreach(CollisionObject body in player.MapObjects){
             if(body != null){
                 if(body is Planet planet){
                     CreateOverviewPanelLabel(panelName, planet.Name, planet);

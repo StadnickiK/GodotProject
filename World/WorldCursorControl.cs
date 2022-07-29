@@ -38,15 +38,15 @@ public class WorldCursorControl : Spatial
         //*/
     }
 
-    public void _SelectUnit(PhysicsBody unit){
+    public void _SelectUnit(CollisionObject unit){
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(PhysicsBody target){;
+    public void _SelectTarget(CollisionObject target){;
         select.AddTarget(target);
     }
 
-    public void SetTask(PhysicsBody target, CmdPanel.CmdPanelOption task){;
+    public void SetTask(CollisionObject target, CmdPanel.CmdPanelOption task){;
         select.AddTarget(target, task);
     }
 

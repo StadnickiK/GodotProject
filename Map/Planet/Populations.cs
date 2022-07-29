@@ -14,6 +14,7 @@ public class Populations : Node, IRequirements
 
     public override void _Ready()
     {
+        // SetProcess(false);
         InitTotalQuantity();
     }
 

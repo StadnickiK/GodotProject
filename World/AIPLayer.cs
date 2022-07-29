@@ -65,8 +65,8 @@ public class AIPlayer : Player
 
     public override void _Ready()
     {
-        root = SetupTree();
-        AddChild(root);
+        // root = SetupTree();
+        // AddChild(root);
     }
 
     float _time = 0;

@@ -27,8 +27,8 @@ public class Player : Node
 
     float _time = 0;
 
-    private List<PhysicsBody> _MapObejcts = new List<PhysicsBody>();
-    public List<PhysicsBody> MapObjects
+    private List<CollisionObject> _MapObejcts = new List<CollisionObject>();
+    public List<CollisionObject> MapObjects
     {
         get { return _MapObejcts; }
     }
@@ -79,7 +79,7 @@ public class Player : Node
         return null;
     }    
 
-    public void AddMapObject(PhysicsBody mapObject){
+    public void AddMapObject(CollisionObject mapObject){
         MapObjects.Add(mapObject);
         if(mapObject is Ship ship)
             Ships.Add(ship);
@@ -88,7 +88,7 @@ public class Player : Node
         MapObjectsChanged = true;
     }
 
-    public void RemoveMapObject(PhysicsBody mapObject){
+    public void RemoveMapObject(CollisionObject mapObject){
         MapObjects.Remove(mapObject);
         if(mapObject is Ship ship)
             Ships.Remove(ship);

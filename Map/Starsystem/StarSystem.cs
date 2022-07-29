@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : StaticBody, IEnterMapObject, IExitMapObject
+public class StarSystem : Area, IEnterMapObject, IExitMapObject
 {
 
 	[Export]
@@ -114,7 +114,7 @@ public int Radius
 			if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
 				OpenStarSystem();
 			}else if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Right){
-				EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+				EmitSignal(nameof(SelectTarget), (CollisionObject)this);
 			}
 		}
 	}
@@ -170,6 +170,7 @@ public int Radius
 	public override void _Ready()
 	{
 		SetPhysicsProcess(false);
+		// SetProcess(false);
 		_size.Scale = new Vector3(_radius,1,_radius);
 		_ConnectSignal();
 		GenerateMesh();

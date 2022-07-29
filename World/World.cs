@@ -193,7 +193,7 @@ private Data _data = null;
 	}
 
 	void UpdateGround(){
-		var ground = GetNode<StaticBody>("Ground");
+		var ground = GetNode<Area>("Ground");
 		ground.Scale = new Vector3(2*Galaxy.Radius,1,2*Galaxy.Radius);
 	}
 
@@ -239,7 +239,7 @@ private Data _data = null;
 			if(node is Player player){
 				int maxFleets = 1;
 				var ship = (Ship)_ShipScene.Instance();
-				foreach(PhysicsBody body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
+				foreach(CollisionObject body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
 					if(body is Planet planet && maxFleets>0){
 						var transform = ship.Transform;
 						transform.origin = planet.Transform.origin;

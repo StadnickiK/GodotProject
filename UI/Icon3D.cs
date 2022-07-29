@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Icon3D : StaticBody
+public class Icon3D : Area
 {
     
     MeshInstance _mesh = null;
@@ -14,6 +14,8 @@ public class Icon3D : StaticBody
     {
         GetNodes();
         SetYellow();
+        // SetProcess(false);
+        SetPhysicsProcess(false);
     }
 
     public void ChangeColor(Color color){

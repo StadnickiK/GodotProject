@@ -4,7 +4,6 @@
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Text3.tscn" type="PackedScene" id=4]
 
-
 [sub_resource type="BoxShape" id=1]
 
 [sub_resource type="CylinderMesh" id=2]
@@ -12,12 +11,15 @@
 [sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.117647, 0.87451, 0.164706, 1 )
 
-[node name="StarSystem" type="StaticBody"]
-collision_mask = 4
+[node name="StarSystem" type="Area"]
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource( 1 )
 
 [node name="Placeholder" type="CollisionShape" parent="."]
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+visible = false
 shape = SubResource( 1 )
 
 [node name="Text3" parent="Placeholder" instance=ExtResource( 4 )]
@@ -30,7 +32,6 @@ transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
 visible = false
 
 [node name="StarSysObjects" type="Spatial" parent="."]
-visible = false
 
 [node name="Diameter" type="MeshInstance" parent="StarSysObjects"]
 transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )

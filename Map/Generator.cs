@@ -49,7 +49,7 @@ public class Generator : Node
             var starSystem = GenerateStarSystem(galaxy, dist, i);
             galaxy.AddChild(starSystem);
             galaxy.StarSystems.Add(starSystem);
-            dist += Rand.Next(10, 15);
+            dist += Rand.Next(100, 150);
             angle += Rand.Next(0, 60);
         }
         galaxy.Radius = (int)(1.2f*dist);
@@ -104,7 +104,7 @@ public class Generator : Node
 			angle += Rand.Next(0,50);
 		}
 		system.Radius = (int)(dist*1.2f);
-		system.StarSysObjects.Visible = false;
+		// system.StarSysObjects.Visible = false;
 		system.Rotation = Vector3.Zero;
         return system;
 	}

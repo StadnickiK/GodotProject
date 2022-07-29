@@ -2,7 +2,6 @@
 
 [ext_resource path="res://Map/Starsystem/Star.cs" type="Script" id=1]
 
-
 [sub_resource type="OpenSimplexNoise" id=1]
 period = 31.0
 
@@ -100,7 +99,7 @@ shader = SubResource( 9 )
 [sub_resource type="SphereMesh" id=11]
 material = SubResource( 10 )
 
-[node name="Star" type="StaticBody"]
+[node name="Star" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]

@@ -15,7 +15,10 @@ params_billboard_mode = 1
 albedo_color = Color( 0, 1, 0, 1 )
 albedo_texture = ExtResource( 1 )
 
-[node name="Icon3D" type="StaticBody"]
+[node name="Icon3D" type="Area"]
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]

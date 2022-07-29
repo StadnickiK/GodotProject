@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
+public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
 {
 
     [Export]
@@ -372,19 +372,21 @@ public class Planet : StaticBody, IEnterMapObject, IExitMapObject, IMapObjectCon
     public void ChangeController(Player player){
             if(player != Controller){
                 if(Controller != null){
-                    Controller.RemoveMapObject(this);
+                    // Controller.RemoveMapObject(this);
                 }
                 Controller = player;
                 if(player != null){
-                    player.AddMapObject(this);
+                    // player.AddMapObject(this);
                 }
             }
     }
 
     public override void _Ready()
     {
+        SetPhysicsProcess(false);
+        // SetProcess(false);
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
-        GenerateMesh(); 
+        // GenerateMesh(); 
         Name = PlanetName;
         MapObjectName3.UpdateText(Name);
 
