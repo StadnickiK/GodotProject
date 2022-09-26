@@ -91,7 +91,7 @@ public class Generator : Node
         system.GetNodes();
 		system.StarSysObjects.AddChild(sun);
 		system.SystemStar = (Star)sun;
-		system.SystemName3D.Text = system.SystemName;
+		system.MapObjectName3.Text = system.SystemName;
 		dist = Rand.Next(5, 15);
 		float angle = Rand.Next(0, 70);
 		for(i = 0;i < SystemSize; i++){
@@ -127,7 +127,7 @@ public class Generator : Node
         planet.Connect("CreateShip", _world, "_on_CreateShip");
         var arr = new Godot.Collections.Array();
         arr.Add(planet.Orbit);
-        planet.IcoOrbit.Connect("mouse_entered", _world.UInterface,"_on_OrbitIconFocus", arr);
+        // planet.IcoOrbit.Connect("mouse_entered", _world.UInterface,"_on_OrbitIconFocus", arr);
         var arr2 = new Godot.Collections.Array();
         arr2.Add(planet);
         planet.Connect("OpenCmdPanel", _world, "_on_OpenPlanetCmdPanel");

@@ -34,7 +34,7 @@ public int Radius
 
 	public String SystemName { get; set; }
 
-	public Text3 SystemName3D { get; set; } = null;
+	public Label3D MapObjectName3 { get; set; } = null;
 
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
@@ -61,7 +61,7 @@ public int Radius
 
 	public void GetNodes(){
 		_starSysObjects = GetNode<Spatial>("StarSysObjects");
-		SystemName3D = GetNode<Text3>("Placeholder/Text3");
+		MapObjectName3 = GetNode<Label3D>("Placeholder/Text3");
 		Placeholder = GetNode<CollisionShape>("Placeholder");
 		XButton = GetNode<Button>("XButton");
 		_size = GetNode<MeshInstance>("StarSysObjects/Diameter");

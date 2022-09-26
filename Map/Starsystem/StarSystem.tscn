@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Map/Starsystem/StarSystem.cs" type="Script" id=1]
+[ext_resource path="res://UI/MapName3D.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
-[ext_resource path="res://UI/Text3.tscn" type="PackedScene" id=4]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -22,8 +22,7 @@ transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 visible = false
 shape = SubResource( 1 )
 
-[node name="Text3" parent="Placeholder" instance=ExtResource( 4 )]
-transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 1.8713, 0 )
+[node name="Text3" parent="Placeholder" instance=ExtResource( 2 )]
 
 [node name="Mask" type="Spatial" parent="Placeholder"]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )

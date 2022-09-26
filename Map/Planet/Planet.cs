@@ -41,7 +41,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
 
     public string PlanetName { get; set; } = "PlanetName";
 
-    public Text3 MapObjectName3 { get; set; } = null;
+    public Label3D MapObjectName3 { get; set; } = null;
 
     public Icon3D IcoOrbit { get; set; } = null;
 
@@ -190,8 +190,8 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
     public void GetNodes(){
         _mesh = GetNode<MeshInstance>("MeshInstance");
         _orbit = GetNode<Orbit>("Orbit");
-        MapObjectName3 = GetNode<Text3>("Text3");
-        IcoOrbit = GetNode<Icon3D>("IcoOrbit");
+        MapObjectName3 = GetNode<Label3D>("Label3D");
+        // IcoOrbit = GetNode<Icon3D>("IcoOrbit");
         Pops = GetNode<Populations>("Populations");
     }
 
@@ -388,7 +388,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
         // GenerateMesh(); 
         Name = PlanetName;
-        MapObjectName3.UpdateText(Name);
+        MapObjectName3.Text = Name;
 
         AddChild(BuildingsManager);
         AddChild(ResourcesManager);

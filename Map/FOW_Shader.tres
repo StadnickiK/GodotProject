@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type spatial;
@@ -28,19 +28,5 @@ void fragment(){
 }
 "
 
-[sub_resource type="OpenSimplexNoise" id=2]
-octaves = 1
-period = 4.0
-persistence = 0.6
-
-[sub_resource type="NoiseTexture" id=3]
-seamless = true
-noise = SubResource( 2 )
-
 [resource]
 shader = SubResource( 1 )
-shader_param/uCenter = Vector2( 0, 0 )
-shader_param/uRadius = 10.0
-shader_param/uOffsetFactor = 10.0
-shader_param/uHeight = -1.0
-shader_param/textureColor = SubResource( 3 )
