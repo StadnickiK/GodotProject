@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class OrbitFleetInterface : Panel
+public partial class OrbitFleetInterface : Panel
 {
     ListPanel _listPanel = null;
     Header _header = null;

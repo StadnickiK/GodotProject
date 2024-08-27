@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class GetIdleShip : TreeNode
+public partial class GetIdleShip : TreeNode
 {
 
     public GetIdleShip() : base(){}

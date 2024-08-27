@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class BuildingLabel : Control
+public partial class BuildingLabel : Control
 {
 
     public ProgressBar Progress { get; set; }

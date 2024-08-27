@@ -3,6 +3,6 @@ using System;
 
 public interface IBuildCost
 {
-    Godot.Collections.Dictionary<string, int> BuildCost { get; set; }
+    System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; }
     
 }

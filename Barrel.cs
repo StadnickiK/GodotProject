@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Barrel : KinematicBody
+public partial class Barrel : CharacterBody3D
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -13,37 +13,37 @@ public class Barrel : KinematicBody
     float timePassed = 0;
     int max_ammo = 600;
     int ammo = 0;
-    KinematicBody ktargetPos;
-    RigidBody targetPos;
+    CharacterBody3D ktargetPos;
+    RigidBody3D targetPos;
     PackedScene scene = (PackedScene)ResourceLoader.Load("res://RBullet.tscn");
 
-    RayCast ray;
+    RayCast3D ray;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-            z = Translation.z;
-            ray = GetNode<RayCast>("RayCast");
+            z = Position.z;
+            ray = GetNode<RayCast3D>("RayCast3D");
     }
 
     void ShootAnim(float delta){
         if(ammo != 0){
-            if(Translation.z < -3){
+            if(Position.z < -3){
                 direction = true;
                 var bullet = (RBullet)scene.Instance();
                 bullet.Parent = GetParent();
                 //GD.Print(Scale);
-                Vector3 tDir = Transform.origin.DirectionTo(targetPos.GlobalTransform.origin);
+                Vector3 tDir = Transform3D.origin.DirectionTo(targetPos.GlobalTransform.origin);
                 //GD.Print(targetPos.LinearVelocity.Normalized());
                 //GD.Print(targetPos.GlobalTransform.origin);
 
-                Vector3 bulletDirection = tDir*100;//GlobalTransform.origin; //+ Transform.origin;
+                Vector3 bulletDirection = tDir*100;//GlobalTransform.origin; //+ Transform3D.origin;
                 //GD.Print(GlobalTransform.origin);
                 //GD.Print(Transform.origin);
                 //bulletDirection.y = 0; 
                 bullet.Launch(bulletDirection);
                 GetNode("/root/World").AddChild(bullet);
                 //GetParent().AddChild(bullet);
-            }else if(Translation.z > -2.4f){
+            }else if(Position.z > -2.4f){
                 direction = false;
             }
             if(direction){
@@ -64,8 +64,8 @@ public class Barrel : KinematicBody
   public override void _Process(float delta)
   {
         var upDir = new Vector3(1, 0, 0);
-        targetPos = GetNode<RigidBody>("/root/World/Target");
-        ktargetPos = GetNode<KinematicBody>("/root/World/KTarget");
+        targetPos = GetNode<RigidBody3D>("/root/World/Target");
+        ktargetPos = GetNode<CharacterBody3D>("/root/World/KTarget");
         //LookAt(ktargetPosition.GlobalTransform.origin,upDir);
         //LookAt(targetPos.GlobalTransform.origin,upDir);
         

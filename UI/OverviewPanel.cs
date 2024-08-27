@@ -1,8 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Godot.Collections;
 
-public class OverviewPanel : VBoxContainer
+public partial class OverviewPanel : VBoxContainer
 {
 
     List<Button> buttons = new List<Button>();
@@ -12,7 +13,7 @@ public class OverviewPanel : VBoxContainer
     bool _hasPanel = false;
 
     [Export]
-    public List<string> Values { get; set; } = new List<string>();  
+    public Array<string> Values { get; set; } = new Array<string>();  
 
     PackedScene _listPanelScene = (PackedScene)ResourceLoader.Load("res://UI/ListPanel.tscn");
 
@@ -30,7 +31,7 @@ public class OverviewPanel : VBoxContainer
 
     public void AddPanel(string ValueName){
         var button = new Button();
-            var listPanel = (ListPanel)_listPanelScene.Instance();
+            var listPanel = (ListPanel)_listPanelScene.Instantiate();
             button.Text = ValueName;
             button.Name = ValueName;
             listPanel.Title = ValueName;    // ready function overwrites the node name give in this step
@@ -89,7 +90,8 @@ public class OverviewPanel : VBoxContainer
         buttons.Add(button);
         Godot.Collections.Array array = new Godot.Collections.Array();
         array.Add(button);
-        button.Connect("button_up",this, nameof(_on_Button_Up), array);
+        button.Connect("button_up", new Callable(this, nameof(_on_Button_Up)));
+        //button.Connect("button_up", new Callable(this, nameof(_on_Button_Up)), array);
     }
 
     public void _on_Button_Up(Node node){
@@ -98,11 +100,11 @@ public class OverviewPanel : VBoxContainer
             foreach(Button b in buttons){
                 if(b.Disabled){
                     b.Disabled = false;
-                    GetNode<CanvasItem>(b.Name).Visible = false;
+                    GetNode<CanvasItem>(new NodePath(b.Name)).Visible = false;
                 }
             }
             button.Disabled = true;
-            GetNode<CanvasItem>(button.Name).Visible = true;
+            GetNode<CanvasItem>(new NodePath(button.Name)).Visible = true;
         }
     }
 

@@ -2,5 +2,5 @@
 
 [ext_resource path="res://Map/Galaxy.cs" type="Script" id=1]
 
-[node name="Galaxy" type="Spatial"]
+[node name="Galaxy" type="Node3D"]
 script = ExtResource( 1 )

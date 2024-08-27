@@ -17,7 +17,7 @@ input_name = "view"
 [sub_resource type="VisualShaderNodeColorConstant" id=6]
 constant = Color( 0.255871, 0.832031, 0.0474731, 1 )
 
-[sub_resource type="VisualShaderNodeScalarOp" id=7]
+[sub_resource type="VisualShaderNodeFloatOp" id=7]
 operator = 1
 
 [sub_resource type="VisualShaderNodeFresnel" id=8]
@@ -93,7 +93,7 @@ nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -740, 300 )
 nodes/fragment/11/node = SubResource( 2 )
 nodes/fragment/11/position = Vector2( -740, 380 )
-nodes/fragment/connections = PoolIntArray( 2, 0, 3, 0, 4, 0, 3, 1, 7, 0, 0, 0, 3, 0, 8, 0, 8, 0, 0, 1, 10, 0, 9, 0, 11, 0, 9, 1, 9, 0, 8, 1 )
+nodes/fragment/connections = PackedInt32Array( 2, 0, 3, 0, 4, 0, 3, 1, 7, 0, 0, 0, 3, 0, 8, 0, 8, 0, 0, 1, 10, 0, 9, 0, 11, 0, 9, 1, 9, 0, 8, 1 )
 
 [resource]
 shader = SubResource( 9 )

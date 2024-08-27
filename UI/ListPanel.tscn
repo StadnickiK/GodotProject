@@ -5,8 +5,8 @@
 [node name="ListPanel" type="VBoxContainer"]
 anchor_right = 0.236
 anchor_bottom = 0.292
-margin_right = 0.335983
-margin_bottom = -0.200012
+offset_right = 0.335983
+offset_bottom = -0.200012
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
@@ -15,34 +15,34 @@ __meta__ = {
 }
 
 [node name="Header" type="HBoxContainer" parent="."]
-margin_right = 453.0
-margin_bottom = 20.0
+offset_right = 453.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="Header"]
-margin_right = 453.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
+offset_right = 453.0
+offset_bottom = 20.0
+custom_minimum_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 text = "Title"
 align = 1
 
 [node name="ItemList" type="ScrollContainer" parent="."]
-margin_top = 24.0
-margin_right = 453.0
-margin_bottom = 291.0
+offset_top = 24.0
+offset_right = 453.0
+offset_bottom = 291.0
 grow_horizontal = 2
 grow_vertical = 2
-rect_min_size = Vector2( 0, 155 )
+custom_minimum_size = Vector2( 0, 155 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Items" type="VBoxContainer" parent="ItemList"]
-margin_right = 453.0
+offset_right = 453.0
 size_flags_horizontal = 3
 
 [node name="Foot" type="HBoxContainer" parent="."]
-margin_top = 295.0
-margin_right = 453.0
-margin_bottom = 315.0
-rect_min_size = Vector2( 0, 20 )
+offset_top = 295.0
+offset_right = 453.0
+offset_bottom = 315.0
+custom_minimum_size = Vector2( 0, 20 )

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class TreeNode : Node
+public partial class TreeNode : Node
 {
 
     public enum NodeState{

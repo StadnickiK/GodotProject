@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Header : HBoxContainer
+public partial class Header : HBoxContainer
 {
 
     private Button _button;
@@ -34,7 +34,7 @@ public class Header : HBoxContainer
     }
 
     public void ConnectToButtonUp(Node node, string methodName){
-        _button.Connect("button_up", node, methodName);
+        _button.Connect("button_up", new Callable(node, methodName));
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

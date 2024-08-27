@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ShipBT : BehaviourTree
+public partial class ShipBT : BehaviourTree
 {
     public ShipBT() : base(){
 

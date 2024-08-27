@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public class TechnologyInterface : Panel
+public partial class TechnologyInterface : Panel
 {
 
     [Signal]
-    public delegate void StartResearch();
+    public delegate void StartResearchEventHandler();
 
     private Button _acceptButton;
     public Button AcceptButton
@@ -56,7 +56,7 @@ public class TechnologyInterface : Panel
 
     void _on_BuildingInterface_gui_input(InputEvent e){
         if(e is InputEventScreenDrag drag)
-            RectPosition += drag.Relative;
+            Position += drag.Relative;
     }
 
     void _on_ButtonUp(){
@@ -65,7 +65,7 @@ public class TechnologyInterface : Panel
     }
 
     void _on_Build_button_up(){
-        EmitSignal(nameof(StartResearch), _technology);
+        EmitSignal(nameof(StartResearchEventHandler), _technology);
     }
 
 //  public override void _Process(float delta)

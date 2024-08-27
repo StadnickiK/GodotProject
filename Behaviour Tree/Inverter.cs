@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Inverter : TreeNode
+public partial class Inverter : TreeNode
 {
 
     public Inverter() : base(){}

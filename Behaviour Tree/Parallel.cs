@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public class Parallel : TreeNode
+public partial class Parallel : TreeNode
 {
     public Parallel() : base(){}
 

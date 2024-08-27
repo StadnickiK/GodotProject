@@ -2,25 +2,25 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
+public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
 {
     [Signal]
-    public delegate void SelectUnit(RigidBody unit);
+    public delegate void SelectUnitEventHandler(RigidBody3D unit);
 
     [Signal]
-    public delegate void SelectTarget(RigidBody target);
+    public delegate void SelectTargetEventHandler(RigidBody3D target);
 
     [Signal]
-    public delegate void EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent);
+    public delegate void EnterCombatEventHandler(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent);
 
     [Signal]
-    public delegate void SignalEnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state);
+    public delegate void SignalEnterMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state);
 
     [Signal]
-    public delegate void SignalExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state); 
+    public delegate void SignalExitMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state); 
 
     [Signal]
-    public delegate void OpenUnitTransferPanel(Ship left, Ship right);
+    public delegate void OpenUnitTransferPanelEventHandler(Ship left, Ship right);
 
     [Export]
     public int effectiveRange = 10;
@@ -42,7 +42,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
-    public MeshInstance Mesh { get; set; } = null;  
+    public MeshInstance3D Mesh { get; set; } = null;  
 
     public int Power { get; set; }
 
@@ -52,14 +52,15 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     public VisionArea _area { get; set; }
 
     protected VelocityController _velocityController = null;
-    public TargetManager<Spatial> targetManager { get; set; } = new TargetManager<Spatial>();
+    public TargetManager<Node3D> targetManager { get; set; } = new TargetManager<Node3D>();
 
     public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
 
     SimpleFireControl _control = null;
 
-    protected void UpdateLinearVelocity(PhysicsDirectBodyState state){
-            state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.basis.Xform(new Vector3(0, 0, 1)),GlobalTransform.origin,targetManager.currentTarget.Transform.origin);
+    protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
+        // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)
+            state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.Basis * (new Vector3(0, 0, 1)),GlobalTransform.Origin,targetManager.currentTarget.Transform.Origin);
     }
 
     protected void ResetVelocity(){
@@ -69,7 +70,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         Sleeping = true;
     }
 
-    protected void ResetVelocity(PhysicsDirectBodyState state){
+    protected void ResetVelocity(PhysicsDirectBodyState3D state){
         _velocityController.ResetSpeed();
         state.LinearVelocity = Vector3.Zero;
         state.AngularVelocity = Vector3.Zero;
@@ -77,27 +78,27 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     }
 
     protected Vector3 PosToTargetWithEffectiveRange(Vector3 targetPos){
-        Vector3 effectivePos = ((targetPos) - ((targetPos - GlobalTransform.origin).Normalized()*effectiveRange));
+        Vector3 effectivePos = ((targetPos) - ((targetPos - GlobalTransform.Origin).Normalized()*effectiveRange));
         return effectivePos;
     }
 
     protected Vector3 DirToCurrentTarget(){
         if(targetManager.HasTarget){
-            return (targetManager.currentTarget.Transform.origin-Transform.origin).Normalized();
+            return (targetManager.currentTarget.Transform.Origin-Transform.Origin).Normalized();
         }
         return Vector3.Zero;
     }
 
-    public Spatial GetTempWaypoint(Vector3 position){
-        var tempTarget = new Spatial(); // used as point to exit current system
+    public Node3D GetTempWaypoint(Vector3 position){
+        var tempTarget = new Node3D(); // used as point to exit current system
         var tempTrans = tempTarget.Transform;
-        tempTrans.origin = position;
+        tempTrans.Origin = position;
         tempTarget.Transform = tempTrans;
         tempTarget.Name = "tempTarget";
         return tempTarget;
     }
 
-    public void MoveToTarget(Spatial target){
+    public void MoveToTarget(Node3D target){
         Sleeping = false;
         Node starSysObj = null;
         if((GetParent() is Orbit orbit)){ 
@@ -106,7 +107,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
             starSysObj = GetParent();
         }
         if(target == starSysObj.GetParent() && GetParent().GetParent() is Planet planet){
-            var tempTarget = GetTempWaypoint(planet.Transform.origin);
+            var tempTarget = GetTempWaypoint(planet.Transform.Origin);
             targetManager.SetTarget(tempTarget);    // set temp target to leave orbit
             targetManager.AddTarget(target);
             return;
@@ -115,7 +116,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
             if(starSysObj.GetParent() is StarSystem system){
                 
                 // leak
-                var tempTarget = GetTempWaypoint((target.Transform.origin-system.Transform.origin).Normalized()*(((float)system.Radius)*1.2f));
+                var tempTarget = GetTempWaypoint((target.Transform.Origin-system.Transform.Origin).Normalized()*(((float)system.Radius)*1.2f));
                 targetManager.SetTarget(tempTarget);    // set temp target to leave star system
                 if(target.GetParent().GetParent() is StarSystem targetSystem){
                     targetManager.AddTarget(targetSystem);
@@ -135,17 +136,17 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     public void MoveToPos(Vector3 destination){
         Sleeping = false;
-        var target = new Spatial(); // leak
+        var target = new Node3D(); // leak
         target.SetProcess(false);
         var transform = target.Transform;
-        transform.origin = destination;
+        transform.Origin = destination;
         target.Transform = transform;
         target.Name = "tempTarget";
         targetManager.SetTarget(target);
     }
 
     public void NextTarget(){
-        if(targetManager.currentTarget is StaticBody body){
+        if(targetManager.currentTarget is StaticBody3D body){
             if(body.Name == "tempTarget"){
                 body.QueueFree();
                 targetManager.NextTarget();
@@ -155,7 +156,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         targetManager.NextTarget();
     }
 
-    void UpdateShipVelocities(PhysicsDirectBodyState state , Vector3 targetPos){
+    void UpdateShipVelocities(PhysicsDirectBodyState3D state , Vector3 targetPos){
         if(targetManager.HasTarget){
             float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
             if(angle > 0.01f || angle < -0.01f ){
@@ -166,10 +167,10 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
                 UpdateLinearVelocity(state);
             }
             if(targetPos != Vector3.Zero){
-                Vector3 posDiff = (targetPos.Abs() - GlobalTransform.origin.Abs());
+                Vector3 posDiff = (targetPos.Abs() - GlobalTransform.Origin.Abs());
                 Vector3 MultyScale = Scale;
-                if(posDiff.x < MultyScale.x && posDiff.z < MultyScale.z &&
-                posDiff.x > -MultyScale.x && posDiff.z > -MultyScale.z){
+                if(posDiff.X < MultyScale.X && posDiff.Z < MultyScale.Z &&
+                posDiff.X > -MultyScale.X && posDiff.Z > -MultyScale.Z){
                     NextTarget();
                 }  
             }
@@ -186,33 +187,35 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
         ship.QueueFree();
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState state){
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;
-            if(targetManager.currentTarget is PhysicsBody){
-                targetPos = targetManager.currentTarget.GlobalTransform.origin;
+            if(targetManager.currentTarget is PhysicsBody3D){
+                targetPos = targetManager.currentTarget.GlobalTransform.Origin;
             }else{
-                targetPos = targetManager.currentTarget.Transform.origin;
+                targetPos = targetManager.currentTarget.Transform.Origin;
             }
 
 
-            if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.origin).Length()<2){
+            if(targetManager.currentTarget is IEnterMapObject targetObject && (targetPos - GlobalTransform.Origin).Length()<2){
                 if(MapObject != targetObject){
-                    EmitSignal(nameof(SignalEnterMapObject), this, targetObject, DirToCurrentTarget(), state);
+                    if(targetObject is Node someNode)
+                        EmitSignal(nameof(SignalEnterMapObjectEventHandler), this, someNode, DirToCurrentTarget(), state);
                     MapObject = targetObject;
                 }
                 NextTarget();
             }
             if(MapObject != null){
                 if(MapObject != targetManager.currentTarget){
-                    EmitSignal(nameof(SignalExitMapObject), this, MapObject, DirToCurrentTarget(), state);
+                    if(MapObject is Node someNode)
+                        EmitSignal(nameof(SignalExitMapObjectEventHandler), this, someNode, DirToCurrentTarget(), state);
                 }
             }
-            if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.origin).Length()<2){
+            if(targetManager.currentTarget is Ship ship && (targetPos - GlobalTransform.Origin).Length()<2){
                 if(ship.Controller != Controller){
-                    EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)ship, GetParent());
+                    EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)ship, GetParent());
                 }else{
-                    EmitSignal(nameof(OpenUnitTransferPanel), this, ship);
+                    EmitSignal(nameof(OpenUnitTransferPanelEventHandler), this, ship);
                 }
                 targetManager.ClearTargets();
                 ResetVelocity(state);
@@ -231,10 +234,10 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     }
 
     public void SelectMapObject(){
-        EmitSignal(nameof(SelectUnit), (PhysicsBody)this);
+        EmitSignal(nameof(SelectUnitEventHandler), (PhysicsBody3D)this);
     }
 
-    public void GetTotalUpkeep(Dictionary<string, int> costs){
+    public void GetTotalUpkeep(Dictionary<int, int> costs){
         foreach(var node in Units.GetChildren()){
             if(node is IUpkeep upkeep){
                 foreach(var resource in upkeep.Upkeep.Keys){
@@ -250,12 +253,12 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
 
     void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
-        switch((ButtonList)eventMouseButton.ButtonIndex){
-          case ButtonList.Left:
+        switch(eventMouseButton.ButtonIndex){
+          case MouseButton.Left:
             SelectMapObject();
             break;
-          case ButtonList.Right:
-            EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
+          case MouseButton.Right:
+            EmitSignal(nameof(SelectTargetEventHandler), (PhysicsBody3D)this);
             break;
         }
       } 
@@ -304,15 +307,15 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     void _on_Ship_body_entered(Node node){
         if(node is Ship ship){
             if(ship.MapObject == MapObject){
-                EmitSignal(nameof(EnterCombat), (PhysicsBody)this, (PhysicsBody)node, GetParent());
+                EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)node, GetParent());
                 ResetVelocity();
             }
         }
     }
 
     void GetNodes(){
-        _area = GetNode<VisionArea>("Area");
-        Mesh = GetNode<MeshInstance>("ship model/Cube");
+        _area = GetNode<VisionArea>("Area3D");
+        Mesh = GetNode<MeshInstance3D>("ship model/Cube");
         _control = GetNode<SimpleFireControl>("FireControl");
         _velocityController = GetNode<VelocityController>("VelocityController");
         AddChild(Units);
@@ -320,7 +323,7 @@ public class Ship : RigidBody, ISelectMapObject, IMapObjectController, IVision, 
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){
-         Connect("EnterCombat", node, methodName);
+         Connect("EnterCombatEventHandler", new Callable(node, methodName));
     }
 
     public override void _Ready()

@@ -4,13 +4,13 @@
 [ext_resource path="res://UI/Header.tscn" type="PackedScene" id=2]
 
 [node name="MenuPanel" type="Panel"]
-margin_right = 322.0
-margin_bottom = 80.0
+offset_right = 322.0
+offset_bottom = 80.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Header" parent="." instance=ExtResource( 2 )]
-margin_right = 321.0
-custom_constants/separation = 209
+offset_right = 321.0
+theme_override_constants/separation = 209

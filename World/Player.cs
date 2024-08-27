@@ -1,9 +1,10 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Godot.Collections;
 using System.Linq;
 
-public class Player : Node
+public partial class Player : Node
 {
     public int PlayerID { get; set; }
 
@@ -17,18 +18,20 @@ public class Player : Node
     public int TimeStep { get; set; } = 1;
 
     [Export]
-    public List<Technology> Technologies { get; set; } = new List<Technology>();
+    public Array<Technology> ExportTechnologies { get; set; } = new Array<Technology>();
 
-    public List<Planet> Planets { get; set; } = new List<Planet>();
+    public List<int> Technologies { get; set; } = new List<int>();
 
-    public List<Ship> Ships { get; set; } = new List<Ship>();
+    public Array<Planet> Planets { get; set; } = new Array<Planet>();
+
+    public Array<Ship> Ships { get; set; } = new Array<Ship>();
 
     public ConstructionManager Research { get; set; } = new ConstructionManager();
 
-    float _time = 0;
+    double _time = 0;
 
-    private List<CollisionObject> _MapObejcts = new List<CollisionObject>();
-    public List<CollisionObject> MapObjects
+    private Array<CollisionObject3D> _MapObejcts = new Array<CollisionObject3D>();
+    public Array<CollisionObject3D> MapObjects
     {
         get { return _MapObejcts; }
     }
@@ -54,7 +57,7 @@ public class Player : Node
 
     public bool ResourcesChanged { get; set; } = false;
 
-    // public bool PayCost(List<Resource> BuildCost){
+    // public bool PayCost(Array<Resource> BuildCost){
     //             foreach(Resource resource in BuildCost){
     //                 if(Resources.ContainsKey(resource.Name)){
     //                     if(Resources[resource.Name].Value < resource.Quantity){
@@ -70,8 +73,8 @@ public class Player : Node
     //     return true;
     // }
 
-    public PhysicsBody GetMapObjectByName(string name){
-        foreach(PhysicsBody body in _MapObejcts){
+    public PhysicsBody3D GetMapObjectByName(string name){
+        foreach(PhysicsBody3D body in _MapObejcts){
             if(body.Name == name){
                 return body;
             }
@@ -79,7 +82,7 @@ public class Player : Node
         return null;
     }    
 
-    public void AddMapObject(CollisionObject mapObject){
+    public void AddMapObject(CollisionObject3D mapObject){
         MapObjects.Add(mapObject);
         if(mapObject is Ship ship)
             Ships.Add(ship);
@@ -88,7 +91,7 @@ public class Player : Node
         MapObjectsChanged = true;
     }
 
-    public void RemoveMapObject(CollisionObject mapObject){
+    public void RemoveMapObject(CollisionObject3D mapObject){
         MapObjects.Remove(mapObject);
         if(mapObject is Ship ship)
             Ships.Remove(ship);
@@ -146,7 +149,7 @@ public class Player : Node
         foreach(var node in MapObjects){
             if(node is Planet planet){
                 UpdateResourceLimit(planet);
-                _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
+                //_resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
                 _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
                 ResourcesChanged = true;
             }
@@ -182,22 +185,22 @@ public class Player : Node
     }
 
     List<Technology> IBuildingToTechnology(List<IBuilding> ibuildings){
-        var list = new List<Technology>();
+        var Array = new List<Technology>();
         foreach(var ibuilding in ibuildings){
             if(ibuilding is Technology technology)
-                list.Add(technology);
+                Array.Add(technology);
         }
-        return list;
+        return Array;
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         _time += delta;
         if(_time >= TimeStep){
             UpdatePlayerResources();
-            Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
+            //Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
             if(Research != null)
                 if(Research.HasConstruct())
-                    Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
+                    Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
             _time = 0;
         }
     }

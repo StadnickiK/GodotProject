@@ -3,20 +3,20 @@
 [ext_resource path="res://UI/Text3.cs" type="Script" id=2]
 
 [node name="Text3" type="Sprite3D"]
-transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform3D( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0 )
 cast_shadow = 0
 flip_v = true
 billboard = 1
 script = ExtResource( 2 )
 Text = "text"
 
-[node name="Viewport" type="Viewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 gui_disable_input = true
 
-[node name="Label" type="Label" parent="Viewport"]
-margin_right = 123.0
-margin_bottom = 14.0
+[node name="Label" type="Label" parent="SubViewport"]
+offset_right = 123.0
+offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 2

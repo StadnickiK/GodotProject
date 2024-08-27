@@ -1,15 +1,15 @@
 [gd_scene load_steps=3 format=2]
 
-[sub_resource type="DynamicFontData" id=8]
+[sub_resource type="FontFile" id=8]
 font_path = "res://Fonts/times.ttf"
 
-[sub_resource type="DynamicFont" id=9]
+[sub_resource type="FontFile" id=9]
 size = 180
 outline_size = 4
 font_data = SubResource( 8 )
 
 [node name="Label3D" type="Label3D"]
-transform = Transform( 0.336712, 0, 0, 0, 0.336712, 0, 0, 0, 0.336712, 0, 2.19848, 0 )
+transform = Transform3D( 0.336712, 0, 0, 0, 0.336712, 0, 0, 0, 0.336712, 0, 2.19848, 0 )
 pixel_size = 0.1
 billboard = 1
 no_depth_test = true

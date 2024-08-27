@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Turret : Ship
+ public partial class Turret : Ship
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -31,7 +31,7 @@ public class Turret : Ship
 
     Barrel barrel = null;
 
-    Spatial muzzle = null;
+    Node3D muzzle = null;
 
     // Called when the node enters the scene tree for the first time.
 
@@ -64,25 +64,25 @@ public class Turret : Ship
     }
 
     protected Vector3 DirToTarget(){
-        return GlobalTransform.origin.DirectionTo(targetManager.currentTarget.GlobalTransform.origin);
+        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.GlobalTransform.Origin);
     }
 
     protected void Shoot(){
-        var projectile = (RBullet)projectileScene.Instance();
+        var projectile = (RBullet)projectileScene.Instantiate();
         var transform = projectile.Transform;
         var dir = DirToTarget();
 
-        transform.origin = muzzle.GlobalTransform.origin + 1.2f*Scale.z*dir;
+        transform.Origin = muzzle.GlobalTransform.Origin + 1.2f*Scale.Z*dir;
         projectile.Transform = transform;
         projectiles.AddChild(projectile);
         projectile.Launch(dir);
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState state){
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state){
 
         if(targetManager.HasTarget){
-            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.origin;
-            if(targetPos != Vector3.Zero && targetPos != null){
+            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
+            if(targetPos != Vector3.Zero){
                 UpdateYrotation(state, targetPos);
                 UpdateMuzzle(targetPos);
             }else{
@@ -93,9 +93,9 @@ public class Turret : Ship
 
     void ReadyBarrel(){
         if(barrelScene != null){
-            barrel = (Barrel)barrelScene.Instance();
+            barrel = (Barrel)barrelScene.Instantiate();
             muzzle.AddChild(barrel);
-            barrel.Translate(muzzle.Transform.origin+new Vector3(0,0,Scale.z*2f));
+            barrel.Translate(muzzle.Transform.Origin+new Vector3(0,0,Scale.Z*2f));
         }
     }
 
@@ -104,17 +104,17 @@ public class Turret : Ship
     {
         _velocityController = new VelocityController();
         _velocityController.RotationSpeed = RotationSpeed;
-        targetManager = new TargetManager<Spatial>();
+        targetManager = new TargetManager<Node3D>();
         _velocityController.Mass = 10;
         //_ConnectSignal();
-        muzzle = GetNode<Spatial>("Muzzle");
+        muzzle = GetNode<Node3D>("Muzzle");
         ReadyBarrel();
 
         projectiles = GetNode("/root/World/Projectiles");
         SetTimer();
     }
     
-        void UpdateYrotation(PhysicsDirectBodyState state, Vector3 targetPos){
+        void UpdateYrotation(PhysicsDirectBodyState3D state, Vector3 targetPos){
         float angleY = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
                 if(angleY > 0.05f || angleY < -0.05f ){
                     state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);

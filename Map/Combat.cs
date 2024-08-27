@@ -2,16 +2,16 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Combat : Node
+public partial class Combat : Node
 {
-    public List<PhysicsBody> Combatants { get; set; } = new List<PhysicsBody>();
+    public List<PhysicsBody3D> Combatants { get; set; } = new List<PhysicsBody3D>();
     PackedScene _battleScene = (PackedScene)ResourceLoader.Load("res://Map/SpaceBattle.tscn");
 
-    public SpaceBattle CreateBattle(PhysicsBody ship, PhysicsBody enemy, Node parent){
+    public SpaceBattle CreateBattle(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent){
         
-        var battle = (SpaceBattle)_battleScene.Instance();
+        var battle = (SpaceBattle)_battleScene.Instantiate();
         var trans = battle.Transform;
-        trans.origin =  ship.Transform.origin;
+        trans.Origin =  ship.Transform.Origin;
         battle.Transform = trans;
         battle.AddCombatants(ship, enemy);
         HideNodes(ship, enemy);
@@ -19,8 +19,8 @@ public class Combat : Node
         return battle;
     }
 
-    void HideNodes(params Spatial[] Nodes){
-        foreach(Spatial spatial in Nodes){
+    void HideNodes(params Node3D[] Nodes){
+        foreach(Node3D spatial in Nodes){
             spatial.Visible = false;
         }
     }

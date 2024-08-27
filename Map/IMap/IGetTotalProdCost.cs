@@ -4,6 +4,6 @@ using System.Collections.Generic;
 
 public interface IGetTotalProdCost
 {
-    void GetTotalProdCost(Dictionary<string, int> costs);
+    void GetTotalProdCost(Dictionary<int, int> costs);
 }
 

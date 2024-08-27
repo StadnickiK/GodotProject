@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class DataLoader : Node
+public partial class DataLoader : Node
 {
     [Export]
     public string DirPath { get; set; } = null;
@@ -13,11 +13,11 @@ public class DataLoader : Node
             GetScenes(DirPath);
     }
 
-    public Directory Dir { get; set; } = new Directory();
+    public DirAccess Dir { get; set; }
 
     bool Open(string dirPath){
-        
-        if(Dir.Open(dirPath) == Error.Ok){
+        Dir = DirAccess.Open(dirPath);
+        if(Dir != null){
             return true;
         }
         return false;
@@ -32,7 +32,7 @@ public class DataLoader : Node
             var fileName = Dir.GetNext();
             while(fileName != "" && fileName != null){
                 if(!Dir.CurrentIsDir()){
-                    AddChild(ResourceLoader.Load<PackedScene>(dirPath+fileName).Instance());
+                    AddChild(ResourceLoader.Load<PackedScene>(dirPath+fileName).Instantiate());
                 }
                 fileName = Dir.GetNext();
             }

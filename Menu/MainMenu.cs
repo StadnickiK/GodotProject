@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MainMenu : Control
+public partial class MainMenu : Control
 {
     
     CanvasItem _menuNode = null;
@@ -11,7 +11,7 @@ public class MainMenu : Control
     Label _TitleLabel = null;
 
     [Signal]
-    delegate void QuickGame();
+    public delegate void QuickGameEventHandler();
 
     [Export]
     string Title = "Title";

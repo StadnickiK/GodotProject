@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StatManager : Node{
+public partial class StatManager : Node{
 
     public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 

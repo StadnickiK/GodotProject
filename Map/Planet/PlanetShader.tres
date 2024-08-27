@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=8 format=2]
 
-[sub_resource type="OpenSimplexNoise" id=1]
+[sub_resource type="FastNoiseLite" id=1]
 period = 65.0
 lacunarity = 4.0
 
@@ -13,10 +13,10 @@ output_port_for_preview = 0
 texture = SubResource( 2 )
 
 [sub_resource type="Gradient" id=4]
-offsets = PoolRealArray( 0.481605, 0.561873, 0.622074 )
-colors = PoolColorArray( 0.0823529, 0.0588235, 0.839216, 1, 0.660156, 0.651534, 0.108307, 1, 0.022644, 0.414063, 0.102151, 1 )
+offsets = PackedFloat32Array( 0.481605, 0.561873, 0.622074 )
+colors = PackedColorArray( 0.0823529, 0.0588235, 0.839216, 1, 0.660156, 0.651534, 0.108307, 1, 0.022644, 0.414063, 0.102151, 1 )
 
-[sub_resource type="GradientTexture" id=5]
+[sub_resource type="GradientTexture2D" id=5]
 resource_local_to_scene = true
 gradient = SubResource( 4 )
 
@@ -65,7 +65,7 @@ nodes/fragment/9/node = SubResource( 6 )
 nodes/fragment/9/position = Vector2( 600, -120 )
 nodes/fragment/10/node = SubResource( 3 )
 nodes/fragment/10/position = Vector2( 260, -140 )
-nodes/fragment/connections = PoolIntArray( 9, 0, 0, 0, 10, 0, 9, 0 )
+nodes/fragment/connections = PackedInt32Array( 9, 0, 0, 0, 10, 0, 9, 0 )
 
 [resource]
 shader = SubResource( 7 )

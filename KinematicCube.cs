@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class KinematicCube : KinematicBody
+public partial class KinematicCube : CharacterBody3D
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -11,12 +11,12 @@ public class KinematicCube : KinematicBody
 
   //public TargetManager targetManager { get; set; } = new TargetManager();
 
-	private void LookFollow(PhysicsDirectBodyState state, Transform currentTransform, Vector3 targetPosition)
+	private void LookFollow(PhysicsDirectBodyState3D state, Transform3D currentTransform, Vector3 targetPosition)
 	{
 		var upDir = new Vector3(0, 1, 0);
-		var curDir = currentTransform.basis.Xform(new Vector3(0, 0, 1));
-		var targetDir = (targetPosition - currentTransform.origin).Normalized();
-		var rotationAngle = Mathf.Acos(curDir.x) - Mathf.Acos(targetDir.x);
+		var curDir = currentTransform.Basis * (new Vector3(0, 0, 1));
+		var targetDir = (targetPosition - currentTransform.Origin).Normalized();
+		var rotationAngle = Mathf.Acos(curDir.X) - Mathf.Acos(targetDir.X);
 		state.AngularVelocity = upDir * (rotationAngle / state.Step);
 	}
     // Called when the node enters the scene tree for the first time.
@@ -28,13 +28,13 @@ public class KinematicCube : KinematicBody
 
   public void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
-        switch((ButtonList)eventMouseButton.ButtonIndex){
-          case ButtonList.Left:
+        switch(eventMouseButton.ButtonIndex){
+          case MouseButton.Left:
             GD.Print("LeftClick");
             //selectNode.SelectUnit((KinematicCube)self);
             //s.SelectedUnits.Add((KinematicCube)self);
             break;
-          case ButtonList.Right:
+          case MouseButton.Right:
             GD.Print("RightClick");
             //selectNode.AddTarget(self);
             break;
@@ -43,10 +43,10 @@ public class KinematicCube : KinematicBody
   }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-public override void _Process(float delta)
+public override void _Process(double delta)
   {
-        var targetPosition = GetNode<RigidBody>("/root/World/Target").GlobalTransform.origin;
-        var ktargetPosition = GetNode<KinematicBody>("/root/World/KTarget").GlobalTransform.origin;
+        var targetPosition = GetNode<RigidBody3D>("/root/World/Target").GlobalTransform.Origin;
+        var ktargetPosition = GetNode<CharacterBody3D>("/root/World/KTarget").GlobalTransform.Origin;
         var upDir = new Vector3(0, 1, 0);
       	//var curDir = GlobalTransform.basis.Xform(new Vector3(0, 0, 1));
 		    //var targetDir = GlobalTransform.origin.DirectionTo(targetPosition);//GlobalTransform.origin.AngleTo(targetPosition);
@@ -57,7 +57,7 @@ public override void _Process(float delta)
         //Transform.SetLookAt(curDir, ktargetPosition, upDir);
         //GD.Print(targetPosition);
         var r = Rotation;
-        r.x = 0;
+        r.X = 0;
         Rotation = r;
         //GD.Print(Transform.origin);
         /*
@@ -67,9 +67,9 @@ public override void _Process(float delta)
         Rotation = targetDir;
         //TranslateObjectLocal(targetDir);
         /*
-        var t = Transform;
+        var t = Transform3D;
         t.origin += targetDir;
-        Transform = t;
+        Transform3D = t;
         */
   }
 }   

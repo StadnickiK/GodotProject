@@ -4,7 +4,7 @@
 
 [sub_resource type="SphereMesh" id=1]
 
-[sub_resource type="VisualShaderNodeScalarConstant" id=2]
+[sub_resource type="VisualShaderNodeFloatConstant" id=2]
 constant = 0.7
 
 [sub_resource type="VisualShaderNodeColorConstant" id=3]
@@ -44,13 +44,13 @@ nodes/fragment/3/node = SubResource( 2 )
 nodes/fragment/3/position = Vector2( 20, 260 )
 nodes/fragment/4/node = SubResource( 3 )
 nodes/fragment/4/position = Vector2( 40, 140 )
-nodes/fragment/connections = PoolIntArray( 3, 0, 0, 1, 4, 0, 0, 0 )
+nodes/fragment/connections = PackedInt32Array( 3, 0, 0, 1, 4, 0, 0, 0 )
 
 [sub_resource type="ShaderMaterial" id=5]
 shader = SubResource( 4 )
 
-[node name="MeshInstance" type="MeshInstance"]
+[node name="MeshInstance3D" type="MeshInstance3D"]
 mesh = SubResource( 1 )
 material/0 = SubResource( 5 )
 
-[node name="MeshInstance" parent="." instance=ExtResource( 1 )]
+[node name="MeshInstance3D" parent="." instance=ExtResource( 1 )]

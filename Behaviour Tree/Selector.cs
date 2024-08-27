@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Selector : TreeNode
+public partial class Selector : TreeNode
 {
 
     public Selector(): base(){}

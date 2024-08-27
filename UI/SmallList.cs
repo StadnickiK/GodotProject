@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public class SmallList : Panel
+public partial class SmallList : Panel
 {
 
     public VBoxContainer Items = null;
 
     [Signal]
-    public delegate void SelectObject(PhysicsBody body);
+    public delegate void SelectObjectEventHandler(PhysicsBody3D body);
 
     
     void GetNodes(){
@@ -26,7 +26,8 @@ public class SmallList : Panel
         button.Name = node.Name;
         var arr = new Godot.Collections.Array();
         arr.Add(node);
-        button.Connect("button_up", this, nameof(_on_button_up), arr);
+        button.Connect("button_up", new Callable(this, nameof(_on_button_up)));
+        ///button.Connect("button_up", new Callable(this, nameof(_on_button_up)), arr);
     }
 
     public void RemoveItem(Node node){
@@ -51,7 +52,7 @@ public class SmallList : Panel
     }
 
     void _on_button_up(Node node){
-        if(node is PhysicsBody body)
+        if(node is PhysicsBody3D body)
             EmitSignal(nameof(SelectObject), body);
     }
 

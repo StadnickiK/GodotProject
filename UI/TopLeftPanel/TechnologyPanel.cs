@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-public class TechnologyPanel : Panel
+public partial class TechnologyPanel : Panel
 {
     OverviewPanel overview;
     Header _header;
@@ -23,7 +23,7 @@ public class TechnologyPanel : Panel
         GetNodes();
         _header.ConnectToButtonUp(this, nameof(_on_Close_Button_Up));
         if(TechInterface != null){
-            TechInterface.Connect(nameof(TechnologyInterface.StartResearch), this, nameof(TechnologyPanel._on_StartResearch_button_up));
+            TechInterface.Connect(nameof(TechnologyInterface.StartResearch), new Callable(this, nameof(TechnologyPanel._on_StartResearch_button_up)));
         }
     }
 
@@ -37,7 +37,7 @@ public class TechnologyPanel : Panel
         overview.ClearPanel("Research");
         foreach(Node node in WorldTechnology.GetChildren()){
             if(node is Technology technology){
-                if(!_Player.Technologies.Contains(technology)){
+                if(!_Player.Technologies.Contains(technology.Index)){
                     overview.AddNodeToPanel("Research", CreateTechButton(technology));
                 }
             }
@@ -58,7 +58,7 @@ public class TechnologyPanel : Panel
         }
         foreach(Node node in WorldTechnology.GetChildren()){
             if(node is Technology tech && !technologies.Contains((IBuilding)node)){
-                if(!_Player.Technologies.Contains(tech)){
+                if(!_Player.Technologies.Contains(tech.Index)){
                     overview.AddNodeToPanel("Research", CreateTechButton(tech));
                 }
             }
@@ -66,17 +66,19 @@ public class TechnologyPanel : Panel
     }
 
     void UpdatePosition(){
-        var size = new Vector2(GetViewport().Size);
+        var windowSize = GetViewportRect().Size;
+        var size = new Vector2(windowSize.X, windowSize.Y);
         size /= 2;
-        size.x -= (RectSize.x/2);
-        size.y -= (RectSize.y/2);
-        RectPosition = size;
+        size.X -= (Size.X/2);
+        size.Y -= (Size.Y/2);
+        Position = size;
     }
 
     void UpdateOwnedTechnology(){
         overview.ClearPanel("Owned");
-        foreach(Technology technology in _Player.Technologies){
-            overview.AddNodeToPanel("Owned", CreateTechButton(technology));
+        foreach(var technology in _Player.Technologies){
+            // get technology by ID
+            //overview.AddNodeToPanel("Owned", CreateTechButton(technology));
         }
     }
 
@@ -86,7 +88,8 @@ public class TechnologyPanel : Panel
         button.Name = technology.Name;
         Godot.Collections.Array array = new Godot.Collections.Array();
         array.Add(technology);
-        button.Connect("button_up",this, nameof(_on_Tech_Button_Up), array);
+        button.Connect("button_up", new Callable(this, nameof(_on_Tech_Button_Up)));
+        //button.Connect("button_up", new Callable(this, nameof(_on_Tech_Button_Up)), array);
         return button;
     }
 

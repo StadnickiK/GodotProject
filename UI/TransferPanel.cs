@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class TransferPanel : ScrollContainer
+public partial class TransferPanel : ScrollContainer
 {
     Label LocalName;
     Label GuestName;

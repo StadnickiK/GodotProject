@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Population : Node
+public partial class Population : Node
 {
 
     [Export]

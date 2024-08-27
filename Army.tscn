@@ -4,14 +4,14 @@
 
 [sub_resource type="CapsuleMesh" id=1]
 
-[sub_resource type="CapsuleShape" id=2]
+[sub_resource type="CapsuleShape3D" id=2]
 
-[node name="Army" type="RigidBody"]
+[node name="Army" type="RigidBody3D"]
 script = ExtResource( 1 )
 
-[node name="ArmyMesh" type="MeshInstance" parent="."]
+[node name="ArmyMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource( 1 )
 material/0 = null
 
-[node name="ArmyCollider" type="CollisionShape" parent="."]
+[node name="ArmyCollider" type="CollisionShape3D" parent="."]
 shape = SubResource( 2 )

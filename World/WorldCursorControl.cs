@@ -1,23 +1,23 @@
 using Godot;
 using System;
 
-public class WorldCursorControl : Spatial
+public partial class WorldCursorControl : Node3D
 {
 
     Select select = null;
 
     public int LocalPlayerID { get; set; }
-    public Camera camera = null;
+    public Camera3D camera = null;
 
     [Signal]
-    public delegate void Deselect();
+    public delegate void DeselectEventHandler();
 
     public void ConnectToSelectUnit(Node node){
-        node.Connect("SelectUnit", this, nameof(_SelectUnit));
+        node.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
     }
 
     public void ConnectToSelectTarget(Node node){
-        node.Connect("SelectTarget", this, nameof(_SelectTarget));
+        node.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
     }
 
     void GetNodes(){
@@ -29,24 +29,24 @@ public class WorldCursorControl : Spatial
         GetNodes();
         /*
         foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
-            n.Connect("SelectUnit", this, nameof(_SelectUnit));
+            n.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
         }
         foreach(Node n in GetTree().GetNodesInGroup("Targetable")){
-            n.Connect("SelectTarget", this, nameof(_SelectTarget));
+            n.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
         }
         //GetNode<Ship>("/root/World/Ship").Connect("SelectUnit", this, nameof(_SelectUnit)); 
         //*/
     }
 
-    public void _SelectUnit(CollisionObject unit){
+    public void _SelectUnit(CollisionObject3D unit){
         select.AddSelectedUnit(unit);
     }
 
-    public void _SelectTarget(CollisionObject target){;
+    public void _SelectTarget(CollisionObject3D target){;
         select.AddTarget(target);
     }
 
-    public void SetTask(CollisionObject target, CmdPanel.CmdPanelOption task){;
+    public void SetTask(CollisionObject3D target, CmdPanel.CmdPanelOption task){;
         select.AddTarget(target, task);
     }
 
@@ -55,24 +55,24 @@ public class WorldCursorControl : Spatial
         var mousePos = GetViewport().GetMousePosition();
         var from = camera.ProjectRayOrigin(mousePos);
         var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
-        var space_state = GetWorld().DirectSpaceState;
-        var state = space_state.IntersectRay(from, to);
         Vector3 p = Vector3.Zero;
-        if(state.Contains("position")){
-            p = (Vector3)state["position"];
-        }
+        // var space_state = GetWorld3d().DirectSpaceState;
+        // var state = space_state.IntersectRay(from, to);
+        // if(state.Contains("position")){
+        //     p = (Vector3)state["position"];
+        // }
         return p;
     }
 
     void _on_Ground_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton button){
             if(HasSelected()){ // mouse
-                if((ButtonList)button.ButtonIndex == ButtonList.Right){   // right click
+                if(button.ButtonIndex == MouseButton.Right){   // right click
                     select.MoveToPosition(GetMouseWorldPosition());
                 }
-                if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
+                if(button.ButtonIndex == MouseButton.Left && select != null){    // left click
                     select.ClearSelection();
-                    EmitSignal(nameof(Deselect));
+                    EmitSignal(nameof(DeselectEventHandler));
                 }
             }
         }
@@ -81,9 +81,9 @@ public class WorldCursorControl : Spatial
      public override void _Input(InputEvent inputEvent){
         if(HasSelected()){
             if(inputEvent is InputEventMouseButton button){ // mouse
-                if((ButtonList)button.ButtonIndex == ButtonList.Left && select != null){    // left click
+                if(button.ButtonIndex == MouseButton.Left && select != null){    // left click
                     //select.ClearSelection();
-                    //EmitSignal(nameof(Deselect));
+                    //EmitSignal(nameof(DeselectEventHandler));
                 }
             }
         }

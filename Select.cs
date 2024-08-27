@@ -2,10 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Select : Node
+public partial class Select : Node
 {
 
-    SelectManager<CollisionObject> selectManager;
+    SelectManager<CollisionObject3D> selectManager;
     PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect3.tscn");
 
     Vector3 _destination;
@@ -20,7 +20,7 @@ public class Select : Node
         }
     }
 
-    public void MoveToTarget(Spatial target){
+    public void MoveToTarget(Node3D target){
         if(selectManager.SelectedUnits.Count != 0){
             foreach(Ship s in selectManager.SelectedUnits){
                 s.MoveToTarget(target);
@@ -28,14 +28,14 @@ public class Select : Node
         }
     }
 
-    void AddSelectEffect(CollisionObject unit){
-            var selectEffectNode = (MeshInstance)SelectEffect.Instance();
+    void AddSelectEffect(CollisionObject3D unit){
+            var selectEffectNode = (MeshInstance3D)SelectEffect.Instantiate();
             selectEffectNode.Scale = (unit.Scale*2);
             unit.AddChild(selectEffectNode);
     }
 
     void RemoveSelectEffect(){
-        foreach(CollisionObject c in selectManager.SelectedUnits){
+        foreach(CollisionObject3D c in selectManager.SelectedUnits){
             if(c != null){
                 c.RemoveChild(c.GetNode("SelectEffect"));
             }else{
@@ -44,7 +44,7 @@ public class Select : Node
         }
     }
 
-    public void SelectUnit(CollisionObject unit){
+    public void SelectUnit(CollisionObject3D unit){
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
@@ -52,19 +52,19 @@ public class Select : Node
         }
     }
 
-    public void AddSelectedUnit(CollisionObject unit){
+    public void AddSelectedUnit(CollisionObject3D unit){
         if(unit.GetNodeOrNull("SelectEffect") == null){
             selectManager.AddSelectedUnit(unit);
             AddSelectEffect(unit);
         }
     }
 
-    public void AddSelectedUnits(List<CollisionObject> units){
+    public void AddSelectedUnits(List<CollisionObject3D> units){
         selectManager.AddSelectedUnits(units);
     }
 
-    public void AddTarget(CollisionObject target){
-        foreach(CollisionObject rigidB in selectManager.SelectedUnits){
+    public void AddTarget(CollisionObject3D target){
+        foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
@@ -77,8 +77,8 @@ public class Select : Node
         }
     }
 
-    public void AddTarget(CollisionObject target, CmdPanel.CmdPanelOption task){
-        foreach(CollisionObject rigidB in selectManager.SelectedUnits){
+    public void AddTarget(CollisionObject3D target, CmdPanel.CmdPanelOption task){
+        foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
@@ -94,7 +94,7 @@ public class Select : Node
     }
 
     public void ClearTarget(){
-        foreach(CollisionObject k in selectManager.SelectedUnits){
+        foreach(CollisionObject3D k in selectManager.SelectedUnits){
             if(k is Ship){
                 Ship ship = (Ship)k;
                 ship.targetManager.ClearTargets();
@@ -116,7 +116,7 @@ public class Select : Node
     public override void _Ready()
     {
         // SetProcess(false);   
-        selectManager = new SelectManager<CollisionObject>();
+        selectManager = new SelectManager<CollisionObject3D>();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

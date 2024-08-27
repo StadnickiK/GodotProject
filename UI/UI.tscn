@@ -14,10 +14,10 @@
 [ext_resource path="res://UI/AlertBox.tscn" type="PackedScene" id=14]
 [ext_resource path="res://UI/UnitInfoPanel.tscn" type="PackedScene" id=15]
 
-[sub_resource type="DynamicFontData" id=3]
+[sub_resource type="FontFile" id=3]
 font_path = "res://Fonts/times.ttf"
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="FontFile" id=4]
 size = 20
 use_filter = true
 font_data = SubResource( 3 )
@@ -28,7 +28,7 @@ default_font = SubResource( 4 )
 [node name="UI" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 600, 600 )
+custom_minimum_size = Vector2( 600, 600 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -38,13 +38,13 @@ __meta__ = {
 }
 
 [node name="ResourcePanel" parent="." instance=ExtResource( 9 )]
-margin_left = -376.0
-margin_right = 376.0
+offset_left = -376.0
+offset_right = 376.0
 size_flags_vertical = 3
 theme = SubResource( 5 )
 
 [node name="CameraGimbal" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0 )
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0 )
 MovementSpeed = 5.0
 Limit = 250
 

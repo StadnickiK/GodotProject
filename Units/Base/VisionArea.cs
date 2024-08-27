@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class VisionArea : Area
+public partial class VisionArea : Area3D
 {
     [Export]
     public int VisionRange { get; set; } = 4;

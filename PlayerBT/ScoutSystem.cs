@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class ScoutSystem : TreeNode
+public partial class ScoutSystem : TreeNode
 {
 
     public ScoutSystem() : base(){}
@@ -17,12 +17,12 @@ public class ScoutSystem : TreeNode
     }
 
     StarSystem GetUnscoutedStarSystem(){
-        var starSystems = new Godot.Collections.Array(_worldMap.galaxy.GetChildren());
+        var starSystems = new Godot.Collections.Array<Node>(_worldMap.galaxy.GetChildren());
         var map = (Dictionary<string, List<Planet>>)GetGlobalData("Map");
         var scoutMissions = (Dictionary<Ship, string>)GetGlobalData("ScoutMissions");
         foreach(Node node in starSystems){
             if(node is StarSystem starSystem){
-                if(!scoutMissions.Values.Contains(starSystem.Name))
+                if(!scoutMissions.Values.Contains(starSystem.Name.ToString()))
                         if(map.ContainsKey(starSystem.Name)){
                             var planetList = map[starSystem.Name];
                             if(planetList.Count <= starSystem.Planets.Count)
@@ -37,18 +37,18 @@ public class ScoutSystem : TreeNode
 
     Vector3 GetPlanetSystemPosition(Planet planet){
         if(planet.GetParent().GetParent() is StarSystem system)
-            return system.Transform.origin;
-        return planet.Transform.origin;
+            return system.Transform.Origin;
+        return planet.Transform.Origin;
     }
 
     public StarSystem GetUnscoutedStarSystem(Vector3 position){
-        var starSystems = new Godot.Collections.Array(_worldMap.galaxy.GetChildren());
+        var starSystems = new Godot.Collections.Array<Node>(_worldMap.galaxy.GetChildren());
         var map = (Dictionary<string, List<Planet>>)GetGlobalData("Map");
         var scoutMissions = (Dictionary<Ship, string>)GetGlobalData("ScoutMissions");
         StarSystem target = null;
         foreach(Node node in starSystems){
             if(node is StarSystem starSystem){
-                if(!scoutMissions.Values.Contains(starSystem.Name))
+                if(!scoutMissions.Values.Contains(starSystem.Name.ToString()))
                     if(target == null){
                         if(map.ContainsKey(starSystem.Name)){
                             var planetList = map[starSystem.Name];
@@ -61,10 +61,10 @@ public class ScoutSystem : TreeNode
                         if(map.ContainsKey(starSystem.Name)){
                             var planetList = map[starSystem.Name];
                             if(planetList.Count < starSystem.Planets.Count)
-                                if(target.Transform.origin.DistanceTo(position) < starSystem.Transform.origin.DistanceTo(position))
+                                if(target.Transform.Origin.DistanceTo(position) < starSystem.Transform.Origin.DistanceTo(position))
                                     target = starSystem;
                         }else{
-                            if(target.Transform.origin.DistanceTo(position) < starSystem.Transform.origin.DistanceTo(position))
+                            if(target.Transform.Origin.DistanceTo(position) < starSystem.Transform.Origin.DistanceTo(position))
                                 target = starSystem;
                         }    
                     }
@@ -110,7 +110,7 @@ public class ScoutSystem : TreeNode
                         }
                         foreach(Node node in system.StarSysObjects.GetChildren()){
                             if(node is Planet targetPlanet && node != planet){
-                                var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.origin);
+                                var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.Origin);
                                 if(scout.targetManager.HasTarget){
                                     scout.targetManager.AddTarget(target);
                                 }else{

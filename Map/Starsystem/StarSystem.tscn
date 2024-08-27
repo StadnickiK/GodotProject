@@ -4,36 +4,36 @@
 [ext_resource path="res://UI/MapName3D.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/XButton.tscn" type="PackedScene" id=3]
 
-[sub_resource type="BoxShape" id=1]
+[sub_resource type="BoxShape3D" id=1]
 
 [sub_resource type="CylinderMesh" id=2]
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="StandardMaterial3D" id=3]
 albedo_color = Color( 0.117647, 0.87451, 0.164706, 1 )
 
-[node name="StarSystem" type="Area"]
+[node name="StarSystem" type="Area3D"]
 collision_mask = 0
 monitoring = false
 monitorable = false
 script = ExtResource( 1 )
 
-[node name="Placeholder" type="CollisionShape" parent="."]
-transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+[node name="Placeholder" type="CollisionShape3D" parent="."]
+transform = Transform3D( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 visible = false
 shape = SubResource( 1 )
 
 [node name="Text3" parent="Placeholder" instance=ExtResource( 2 )]
 
-[node name="Mask" type="Spatial" parent="Placeholder"]
-transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
+[node name="Mask" type="Node3D" parent="Placeholder"]
+transform = Transform3D( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
 
 [node name="XButton" parent="." instance=ExtResource( 3 )]
 visible = false
 
-[node name="StarSysObjects" type="Spatial" parent="."]
+[node name="StarSysObjects" type="Node3D" parent="."]
 
-[node name="Diameter" type="MeshInstance" parent="StarSysObjects"]
-transform = Transform( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
+[node name="Diameter" type="MeshInstance3D" parent="StarSysObjects"]
+transform = Transform3D( 1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, -2.81467, 0 )
 visible = false
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )

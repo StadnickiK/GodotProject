@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MapObjectLabel : VBoxContainer
+public partial class MapObjectLabel : VBoxContainer
 {   
 
     public Node MapObject { get; set; } = null;

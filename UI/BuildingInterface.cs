@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class BuildingInterface : Panel
+public partial class BuildingInterface : Panel
 {
     
     Button _acceptButton = null;
@@ -18,7 +18,7 @@ public class BuildingInterface : Panel
     ListPanel _listPanel = null;
 
     [Signal]
-    public delegate void StartConstruction(Node building);
+    public delegate void StartConstructionEventHandler(Node building);
 
     void GetNodes(){
         _header = GetNode<Header>("Header");
@@ -83,7 +83,7 @@ public class BuildingInterface : Panel
             label = new Label();
             label.Text = "\nProduction cost\n";
             _listPanel.AddListItem(label);
-            foreach(string resName in building.ProductCost.Keys){
+            foreach(var resName in building.ProductCost.Keys){
                 label = new Label();
                 label.Text = resName + " " + building.ProductCost[resName];
                 _listPanel.AddListItem(label);
@@ -133,7 +133,7 @@ public class BuildingInterface : Panel
 
     void _on_gui_input(InputEvent input, Node node){
         if(input is InputEventMouseButton button && node is Unit unit){
-            if(button.ButtonIndex == (int)ButtonList.Left){
+            if(button.ButtonIndex == MouseButton.Left){
                 _unit = unit;
             }
         }
@@ -141,11 +141,11 @@ public class BuildingInterface : Panel
 
     void _on_BuildingInterface_gui_input(InputEvent e){
         if(e is InputEventScreenDrag drag)
-            RectPosition += drag.Relative;
+            Position += drag.Relative;
     }
 
     public void ConnecToStartConstruction(Node node, string methodName){
-        Connect(nameof(StartConstruction), node, methodName);
+        Connect(nameof(StartConstructionEventHandler), new Callable(node, methodName));
     }
 
     void _on_ButtonUp(){
@@ -155,10 +155,10 @@ public class BuildingInterface : Panel
 
     void _on_Build_button_up(){
         if(_building != null){
-            EmitSignal(nameof(StartConstruction), _building);
+            EmitSignal(nameof(StartConstructionEventHandler), _building);
         }
         if(_unit != null){
-            EmitSignal(nameof(StartConstruction), _unit);
+            EmitSignal(nameof(StartConstructionEventHandler), _unit);
         }
     }
 

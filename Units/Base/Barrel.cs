@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Barrel : Turret
+public partial class Barrel : Turret
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -26,7 +26,7 @@ public class Barrel : Turret
     [Export]
     new public float RotationSpeed { get; set; } = 10;
 
-    RayCast ray;
+    RayCast3D ray;
     // Called when the node enters the scene tree for the first time.
 
     void _on_Timer_timeout(){
@@ -37,15 +37,15 @@ public class Barrel : Turret
     }
 
     new protected Vector3 DirToTarget(){
-        return GlobalTransform.origin.DirectionTo(targetManager.currentTarget.GlobalTransform.origin);
+        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.GlobalTransform.Origin);
     }
 
     public override void _Ready()
     {
-            ray = GetNode<RayCast>("RayCast");
-            ray.CastTo = ray.Transform.origin+new Vector3(0,0,EffectiveRange);
+            ray = GetNode<RayCast3D>("RayCast3D");
+            ray.TargetPosition = ray.Transform.Origin+new Vector3(0,0,EffectiveRange);
             projectiles = GetNode("/root/World/Projectiles");
-            targetManager = new TargetManager<Spatial>();
+            targetManager = new TargetManager<Node3D>();
             _velocityController.RotationSpeed = RotationSpeed;
             SetTimer();
     }
@@ -56,18 +56,18 @@ public class Barrel : Turret
         Sleeping = true;
     }
     
-    void Recoil(PhysicsDirectBodyState state){
-        if(Transform.origin.z >= -Scale.z*RecoilRange){
+    void Recoil(PhysicsDirectBodyState3D state){
+        if(Transform.Origin.Z >= -Scale.Z*RecoilRange){
             state.LinearVelocity = -DirToTarget()*RecoilSpeed;
-        }else if(Transform.origin.z <= -Scale.z*RecoilRange){
+        }else if(Transform.Origin.Z <= -Scale.Z*RecoilRange){
             state.LinearVelocity = DirToTarget()*RecoilSpeed;
         }
     }
 
-    void Update(PhysicsDirectBodyState state){
+    void Update(PhysicsDirectBodyState3D state){
         if(targetManager.HasTarget){
-            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.origin;
-            if(targetPos != Vector3.Zero && targetPos != null){
+            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
+            if(targetPos != Vector3.Zero){
                 float angle = _velocityController.GetAngleToTargetOnXAxis(GlobalTransform, targetPos); 
                 if(angle > 0.05f || angle < -0.05f ){
                     StopTimer();
@@ -82,7 +82,7 @@ public class Barrel : Turret
         }
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState state)
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
         Update(state);
     }

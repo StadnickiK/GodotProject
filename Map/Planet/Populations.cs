@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Populations : Node, IRequirements
+public partial class Populations : Node, IRequirements
 {
 
     [Export]
@@ -10,7 +10,11 @@ public class Populations : Node, IRequirements
 
     public Random Rand { get; set; } = null;
 
-    Dictionary<string, List<string>> IRequirements.Requirements { get; set; } = new Dictionary<string, List<string>>();
+
+    [Export]
+     Godot.Collections.Dictionary<int, Godot.Collections.Array<int>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Godot.Collections.Array<int>>();
+
+     public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
 
     public override void _Ready()
     {

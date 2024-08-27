@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Generator : Node
+public partial class Generator : Node
 {
 
     Random Rand { get; set; }
@@ -28,14 +28,14 @@ public class Generator : Node
     }
 
 	Galaxy InitGalaxy(){
-		var Galaxy = (Galaxy)_GalaxyScene.Instance();
+		var Galaxy = (Galaxy)_GalaxyScene.Instantiate();
 		if(parameters != null){
 			if(parameters.ContainsKey("Systems")){
 				Galaxy.StarSystemNumber = parameters["Systems"];
 			}
 		}
-		Galaxy.Connect("CameraLookAt",this,"_on_CameraLookAt");
-		Galaxy.Connect("LookAtStarSystem", this, "_on_LookAtStarSystem");
+		Galaxy.Connect("CameraLookAt", new Callable(this, "_on_CameraLookAt"));
+		Galaxy.Connect("LookAtStarSystem", new Callable(this, "_on_LookAtStarSystem"));
         return Galaxy;
 	}
 
@@ -71,23 +71,23 @@ public class Generator : Node
     }
 
     StarSystem InitSystem(Galaxy galaxy, int dist, int i = 0){
-            var pos = galaxy.Transform.basis.Xform(new Vector3(0, 0, dist));
-            var starSystem = (StarSystem)StarSystemScene.Instance();
+            var pos = galaxy.Transform.Basis*(new Vector3(0, 0, dist));
+            var starSystem = (StarSystem)StarSystemScene.Instantiate();
             starSystem.Rand = Rand;
             starSystem.SystemID = i;
             starSystem.SystemName = "System " + i;
             starSystem.Name = "System " + i;
-            starSystem.Connect("ViewStarSystem", galaxy, ("_on_ViewStarSystem"));
-            starSystem.Connect("ViewGalaxy", galaxy, ("_on_ViewGalaxy"));
+            starSystem.Connect("ViewStarSystem", new Callable(galaxy, ("_on_ViewStarSystem")));
+            starSystem.Connect("ViewGalaxy", new Callable(galaxy, ("_on_ViewGalaxy")));
             var temp = starSystem.Transform;
-            temp.origin = pos;
+            temp.Origin = pos;
             starSystem.Transform = temp;
             return starSystem;
     }
 
     StarSystem GenerateStarSystem(Galaxy galaxy, int dist, int i = 0){
         var system = InitSystem(galaxy, dist, i);
-		var sun = SunScene.Instance();
+		var sun = SunScene.Instantiate();
         system.GetNodes();
 		system.StarSysObjects.AddChild(sun);
 		system.SystemStar = (Star)sun;
@@ -110,27 +110,27 @@ public class Generator : Node
 	}
 
     Planet GeneratePlanet(StarSystem system, int dist, int i = 0){
-        var pos = system.Transform.basis.Xform(new Vector3(0, 0, dist));
-		var planet = (Planet)PlanetScene.Instance();
+        var pos = system.Transform.Basis*(new Vector3(0, 0, dist));
+		var planet = (Planet)PlanetScene.Instantiate();
         planet.GetNodes(); 
 		planet.PlanetName = system.SystemName +" "+ i;
 		planet.Rand = Rand;
 		planet.System = system;
 		var temp = planet.Transform;
-		temp.origin = pos;
+		temp.Origin = pos;
 		planet.Transform = temp;
         return planet;
     }
 
     void ConnectPlanet(Planet planet){
         _world.ConnectTo_OpenPlanetInterface(planet);
-        planet.Connect("CreateShip", _world, "_on_CreateShip");
+        planet.Connect("CreateShip", new Callable(_world, "_on_CreateShip"));
         var arr = new Godot.Collections.Array();
         arr.Add(planet.Orbit);
         // planet.IcoOrbit.Connect("mouse_entered", _world.UInterface,"_on_OrbitIconFocus", arr);
         var arr2 = new Godot.Collections.Array();
         arr2.Add(planet);
-        planet.Connect("OpenCmdPanel", _world, "_on_OpenPlanetCmdPanel");
+        planet.Connect("OpenCmdPanel", new Callable(_world, "_on_OpenPlanetCmdPanel"));
         _world.WCC.ConnectToSelectTarget(planet);  
     }
 

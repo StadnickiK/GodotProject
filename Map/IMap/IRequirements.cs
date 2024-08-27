@@ -3,6 +3,6 @@ using System.Collections.Generic;
 
 public interface IRequirements
 {
-    Dictionary<string, List<string>> Requirements { get; set; }
+    System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>> Requirements {get; set;}
 
 }

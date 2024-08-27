@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Linq;
 
-public class Map : Spatial
+public partial class Map : Node3D
 {
     public Galaxy galaxy = null;
 
@@ -10,7 +10,7 @@ public class Map : Spatial
     Combat combat;
 
     [Signal]
-    public delegate void ShowBattlePanel(SpaceBattle battle);
+    public delegate void ShowBattlePanelEventHandler(SpaceBattle battle);
 
     PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
 
@@ -26,10 +26,10 @@ public class Map : Spatial
     }
 
     public void ConnectToEnterCombat(Node node){
-         node.Connect("EnterCombat", this, nameof(_on_EnterCombat));
+         node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
     }
 
-    void _on_EnterCombat(PhysicsBody ship, PhysicsBody enemy, Node parent){
+    void _on_EnterCombat(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent){
         if(ship != null && enemy != null){
             if(ship != enemy){
                 if(!combat.Combatants.Contains(ship) && !combat.Combatants.Contains(enemy)){
@@ -43,32 +43,32 @@ public class Map : Spatial
     }
 
     public void ConnectToShowBattlePanel(Node node, string method){
-        Connect(nameof(ShowBattlePanel), node, method);
+        Connect(nameof(ShowBattlePanelEventHandler), new Callable(node, method));
     }
 
     public void _on_OpenBattlePanel(SpaceBattle battle){
-        EmitSignal(nameof(ShowBattlePanel), battle);
+        EmitSignal(nameof(ShowBattlePanelEventHandler), battle);
     }
 
     public void ConnectToEnterMapObject(Node node){
-        node.Connect("SignalEnterMapObject", this, nameof(_on_Enter_MapObject));
+        node.Connect("SignalEnterMapObject", new Callable(this, nameof(_on_Enter_MapObject)));
     }
 
-    void _on_Enter_MapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+    void _on_Enter_MapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState3D state = null){
         MoveToMapObject(mapObject, targetMapObject, aproachVec, state);
     }
 
-    void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState state = null){
+    void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState3D state = null){
         if(targetMapObject is IEnterMapObject enterMapObject){
             enterMapObject.EnterMapObject(mapObject, aproachVec, state);
         }
     }
 
     public void ConnectToExitMapObject(Node node){
-        node.Connect("SignalExitMapObject", this ,nameof(_on_Exit_MapObject));
+        node.Connect("SignalExitMapObject", new Callable(this, nameof(_on_Exit_MapObject)));
     }
 
-    void _on_Exit_MapObject(Node mapObject, Node parentMapObject, Vector3 exitVec = default(Vector3), PhysicsDirectBodyState state = null){
+    void _on_Exit_MapObject(Node mapObject, Node parentMapObject, Vector3 exitVec = default(Vector3), PhysicsDirectBodyState3D state = null){
         if(parentMapObject is IExitMapObject exitMapObject){
             exitMapObject.ExitMapObject(mapObject, exitVec, state);
         }
@@ -88,7 +88,7 @@ public class Map : Spatial
                 if(target == null){
                     target = starSystem;
                 }else{
-                    if(system.Transform.origin.DistanceTo(target.Transform.origin) > system.Transform.origin.DistanceTo(starSystem.Transform.origin))
+                    if(system.Transform.Origin.DistanceTo(target.Transform.Origin) > system.Transform.Origin.DistanceTo(starSystem.Transform.Origin))
                         target = starSystem;
                 }
             }

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MoveToPosition : RigidBody
+public partial class MoveToPosition : RigidBody3D
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -31,9 +31,9 @@ public class MoveToPosition : RigidBody
         targetPos = destination;
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState state){
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state){
         if(targetPos != Vector3.Zero && targetPos != null){
-            state.AngularVelocity = _velocityController.GetAngularVelocity(Transform,targetPos);
+            state.AngularVelocity = _velocityController.GetAngularVelocity(Transform3D,targetPos);
             UpdateLinearVelocity();
             if(LinearVelocity != Vector3.Zero){
                 if(LinearVelocity < new Vector3(0.001f,0.001f,0.001f) && 
@@ -59,10 +59,10 @@ public class MoveToPosition : RigidBody
     Vector3 GetMouseWorldPosition(){
         var ray_length = 1000;
         var mousePos = GetViewport().GetMousePosition();
-        var camera = (Camera)GetParent().GetNode("CameraGimbal/InnerGimbal/FreeCamera");
+        var camera = (Camera3D)GetParent().GetNode("CameraGimbal/InnerGimbal/FreeCamera");
         var from = camera.ProjectRayOrigin(mousePos);
         var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
-        var space_state = GetWorld().DirectSpaceState;
+        var space_state = GetWorld3d().DirectSpaceState;
         var state = space_state.IntersectRay(from, to);
         Vector3 p = Vector3.Zero;
         if(state.Contains("position")){

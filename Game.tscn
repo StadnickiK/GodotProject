@@ -4,7 +4,7 @@
 [ext_resource path="res://Map/Generator.cs" type="Script" id=2]
 [ext_resource path="res://Game.cs" type="Script" id=3]
 
-[node name="Game" type="Spatial"]
+[node name="Game" type="Node3D"]
 script = ExtResource( 3 )
 
 [node name="MainMenu" parent="." instance=ExtResource( 1 )]

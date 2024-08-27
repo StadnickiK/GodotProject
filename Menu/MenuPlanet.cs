@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MenuPlanet : StaticBody
+public partial class MenuPlanet : StaticBody3D
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -12,21 +12,21 @@ public class MenuPlanet : StaticBody
 
     Random Rand = new Random();
 
-    MeshInstance Mesh = null;
+    MeshInstance3D Mesh = null;
 
 
     void GenerateMesh(){
-        ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceMaterial(0);
+        ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceOverrideMaterial(0);
         //ShaderMaterial material = new ShaderMaterial();
-        NoiseTexture noise = new NoiseTexture();
-        noise = (NoiseTexture)material.GetShaderParam("noise");//new OpenSimplexNoise();
-        var tempGradient = (GradientTexture)material.GetShaderParam("gradient");
+        var noise = new NoiseTexture3D();
+        noise = (NoiseTexture3D)material.GetShaderParameter("noise");//new FastNoiseLite();
+        var tempGradient = (GradientTexture2D)material.GetShaderParameter("gradient");
         tempGradient.Gradient = gradient;
-        noise.Noise.Seed = Rand.Next(-1000,1000);
+        //noise.Noise.Seed = Rand.Next(-1000,1000);
         //GradientTexture texture = new GradientTexture();
         //texture.Gradient = gradient;
-        material.SetShaderParam("noise", noise);
-        material.SetShaderParam("gradient", tempGradient);
+        material.SetShaderParameter("noise", noise);
+        material.SetShaderParameter("gradient", tempGradient);
         //Mesh.MaterialOverride = material;
         //Mesh.SetSurfaceMaterial(0, material);
     }
@@ -35,7 +35,7 @@ public class MenuPlanet : StaticBody
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        Mesh = GetNode<MeshInstance>("MeshInstance");
+        Mesh = GetNode<MeshInstance3D>("MeshInstance3D");
         GenerateMesh();
     }
 

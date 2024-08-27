@@ -1,8 +1,8 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
-public class BattlePanel : Panel
+public partial class BattlePanel : Panel
 {
     
     Button _closeButton = null;
@@ -15,7 +15,7 @@ public class BattlePanel : Panel
     public string Title { get; set; } = "Space battle";
     
     [Export]
-    public List<string> Options { get; set; } = new List<string>();
+    public Array<string> Options { get; set; } = new Array<string>();
 
     SpaceBattle _battle = null;
 
@@ -28,7 +28,7 @@ public class BattlePanel : Panel
     public override void _Ready()
     {
         GetNodes();
-        _closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
+        _closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
         InitOverviewPanel();
     }
 
@@ -55,7 +55,7 @@ public class BattlePanel : Panel
     void UpdateOverview(SpaceBattle battle){
         var progressBar = new ProgressBar();
         progressBar.Value = (double)battle.AttackPower/((double)battle.AttackPower+(double)battle.DefPower)*100;
-        progressBar.PercentVisible = true;
+        // progressBar.PercentVisible = true;
         _overviewPanel.AddNodeToPanel("Overview", progressBar);
         // for(int i =0; i<battle.Comabatants.Count; i +=2){
         //     var label = new Label();
@@ -94,7 +94,7 @@ public class BattlePanel : Panel
         Visible = false;
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         if(Visible){
             if(_battle != null){
                 if(_battle.PowerChanged)

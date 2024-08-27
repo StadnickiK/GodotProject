@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Text3 : Sprite3D
+public partial class Text3 : Sprite3D
 {
     [Export]
     public string Text { get; set; } = "Text";
@@ -13,25 +13,25 @@ public class Text3 : Sprite3D
 
     bool TextChanged = false;
 
-    Viewport vp = null;
+    SubViewport vp = null;
     public override void _Ready()
     {
-        label = (Label)GetNode("Viewport/Label");
-        vp = (Viewport)GetNode("Viewport");
+        label = (Label)GetNode("SubViewport/Label");
+        vp = (SubViewport)GetNode("SubViewport");
         UpdateText(Text);
     }
 
     public void UpdateText(string text){
         Text = text;
         label.Text = Text;
-        vp.Size = label.RectSize;
+        vp.Size = (Vector2I)label.Size;
         Texture = vp.GetTexture();
         TextChanged = true; 
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         if(TextChanged){
-            vp.Size = label.RectSize;
+            vp.Size = (Vector2I)label.Size;
             TextChanged = false;
         }
     }

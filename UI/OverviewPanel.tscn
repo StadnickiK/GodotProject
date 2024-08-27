@@ -3,9 +3,9 @@
 [ext_resource path="res://UI/OverviewPanel.cs" type="Script" id=2]
 
 [node name="OverviewPanel" type="VBoxContainer"]
-margin_top = 46.0
-margin_right = 150.0
-margin_bottom = 272.0
+offset_top = 46.0
+offset_right = 150.0
+offset_bottom = 272.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
@@ -14,20 +14,20 @@ __meta__ = {
 }
 
 [node name="Options" type="HBoxContainer" parent="."]
-margin_right = 150.0
-margin_bottom = 20.0
+offset_right = 150.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Button" type="Button" parent="Options"]
-margin_right = 63.0
-margin_bottom = 20.0
+offset_right = 63.0
+offset_bottom = 20.0
 text = "Button1"
 
 [node name="Button2" type="Button" parent="Options"]
-margin_left = 67.0
-margin_right = 130.0
-margin_bottom = 20.0
+offset_left = 67.0
+offset_right = 130.0
+offset_bottom = 20.0
 text = "Button1"

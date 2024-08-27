@@ -7,9 +7,9 @@
 [ext_resource path="res://Units/Base/SimpleFireControl.cs" type="Script" id=5]
 [ext_resource path="res://Controllers/VelocityController.cs" type="Script" id=6]
 
-[sub_resource type="BoxShape" id=1]
+[sub_resource type="BoxShape3D" id=1]
 
-[node name="Ship" type="RigidBody" groups=["Selectable", "Targetable"]]
+[node name="Ship" type="RigidBody3D" groups=["Selectable", "Targetable"]]
 collision_mask = 2
 gravity_scale = 0.0
 script = ExtResource( 1 )
@@ -17,33 +17,33 @@ script = ExtResource( 1 )
 [node name="VelocityController" type="Node" parent="."]
 script = ExtResource( 6 )
 
-[node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( -2.44381e-07, 0, 1, 0, 2.1, 0, -1.5, 0, -1.62921e-07, 0, 0, 0 )
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D( -2.44381e-07, 0, 1, 0, 2.1, 0, -1.5, 0, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 1 )
 
-[node name="Area" parent="." instance=ExtResource( 3 )]
+[node name="Area3D" parent="." instance=ExtResource( 3 )]
 
 [node name="ship model" parent="." instance=ExtResource( 2 )]
-transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
+transform = Transform3D( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
 
-[node name="FireControl" type="Spatial" parent="."]
+[node name="FireControl" type="Node3D" parent="."]
 script = ExtResource( 5 )
 
 [node name="Fire" parent="FireControl" instance=ExtResource( 4 )]
-transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, 0.297499, -1.33494 )
+transform = Transform3D( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, 0.297499, -1.33494 )
 
 [node name="Fire4" parent="FireControl" instance=ExtResource( 4 )]
-transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, -0.290623, -1.33494 )
+transform = Transform3D( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, -0.290623, -1.33494 )
 
 [node name="Fire2" parent="FireControl" instance=ExtResource( 4 )]
-transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.33494 )
+transform = Transform3D( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.33494 )
 
 [node name="Fire3" parent="FireControl" instance=ExtResource( 4 )]
-transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494 )
+transform = Transform3D( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494 )
 
 [node name="Units" type="Node" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_Ship_body_entered"]
 [connection signal="input_event" from="." to="." method="_on_input_event"]
-[connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]
-[connection signal="body_exited" from="Area" to="." method="_on_Area_body_exited"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_Area_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_Area_body_exited"]

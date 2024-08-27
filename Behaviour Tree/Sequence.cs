@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Sequence : TreeNode
+public partial class Sequence : TreeNode
 {
     bool _isRandom = false;
 

@@ -39,14 +39,14 @@ void light() {
 "
 
 [sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0, 0.2, 0.5, 0.8, 1 )
-colors = PoolColorArray( 0.0205497, 0.0110173, 0, 1, 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1, 0.958333, 0.958333, 0.958333, 1 )
+offsets = PackedFloat32Array( 0, 0.2, 0.5, 0.8, 1 )
+colors = PackedColorArray( 0.0205497, 0.0110173, 0, 1, 0.719238, 0.385607, 0, 1, 0.339844, 0.226538, 0.0955811, 1, 0, 0, 0, 1, 0.958333, 0.958333, 0.958333, 1 )
 
-[sub_resource type="GradientTexture" id=4]
+[sub_resource type="GradientTexture2D" id=4]
 resource_local_to_scene = true
 gradient = SubResource( 3 )
 
-[sub_resource type="OpenSimplexNoise" id=5]
+[sub_resource type="FastNoiseLite" id=5]
 seed = 130
 lacunarity = 4.0
 
@@ -60,6 +60,6 @@ shader = SubResource( 2 )
 shader_param/noise = SubResource( 6 )
 shader_param/gradient = SubResource( 4 )
 
-[node name="MeshInstance" type="MeshInstance"]
+[node name="MeshInstance3D" type="MeshInstance3D"]
 mesh = SubResource( 1 )
 material/0 = SubResource( 7 )

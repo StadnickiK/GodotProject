@@ -1,8 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Godot.Collections;
 
-public class UnitInfoPanel : Panel
+public partial class UnitInfoPanel : Panel
 {
     Header _header = null;
 
@@ -17,10 +18,10 @@ public class UnitInfoPanel : Panel
     string _itemPath = "res://UI/MapObjectLabel.tscn";
 
     [Export]
-    public List<string> Options { get; set; } = new List<string>();
+    public Array<string> Options { get; set; } = new Array<string>();
 
     [Signal]
-    public delegate void ChangeStance(Node node, string stance);
+    public delegate void ChangeStanceEventHandler(Node node, string stance);
 
     Node Selected = null;
 
@@ -37,7 +38,7 @@ void GetNodes(){
         }
     }
 
-    public void UpdatePanel(PhysicsBody body){
+    public void UpdatePanel(PhysicsBody3D body){
         if(body != null){
             Selected = body;
             _header.SetTitle(body.Name);
@@ -86,7 +87,7 @@ void GetNodes(){
     void CreateOverviewPanelLabel(string panelName, string name, Node mapObject){
         Node node = null;
         if(_itemScene != null){
-            var label = (MapObjectLabel)_itemScene.Instance();
+            var label = (MapObjectLabel)_itemScene.Instantiate();
             label.Title = name;
             label.Name = name;
             label.MapObject = mapObject;
@@ -116,7 +117,7 @@ void GetNodes(){
 
     void _on_Stance_GuiInputEvent(InputEvent input, Node node){
         if(input is InputEventMouseButton button){
-            if(button.ButtonIndex == (int)ButtonList.Left){
+            if(button.ButtonIndex == MouseButton.Left){
                 if(node is Label label){
                     EmitSignal(nameof(ChangeStance), Selected, label.Text);
                 }
@@ -135,7 +136,7 @@ void GetNodes(){
     }
 
     public void ConnectToChangeStance(Node node, string methodName){
-        Connect(nameof(ChangeStance), node, methodName);
+        Connect(nameof(ChangeStance), new Callable(node, methodName));
     }
 
     public override void _Ready()

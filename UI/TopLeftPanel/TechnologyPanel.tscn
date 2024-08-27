@@ -9,26 +9,26 @@
 [node name="TechnologyPanel" type="Panel"]
 anchor_right = 0.031
 anchor_bottom = 0.057
-margin_right = 249.7
-margin_bottom = 408.1
+offset_right = 249.7
+offset_bottom = 408.1
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Header" parent="." instance=ExtResource( 2 )]
-margin_right = 222.0
+offset_right = 222.0
 Title = "Technology"
 
 [node name="OverviewPanel" parent="." instance=ExtResource( 1 )]
-margin_right = 288.0
-margin_bottom = 448.0
-Values = PoolStringArray( "Research", "Owned" )
+offset_right = 288.0
+offset_bottom = 448.0
+Values = PackedStringArray( "Research", "Owned" )
 
 [node name="TechnologyInterface" parent="." instance=ExtResource( 3 )]
 visible = false
-margin_left = 302.0
-margin_top = 2.0
-margin_right = 463.0
-margin_bottom = 274.0
+offset_left = 302.0
+offset_top = 2.0
+offset_right = 463.0
+offset_bottom = 274.0
 script = ExtResource( 5 )

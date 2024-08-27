@@ -1,8 +1,8 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public interface IUpkeep
 {
-    Dictionary<string, int> Upkeep { get; set; }
+    System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; }
 }

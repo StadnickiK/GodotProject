@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class StarSystem : Area, IEnterMapObject, IExitMapObject
+public partial class StarSystem : Area3D, IEnterMapObject, IExitMapObject
 {
 
 	[Export]
@@ -12,13 +12,13 @@ public class StarSystem : Area, IEnterMapObject, IExitMapObject
 	int Wealth = 5;
 
 	[Signal]
-	public delegate void ViewStarSystem(StarSystem system);
+	public delegate void ViewStarSystemEventHandler(StarSystem system);
 
 	[Signal]
-	public delegate void ViewGalaxy(StarSystem system);
+	public delegate void ViewGalaxyEventHandler(StarSystem system);
 
 	[Signal]
-	public delegate void SelectTarget(StarSystem target);
+	public delegate void SelectTargetEventHandler(StarSystem target);
 
 private int _radius;
 public int Radius
@@ -28,9 +28,9 @@ public int Radius
 }
 
 
-	MeshInstance _size = null;
+	MeshInstance3D _size = null;
 
-	Spatial _mask = null;   
+	Node3D _mask = null;   
 
 	public String SystemName { get; set; }
 
@@ -39,14 +39,14 @@ public int Radius
 	public int SystemID { get; set; }
 	// Node storing objects in the star system
 
-	private Spatial _starSysObjects;
-	public Spatial StarSysObjects
+	private Node3D _starSysObjects;
+	public Node3D StarSysObjects
 	{
 		get { return _starSysObjects; }
 		set { _starSysObjects = value; }
 	}
 
-	CollisionShape Placeholder = null;
+	CollisionShape3D Placeholder = null;
 	Button XButton = null;
 
 	private List<Planet> _planets = new List<Planet>();
@@ -60,22 +60,22 @@ public int Radius
 	public Random Rand { get; set; } = new Random();
 
 	public void GetNodes(){
-		_starSysObjects = GetNode<Spatial>("StarSysObjects");
+		_starSysObjects = GetNode<Node3D>("StarSysObjects");
 		MapObjectName3 = GetNode<Label3D>("Placeholder/Text3");
-		Placeholder = GetNode<CollisionShape>("Placeholder");
+		Placeholder = GetNode<CollisionShape3D>("Placeholder");
 		XButton = GetNode<Button>("XButton");
-		_size = GetNode<MeshInstance>("StarSysObjects/Diameter");
-		_mask = GetNode<Spatial>("Placeholder/Mask");
+		_size = GetNode<MeshInstance3D>("StarSysObjects/Diameter");
+		_mask = GetNode<Node3D>("Placeholder/Mask");
 	}
 
 	void GenerateMesh(){
-		var mesh = (MeshInstance)SystemStar.Mesh.Duplicate();
+		var mesh = (MeshInstance3D)SystemStar.Mesh.Duplicate();
 		mesh.Scale = new Vector3(4,4,4);
 		_mask.AddChild(mesh);
 		foreach(Planet planet in _planets){
-			mesh = (MeshInstance)planet.Mesh.Duplicate();
+			mesh = (MeshInstance3D)planet.Mesh.Duplicate();
 			var transform = mesh.Transform;
-			transform.origin = planet.Transform.origin;
+			transform.Origin = planet.Transform.Origin;
 			mesh.Transform = transform;
 			mesh.Scale = new Vector3(2,2,2);
 			_mask.AddChild(mesh);
@@ -101,27 +101,27 @@ public int Radius
 					ship.Visible = true;
 			}
 		}
-		EmitSignal(nameof(ViewStarSystem), this);
+		EmitSignal(nameof(ViewStarSystemEventHandler), this);
 	}
 
-	public void AddMapObject(PhysicsBody body){
+	public void AddMapObject(PhysicsBody3D body){
 		if(body.GetParent() != StarSysObjects)
 			StarSysObjects.AddChild(body);
 	}
 
 	void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
 		if(e is InputEventMouseButton mouseButton){
-			if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Left){
+			if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Left){
 				OpenStarSystem();
-			}else if(!mouseButton.Pressed && mouseButton.ButtonIndex == (int)ButtonList.Right){
-				EmitSignal(nameof(SelectTarget), (CollisionObject)this);
+			}else if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Right){
+				EmitSignal(nameof(SelectTargetEventHandler), (CollisionObject3D)this);
 			}
 		}
 	}
 
 	void _on_XButton_button_up(){
 		CloseSystem();
-		EmitSignal(nameof(ViewGalaxy), this);
+		EmitSignal(nameof(ViewGalaxyEventHandler), this);
 	}
 
 	public void CloseSystem(){
@@ -135,7 +135,7 @@ public int Radius
 		WCC.ConnectToSelectTarget(this);
 	}
 
-	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
 		if(node != null){
 			if(node.GetParent() == GetParent())
 				if(node is Ship ship){
@@ -143,22 +143,22 @@ public int Radius
 					_starSysObjects.AddChild(ship);
 					ship.NextTarget();
 					var trans = state.Transform;
-					trans.origin = Radius*0.9f*(-aproachVec)+GlobalTransform.origin;
+					trans.Origin = Radius*0.9f*(-aproachVec)+GlobalTransform.Origin;
 					state.Transform = trans;
 					ship.MapObject = this;
 				}
         }
 	}
 
-	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
 		if(node is Ship ship)
 			if(ship.MapObject == this){
-				if(ship.Transform.origin.Length()>Radius){
+				if(ship.Transform.Origin.Length()>Radius){
 					//StarSysObjects.RemoveChild(ship);
 					ship.GetParent().RemoveChild(ship);
 					GetParent().AddChild(ship);
 					var trans = state.Transform;
-					trans.origin = Transform.origin;
+					trans.Origin = Transform.Origin;
 					state.Transform = trans;
 					ship.NextTarget();
 					ship.Visible = false;

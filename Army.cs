@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Army : RigidBody
+public partial class Army : RigidBody3D
 {
 
     

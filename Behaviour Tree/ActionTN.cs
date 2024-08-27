@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class ActionTN : TreeNode
+public partial class ActionTN : TreeNode
 {
     public delegate NodeState ActionNodeDelegate();
 

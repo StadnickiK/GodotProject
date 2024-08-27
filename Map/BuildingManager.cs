@@ -1,12 +1,12 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
-public class BuildingManager : Node
+public partial class BuildingManager : Node
 {
 
-    float _time = 0;
+    double _time = 0;
 
     public bool BuildingsChanged { get; set; } = false; // changed when build is finished
 
@@ -22,22 +22,22 @@ public class BuildingManager : Node
 
     public List<Building> CurrentConstruction(){
         var currentConstruction = _constructions.CurrentConstruction();
-        var list = IbuildingToBuilding(currentConstruction);
-        return list;
+        var Array = IbuildingToBuilding(currentConstruction);
+        return Array;
     }
 
-    List<Building> IbuildingToBuilding(List<IBuilding> originalList){
-        var list = new List<Building>();
-        foreach(IBuilding building in originalList){
-            list.Add((Building)building);
+    List<Building> IbuildingToBuilding(List<IBuilding> originalArray){
+        var Array = new List<Building>();
+        foreach(IBuilding building in originalArray){
+            Array.Add((Building)building);
         }
-        return list;
+        return Array;
     }
 
     public void ConstructBuilding(Building building){
         if(building != null){
             _constructions.ConstructionList.Add(building);
-            // ConstructionListChanged = true;
+            // ConstructionArrayChanged = true;
         }
     }
 
@@ -52,8 +52,8 @@ public class BuildingManager : Node
     //         CurrentConstruction.CurrentTime++;
     //         if(CurrentConstruction.CurrentTime >= CurrentConstruction.BuildTime){
     //             Buildings.Add(CurrentConstruction);
-    //             ConstructionList.NextTarget();
-    //             ConstructionListChanged = true;
+    //             ConstructionArray.NextTarget();
+    //             ConstructionArrayChanged = true;
     //         }
     //         BuildingsChanged = true;
     //     }
@@ -84,7 +84,7 @@ public class BuildingManager : Node
         return (Buildings.FirstOrDefault(x => x.Name == name) != null);
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         _time += delta;
         if(_time >= 1){
             UpdateConstruction();

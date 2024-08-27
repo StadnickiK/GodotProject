@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-    public class TargetManager<T> : Node{
+    public partial class TargetManager<T> : Node{
 
         public T currentTarget = default(T);
 

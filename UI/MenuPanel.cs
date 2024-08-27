@@ -1,8 +1,8 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
-public class MenuPanel : Panel
+public partial class MenuPanel : Panel
 {
     Button _closeButton = null;
 
@@ -20,7 +20,7 @@ public class MenuPanel : Panel
     string newScene;
 
     [Signal]
-    public delegate void StartNewGame(Dictionary<string,int> WorldGenParameters);
+    public delegate void StartNewGameEventHandler(Dictionary<string,int> WorldGenParameters);
 
     void GetNodes(){
         _closeButton = GetNode<Button>("Header/XButton");
@@ -31,7 +31,7 @@ public class MenuPanel : Panel
     public override void _Ready()
     {
         GetNodes();
-        _closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
+        _closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
         var parent = (Game)GetParent().GetParent();
         parent.ConnectToStartNewGame(this);
     }
@@ -47,7 +47,7 @@ public class MenuPanel : Panel
                 WorldGenParameters.Add(value.ValueName, value.CurrentValue);
             }
         }
-        EmitSignal(nameof(StartNewGame), WorldGenParameters);
+        EmitSignal(nameof(StartNewGameEventHandler), WorldGenParameters);
     }
 
 }

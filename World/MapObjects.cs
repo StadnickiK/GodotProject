@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapObjects : Node
+public partial class MapObjects : Node
 {
     public List<Ship> Ships { get; set; } = new List<Ship>();
 

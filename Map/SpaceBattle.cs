@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SpaceBattle : StaticBody, ISelectMapObject
+public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 {
 
     // public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
@@ -30,24 +30,24 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     public bool PowerChanged { get; set; } = false;
 
     [Signal]
-    public delegate void OpenBattlePanel(SpaceBattle battle);
+    public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
 
-    MeshInstance _placeholder = null;
+    MeshInstance3D _placeholder = null;
 
-    Spatial _mesh = null;
+    Node3D _mesh = null;
 
-    float _time = 0;
+    double _time = 0;
 
     public int TimeStep { get; set; } = 1;
 
-    public void SetPosition(Vector3 pos){
+    public new void SetPosition(Vector3 pos){
         var trans = Transform;
-        trans.origin = pos;
+        trans.Origin = pos;
         Transform = trans;
     }
 
-    public void AddCombatants(params PhysicsBody[] body){
-        foreach(PhysicsBody b in body){
+    public void AddCombatants(params PhysicsBody3D[] body){
+        foreach(PhysicsBody3D b in body){
             if(b is Ship ship){
                 if(ship.IsLocal)
                     IsLocal = true;
@@ -62,16 +62,16 @@ public class SpaceBattle : StaticBody, ISelectMapObject
         }
     }
 
-    public void AddAttackers(params PhysicsBody[] body){
-        foreach(PhysicsBody b in body){
+    public void AddAttackers(params PhysicsBody3D[] body){
+        foreach(PhysicsBody3D b in body){
             if(b is Ship ship){
                 Attackers.Add(ship);
             }
         }
     }
 
-    public void AddADefenders(params PhysicsBody[] body){
-        foreach(PhysicsBody b in body){
+    public void AddADefenders(params PhysicsBody3D[] body){
+        foreach(PhysicsBody3D b in body){
             if(b is Ship ship){
                 Defenders.Add(ship);
             }
@@ -81,14 +81,14 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     public void GenerateMesh(){
         if(Attackers.Count > 0 && Defenders.Count > 0){
                 _placeholder.QueueFree();
-                MeshInstance mesh = (MeshInstance)Attackers[0].Mesh.Duplicate();
+                MeshInstance3D mesh = (MeshInstance3D)Attackers[0].Mesh.Duplicate();
                 var transform = mesh.Transform;
-                transform.origin = new Vector3(2,0,0);
+                transform.Origin = new Vector3(2,0,0);
                 mesh.Transform = transform;
                 _mesh.AddChild(mesh);
-                mesh = (MeshInstance)Defenders[0].Mesh.Duplicate();
+                mesh = (MeshInstance3D)Defenders[0].Mesh.Duplicate();
                 transform = mesh.Transform;
-                transform.origin = new Vector3(-2,0,0);
+                transform.Origin = new Vector3(-2,0,0);
                 mesh.Transform = transform;
                 mesh.RotateY(135);
                 _mesh.AddChild(mesh);
@@ -98,8 +98,8 @@ public class SpaceBattle : StaticBody, ISelectMapObject
 
     void GetNodes(){
         Participants = GetNode("Participants");
-        _placeholder = GetNode<MeshInstance>("Placeholder");
-        _mesh = GetNode<Spatial>("Spatial");
+        _placeholder = GetNode<MeshInstance3D>("Placeholder");
+        _mesh = GetNode<Node3D>("Node3D");
     }
 
     public override void _Ready()
@@ -144,7 +144,7 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     }
 
     public void ConnectToOpenBattlePanel(Node node, string method){
-        Connect(nameof(OpenBattlePanel),node, method);
+        Connect(nameof(OpenBattlePanel), new Callable(node, method));
     }
 
     void Duel(Ship Attacker, Ship Defender){
@@ -220,23 +220,23 @@ public class SpaceBattle : StaticBody, ISelectMapObject
     }
 
     public void SelectMapObject(){
-        EmitSignal(nameof(OpenBattlePanel), (PhysicsBody)this);
+        EmitSignal(nameof(OpenBattlePanelEventHandler), (PhysicsBody3D)this);
     }
 
-    public void _on_SpaceBattle_input_event(Camera camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
+    public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
         if(input is InputEventMouseButton eventMouseButton){
-        switch((ButtonList)eventMouseButton.ButtonIndex){
-          case ButtonList.Left:
+        switch(eventMouseButton.ButtonIndex){
+          case MouseButton.Left:
             SelectMapObject();
             break;
-          case ButtonList.Right:
+          case MouseButton.Right:
             //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
             break;
         }
       }
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         if(!_endCombat){
             if(Attackers.Count > 0 && Defenders.Count > 0){
                 if(_time >= TimeStep){  

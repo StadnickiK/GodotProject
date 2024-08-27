@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class NewSceneButton : Button
+public partial class NewSceneButton : Button
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -17,7 +17,7 @@ public class NewSceneButton : Button
     }
 
     public void _on_button_up(){
-        GetTree().ChangeScene(newScene);
+        GetTree().ChangeSceneToFile(newScene);
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

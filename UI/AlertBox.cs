@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class AlertBox : Panel
+public partial class AlertBox : Panel
 {
     
     private Label _label;

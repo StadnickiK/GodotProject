@@ -1,8 +1,8 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
-public class RightPanel : Panel
+public partial class RightPanel : Panel
 {
     
     Label _title = null;
@@ -18,10 +18,10 @@ public class RightPanel : Panel
     string _itemPath = "res://UI/MapObjectLabel.tscn";
 
     [Export]
-    public List<string> Options { get; set; } = new List<string>();
+    public Array<string> Options { get; set; } = new Array<string>();
 
     [Signal]
-    public delegate void LookAtObject(Node node);
+    public delegate void LookAtObjectEventHandler(Node node);
 
     void GetNodes(){
         _title = GetNode<Label>("Vertical/Title");
@@ -33,7 +33,7 @@ public class RightPanel : Panel
         //_overviewPanel.DisconnectToGuiInputEvent(this, panelName, nameof(_on_GuiInputEvent));
         _overviewPanel.ClearPanel(panelName);
         _overviewPanel.ClearPanel("Fleets");
-        foreach(CollisionObject body in player.MapObjects){
+        foreach(CollisionObject3D body in player.MapObjects){
             if(body != null){
                 if(body is Planet planet){
                     CreateOverviewPanelLabel(panelName, planet.Name, planet);
@@ -50,7 +50,7 @@ public class RightPanel : Panel
 
     public void _on_LabelGuiInputEvent(InputEvent input, Node node){
         if(input is InputEventMouseButton button){
-            if(button.ButtonIndex == (int)ButtonList.Left){
+            if(button.ButtonIndex == MouseButton.Left){
                 if(node != null)
                     EmitSignal(nameof(LookAtObject), node);
             }
@@ -60,7 +60,7 @@ public class RightPanel : Panel
     void CreateOverviewPanelLabel(string panelName, string name, Node mapObject){
         Node node = null;
         if(_itemScene != null){
-            var label = (MapObjectLabel)_itemScene.Instance();
+            var label = (MapObjectLabel)_itemScene.Instantiate();
             label.Title = name;
             label.Name = name;
             label.MapObject = mapObject;
@@ -91,7 +91,7 @@ public class RightPanel : Panel
     }
 
     public void ConnectToLookAt(Node node, string methodName){
-        Connect(nameof(LookAtObject), node, methodName);
+        Connect(nameof(LookAtObject), new Callable(node, methodName));
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

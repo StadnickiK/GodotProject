@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class UnitTransferPanel : PanelContainer
+public partial class UnitTransferPanel : PanelContainer
 {
     
     Node LeftList;
@@ -42,7 +42,8 @@ public class UnitTransferPanel : PanelContainer
             b.Name = "TransferButton " + side.Name + i;
             Godot.Collections.Array array = new Godot.Collections.Array();
             array.Add(unit);
-            b.Connect("button_up", this, nameof(_on_UnitButton_Up), array);
+            //b.Connect("button_up", new Callable(this, nameof(_on_UnitButton_Up)), array);
+            b.Connect("button_up", new Callable(this, nameof(_on_UnitButton_Up)));
             i++;
             side.AddChild(b); 
         }

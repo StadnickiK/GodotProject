@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class VelocityController : Node
+public partial class VelocityController : Node
 {
     public float Mass { get; set; } = 1;
     public float MaxSpeed { get; set; } = 10;
@@ -27,7 +27,7 @@ public class VelocityController : Node
             Speed += Acceleration;
         }
         Vector3 Velocity = currentDirection * Speed;
-        Velocity.y = 0;
+        Velocity.Y = 0;
         return Velocity;
     }
 
@@ -36,7 +36,7 @@ public class VelocityController : Node
             Speed += Acceleration;
         }
         Vector3 Velocity = GetTargetDir(currentPosition, targetPos) * Speed;
-        Velocity.y = 0;
+        Velocity.Y = 0;
         return Velocity;
     }
 
@@ -44,32 +44,32 @@ public class VelocityController : Node
         return (targetPosition - currentPosition).Normalized();
     }
 
-    static public Vector3 GetTransformedPos(Transform transform, Vector3 vector){
-        return transform.basis.Xform(vector);
+    static public Vector3 GetTransformedPos(Transform3D transform, Vector3 vector){
+        return transform.Basis*(vector);
     }
 
-    public float GetAngleToTarget(Transform transform, Vector3 targetPosition){
-        Vector3 dir = transform.basis.Xform(new Vector3(0, 0, -1));
-        var targetDir = GetTargetDir(targetPosition, transform.origin);
-        float angle = (Mathf.Atan2(targetDir.x,targetDir.z) - Mathf.Atan2(dir.x,dir.z));
+    public float GetAngleToTarget(Transform3D transform, Vector3 targetPosition){
+        Vector3 dir = transform.Basis*(new Vector3(0, 0, -1));
+        var targetDir = GetTargetDir(targetPosition, transform.Origin);
+        float angle = (Mathf.Atan2(targetDir.X,targetDir.Z) - Mathf.Atan2(dir.X,dir.Z));
         return angle;
     }
 
-    public float GetAngleToTarget(Transform transform, Vector3 targetPosition, Vector3 front, Vector3 atan2Yaxis){
-        Vector3 dir = transform.basis.Xform(front);
-        var targetDir = GetTargetDir(targetPosition, transform.origin);
-        float angle = (Mathf.Atan2((targetDir*atan2Yaxis).Length(),targetDir.z) - Mathf.Atan2((dir*atan2Yaxis).Length(),dir.z));
+    public float GetAngleToTarget(Transform3D transform, Vector3 targetPosition, Vector3 front, Vector3 atan2Yaxis){
+        Vector3 dir = transform.Basis*(front);
+        var targetDir = GetTargetDir(targetPosition, transform.Origin);
+        float angle = (Mathf.Atan2((targetDir*atan2Yaxis).Length(),targetDir.Z) - Mathf.Atan2((dir*atan2Yaxis).Length(),dir.Z));
         return angle;
     }
 
-    public float GetAngleToTargetOnXAxis(Transform transform, Vector3 targetPosition){
-        Vector3 dir = transform.basis.Xform(new Vector3(0, 0, -1));
-        var targetDir = GetTargetDir(targetPosition, transform.origin);
-        float angle = (Mathf.Atan2(targetDir.y,targetDir.z) - Mathf.Atan2(dir.y,dir.z));
+    public float GetAngleToTargetOnXAxis(Transform3D transform, Vector3 targetPosition){
+        Vector3 dir = transform.Basis*(new Vector3(0, 0, -1));
+        var targetDir = GetTargetDir(targetPosition, transform.Origin);
+        float angle = (Mathf.Atan2(targetDir.Y,targetDir.Z) - Mathf.Atan2(dir.Y,dir.Z));
         
         if (angle > Math.PI)        { angle -= 2 * (float)Math.PI; }
         else if (angle <= -Math.PI) { angle += 2 * (float)Math.PI; }
-        //float angle = (Mathf.Atan2(targetDir.x,targetDir.z) - Mathf.Atan2(dir.x,dir.z));
+        //float angle = (Mathf.Atan2(targetDir.X,targetdir.Z) - Mathf.Atan2(dir.x,dir.Z));
         return angle;
     }
 
@@ -77,7 +77,7 @@ public class VelocityController : Node
     //  Summary:
     //      Returns angular velocity required to partialy rotate on y axis towards position.
     //      The default forward facing direction is on positive z axis Vector3(0,0,1)
-    public Vector3 GetAngularVelocity(Transform currentTransform, Vector3 targetPosition)
+    public Vector3 GetAngularVelocity(Transform3D currentTransform, Vector3 targetPosition)
 	{
         int rotationFix = 1;
 
@@ -87,14 +87,14 @@ public class VelocityController : Node
         if (angle > Math.PI)        { angle -= 2 * (float)Math.PI; }
         else if (angle <= -Math.PI) { angle += 2 * (float)Math.PI; }
 
-        if((targetPosition-currentTransform.origin).Length() < 8){
+        if((targetPosition-currentTransform.Origin).Length() < 8){
             rotationFix *= 4;
         }
 
         return upDir*(angle) * RotationSpeed * rotationFix;
 	}
 
-    public Vector3 GetAngularVelocity(Transform currentTransform, Vector3 targetPosition, Vector3 upDir)
+    public Vector3 GetAngularVelocity(Transform3D currentTransform, Vector3 targetPosition, Vector3 upDir)
 	{
         float angle = GetAngleToTargetOnXAxis(currentTransform, targetPosition);
 

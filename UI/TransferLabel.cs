@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class TransferLabel : HBoxContainer
+public partial class TransferLabel : HBoxContainer
 {
 
     Label LeftText;

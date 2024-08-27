@@ -3,22 +3,29 @@ using System;
 using System.Collections.Generic;
 
 
-public class Technology : Node, IBuilding
+public partial class Technology : Node, IBuilding
 {
 
-    public override void _Ready()
-    {
-          
-    }
+	public override void _Ready()
+	{
+		  
+	}
+
+	public int Index { get; set; }
+
+	[Export]
+	public int BuildTime { get; set; } = 0;
+	public int CurrentTime { get; set; } = 0;
+	
+    [Export]
+     Godot.Collections.Dictionary<int, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<int, int>();
+
+    public System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-    public int BuildTime { get; set; } = 0;
-    public int CurrentTime { get; set; } = 0;
-    
-    [Export]
-    public Godot.Collections.Dictionary<string, int> BuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
+     Godot.Collections.Dictionary<int, Godot.Collections.Array<int>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Godot.Collections.Array<int>>();
 
-    [Export]
-    public Dictionary<string, List<string>> Requirements { get; set; } = new Dictionary<string, List<string>>();
+     public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
+    string IBuilding.Name { get; set; }
 
 }

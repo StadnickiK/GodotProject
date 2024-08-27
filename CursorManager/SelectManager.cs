@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class SelectManager<T> : Node{
+public partial class SelectManager<T> : Node{
     public T MainSelectedUnit { get; set; }
     public List<T> SelectedUnits = new List<T>();
 

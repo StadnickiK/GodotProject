@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class ResourceLabel : HBoxContainer
+public partial class ResourceLabel : HBoxContainer
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -33,11 +33,11 @@ public class ResourceLabel : HBoxContainer
     }
 
      public void SetValueTooltip(string tip){
-         Value.HintTooltip = tip;
+         Value.TooltipText = tip;
      }
 
      public void SetResourceNameTip(string tip){
-         ResourceName.HintTooltip = tip;
+         ResourceName.TooltipText = tip;
      }
 
      public void SetLabelTheme(Theme theme){

@@ -2,30 +2,30 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ResourceManager : Node
+public partial class ResourceManager : Node
 {
 
-    private Dictionary<string, int> _resources = new Dictionary<string, int>();
-    public Dictionary<string, int> Resources
+    private Dictionary<int, int> _resources = new Dictionary<int, int>();
+    public Dictionary<int, int> Resources
     {
         get { return _resources; }
     }
 
-    private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
-    public Dictionary<string, int> ResourceLimits
+    private Dictionary<int, int> _resourceLimits = new Dictionary<int, int>();
+    public Dictionary<int, int> ResourceLimits
     {
         get { return _resourceLimits; }
     }
 
-    public Dictionary<string, int> Upkeep { get; set; } = new Dictionary<string, int>();
+    public Dictionary<int, int> Upkeep { get; set; } = new Dictionary<int, int>();
 
     public bool UpkeepChanged { get; set; } = false;
 
-    public Dictionary<string, int> ProdCost { get; set; } = new Dictionary<string, int>();
+    public Dictionary<int, int> ProdCost { get; set; } = new Dictionary<int, int>();
 
     public bool ProdCostChanged { get; set; } = false;
 
-    public Dictionary<string, int> Production { get; set; } = new Dictionary<string, int>();
+    public Dictionary<int, int> Production { get; set; } = new Dictionary<int, int>();
 
     public bool ProductionChanged { get; set; } = false;
 
@@ -40,7 +40,7 @@ public class ResourceManager : Node
         
     }
 
-    public bool TransferResources(IResourceManager target, string resourceName, int quantity){
+    public bool TransferResources(IResourceManager target, int resourceName, int quantity){
         if(target.ResourcesManager.HasLimit(resourceName, quantity))
             if(PayCost(resourceName, quantity)){
                 target.ResourcesManager.AddResource(resourceName, quantity);
@@ -49,7 +49,7 @@ public class ResourceManager : Node
         return false;
     }
 
-    public bool TransferResources(ResourceManager target, string resourceName, int quantity){
+    public bool TransferResources(ResourceManager target, int resourceName, int quantity){
         if(target.HasLimit(resourceName, quantity))
             if(PayCost(resourceName, quantity)){
                 target.AddResource(resourceName, quantity);
@@ -63,7 +63,7 @@ public class ResourceManager : Node
             UpdateUpkeep(building);
     }
 
-    public void UpdateUpkeep(string resName , int quantity){
+    public void UpdateUpkeep(int resName , int quantity){
         if(Upkeep.ContainsKey(resName)){
             Upkeep[resName] += quantity;
         }else
@@ -84,7 +84,7 @@ public class ResourceManager : Node
         }
     }
 
-    public void RemoveUpkeep(string resName , int quantity){
+    public void RemoveUpkeep(int resName , int quantity){
         if(Upkeep.ContainsKey(resName)){
             if(Upkeep[resName] - quantity > 0){
                 Upkeep[resName] -= quantity;
@@ -133,7 +133,7 @@ public class ResourceManager : Node
         UpdateResourceLimit(newBuilding);
     }
 
-    public void UpdateResourceLimit(string resourceName, int quantity){
+    public void UpdateResourceLimit(int resourceName, int quantity){
                 if(ResourceLimits.ContainsKey(resourceName)){
                     ResourceLimits[resourceName] += quantity;
                     ResourceLimitChanged = true;   
@@ -143,7 +143,7 @@ public class ResourceManager : Node
                 }
     }
 
-    public bool PayCost(Godot.Collections.Dictionary<string, int> BuildCost){
+    public bool PayCost(Dictionary<int, int> BuildCost){
         if(!CanPayCost(BuildCost)) 
             return false;
         foreach(var resName in BuildCost.Keys){
@@ -153,7 +153,7 @@ public class ResourceManager : Node
         return true;
     }
 
-    public bool PayUpkeep(Dictionary<string, int> upkeep){
+    public bool PayUpkeep(Dictionary<int, int> upkeep){
         bool payed = true;
         foreach(var resName in upkeep.Keys){
             if(Resources.ContainsKey(resName)){
@@ -172,7 +172,7 @@ public class ResourceManager : Node
 
     
 
-    public bool CanPayCost(Godot.Collections.Dictionary<string, int> BuildCost){
+    public bool CanPayCost(Dictionary<int, int> BuildCost){
         foreach(var resName in BuildCost.Keys){
             if(BuildCost[resName] > 0)
                 if(Resources.ContainsKey(resName)){
@@ -187,18 +187,18 @@ public class ResourceManager : Node
     }
 
     public bool PayCost(Resource resource){
-            if(Resources.ContainsKey(resource.Name)){
-                if(Resources[resource.Name] < resource.Quantity){
+            if(Resources.ContainsKey(resource.Index)){
+                if(Resources[resource.Index] < resource.Quantity){
                     return false;
                 }
             }else{
                 return false;
             }
-            Resources[resource.Name] -= resource.Quantity;
+            Resources[resource.Index] -= resource.Quantity;
         return true;
     }
 
-    public bool PayCost(string resourceName, int quantity){
+    public bool PayCost(int resourceName, int quantity){
             if(Resources.ContainsKey(resourceName)){
                 if(Resources[resourceName] < quantity){
                     return false;
@@ -210,18 +210,18 @@ public class ResourceManager : Node
         return true;
     }
 
-    public bool HasResource(string resourceName){
+    public bool HasResource(int resourceName){
         return (Resources.ContainsKey(resourceName));
     }
 
-    public bool HasResource(string resourceName, int quantity){
+    public bool HasResource(int resourceName, int quantity){
         if(HasResource(resourceName))
             if(Resources[resourceName] >= quantity)
                 return true;
         return false;  
     }
 
-    public bool HasResource(Dictionary<string, int> resources){
+    public bool HasResource(Dictionary<int, int> resources){
         foreach(var name in resources.Keys){
             if(!HasResource(name))
                 return false;
@@ -231,7 +231,7 @@ public class ResourceManager : Node
         return true;
     }
 
-    public bool HasResource(Godot.Collections.Dictionary<string, int> resources){
+    public bool HasGivenResource(Dictionary<int, int> resources){
         foreach(var name in resources.Keys){
             if(!HasResource(name))
                 return false;
@@ -241,7 +241,7 @@ public class ResourceManager : Node
         return true;
     }
 
-    public bool HasLimit(string resourceName, int quantity){
+    public bool HasLimit(int resourceName, int quantity){
         if(TotalResourceLimit < 0){
             if(ResourceLimits.ContainsKey(resourceName))
                 if(HasResource(resourceName)){
@@ -257,7 +257,7 @@ public class ResourceManager : Node
         return false;  
     }
 
-    public bool CheckDynamicLimit(string resourceName, int quantity){
+    public bool CheckDynamicLimit(int resourceName, int quantity){
         if(ResourceLimits.ContainsKey(resourceName)){
             if(HasResource(resourceName)){
                 if((ResourceLimits[resourceName] - Resources[resourceName]) > quantity)
@@ -275,7 +275,7 @@ public class ResourceManager : Node
         return false;
     }
 
-    public int GetResourceFillPercent(string resName){
+    public int GetResourceFillPercent(int resName){
         if(ResourceLimits.ContainsKey(resName) && Resources.ContainsKey(resName)){
             return Resources[resName] / ResourceLimits[resName];
         }
@@ -284,7 +284,7 @@ public class ResourceManager : Node
 
     public void UpdateResources(List<Building> buildings){
             foreach(Building building in buildings){
-                foreach(string productName in building.Products.Keys){
+                foreach(int productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
                         if(ResourceLimits.ContainsKey(productName))
@@ -316,7 +316,7 @@ public class ResourceManager : Node
     public void UpdateResources(Planet planet ){
             foreach(Building building in planet.BuildingsManager.Buildings){
                 
-                foreach(string productName in building.Products.Keys){
+                foreach(int productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
                         if(ResourceLimits.ContainsKey(productName))
@@ -346,26 +346,26 @@ public class ResourceManager : Node
     }
 
         public void AddResource(Resource resource){
-                    if(Resources[resource.Name] + resource.Quantity<ResourceLimits[resource.Name]){
-                            if(Resources.ContainsKey(resource.Name)){
-                                Resources[resource.Name] += resource.Quantity;
+                    if(Resources[resource.Index] + resource.Quantity<ResourceLimits[resource.Index]){
+                            if(Resources.ContainsKey(resource.Index)){
+                                Resources[resource.Index] += resource.Quantity;
                             }else{
-                                Resources.Add(resource.Name, resource.Quantity);
+                                Resources.Add(resource.Index, resource.Quantity);
                             }
                             ResourcesChanged = true;
                         
                     }else{
-                            if(Resources.ContainsKey(resource.Name)){
-                                Resources[resource.Name] = ResourceLimits[resource.Name];
+                            if(Resources.ContainsKey(resource.Index)){
+                                Resources[resource.Index] = ResourceLimits[resource.Index];
                             }else{
-                                Resources.Add(resource.Name, resource.Quantity);
+                                Resources.Add(resource.Index, resource.Quantity);
                             }
                             ResourcesChanged = true;
                         
                     }
         }
 
-    public void AddResource(string resourceName, int quantity){
+    public void AddResource(int resourceName, int quantity){
         if(Resources.ContainsKey(resourceName)){
             if(ResourceLimits.ContainsKey(resourceName))
                 if(Resources[resourceName] + quantity <= ResourceLimits[resourceName]){

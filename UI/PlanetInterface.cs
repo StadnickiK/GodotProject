@@ -1,9 +1,11 @@
 using Godot;
 using System;
+using Godot.Collections;
 using System.Collections.Generic;
+// using System.Collections.Generic;
 
 
-public class PlanetInterface : Panel
+public partial class PlanetInterface : Panel
 {
 
 	Button _closeButton = null;
@@ -14,7 +16,7 @@ public class PlanetInterface : Panel
 
 	Godot.Collections.Array _allBuildings = null;
 
-	List<Unit> _allUnits = null;
+	Array<Unit> _allUnits = null;
 
 	public Data _data { get; set; }
 
@@ -28,7 +30,7 @@ public class PlanetInterface : Panel
 	public string Title { get; set; } = "Title";
 
 	[Export]
-	public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
+	public Godot.Collections.Dictionary<string, string> Options { get; set; } = new Godot.Collections.Dictionary<string, string>();
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
@@ -42,7 +44,7 @@ public class PlanetInterface : Panel
 	BuildingLabel _selectedBuilding = null;
 
 	[Signal]
-	public delegate void SelectObjectInOrbit(Planet planet, Node node);
+	public delegate void SelectObjectInOrbitEventHandler(Planet planet, Node node);
 
 	void GetNodes(){
 		_closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
@@ -52,7 +54,7 @@ public class PlanetInterface : Panel
 	}
 
 	void ConnectSignals(){
-		_closeButton.Connect("button_up", this, nameof(_on_XButton_button_up));
+		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
 		_buildingInterface.ConnecToStartConstruction(this, nameof(_on_StartConstruction));
 	}
 
@@ -61,13 +63,13 @@ public class PlanetInterface : Panel
 	}
 
 	void InitOverviewPanel(){
-		foreach(KeyValuePair<string, string> pair in Options){
+		foreach(System.Collections.Generic.KeyValuePair<string, string> pair in Options){
 			if(pair.Value == null){
 				_overviewPanel.AddPanel(pair.Key);
 			}else{
 				PackedScene scene = (PackedScene)ResourceLoader.Load(pair.Value);
 				if(scene != null){
-					_overviewPanel.AddPanel(pair.Key, (CanvasItem)scene.Instance());
+					_overviewPanel.AddPanel(pair.Key, (CanvasItem)scene.Instantiate());
 				}else{
 					_overviewPanel.AddPanel(pair.Key);
 				}
@@ -85,7 +87,7 @@ public class PlanetInterface : Panel
 	}
 
 	void ClearPlanetInterface(){
-		foreach(KeyValuePair<string, string> pair in Options){
+		foreach(System.Collections.Generic.KeyValuePair<string, string> pair in Options){
 			if(pair.Value == null){
 				_overviewPanel.ClearPanel(pair.Key);
 			}
@@ -124,13 +126,13 @@ public class PlanetInterface : Panel
 		_overviewPanel.AddNodeToPanel("Overview", label);
 		foreach(var resourceName in planet.ResourcesManager.Resources.Keys){
 			label = new Label();
-			label.Text = resourceName;
+			label.Text = resourceName.ToString();
 			_overviewPanel.AddNodeToPanel("Overview", label);
 		}
 	}
 
 	void UpdateOrbit(Planet planet){
-		foreach(PhysicsBody body in planet.Orbit.GetChildren()){
+		foreach(PhysicsBody3D body in planet.Orbit.GetChildren()){
 			var label = new Label();
 			label.Name = label.Text = body.Name;
 			label.SetMeta(label.Name, body);
@@ -145,7 +147,7 @@ public class PlanetInterface : Panel
 		// UpdateTransferPanel(planet);
 	}
 
-	void _on_TransferResources(CollisionObject left, CollisionObject body){
+	void _on_TransferResources(CollisionObject3D left, CollisionObject3D body){
 		if(left is Planet planet && body is Ship ship){
 			///*
 			foreach(TransferLabel label in _overviewPanel.GetPanel("Resource transfer").GetNode("ItemList/Items").GetChildren()){
@@ -167,24 +169,30 @@ public class PlanetInterface : Panel
 			_overviewPanel.ClearPanel("Resource transfer");
 			Button button = new Button();
 			button.Text = "X";
-			button.SizeFlagsHorizontal = 10;
+			button.SizeFlagsHorizontal = SizeFlags.Fill;
 			Godot.Collections.Array arr = new Godot.Collections.Array();
 			arr.Add(planet);
-			button.Connect("button_up", this, nameof(_on_ResetTransferPanel), arr);
+			button.Connect("button_up", new Callable(this, nameof(_on_ResetTransferPanel)));
+
+			//button.Connect("button_up", new Callable(this, nameof(_on_ResetTransferPanel)), arr);
+
 			_overviewPanel.GetPanel("Resource transfer").GetHeader().AddChild(button);
 
  			button = new Button();
 			button.Text = "Transfer";
-			button.SizeFlagsHorizontal = 10;
+			button.SizeFlagsHorizontal = SizeFlags.Fill;
 			arr = new Godot.Collections.Array();
 			arr.Add(planet);
 			arr.Add(body);
-			button.Connect("button_up", this, nameof(_on_TransferResources), arr);
+			//button.Connect("button_up", new Callable(this, nameof(_on_TransferResources)), arr);
+
+			button.Connect("button_up", new Callable(this, nameof(_on_TransferResources)));
+
 			_overviewPanel.GetPanel("Resource transfer").GetFoot().AddChild(button);
 
 			if(manager.ResourcesManager.Resources.Count > 0){
 				foreach(var resource in manager.ResourcesManager.Resources.Values){
-					TransferLabel label = (TransferLabel)_transferLabelScene.Instance();
+					TransferLabel label = (TransferLabel)_transferLabelScene.Instantiate();
 					// if(planet.ResourcesManager.Resources.ContainsKey(resource.Name)){
 					// 	label.UpdateLabel(resource.Name, planet.ResourcesManager.Resources[resource.Name].Value, resource.Value );
 					// }else{
@@ -213,7 +221,8 @@ public class PlanetInterface : Panel
 						Godot.Collections.Array arr = new Godot.Collections.Array();
 						arr.Add(body);
 						arr.Add(planet);
-						button.Connect("button_up",this, nameof(_on_transferButton_up), arr);
+						//button.Connect("button_up", new Callable(this, nameof(_on_transferButton_up)), arr);
+						button.Connect("button_up", new Callable(this, nameof(_on_transferButton_up)));
 						button.SetMeta(button.Name, body);
 						var node = (Node)button.GetMeta(button.Name);
 						_overviewPanel.AddNodeToPanel("Resource transfer", button);
@@ -237,7 +246,7 @@ public class PlanetInterface : Panel
 
 	void UpdatePlanetBuildings(List<Building> buildings){
 		foreach(Building building in buildings){
-			var label = (BuildingLabel)ItemScene.Instance();
+			var label = (BuildingLabel)ItemScene.Instantiate();
 			label.SetMeta(building.Name, building);
 			label.Name = building.Name;
 			if(label.BButton != null){
@@ -261,7 +270,7 @@ public class PlanetInterface : Panel
 			if(node is Building building)
 				if(CheckBuildingResources(planet, building)){
 					if(_planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null){
-						var label = (BuildingLabel)ItemScene.Instance();
+						var label = (BuildingLabel)ItemScene.Instantiate();
 						label.SetMeta(building.Name, building);
 						label.Name = building.Name;
 						if(label.BButton != null){
@@ -314,7 +323,7 @@ public class PlanetInterface : Panel
 		Cleanup = true;
 		foreach(var node in _data.GetData("Units"))
 			if(node is Unit unit){
-				var label = (BuildingLabel)ItemScene.Instance();
+				var label = (BuildingLabel)ItemScene.Instantiate();
 				label.SetMeta(unit.Name, unit);
 				label.Name = unit.Name;
 				if(label.BButton != null){
@@ -344,7 +353,7 @@ public class PlanetInterface : Panel
 
 	public void _on_LabelGuiInputEvent(InputEvent input, Node node){
 		if(input is InputEventMouseButton button){
-			if(button.ButtonIndex == (int)ButtonList.Left){
+			if(button.ButtonIndex == MouseButton.Left){
 				EmitSignal(nameof(SelectObjectInOrbit), _planet, node);
 			}
 		}
@@ -354,13 +363,13 @@ public class PlanetInterface : Panel
 		// if(input is InputEventMouseButton button){
 		// 	if(button.ButtonIndex == (int)ButtonList.Left){
 				if(node is BuildingLabel label){
-					if(label.GetMeta(label.BButton.Text) is Building building)
+					if((object)label.GetMeta(label.BButton.Text) is Building building)
 						if(building != null && _planet != null){
 							_buildingInterface.Visible = true;
 							_buildingInterface.UpdateInterface(building, _planet);
 							_selectedBuilding = label;
 						}
-					if(label.GetMeta(label.BButton.Text) is Unit unit){
+					if((object)label.GetMeta(label.BButton.Text) is Unit unit){
 							_buildingInterface.Visible = true;
 							_buildingInterface.UpdateInterface(unit, _planet);
 							_selectedBuilding = label;
@@ -378,17 +387,18 @@ public class PlanetInterface : Panel
 	void _on_StartConstruction(Node node){
 		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
-				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.Filename)).Instance());
+				
+				//_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.Filename)).Instance());
 				// _planet.ConstructUnit(unit);
 			}
 		}
 	}
 
 	public void ConnectToSelectObjectInOrbit(Node node, string methodName){
-		Connect(nameof(SelectObjectInOrbit), node, methodName);
+		Connect(nameof(SelectObjectInOrbit), new Callable(node, methodName));
 	}
 
-	public override void _Process(float delta){
+	public override void _Process(double delta){
 		if(Visible){
 			if(_planet != null && _data != null){
 				if(_planet.BuildingsManager.ConstructionListChanged){

@@ -1,8 +1,9 @@
 using Godot;
 using System;
+using Godot.Collections;
 using System.Collections.Generic;
 
-public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
+public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
 {
 
     [Export]
@@ -22,20 +23,20 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
     PackedScene TileScene = null;
 
     [Signal]
-    public delegate void SelectTarget(RigidBody target);
+    public delegate void SelectTargetEventHandler(RigidBody3D target);
 
     [Signal]
-    public delegate void OpenCmdPanel(Planet planet);
+    public delegate void OpenCmdPanelEventHandler(Planet planet);
 
     [Signal]
-    public delegate void CreateShip(Planet planet, Unit unit);
+    public delegate void CreateShipEventHandler(Planet planet, Unit unit);
 
     [Signal]
-    public delegate void CreateShips(Planet planet, List<IBuilding> units);
+    public delegate void CreateShipsEventHandler(Planet planet, Godot.Collections.Array<int> units);
    
     public Player Controller { get; set; } = null;
 
-    public List<Tile> Tiles { get; set; } = new List<Tile>();
+    public Array<Tile> Tiles { get; set; } = new Array<Tile>();
 
     public Random Rand { get; set; } = new Random();
 
@@ -73,20 +74,20 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
     
     public BuildingManager BuildingsManager { get; } = new BuildingManager();
 
-    private MeshInstance _mesh = null;
-    public MeshInstance Mesh
+    private MeshInstance3D _mesh = null;
+    public MeshInstance3D Mesh
     {
         get { return _mesh; }
     }
 
-    float _time = 0;
+    double _time = 0;
     public ResourceManager ResourcesManager { get; set; } = new ResourceManager();
 
     [Signal]
-    public delegate void OpenPlanetInterface(Planet planet);
+    public delegate void OpenPlanetInterfaceEventHandler(Planet planet);
 
     [Signal]
-    public delegate void GameAlert(World.GameAlert alert);
+    public delegate void GameAlertEventHandler(World.GameAlert alert);
 
     public enum Type
     {
@@ -106,18 +107,18 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
         Scale *= Size/10;
         Size = Size%2==0 ? Size : ++Size;
         for(int i = 0; i<Size;i++){
-            Tile t =  (Tile)TileScene.Instance();
+            Tile t =  (Tile)TileScene.Instantiate();
             t.Rand = Rand;
             Tiles.Add(t);
         }
     }
 
     void GenerateMesh(){
-        ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceMaterial(0);
+        ShaderMaterial material = (ShaderMaterial)Mesh.GetSurfaceOverrideMaterial(0);
         material.ResourceLocalToScene = true;
-        NoiseTexture noise = new NoiseTexture();
-        noise = (NoiseTexture)material.GetShaderParam("noise");//new OpenSimplexNoise();
-        var tempGradient = (GradientTexture)material.GetShaderParam("gradient");
+        NoiseTexture3D noise = new NoiseTexture3D();
+        noise = (NoiseTexture3D)material.GetShaderParameter("noise");//new FastNoiseLite();
+        var tempGradient = (GradientTexture2D)material.GetShaderParameter("gradient");
         if(gradient != null){
             tempGradient.Gradient = gradient;
         }else{
@@ -128,35 +129,35 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
             gradient.RemovePoint(0);
             tempGradient.Gradient = gradient;
         }
-        noise.Noise.Seed = Rand.Next(-1000,1000);
-        material.SetShaderParam("noise", noise);
-        material.SetShaderParam("gradient", tempGradient);
-        Mesh.SetSurfaceMaterial(0, material);
+        //noise.Noise.Seed = Rand.Next(-1000,1000);
+        material.SetShaderParameter("noise", noise);
+        material.SetShaderParameter("gradient", tempGradient);
+        Mesh.SetSurfaceOverrideMaterial(0, material);
     }
 
     void _on_Planet_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton eventMouseButton){
-            switch((ButtonList)eventMouseButton.ButtonIndex){
-            case ButtonList.Left:
-                EmitSignal(nameof(OpenPlanetInterface), this);
+            switch(eventMouseButton.ButtonIndex){
+            case MouseButton.Left:
+                EmitSignal(nameof(OpenPlanetInterfaceEventHandler), this);
                 break;
-            case ButtonList.Right:
-                // EmitSignal(nameof(SelectTarget), (PhysicsBody)this);
-                EmitSignal(nameof(OpenCmdPanel), this);
+            case MouseButton.Right:
+                // EmitSignal(nameof(SelectTargetEventHandler), (PhysicsBody)this);
+                EmitSignal(nameof(OpenCmdPanelEventHandler), this);
                 break;
         }
       } 
     }
 
-    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState state){
+    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
         if(node is Ship ship)
             if(GetParent() == ship.GetParent() || ship.GetParent() == null)
                 if(!Orbit.GetChildren().Contains(ship) && ship.MapObject != this){
                     AddToOrbit(ship);
-                    ship.PlanetPos = (Transform.origin - ship.GlobalTransform.origin);
+                    ship.PlanetPos = (Transform.Origin - ship.GlobalTransform.Origin);
                     if(state != null){
                         var transform = state.Transform;
-                        transform.origin = GlobalTransform.origin;
+                        transform.Origin = GlobalTransform.Origin;
                         state.Transform = transform;
                     }
                     CheckOrbit(ship);
@@ -168,13 +169,13 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
                 }
     }
 
-    public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState state){
+    public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState3D state){
         var transform = Transform;
-        transform.origin = GlobalTransform.origin;
+        transform.Origin = GlobalTransform.Origin;
         if(node != null)
             if(node is Ship ship){
                 if(ship.MapObject == this){
-                    if(((Transform.origin - ship.GlobalTransform.origin) - ship.PlanetPos).Length()>2){
+                    if(((Transform.Origin - ship.GlobalTransform.Origin) - ship.PlanetPos).Length()>2){
                         ship.MapObject = null; 
                         RemoveFromOrbit(ship);
                         ship.Visible = ship.IsLocal; 
@@ -188,7 +189,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
     }
 
     public void GetNodes(){
-        _mesh = GetNode<MeshInstance>("MeshInstance");
+        _mesh = GetNode<MeshInstance3D>("MeshInstance3D");
         _orbit = GetNode<Orbit>("Orbit");
         MapObjectName3 = GetNode<Label3D>("Label3D");
         // IcoOrbit = GetNode<Icon3D>("IcoOrbit");
@@ -197,7 +198,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
 
     public void ProduceResources(ResourceManager playerResManager){
             foreach(Building building in BuildingsManager.Buildings){
-                foreach(string productName in building.Products.Keys){
+                foreach(var productName in building.Products.Keys){
                     if(!playerResManager.Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
                         if(playerResManager.ResourceLimits.ContainsKey(productName))
@@ -231,7 +232,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
                 _constructions.ConstructBuilding(unit);
                 return true;
             }else{
-                EmitSignal(nameof(GameAlert), this);
+                EmitSignal(nameof(GameAlertEventHandler), this);
                 return false;
             }
     }
@@ -243,7 +244,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
                 _constructions.ConstructBuilding((unit), count);
                 build++;
             }else{
-                EmitSignal(nameof(GameAlert), this);
+                EmitSignal(nameof(GameAlertEventHandler), this);
                 return build;
             }
         }
@@ -268,7 +269,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
                     }
                 }
             }else{
-                EmitSignal(nameof(GameAlert), this);
+                EmitSignal(nameof(GameAlertEventHandler), this);
             }
         return false;
     }
@@ -279,7 +280,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
             if(ship != null){
                 ship.Units.AddChild(unit);
             }else{
-                EmitSignal(nameof(CreateShip), this, unit);
+                EmitSignal(nameof(CreateShipEventHandler), this, unit);
             }
         }else{
             return;
@@ -394,7 +395,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
         AddChild(ResourcesManager);
     }
 
-    public override void _Process(float delta){
+    public override void _Process(double delta){
         _time += delta;
         // if(_time >= TimeStep){
         //     ResourcesManager.UpdateResources(BuildingsManager.Buildings);
@@ -418,7 +419,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
                             ship.Units.AddChild(unit);
                             var count = ship.Units.GetChildCount();
                         }else{
-                            EmitSignal(nameof(CreateShip), this, unit);
+                            EmitSignal(nameof(CreateShipEventHandler), this, unit);
                         }
                     }
                 }   
@@ -428,7 +429,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
         }
     }
 
-    public void GetTotalUpkeep(Dictionary<string, int> costs)
+    public void GetTotalUpkeep(System.Collections.Generic.Dictionary<int, int> costs)
     {
         foreach(var building in BuildingsManager.Buildings){
             foreach(var resource in building.Upkeep.Keys){
@@ -441,7 +442,7 @@ public class Planet : Area, IEnterMapObject, IExitMapObject, IMapObjectControlle
         }
     }
 
-    public void GetTotalProdCost(Dictionary<string, int> costs)
+    public void GetTotalProdCost(System.Collections.Generic.Dictionary<int, int> costs)
     {
         foreach(var building in BuildingsManager.Buildings){
             foreach(var resource in building.ProductCost.Keys){

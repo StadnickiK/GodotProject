@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ListPanel : VBoxContainer
+public partial class ListPanel : VBoxContainer
 {
     [Export]
     public string Title { get; set; } = "Title";
@@ -52,7 +52,8 @@ public class ListPanel : VBoxContainer
             if(item is Control control){
                 Godot.Collections.Array array = new Godot.Collections.Array();
                 array.Add(unit);
-                control.Connect("gui_input", node, methodName, array);
+                control.Connect("gui_input", new Callable(node, methodName));
+                //control.Connect("gui_input", new Callable(node, methodName), array);
                 control.MouseFilter = MouseFilterEnum.Stop;
             }
         }
@@ -61,10 +62,11 @@ public class ListPanel : VBoxContainer
     public void ConnectToOnGuiInput(Node node, string methodName){
         foreach(Node child in _items.GetChildren()){
             if(child is Label control){
-                if(!control.IsConnected("gui_input", node, methodName)){
+                if(!control.IsConnected("gui_input", new Callable(node, methodName))){
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
-                    control.Connect("gui_input", node, methodName, array);
+                    control.Connect("gui_input", new Callable(node, methodName));
+                    //control.Connect("gui_input", new Callable(node, methodName), array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
                     //GD.Print("Already connected");
@@ -76,10 +78,11 @@ public class ListPanel : VBoxContainer
     public void ConnectToEvent(Node node, string methodName, string eventName){
         foreach(Node child in _items.GetChildren()){
             if(child is BuildingLabel control){
-                if(!control.BButton.IsConnected(eventName, node, methodName)){
+                if(!control.BButton.IsConnected(eventName, new Callable(node, methodName))){
                     Godot.Collections.Array array = new Godot.Collections.Array();
                     array.Add(control);
-                    control.BButton.Connect(eventName, node, methodName, array);
+                    control.BButton.Connect(eventName, new Callable(node, methodName));
+                    //control.BButton.Connect(eventName, new Callable(node, methodName), array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
                     //GD.Print("Already connected");
@@ -90,7 +93,7 @@ public class ListPanel : VBoxContainer
 
     public void DisconnectToOnGuiInput(Node node, string methodName){
         foreach(Node child in _items.GetChildren()){
-                    child.Disconnect("gui_input", node, methodName);
+                    child.Disconnect("gui_input", new Callable(node, methodName));
         }
     }
 

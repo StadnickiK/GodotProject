@@ -1,12 +1,12 @@
 using Godot;
 using System;
 
-public class Star : Spatial
+public partial class Star : Node3D
 {
-    public MeshInstance Mesh { get; set; } = null;  
+    public MeshInstance3D Mesh { get; set; } = null;  
     public override void _Ready()
     {
-        Mesh = GetNode<MeshInstance>("MeshInstance");
+        Mesh = GetNode<MeshInstance3D>("MeshInstance3D");
         SetProcess(false);
     }
 

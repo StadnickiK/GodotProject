@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public class Icon3D : Area
+public partial class Icon3D : Area3D
 {
     
-    MeshInstance _mesh = null;
+    MeshInstance3D _mesh = null;
 
     void GetNodes(){
-        _mesh = GetNode<MeshInstance>("MeshInstance");
+        _mesh = GetNode<MeshInstance3D>("MeshInstance3D");
     }
 
     public override void _Ready()
@@ -19,8 +19,8 @@ public class Icon3D : Area
     }
 
     public void ChangeColor(Color color){
-        var material = _mesh.GetSurfaceMaterial(0);
-        if(material is SpatialMaterial spatialMaterial){
+        var material = _mesh.GetSurfaceOverrideMaterial(0);
+        if(material is StandardMaterial3D spatialMaterial){
             spatialMaterial.AlbedoColor = color;
         }
     }

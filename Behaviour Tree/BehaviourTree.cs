@@ -1,19 +1,19 @@
 using Godot;
 using System;
 
-public abstract class BehaviourTree : Node
+public abstract class BehaviourTree
 {
-    TreeNode _root = null;
+	TreeNode _root = null;
 
-    protected void Start(){
-        _root = SetupTree();
-    }
+	protected void Start(){
+		_root = SetupTree();
+	}
 
-    private void Update(){  // probably to change
-        if(_root != null)
-            _root.Evaluate();
-    }
+	private void Update(){  // probably to change
+		if(_root != null)
+			_root.Evaluate();
+	}
 
-    public TreeNode Root => _root;
-    protected abstract TreeNode SetupTree();
+	public TreeNode Root => _root;
+	protected abstract TreeNode SetupTree();
 }

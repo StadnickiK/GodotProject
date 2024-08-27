@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class UI : Control
+public partial class UI : Control
 {
 
 
@@ -81,7 +81,7 @@ public class UI : Control
     void _on_OrbitIconFocus(Node Orbit){
         OrbitList.Visible = true;
         var vec2 = GetGlobalMousePosition();
-        OrbitList.SetPosition(new Vector2(vec2.x-4, vec2.y-4));
+        OrbitList.SetPosition(new Vector2(vec2.X-4, vec2.Y-4));
         OrbitList.UpdateOrbitInfo(Orbit);
     }
 

@@ -2,11 +2,11 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Timer : TreeNode
+public partial class Timer : TreeNode
 {
     private float _delay;
 
-    private float _time;
+    private double _time;
 
     public delegate void TickEnded();
 

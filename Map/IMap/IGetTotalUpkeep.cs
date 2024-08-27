@@ -4,5 +4,5 @@ using System.Collections.Generic;
 
 public interface IGetTotalUpkeep
 {
-    void GetTotalUpkeep(Dictionary<string ,int> costs);
+    void GetTotalUpkeep(Dictionary<int ,int> costs);
 }

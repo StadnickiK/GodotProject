@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Orbit : Spatial
+public partial class Orbit : Node3D
 {
 
     public delegate void StartSiege(Node node);
@@ -18,7 +18,7 @@ public class Orbit : Spatial
     }
 
     public void ConnectToStartSiege(Node node, string methodName){
-        Connect(nameof(StartSiege), node, methodName);
+        Connect(nameof(StartSiege), new Callable(node, methodName));
     }
 
     public void Colonize(Node node){

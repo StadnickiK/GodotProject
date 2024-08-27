@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class KinematicBody : Godot.KinematicBody
+public partial class CharacterBody3D : Godot.CharacterBody3D
 {
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -15,11 +15,12 @@ public class KinematicBody : Godot.KinematicBody
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-  public override void _Process(float delta)
+  public override void _Process(double delta)
   {
-      if(Transform.origin.y > 15){
+    
+      if(Transform.Origin.Y > 15){
           up = false;
-      }else if(Transform.origin.y< -15){
+      }else if(Transform.Origin.Y< -15){
           up = true;
       }
     
@@ -29,13 +30,13 @@ public class KinematicBody : Godot.KinematicBody
         Translate(new Vector3(0,-0.1f,0));
     }
 
-    if(Transform.origin.z < -10 && Transform.origin.x > 17){
+    if(Transform.Origin.Z < -10 && Transform.Origin.X > 17){
         dir = 0;     
-    }else if(Transform.origin.z > 11 && Transform.origin.x > 17){
+    }else if(Transform.Origin.Z > 11 && Transform.Origin.X > 17){
         dir = 1;
-    }else if(Transform.origin.z < -10 && Transform.origin.x < -5){
+    }else if(Transform.Origin.Z < -10 && Transform.Origin.X < -5){
         dir = 2;
-    }else if(Transform.origin.z > 11 && Transform.origin.x < -5){
+    }else if(Transform.Origin.Z > 11 && Transform.Origin.X < -5){
         dir = 3;
     }
     if(dir == 0){

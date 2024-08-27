@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public class ConstructionManager : Node
+public partial class ConstructionManager : Node
 {
 
     public bool ConstructionListChanged { get; set; } = false;
@@ -30,12 +30,12 @@ public class ConstructionManager : Node
     }
 
     /// <summary>
-    ///     Update all IBuilding objects in the construction list and return a list of finished ones.
+    ///     Update all IBuilding objects in the construction List and return a List of finished ones.
     /// </summary>
     /// <returns>List<IBuilding></returns>
     public List<IBuilding> UpdateConstruction(){
         var count = ConstructionList.Count;
-        var list = new List<IBuilding>();
+        var List = new List<IBuilding>();
         if(count > 0){
             if(count > ConstructionSlots){
                 for(int i = 0; i < ConstructionSlots; i++){
@@ -43,7 +43,7 @@ public class ConstructionManager : Node
                     var building = ConstructionList[i];
                     if(building.CurrentTime >= building.BuildTime){
                         ConstructionList.RemoveAt(i);
-                        list.Add(building);
+                        List.Add(building);
                     }
                 }
             }else{
@@ -52,12 +52,12 @@ public class ConstructionManager : Node
                     var building = ConstructionList[i];
                     if(building.CurrentTime >= building.BuildTime){
                         ConstructionList.RemoveAt(i);
-                        list.Add(building);
+                        List.Add(building);
                     }
                 }
             }
         }
-        return list;
+        return List;
     }
 
     void UpdateConstruction(int id){
@@ -66,19 +66,19 @@ public class ConstructionManager : Node
 
     public List<IBuilding> CurrentConstruction(){
         var count = ConstructionList.Count;
-        List<IBuilding> list = new List<IBuilding>();
+        List<IBuilding> List = new List<IBuilding>();
         if(count > 0){
             if(count > ConstructionSlots){
                 for(int i = 0; i < ConstructionSlots; i++){
-                    list.Add(ConstructionList[i]);
+                    List.Add(ConstructionList[i]);
                 }
             }else{
                 for(int i = 0; i < count; i++){
-                    list.Add(ConstructionList[i]);
+                    List.Add(ConstructionList[i]);
                 }
             }
         }
-        return list;
+        return List;
     }
 
     public bool HasConstruct(){

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Tile : Spatial
+public partial class Tile : Node3D
 {
 
     [Export]

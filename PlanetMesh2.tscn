@@ -3,10 +3,10 @@
 [sub_resource type="SphereMesh" id=1]
 
 [sub_resource type="Gradient" id=2]
-offsets = PoolRealArray( 0.00911854, 0.158055 )
-colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 1 )
+offsets = PackedFloat32Array( 0.00911854, 0.158055 )
+colors = PackedColorArray( 1, 1, 1, 1, 0, 0, 0, 1 )
 
-[sub_resource type="GradientTexture" id=3]
+[sub_resource type="GradientTexture2D" id=3]
 gradient = SubResource( 2 )
 
 [sub_resource type="VisualShaderNodeTexture" id=4]
@@ -14,9 +14,9 @@ output_port_for_preview = 0
 texture = SubResource( 3 )
 
 [sub_resource type="Gradient" id=5]
-offsets = PoolRealArray( 0.0547112, 1 )
+offsets = PackedFloat32Array( 0.0547112, 1 )
 
-[sub_resource type="GradientTexture" id=6]
+[sub_resource type="GradientTexture2D" id=6]
 gradient = SubResource( 5 )
 
 [sub_resource type="VisualShaderNodeTexture" id=7]
@@ -24,7 +24,7 @@ output_port_for_preview = 0
 texture = SubResource( 6 )
 texture_type = 2
 
-[sub_resource type="OpenSimplexNoise" id=8]
+[sub_resource type="FastNoiseLite" id=8]
 seed = 167
 period = 68.5
 
@@ -38,10 +38,10 @@ texture = SubResource( 9 )
 texture_type = 2
 
 [sub_resource type="Gradient" id=11]
-offsets = PoolRealArray( 0.130699, 0.279635, 0.349544, 0.641337 )
-colors = PoolColorArray( 0, 0.132813, 1, 1, 0.189647, 0.417969, 0.125717, 1, 0.378151, 0.177258, 0, 1, 0, 0, 0, 1 )
+offsets = PackedFloat32Array( 0.130699, 0.279635, 0.349544, 0.641337 )
+colors = PackedColorArray( 0, 0.132813, 1, 1, 0.189647, 0.417969, 0.125717, 1, 0.378151, 0.177258, 0, 1, 0, 0, 0, 1 )
 
-[sub_resource type="GradientTexture" id=12]
+[sub_resource type="GradientTexture2D" id=12]
 gradient = SubResource( 11 )
 
 [sub_resource type="VisualShaderNodeTexture" id=13]
@@ -49,7 +49,7 @@ output_port_for_preview = 0
 texture = SubResource( 12 )
 texture_type = 2
 
-[sub_resource type="OpenSimplexNoise" id=14]
+[sub_resource type="FastNoiseLite" id=14]
 seed = 160
 period = 51.7
 persistence = 0.411
@@ -68,7 +68,7 @@ texture_type = 2
 output_port_for_preview = 0
 default_input_values = [ 0, 0.0, 1, 0.5, 2, 1e-05, 3, Vector3( 0, 0, 0 ), 4, Vector3( 0, 0, 0 ), 5, Vector3( 0, 0, 0 ) ]
 
-[sub_resource type="OpenSimplexNoise" id=43]
+[sub_resource type="FastNoiseLite" id=43]
 period = 82.5
 persistence = 1.0
 
@@ -231,7 +231,7 @@ nodes/fragment/21/node = SubResource( 48 )
 nodes/fragment/21/position = Vector2( 260, -140 )
 nodes/fragment/22/node = SubResource( 49 )
 nodes/fragment/22/position = Vector2( 20, 0 )
-nodes/fragment/connections = PoolIntArray( 4, 0, 2, 0, 3, 0, 11, 0, 15, 0, 13, 0, 13, 0, 14, 0, 14, 0, 12, 0, 3, 0, 0, 0, 2, 0, 17, 0, 2, 0, 17, 4, 17, 0, 19, 1, 18, 0, 19, 0, 2, 0, 20, 0, 2, 0, 20, 5, 19, 0, 21, 0, 21, 0, 3, 0, 20, 0, 22, 1, 18, 0, 22, 0, 22, 0, 21, 1 )
+nodes/fragment/connections = PackedInt32Array( 4, 0, 2, 0, 3, 0, 11, 0, 15, 0, 13, 0, 13, 0, 14, 0, 14, 0, 12, 0, 3, 0, 0, 0, 2, 0, 17, 0, 2, 0, 17, 4, 17, 0, 19, 1, 18, 0, 19, 0, 2, 0, 20, 0, 2, 0, 20, 5, 19, 0, 21, 0, 21, 0, 3, 0, 20, 0, 22, 1, 18, 0, 22, 0, 22, 0, 21, 1 )
 
 [sub_resource type="ShaderMaterial" id=21]
 shader = SubResource( 20 )
@@ -239,16 +239,16 @@ shader = SubResource( 20 )
 [sub_resource type="SphereMesh" id=22]
 
 [sub_resource type="Gradient" id=23]
-offsets = PoolRealArray( 0.537994, 0.905775 )
+offsets = PackedFloat32Array( 0.537994, 0.905775 )
 
-[sub_resource type="GradientTexture" id=24]
+[sub_resource type="GradientTexture2D" id=24]
 gradient = SubResource( 23 )
 
 [sub_resource type="VisualShaderNodeTexture" id=25]
 output_port_for_preview = 0
 texture = SubResource( 24 )
 
-[sub_resource type="OpenSimplexNoise" id=26]
+[sub_resource type="FastNoiseLite" id=26]
 seed = 160
 period = 65.1
 lacunarity = 3.0
@@ -302,7 +302,7 @@ nodes/fragment/3/node = SubResource( 25 )
 nodes/fragment/3/position = Vector2( 120, 160 )
 nodes/fragment/4/node = SubResource( 28 )
 nodes/fragment/4/position = Vector2( -480, 80 )
-nodes/fragment/connections = PoolIntArray( 3, 0, 0, 1, 4, 0, 3, 0 )
+nodes/fragment/connections = PackedInt32Array( 3, 0, 0, 1, 4, 0, 3, 0 )
 
 [sub_resource type="ShaderMaterial" id=30]
 shader = SubResource( 29 )
@@ -317,10 +317,10 @@ default_input_values = [ 2, false, 3, 1.1 ]
 input_name = "normal"
 
 [sub_resource type="Gradient" id=34]
-offsets = PoolRealArray( 0.592705, 1 )
-colors = PoolColorArray( 0, 0, 0, 1, 0.534351, 0.534351, 0.534351, 1 )
+offsets = PackedFloat32Array( 0.592705, 1 )
+colors = PackedColorArray( 0, 0, 0, 1, 0.534351, 0.534351, 0.534351, 1 )
 
-[sub_resource type="GradientTexture" id=35]
+[sub_resource type="GradientTexture2D" id=35]
 gradient = SubResource( 34 )
 
 [sub_resource type="VisualShaderNodeTexture" id=36]
@@ -368,21 +368,21 @@ nodes/fragment/3/node = SubResource( 33 )
 nodes/fragment/3/position = Vector2( -240, 140 )
 nodes/fragment/4/node = SubResource( 36 )
 nodes/fragment/4/position = Vector2( 260, 120 )
-nodes/fragment/connections = PoolIntArray( 2, 0, 4, 0, 4, 0, 0, 1 )
+nodes/fragment/connections = PackedInt32Array( 2, 0, 4, 0, 4, 0, 0, 1 )
 
 [sub_resource type="ShaderMaterial" id=38]
 shader = SubResource( 37 )
 
-[node name="PlanetMesh2" type="MeshInstance"]
+[node name="PlanetMesh2" type="MeshInstance3D"]
 mesh = SubResource( 1 )
 material/0 = SubResource( 21 )
 
-[node name="Clouds" type="MeshInstance" parent="."]
-transform = Transform( 1.00436, 0, 0, 0, 1.00436, 0, 0, 0, 1.00436, 0, 0, 0 )
+[node name="Clouds" type="MeshInstance3D" parent="."]
+transform = Transform3D( 1.00436, 0, 0, 0, 1.00436, 0, 0, 0, 1.00436, 0, 0, 0 )
 mesh = SubResource( 22 )
 material/0 = SubResource( 30 )
 
-[node name="Atmosphere" type="MeshInstance" parent="."]
-transform = Transform( 1.00774, 0, 0, 0, 1.00774, 0, 0, 0, 1.00774, 0, 0, 0 )
+[node name="Atmosphere" type="MeshInstance3D" parent="."]
+transform = Transform3D( 1.00774, 0, 0, 0, 1.00774, 0, 0, 0, 1.00774, 0, 0, 0 )
 mesh = SubResource( 31 )
 material/0 = SubResource( 38 )

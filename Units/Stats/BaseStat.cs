@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class BaseStat : Node{
+public partial class BaseStat : Node{
 
     public BaseStat(){}
 
@@ -84,7 +84,7 @@ public class BaseStat : Node{
 
     public override void _Ready()
     {
-        if(Name.Length < 1)
+        if(((string)Name).Length < 1)
             _name = Name;
     }
 }

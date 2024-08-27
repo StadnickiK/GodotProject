@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class World : Spatial
+public partial class World : Node3D
 {
 
 
@@ -27,7 +27,7 @@ public WorldCursorControl WCC
 private Data _data = null;
 
 	Galaxy Galaxy = null;
-	CameraGimbal Camera = null;
+	CameraGimbal Camera3D = null;
 
 	private UI _UI = null;
 	public UI UInterface
@@ -72,7 +72,7 @@ private Data _data = null;
 	}
 
 	public void ConnectTo_OpenPlanetInterface(Node node){
-		node.Connect("OpenPlanetInterface",this,nameof(_on_OpenPlanetInterface));
+		node.Connect("OpenPlanetInterface", new Callable(this, nameof(_on_OpenPlanetInterface)));
 	}
 
 	void _on_OpenPlanetInterface(Planet planet){
@@ -85,7 +85,7 @@ private Data _data = null;
 	}
 
 	void _on_CameraLookAt(Vector3 position){
-		Camera.LookAt(position);
+		Camera3D.LookAt(position);
 	}
 
 	void _on_LookAtObject(Node node){
@@ -97,21 +97,21 @@ private Data _data = null;
 		if(obj.GetParent().GetParent() is Planet planet){
 			planet.System.OpenStarSystem();
 		}
-		if(obj is Spatial spatial){
-			Camera.LookAt(spatial.GlobalTransform.origin);
+		if(obj is Node3D spatial){
+			Camera3D.LookAt(spatial.GlobalTransform.Origin);
 		}
 	}
 
 	void _on_LookAtStarSystem(StarSystem system){
 		if(system != null)
-			Camera.LookAt(system.GlobalTransform.origin);
+			Camera3D.LookAt(system.GlobalTransform.Origin);
 		
 	}
 
 	void _on_SelectObjectInOrbit(Planet planet, Node node){
 		if(planet != null && node != null){
 			var label = (Label)node;
-			PhysicsBody obj = (PhysicsBody)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
+			PhysicsBody3D obj = (PhysicsBody3D)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
 			if(obj != null){
 				if(obj is ISelectMapObject selectMapObject){
 					selectMapObject.SelectMapObject();
@@ -123,7 +123,7 @@ private Data _data = null;
 	void GetNodes(){
 		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
-		Camera = GetNode<CameraGimbal>("UI/CameraGimbal");
+		Camera3D = GetNode<CameraGimbal>("UI/CameraGimbal");
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		_UI = GetNode<UI>("UI");
@@ -134,16 +134,16 @@ private Data _data = null;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
 		_UI.PInterface._data = _data;
 		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
-		_UI.OrbitList.Connect("SelectObject", this, nameof(_on_SelectUnit));
-		_UI.CommandPanel.Connect("ShipCommand", this, nameof(_on_ShipCommand));
+		_UI.OrbitList.Connect("SelectObject", new Callable(this, nameof(_on_SelectUnit)));
+		_UI.CommandPanel.Connect("ShipCommand", new Callable(this, nameof(_on_ShipCommand)));
 		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
 	public void ConnectToSelectUnit(Node node){
-		node.Connect("SelectUnit", this, nameof(_on_SelectUnit));
+		node.Connect("SelectUnit", new Callable(this, nameof(_on_SelectUnit)));
 	}
 
-	void _on_SelectUnit(PhysicsBody body){
+	void _on_SelectUnit(PhysicsBody3D body){
 		_wcc._SelectUnit(body);
 		_UI.UInfo.Visible = true;
 		_UI.UInfo.UpdatePanel(body);
@@ -188,12 +188,12 @@ private Data _data = null;
 		generator.QueueFree();
 		_map.AddChild(Galaxy);
 		_map.galaxy = Galaxy;
-		Galaxy.Connect("CameraLookAt",this, nameof(_on_CameraLookAt));
-		Galaxy.Connect("LookAtStarSystem", this, nameof(_on_LookAtStarSystem));
+		Galaxy.Connect("CameraLookAt", new Callable(this, nameof(_on_CameraLookAt)));
+		Galaxy.Connect("LookAtStarSystem", new Callable(this, nameof(_on_LookAtStarSystem)));
 	}
 
 	void UpdateGround(){
-		var ground = GetNode<Area>("Ground");
+		var ground = GetNode<Area3D>("Ground");
 		ground.Scale = new Vector3(2*Galaxy.Radius,1,2*Galaxy.Radius);
 	}
 
@@ -238,12 +238,12 @@ private Data _data = null;
 		foreach(Node node in Players.GetChildren()){
 			if(node is Player player){
 				int maxFleets = 1;
-				var ship = (Ship)_ShipScene.Instance();
-				foreach(CollisionObject body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
+				var ship = (Ship)_ShipScene.Instantiate();
+				foreach(CollisionObject3D body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
 					if(body is Planet planet && maxFleets>0){
 						var transform = ship.Transform;
-						transform.origin = planet.Transform.origin;
-						transform.origin += new Vector3(3,0,3);
+						transform.Origin = planet.Transform.Origin;
+						transform.Origin += new Vector3(3,0,3);
 						ship.Transform = transform;
 						ship.Controller = player;
 						ship.ID_Owner = player.GetIndex();
@@ -252,9 +252,9 @@ private Data _data = null;
 						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);
-						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").Filename;
+						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
 						for(int i = 0;i<5;i++){
-							ship.Units.AddChild(((PackedScene)GD.Load(unitFileName)).Instance());
+							ship.Units.AddChild(((PackedScene)GD.Load(unitFileName)).Instantiate());
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
@@ -270,16 +270,16 @@ private Data _data = null;
 	}
 
 	public Ship CreateShip(Unit unit){
-		var ship = (Ship)_ShipScene.Instance();
+		var ship = (Ship)_ShipScene.Instantiate();
 		ConnectShip(ship);
 		ship.Units.AddChild(unit);
 		return ship;
 	}
 
 	public Ship CreateShip(Planet planet, Unit unit){
-		var ship = (Ship)_ShipScene.Instance();
+		var ship = (Ship)_ShipScene.Instantiate();
 		var transform = ship.Transform;
-		transform.origin = planet.Transform.origin;
+		transform.Origin = planet.Transform.Origin;
 		//transform.origin += new Vector3(3,0,3);
 		ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
 		ship.Transform = transform;
@@ -304,7 +304,7 @@ private Data _data = null;
         _map.ConnectToEnterMapObject(ship);
         _map.ConnectToExitMapObject(ship);
 		if(ship.Controller == _Player){
-			ship.Connect(nameof(Ship.OpenUnitTransferPanel), _UI.UnitTransferP, "_on_OpenTransferPanel");
+			ship.Connect(nameof(Ship.OpenUnitTransferPanel), new Callable(_UI.UnitTransferP, "_on_OpenTransferPanel"));
 		}
 	}
 
@@ -328,10 +328,10 @@ private Data _data = null;
 								planet.Controller != null && 
 								(resource.ResourceType == Resource.Type.Ore))
 							{
-								planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+								planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
 							}else if((resource.ResourceType == Resource.Type.Ore)){
 								if(Rand.Next(0,100)>(100 - resource.Rarity))
-									planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
+									planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
 							}
 					}
 				}
@@ -345,10 +345,10 @@ private Data _data = null;
 				if(node is Planet planet){
 					if(planet.Controller == null){
 						int amount = 2;//Rand.Next(10, 20);
-						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").Filename;
-						var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instance());
+						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
+						var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instantiate());
 						for(int i = 0;i<amount;i++){
-							var unit = ((PackedScene)GD.Load(unitFileName)).Instance();
+							var unit = ((PackedScene)GD.Load(unitFileName)).Instantiate();
 							var stat = unit.GetNode<BaseStat>("Stats/Attack");
 							ship.Units.AddChild(unit);
 						}
@@ -420,7 +420,7 @@ private Data _data = null;
 	void ConnectPlanets(){
 		foreach(StarSystem system in Galaxy.StarSystems){
 			foreach(Planet planet in system.Planets){
-				planet.Connect("GameAlert", this, nameof(_on_Alert));
+				planet.Connect("GameAlert", new Callable(this, nameof(_on_Alert)));
 			}
 		}
 	}
@@ -428,11 +428,11 @@ private Data _data = null;
 	public override void _Ready()
 	{
 		GetNodes();
-		_wcc.camera = Camera.GetNode<Camera>("InnerGimbal/Camera");
+		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;
 		}
-		_wcc.Connect("Deselect", this, nameof(_on_Deselect));
+		_wcc.Connect("Deselect", new Callable(this, nameof(_on_Deselect)));
 		ConnectSignals();
 		InitWorld();
 		if(_Player != null){
@@ -442,7 +442,7 @@ private Data _data = null;
 		}
 
 	}
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
 		if(_Player != null){
 			_UI.UpdateUI(_Player);

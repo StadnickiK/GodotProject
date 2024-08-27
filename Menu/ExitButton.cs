@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class ExitButton : Button
+public partial class ExitButton : Button
 {
     // Declare member variables here. Examples:
     // private int a = 2;

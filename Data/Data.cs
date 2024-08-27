@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Data : Node
+public partial class Data : Node
 {
 
     public override void _Ready()
@@ -19,7 +19,7 @@ public class Data : Node
     /// </summary>
     /// <param name="nodeName"></param>
     /// <returns></returns>
-    public Godot.Collections.Array GetData(string nodeName){
+    public Godot.Collections.Array<Node> GetData(string nodeName){
         return GetNode(nodeName).GetChildren();
     }
 
@@ -42,9 +42,10 @@ public class Data : Node
     public List<Building> GetBuildingsByRequiredTech(string[] requiredTech){
         List<Building> list = new List<Building>();
         foreach(var node in GetData("Buildings")){
-            if(node is Building building)
-                if(building.Requirements.ContainsKey("Technology"))
-                    if(building.Requirements["Technology"].All(elem => requiredTech.Contains(elem))) list.Add(building);
+            if(node is Building building){
+                // if(building.Requirements.ContainsKey("Technology"))
+                //     if(building.Requirements["Technology"].All(elem => requiredTech.Contains(elem))) list.Add(building);
+            }
         }
         return list;   
     }

@@ -1,21 +1,21 @@
 using Godot;
 using System;
 
-public class Cannon : RigidBody
+public partial class Cannon : RigidBody3D
 {
-	private void LookFollow(PhysicsDirectBodyState state, Transform currentTransform, Vector3 targetPosition)
+	private void LookFollow(PhysicsDirectBodyState3D state, Transform3D currentTransform, Vector3 targetPosition)
 	{
 		var upDir = new Vector3(0, 1, 0);
-		var curDir = currentTransform.basis.Xform(new Vector3(0, 0, 1));
-		var targetDir = (targetPosition - currentTransform.origin).Normalized();
-		var rotationAngle = Mathf.Acos(curDir.x) - Mathf.Acos(targetDir.x);
+		var curDir = currentTransform.Basis*(new Vector3(0, 0, 1));
+		var targetDir = (targetPosition - currentTransform.Origin).Normalized();
+		var rotationAngle = Mathf.Acos(curDir.X) - Mathf.Acos(targetDir.X);
 
 		state.AngularVelocity = upDir * (rotationAngle / state.Step);
 	}
 
-	public override void _IntegrateForces(PhysicsDirectBodyState state)
+	public override void _IntegrateForces(PhysicsDirectBodyState3D state)
 	{
-		var targetPosition = GetNode<RigidBody>("/root/World/Target").GlobalTransform.origin;
+		var targetPosition = GetNode<RigidBody3D>("/root/World/Target").GlobalTransform.Origin;
 		//GD.Print(state.AngularVelocity);
 		LookFollow(state, GlobalTransform, targetPosition);
 	}

@@ -2,11 +2,11 @@
 
 [ext_resource path="res://Themes/Main_Menu_theme.tres" type="Theme" id=1]
 [ext_resource path="res://Menu/PlayButton.cs" type="Script" id=2]
-[ext_resource path="res://Fonts/times.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://Fonts/times.ttf" type="FontFile" id=3]
 [ext_resource path="res://Menu/ExitButton.cs" type="Script" id=4]
 [ext_resource path="res://Menu/MainMenuButton.cs" type="Script" id=5]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="FontFile" id=1]
 size = 24
 font_data = ExtResource( 3 )
 
@@ -18,10 +18,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -95.0
-margin_right = 150.0
-margin_bottom = 95.0
+offset_left = -150.0
+offset_top = -95.0
+offset_right = 150.0
+offset_bottom = 95.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -31,20 +31,20 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -95.0
-margin_right = 150.0
-margin_bottom = 95.0
+offset_left = -150.0
+offset_top = -95.0
+offset_right = 150.0
+offset_bottom = 95.0
 theme = ExtResource( 1 )
-custom_constants/separation = 10
+theme_override_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Name" type="Label" parent="VBoxContainer"]
-margin_left = 122.0
-margin_right = 178.0
-margin_bottom = 28.0
+offset_left = 122.0
+offset_right = 178.0
+offset_bottom = 28.0
 size_flags_horizontal = 4
 theme = SubResource( 2 )
 text = "Menu"
@@ -53,9 +53,9 @@ __meta__ = {
 }
 
 [node name="PlayButton" type="Button" parent="VBoxContainer"]
-margin_top = 38.0
-margin_right = 300.0
-margin_bottom = 80.0
+offset_top = 38.0
+offset_right = 300.0
+offset_bottom = 80.0
 size_flags_horizontal = 3
 text = "Continue"
 script = ExtResource( 2 )
@@ -64,16 +64,16 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="Button" parent="VBoxContainer"]
-margin_top = 90.0
-margin_right = 300.0
-margin_bottom = 132.0
+offset_top = 90.0
+offset_right = 300.0
+offset_bottom = 132.0
 text = "Main Menu"
 script = ExtResource( 5 )
 
 [node name="Exit" type="Button" parent="VBoxContainer"]
-margin_top = 142.0
-margin_right = 300.0
-margin_bottom = 184.0
+offset_top = 142.0
+offset_right = 300.0
+offset_bottom = 184.0
 size_flags_horizontal = 3
 text = "Exit"
 script = ExtResource( 4 )

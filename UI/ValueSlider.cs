@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class ValueSlider : HBoxContainer
+public partial class ValueSlider : HBoxContainer
 {
     
 
@@ -52,7 +52,7 @@ public class ValueSlider : HBoxContainer
         CurrentValue = (int)_slider.Value;
         _valueLabel.Text = CurrentValue.ToString();
         _nameLabel.Text = Text; 
-        HintTooltip = _hint;
+        TooltipText = _hint;
         UpdateSlider();
     }
 
