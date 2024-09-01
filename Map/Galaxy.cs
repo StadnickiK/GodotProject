@@ -75,10 +75,10 @@ public partial class Galaxy : Node3D
 
 
     public void ViewGalaxy(){
-        if(_currentSystem != null){
-            _currentSystem.CloseSystem();
-            _currentSystem = null;
-        }
+        // if(_currentSystem != null){
+        //     _currentSystem.CloseSystem();
+        //     _currentSystem = null;
+        // }
         foreach(Node3D spatial in GetChildren()){
             spatial.Visible = true;
         }

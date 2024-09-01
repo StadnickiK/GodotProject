@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public partial class Sequence : TreeNode
 {
@@ -50,6 +51,10 @@ public partial class Sequence : TreeNode
 
         _state = anyChildRunning ? NodeState.Running : NodeState.Succes;
         return _state;
+    }
+
+    public override async Task<NodeState> EvaluateAsync(){
+        return Evaluate();
     }
 
 }

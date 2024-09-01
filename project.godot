@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="Projects"
-run/main_scene="res://Dev/TestScene.tscn"
+run/main_scene="res://Game.tscn"
 config/features=PackedStringArray("4.3", "C#")
 config/icon="res://icon.png"
 
 [display]
 
-window/size/viewport_width=1300
-window/size/viewport_height=700
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/stretch/aspect="expand"
 
 [dotnet]

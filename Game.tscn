@@ -1,16 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://eelyfleej1wb"]
 
-[ext_resource path="res://Menu/MainMenu.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Map/Generator.cs" type="Script" id=2]
-[ext_resource path="res://Game.cs" type="Script" id=3]
+[ext_resource type="PackedScene" uid="uid://c0lhmp3fj6tkb" path="res://Menu/MainMenu.tscn" id="1"]
+[ext_resource type="Script" path="res://Map/Generator.cs" id="2"]
+[ext_resource type="Script" path="res://Game.cs" id="3"]
 
 [node name="Game" type="Node3D"]
-script = ExtResource( 3 )
+script = ExtResource("3")
 
-[node name="MainMenu" parent="." instance=ExtResource( 1 )]
+[node name="MainMenu" parent="." instance=ExtResource("1")]
+grow_horizontal = 2
+grow_vertical = 2
 Title = "RTS 4X"
 
 [node name="Node" type="Node" parent="."]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [connection signal="QuickGame" from="MainMenu" to="." method="_on_QuickGame"]

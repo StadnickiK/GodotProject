@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 public partial class ActionTN : TreeNode
 {
@@ -13,7 +14,6 @@ public partial class ActionTN : TreeNode
 
     public override NodeState Evaluate()
     {
-
         switch(action()){
             case NodeState.Succes:
                 State = NodeState.Succes;
@@ -28,5 +28,9 @@ public partial class ActionTN : TreeNode
                 State = NodeState.Failure;
                 return State;
         }
+    }
+
+    public override async Task<NodeState> EvaluateAsync(){
+        return Evaluate();
     }
 }

@@ -66,13 +66,15 @@ public partial class PlanetInterface : Panel
 		foreach(System.Collections.Generic.KeyValuePair<string, string> pair in Options){
 			if(pair.Value == null){
 				_overviewPanel.AddPanel(pair.Key);
-			}else{
+			}else if(pair.Value.Length > 0){
 				PackedScene scene = (PackedScene)ResourceLoader.Load(pair.Value);
 				if(scene != null){
 					_overviewPanel.AddPanel(pair.Key, (CanvasItem)scene.Instantiate());
 				}else{
 					_overviewPanel.AddPanel(pair.Key);
 				}
+			}else{
+				_overviewPanel.AddPanel(pair.Key);
 			}
 		}
 	}

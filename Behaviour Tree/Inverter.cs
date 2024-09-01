@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class Inverter : TreeNode
 {
@@ -33,6 +34,10 @@ public partial class Inverter : TreeNode
             }
 
         return NodeState.Failure;
+    }
+
+    public override async Task<NodeState> EvaluateAsync(){
+        return Evaluate();
     }
 
 

@@ -91,12 +91,12 @@ private Data _data = null;
 	void _on_LookAtObject(Node node){
 		var obj = _Player.GetMapObjectByName(node.Name);
 		Galaxy.ViewGalaxy();
-		if(obj.GetParent().GetParent() is StarSystem system){
-			system.OpenStarSystem();
-		}
-		if(obj.GetParent().GetParent() is Planet planet){
-			planet.System.OpenStarSystem();
-		}
+		// if(obj.GetParent().GetParent() is StarSystem system){
+		// 	system.OpenStarSystem();
+		// }
+		// if(obj.GetParent().GetParent() is Planet planet){
+		// 	planet.System.OpenStarSystem();
+		// }
 		if(obj is Node3D spatial){
 			Camera3D.LookAt(spatial.GlobalTransform.Origin);
 		}
@@ -248,7 +248,7 @@ private Data _data = null;
 						ship.Controller = player;
 						ship.ID_Owner = player.GetIndex();
 						ship.Name = planet.Name +" "+1;
-						ship.MapObject = planet.System;
+						//ship.MapObject = planet.System;
 						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
 						player.MapObjects.Add(ship);

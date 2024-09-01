@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class TreeNode : Node
 {
@@ -164,6 +165,6 @@ public partial class TreeNode : Node
 
     public virtual NodeState Evaluate() => NodeState.Failure;
 
-    //public virtual Task<NodeState> TEvaluate() => NodeState.Failure;
+    public virtual async Task<NodeState> EvaluateAsync() => NodeState.Failure;
 
 }

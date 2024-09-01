@@ -145,7 +145,9 @@ public partial class BuildingInterface : Panel
     }
 
     public void ConnecToStartConstruction(Node node, string methodName){
-        Connect(nameof(StartConstructionEventHandler), new Callable(node, methodName));
+        //var er = Connect(nameof(StartConstructionEventHandler), new Callable(node, methodName));
+        var er = Connect("StartConstruction", new Callable(node, methodName));
+        GD.Print(er.ToString());
     }
 
     void _on_ButtonUp(){

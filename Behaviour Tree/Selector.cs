@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 public partial class Selector : TreeNode
 {
@@ -31,6 +33,24 @@ public partial class Selector : TreeNode
             }
         }
         _state = NodeState.Failure;
+        return _state;
+    }
+
+    public override async Task<NodeState> EvaluateAsync() // recreate as Task
+    {
+        var taksList = new List<Task<NodeState>>();
+
+        foreach(Node n in GetChildren()){
+            if(n is TreeNode node)
+            {
+                taksList.Add(Task.Run(() => { return node.Evaluate(); }));
+            }
+        }
+
+        var task = await Task.WhenAny(taksList);
+        
+        // może wymagać użycia Result bo będzie się blokowało
+        _state = await task;
         return _state;
     }
 

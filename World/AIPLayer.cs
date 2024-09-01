@@ -78,7 +78,7 @@ public partial class AIPlayer : Player
         base._Process(delta);
         if(root != null)
             if(PlayerID == counter){
-                root.Evaluate();
+                var s = root.EvaluateAsync().Result;
                 if(counter >= 50)
                     counter = -1;
                 _time = 0;

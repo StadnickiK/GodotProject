@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class StarSystem : Area3D, IEnterMapObject, IExitMapObject
+public partial class StarSystem : Area3D //, IEnterMapObject, IExitMapObject
 {
 
 	[Export]
@@ -91,80 +91,80 @@ public int Radius
 		Colony
 	}
 
-	public void OpenStarSystem(){
-		StarSysObjects.Visible = true;
-		XButton.Visible = true;
-		Placeholder.Visible = false;
-		foreach(var node in StarSysObjects.GetChildren()){
-			if(node is Ship ship){
-				if(ship.IsLocal && !ship.Visible)
-					ship.Visible = true;
-			}
-		}
-		EmitSignal(nameof(ViewStarSystemEventHandler), this);
-	}
+	// public void OpenStarSystem(){
+	// 	StarSysObjects.Visible = true;
+	// 	XButton.Visible = true;
+	// 	Placeholder.Visible = false;
+	// 	foreach(var node in StarSysObjects.GetChildren()){
+	// 		if(node is Ship ship){
+	// 			if(ship.IsLocal && !ship.Visible)
+	// 				ship.Visible = true;
+	// 		}
+	// 	}
+	// 	EmitSignal(nameof(ViewStarSystemEventHandler), this);
+	// }
 
 	public void AddMapObject(PhysicsBody3D body){
 		if(body.GetParent() != StarSysObjects)
 			StarSysObjects.AddChild(body);
 	}
 
-	void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
-		if(e is InputEventMouseButton mouseButton){
-			if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Left){
-				OpenStarSystem();
-			}else if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Right){
-				EmitSignal(nameof(SelectTargetEventHandler), (CollisionObject3D)this);
-			}
-		}
-	}
+	// void _on_StarSystem_input_event(Node camera, InputEvent e,Vector3 click_position,Vector3 click_normal, int shape_idx){
+	// 	if(e is InputEventMouseButton mouseButton){
+	// 		if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Left){
+	// 			OpenStarSystem();
+	// 		}else if(!mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Right){
+	// 			EmitSignal(nameof(SelectTargetEventHandler), (CollisionObject3D)this);
+	// 		}
+	// 	}
+	// }
 
-	void _on_XButton_button_up(){
-		CloseSystem();
-		EmitSignal(nameof(ViewGalaxyEventHandler), this);
-	}
+	// void _on_XButton_button_up(){
+	// 	CloseSystem();
+	// 	EmitSignal(nameof(ViewGalaxyEventHandler), this);
+	// }
 
-	public void CloseSystem(){
-		StarSysObjects.Visible = false;
-		XButton.Visible = false;
-		Placeholder.Visible = true;
-	}
+	// public void CloseSystem(){
+	// 	StarSysObjects.Visible = false;
+	// 	XButton.Visible = false;
+	// 	Placeholder.Visible = true;
+	// }
 
 	protected void _ConnectSignal(){
 		WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
 		WCC.ConnectToSelectTarget(this);
 	}
 
-	public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
-		if(node != null){
-			if(node.GetParent() == GetParent())
-				if(node is Ship ship){
-					ship.GetParent().RemoveChild(ship);
-					_starSysObjects.AddChild(ship);
-					ship.NextTarget();
-					var trans = state.Transform;
-					trans.Origin = Radius*0.9f*(-aproachVec)+GlobalTransform.Origin;
-					state.Transform = trans;
-					ship.MapObject = this;
-				}
-        }
-	}
+	// public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
+	// 	if(node != null){
+	// 		if(node.GetParent() == GetParent())
+	// 			if(node is Ship ship){
+	// 				ship.GetParent().RemoveChild(ship);
+	// 				_starSysObjects.AddChild(ship);
+	// 				ship.NextTarget();
+	// 				var trans = state.Transform;
+	// 				trans.Origin = Radius*0.9f*(-aproachVec)+GlobalTransform.Origin;
+	// 				state.Transform = trans;
+	// 				ship.MapObject = this;
+	// 			}
+    //     }
+	// }
 
-	public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
-		if(node is Ship ship)
-			if(ship.MapObject == this){
-				if(ship.Transform.Origin.Length()>Radius){
-					//StarSysObjects.RemoveChild(ship);
-					ship.GetParent().RemoveChild(ship);
-					GetParent().AddChild(ship);
-					var trans = state.Transform;
-					trans.Origin = Transform.Origin;
-					state.Transform = trans;
-					ship.NextTarget();
-					ship.Visible = false;
-				}
-			}
-	}
+	// public void ExitMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
+	// 	if(node is Ship ship)
+	// 		if(ship.MapObject == this){
+	// 			if(ship.Transform.Origin.Length()>Radius){
+	// 				//StarSysObjects.RemoveChild(ship);
+	// 				ship.GetParent().RemoveChild(ship);
+	// 				GetParent().AddChild(ship);
+	// 				var trans = state.Transform;
+	// 				trans.Origin = Transform.Origin;
+	// 				state.Transform = trans;
+	// 				ship.NextTarget();
+	// 				ship.Visible = false;
+	// 			}
+	// 		}
+	// }
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()

@@ -7,7 +7,7 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
 {
 
     [Export]
-    int Size = 10;
+    int Size = 50;
 
     [Export]
     int Wealth = 5;
@@ -103,14 +103,15 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
 
     void Generate(){
         Name = PlanetName;
-        Size = Rand.Next(5,15);
-        Scale *= Size/10;
-        Size = Size%2==0 ? Size : ++Size;
-        for(int i = 0; i<Size;i++){
-            Tile t =  (Tile)TileScene.Instantiate();
-            t.Rand = Rand;
-            Tiles.Add(t);
-        }
+        Size = Rand.Next(6,10);
+        Scale *= Size;
+        //ScaleObjectLocal(Scale*Size);       
+        //Size = Size%2==0 ? Size : ++Size;
+        // for(int i = 0; i<Size;i++){
+        //     Tile t =  (Tile)TileScene.Instantiate();
+        //     t.Rand = Rand;
+        //     Tiles.Add(t);
+        // }
     }
 
     void GenerateMesh(){
@@ -340,7 +341,7 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
                     Orbit.RemoveChild(ship);
                     if(GetParent().GetParent() is StarSystem system){
                         system.AddMapObject(ship);
-                        ship.MapObject = system;
+                        //ship.MapObject = system;
                     }else{
                         GetParent().AddChild(ship);
                     }
@@ -387,7 +388,8 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         SetPhysicsProcess(false);
         // SetProcess(false);
         TileScene = (PackedScene)GD.Load("res://Map/Tile.tscn");
-        // GenerateMesh(); 
+        // GenerateMesh();
+        Generate(); 
         Name = PlanetName;
         MapObjectName3.Text = Name;
 

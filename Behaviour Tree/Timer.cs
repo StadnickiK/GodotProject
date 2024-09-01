@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class Timer : TreeNode
 {
@@ -48,6 +49,10 @@ public partial class Timer : TreeNode
             _state = NodeState.Running;
         }
         return State;
+    }
+
+    public override async Task<NodeState> EvaluateAsync(){
+        return Evaluate();
     }
 
 }

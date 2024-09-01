@@ -44,7 +44,11 @@ public partial class MenuPanel : Panel
         foreach(Node n in _valueContainer.GetChildren()){
             if(n is ValueSlider){
                 ValueSlider value = (ValueSlider)n;
-                WorldGenParameters.Add(value.ValueName, value.CurrentValue);
+                if(WorldGenParameters.ContainsKey(value.ValueName)){
+                    WorldGenParameters[value.ValueName] = value.CurrentValue;
+                }else{
+                    WorldGenParameters.Add(value.ValueName, value.CurrentValue);
+                }
             }
         }
         EmitSignal(nameof(StartNewGameEventHandler), WorldGenParameters);
