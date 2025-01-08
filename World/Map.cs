@@ -43,11 +43,11 @@ public partial class Map : Node3D
     }
 
     public void ConnectToShowBattlePanel(Node node, string method){
-        Connect(nameof(ShowBattlePanelEventHandler), new Callable(node, method));
+        Connect(nameof(SignalName.ShowBattlePanel), new Callable(node, method));
     }
 
     public void _on_OpenBattlePanel(SpaceBattle battle){
-        EmitSignal(nameof(ShowBattlePanelEventHandler), battle);
+        EmitSignal(nameof(SignalName.ShowBattlePanel), battle);
     }
 
     public void ConnectToEnterMapObject(Node node){

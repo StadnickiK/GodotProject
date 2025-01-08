@@ -1,6 +1,7 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+// using System.Collections.Generic;
+using Godot.Collections;
 
 public partial class Game : Node3D
 {
@@ -12,14 +13,17 @@ public partial class Game : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		
+
 	}
 
 	public void ConnectToStartNewGame(Node node){
 		node.Connect("StartNewGame", new Callable(this, nameof(_on_StartNewGame)));
+		GD.Print(node.GetSignalConnectionList("StartNewGame"));
+		
 	}
 
 	public void _on_StartNewGame(Dictionary<string, int> WorldGenParameters){
+		GD.Print(GetSignalConnectionList("QuickGame"));
 	   _curerentWorld = (World)_worldScene.Instantiate();
 	   GetNode("MainMenu").QueueFree();
 	   _curerentWorld.WorldGenParameters = WorldGenParameters;
@@ -28,6 +32,8 @@ public partial class Game : Node3D
 
 	public void ConnectToQuickGame(Node node){
 		node.Connect("QuickGame", new Callable(this, nameof(_on_QuickGame)));
+		GD.Print(node.GetSignalConnectionList("QuickGame"));
+		GD.Print(GetSignalConnectionList("QuickGame"));
 	}
 
 	public void _on_QuickGame(){
@@ -43,9 +49,9 @@ public partial class Game : Node3D
 
 	public void _on_OpenMainMenu(){
 		var menu = (MainMenu)_mainMenuScene.Instantiate();
-	   GetNode("World").QueueFree();
-	   AddChild(menu);
-	   ConnectToQuickGame(menu);
+	   	GetNode("World").QueueFree();
+	   	AddChild(menu);
+	   	ConnectToQuickGame(menu);
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

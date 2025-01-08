@@ -7,7 +7,7 @@ public partial class Generator : Node
 
     Random Rand { get; set; }
 
-    Dictionary<string, int> parameters = null;
+    Godot.Collections.Dictionary<string, int> parameters = null;
 
     World _world = null;
 
@@ -21,7 +21,7 @@ public partial class Generator : Node
 
     PackedScene PlanetScene = (PackedScene)GD.Load("res://Map/Planet/Planet.tscn");
 
-    public void InitGenerator(World world, Random random, Dictionary<string, int> Parameters){
+    public void InitGenerator(World world, Random random, Godot.Collections.Dictionary<string, int> Parameters){
         Rand = random;
         parameters = Parameters;
         _world = world;
@@ -49,7 +49,7 @@ public partial class Generator : Node
             var starSystem = GenerateStarSystem(galaxy, dist, i);
             galaxy.AddChild(starSystem);
             galaxy.StarSystems.Add(starSystem);
-            dist += Rand.Next(100, 150);
+            dist += Rand.Next(200, 300);
             angle += Rand.Next(0, 60);
         }
         galaxy.Radius = (int)(1.2f*dist);
@@ -91,8 +91,9 @@ public partial class Generator : Node
         system.GetNodes();
 		system.StarSysObjects.AddChild(sun);
 		system.SystemStar = (Star)sun;
+        system.SystemStar.Rand = Rand;
 		system.MapObjectName3.Text = system.SystemName;
-		dist = Rand.Next(5, 15);
+		dist = Rand.Next(10, 20);
 		float angle = Rand.Next(0, 70);
 		for(i = 0;i < SystemSize; i++){
 			system.RotateY(angle);
@@ -100,7 +101,7 @@ public partial class Generator : Node
 			system.StarSysObjects.AddChild(planet);
 			system.Planets.Add(planet);
             ConnectPlanet(planet);
-			dist += Rand.Next(4, 10);
+			dist += Rand.Next(8, 16);
 			angle += Rand.Next(0,50);
 		}
 		system.Radius = (int)(dist*1.2f);

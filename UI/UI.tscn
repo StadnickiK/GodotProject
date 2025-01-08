@@ -46,19 +46,23 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = 76.0
+offset_right = -16.0
+offset_bottom = 76.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 6
+size_flags_vertical = 6
 mouse_filter = 2
 script = ExtResource("4")
 
 [node name="ResourcePanel" parent="." instance=ExtResource("9")]
-layout_mode = 0
-anchor_left = 0.0
-anchor_right = 0.0
+layout_mode = 1
+anchors_preset = 5
 offset_left = -376.0
 offset_right = 376.0
+grow_horizontal = 2
 size_flags_vertical = 3
 theme = SubResource("5")
 
@@ -72,28 +76,16 @@ visible = false
 anchors_preset = 0
 
 [node name="RightPanel" parent="." instance=ExtResource("13")]
-layout_mode = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 200.0
-offset_bottom = 460.0
+layout_mode = 1
+anchors_preset = 6
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="PlanetInterface" parent="." instance=ExtResource("6")]
 visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 550.0
-offset_bottom = 460.0
+layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2
 Options = {
 "Buildings": null,
 "Construction": null,
@@ -104,57 +96,72 @@ Options = {
 
 [node name="BattlePanel" parent="." instance=ExtResource("8")]
 visible = false
-layout_mode = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 230.0
-offset_bottom = 222.0
+layout_mode = 1
+anchors_preset = 8
+grow_horizontal = 2
+grow_vertical = 2
 Options = ["Overview", "Attacker", "Defender"]
 
 [node name="UnitInfoPanel" parent="." instance=ExtResource("15")]
 visible = false
-layout_mode = 0
-anchor_top = 0.0
-anchor_bottom = 0.0
-offset_top = 0.0
-offset_bottom = 208.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.5
+offset_top = -104.0
+offset_right = 96.5
+offset_bottom = 104.0
+grow_horizontal = 2
+grow_vertical = 2
 Options = ["Overview", "Details"]
 
 [node name="AlertBox" parent="." instance=ExtResource("14")]
 visible = false
-layout_mode = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 391.0
-offset_bottom = 102.0
+layout_mode = 1
+anchors_preset = 8
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="OrbitList" parent="." instance=ExtResource("11")]
 visible = false
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.5
+offset_top = -91.5
+offset_right = 94.5
+offset_bottom = 91.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CmdPanel" parent="." instance=ExtResource("10")]
 visible = false
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.0
+offset_top = -48.0
+offset_right = 89.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="TopLeftPanel" parent="." instance=ExtResource("1")]
+layout_mode = 1
 anchors_preset = 0
 
 [node name="UnitTransferPanel" parent="." instance=ExtResource("2")]
 visible = false
-layout_mode = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 271.0
-offset_bottom = 295.0
+layout_mode = 1
+anchors_preset = 8
+grow_horizontal = 2
+grow_vertical = 2

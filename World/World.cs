@@ -59,7 +59,7 @@ private Data _data = null;
 
 	List<Player> PlayersList = new List<Player>();
 
-	public Dictionary<string, int> WorldGenParameters = new Dictionary<string, int>();
+	public Godot.Collections.Dictionary<string, int> WorldGenParameters = new Godot.Collections.Dictionary<string, int>();
 
 	List<int> PlayerIDs = new List<int>();
 

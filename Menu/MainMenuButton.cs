@@ -18,7 +18,7 @@ public partial class MainMenuButton : Button
     }
 
     public void _on_MainMenu_button_up(){
-        EmitSignal(nameof(OpenMainMenuEventHandler));
+        EmitSignal("OpenMainMenu");
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

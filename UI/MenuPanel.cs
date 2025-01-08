@@ -1,5 +1,5 @@
 using Godot;
-using System;
+//using System.Collections.Generic;
 using Godot.Collections;
 
 public partial class MenuPanel : Panel
@@ -34,6 +34,8 @@ public partial class MenuPanel : Panel
         _closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
         var parent = (Game)GetParent().GetParent();
         parent.ConnectToStartNewGame(this);
+        StartNewGame += parent._on_StartNewGame;
+        //Connect("StartNewGame", new Callable(parent, "_on_StartNewGame"));
     }
 
     void _on_XButton_button_up(){
@@ -51,7 +53,8 @@ public partial class MenuPanel : Panel
                 }
             }
         }
-        EmitSignal(nameof(StartNewGameEventHandler), WorldGenParameters);
+        //EmitSignal(nameof(StartNewGameEventHandler), WorldGenParameters);
+        var e = EmitSignal("StartNewGame", WorldGenParameters);
     }
 
 }

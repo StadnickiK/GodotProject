@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" path="res://World/World.cs" id="5"]
-[ext_resource type="PackedScene" path="res://StaticGround.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://Data/Data.tscn" id="10"]
 [ext_resource type="Script" path="res://World/MapObjects.cs" id="12"]
 [ext_resource type="Script" path="res://World/Map.cs" id="13"]
@@ -34,8 +34,6 @@ environment = SubResource("2")
 [node name="WorldCursorControl" parent="." instance=ExtResource("4")]
 
 [node name="UI" parent="." instance=ExtResource("1")]
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("13")

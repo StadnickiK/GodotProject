@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://UI/Header.tscn" id="1"]
 [ext_resource type="Script" path="res://UI/PlanetInterface.cs" id="2"]
 [ext_resource type="PackedScene" path="res://UI/OverviewPanel.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://UI/BuildingInterface.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="4"]
 
 [node name="PlanetInterface" type="Panel"]
 anchors_preset = 8

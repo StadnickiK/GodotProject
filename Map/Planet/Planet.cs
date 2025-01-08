@@ -102,8 +102,7 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     }
 
     void Generate(){
-        Name = PlanetName;
-        Size = Rand.Next(6,10);
+        Size = Rand.Next(3,6);
         Scale *= Size;
         //ScaleObjectLocal(Scale*Size);       
         //Size = Size%2==0 ? Size : ++Size;
@@ -140,11 +139,11 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         if(inputEvent is InputEventMouseButton eventMouseButton){
             switch(eventMouseButton.ButtonIndex){
             case MouseButton.Left:
-                EmitSignal(nameof(OpenPlanetInterfaceEventHandler), this);
+                EmitSignal(nameof(SignalName.OpenPlanetInterface), this);
                 break;
             case MouseButton.Right:
                 // EmitSignal(nameof(SelectTargetEventHandler), (PhysicsBody)this);
-                EmitSignal(nameof(OpenCmdPanelEventHandler), this);
+                EmitSignal(nameof(SignalName.OpenCmdPanel), this);
                 break;
         }
       } 

@@ -1,42 +1,40 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://cth8qdcx4tb8j"]
 
-[ext_resource path="res://UI/MenuPanel.tscn" type="PackedScene" id=2]
-[ext_resource path="res://UI/ValueSlider.tscn" type="PackedScene" id=3]
+[ext_resource type="PackedScene" path="res://UI/MenuPanel.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://UI/ValueSlider.tscn" id="3"]
 
-[node name="NewGame" instance=ExtResource( 2 )]
+[node name="NewGame" instance=ExtResource("2")]
 offset_bottom = 153.0
 Title = "New Game"
 
+[node name="Header" parent="." index="0"]
+layout_mode = 0
+
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="1"]
+layout_mode = 0
 offset_top = 43.0
 offset_right = 321.0
 offset_bottom = 154.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ValueContainer" type="VBoxContainer" parent="VBoxContainer" index="0"]
-offset_right = 321.0
-offset_bottom = 37.0
+layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="ValueSlider" parent="VBoxContainer/ValueContainer" index="0" instance=ExtResource( 3 )]
-offset_top = 0.0
-offset_bottom = 16.0
+[node name="StarSystems" parent="VBoxContainer/ValueContainer" index="0" instance=ExtResource("3")]
+layout_mode = 2
+size_flags_horizontal = 3
 tooltip_text = "Number of Star Systems."
 mouse_filter = 0
-size_flags_horizontal = 3
 Text = "Star Systems"
 ValueName = "Systems"
-_minValue = 20
+_minValue = 1
 _maxValue = 60
 
-[node name="ValueSlider2" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource( 3 )]
-offset_top = 21.0
-offset_bottom = 37.0
+[node name="Players" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource("3")]
+layout_mode = 2
 tooltip_text = "Number of players."
 mouse_filter = 0
 Text = "Players "
@@ -45,16 +43,12 @@ _minValue = 1
 _maxValue = 50
 
 [node name="ConfirmButton" type="HBoxContainer" parent="VBoxContainer" index="1"]
-offset_top = 41.0
-offset_right = 321.0
-offset_bottom = 61.0
+layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
 [node name="Confirm" type="Button" parent="VBoxContainer/ConfirmButton" index="0"]
-offset_left = 280.0
-offset_right = 321.0
-offset_bottom = 20.0
+layout_mode = 2
 text = "Start"
 
 [connection signal="button_up" from="VBoxContainer/ConfirmButton/Confirm" to="." method="_on_Confirm_button_up"]

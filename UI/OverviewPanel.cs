@@ -88,9 +88,10 @@ public partial class OverviewPanel : VBoxContainer
 
     void ConnectButton(Button button){
         buttons.Add(button);
-        Godot.Collections.Array array = new Godot.Collections.Array();
-        array.Add(button);
-        button.Connect("button_up", new Callable(this, nameof(_on_Button_Up)));
+        // Godot.Collections.Array array = new Godot.Collections.Array();
+        // array.Add(button);
+        // button.Connect("button_up", new Callable(this, nameof(_on_Button_Up)));
+        button.ButtonUp += () => _on_Button_Up(button);
         //button.Connect("button_up", new Callable(this, nameof(_on_Button_Up)), array);
     }
 
