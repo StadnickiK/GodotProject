@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public partial class ConstructionManager : Node
 {
+    public delegate void ConstrucctionFinishedEventHandler(List<IBuilding> building);
 
     public bool ConstructionListChanged { get; set; } = false;
 
@@ -10,6 +11,9 @@ public partial class ConstructionManager : Node
     public List<IBuilding> ConstructionList
     {
         get { return _constructionList; }
+    }
+    public bool HasConstruct{ 
+        get { return _constructionList.Count > 0; }
     }
 
     public bool ConstructionChanged { get; set; } = false;
@@ -79,10 +83,5 @@ public partial class ConstructionManager : Node
             }
         }
         return List;
-    }
-
-    public bool HasConstruct(){
-        if(_constructionList.Count > 0) return true;    
-        return false;
     }
 }

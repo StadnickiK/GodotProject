@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://dhh5y2rxq0xdg"]
 
-[ext_resource path="res://UI/OverviewPanel.cs" type="Script" id=2]
+[ext_resource type="Script" path="res://UI/OverviewPanel.cs" id="2"]
 
 [node name="OverviewPanel" type="VBoxContainer"]
 offset_top = 46.0
@@ -8,26 +8,16 @@ offset_right = 150.0
 offset_bottom = 272.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("2")
 
 [node name="Options" type="HBoxContainer" parent="."]
-offset_right = 150.0
-offset_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Button" type="Button" parent="Options"]
-offset_right = 63.0
-offset_bottom = 20.0
+layout_mode = 2
 text = "Button1"
 
 [node name="Button2" type="Button" parent="Options"]
-offset_left = 67.0
-offset_right = 130.0
-offset_bottom = 20.0
+layout_mode = 2
 text = "Button1"

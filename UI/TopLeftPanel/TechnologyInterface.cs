@@ -23,15 +23,15 @@ public partial class TechnologyInterface : Panel
 
 
     void GetNodes(){
-        _header = GetNode<Header>("Header");
-        _listPanel = GetNode<ListPanel>("Details");
-        _acceptButton = GetNode<Button>("Build");
+        // _header = GetNode<Header>("Header");
+        // _listPanel = GetNode<ListPanel>("Details");
+        // _acceptButton = GetNode<Button>("Build");
     }
 
     public override void _Ready()
     {
         GetNodes();
-        _header.ConnectToButtonUp(this, nameof(_on_ButtonUp));
+        //_header.ConnectToButtonUp(this, nameof(_on_ButtonUp));
     }
 
     public void UpdateInterface(Technology technology){

@@ -3,6 +3,7 @@ using System;
 
 public partial class Resource : Node
 {
+    [Export]
     public int Index { get; set; }
 
     //public int Quantity { get; set; } = 0;

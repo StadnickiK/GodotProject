@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" path="res://World/World.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://Data/Data.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="10"]
 [ext_resource type="Script" path="res://World/MapObjects.cs" id="12"]
 [ext_resource type="Script" path="res://World/Map.cs" id="13"]
 [ext_resource type="Script" path="res://Map/Combat.cs" id="14"]

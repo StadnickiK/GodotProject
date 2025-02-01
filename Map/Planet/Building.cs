@@ -6,8 +6,8 @@ public partial class Building : Node, IBuilding, IUpkeep
 {
     // public List<Resource> Resources { get; set; } = new List<Resource>();
 
-    [Export]
-    public new string Name { get; set; }
+    //[Export]
+    new public string Name { get; set; }
 
     [Export]
     public bool IsStarter { get; set; } = false;
@@ -69,6 +69,6 @@ public partial class Building : Node, IBuilding, IUpkeep
 
     public override void _Ready()
     {
-
+        Name = base.Name;
     }
 }

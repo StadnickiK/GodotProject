@@ -26,7 +26,7 @@ public partial class Player : Node
 
     public Array<Ship> Ships { get; set; } = new Array<Ship>();
 
-    public ConstructionManager Research { get; set; } = new ConstructionManager();
+    public ConstructionManager Research { get; set; } //= new ConstructionManager();
 
     double _time = 0;
 
@@ -42,7 +42,7 @@ public partial class Player : Node
     //     get { return _resources; }
     // }
 
-    private ResourceManager _resourceManager = new ResourceManager();
+    private ResourceManager _resourceManager; // = new ResourceManager();
 
     public ResourceManager ResManager 
     { 
@@ -106,8 +106,12 @@ public partial class Player : Node
         PlayerID = GetIndex();
         PlayerName = "Player "+ PlayerID;
         Name = PlayerName;
-        AddChild(ResManager);
-        AddChild(Research);
+        
+        _resourceManager = GetNode<ResourceManager>("ResourceManager");
+        Research = GetNode<ConstructionManager>("TechManager");
+
+        // AddChild(ResManager);
+        // AddChild(Research);
         // for(int i = 0; i<5; i++){
         //     var resource = new Resource();
         //     resource.Name = "resource "+i;
@@ -199,7 +203,7 @@ public partial class Player : Node
             UpdatePlayerResources();
             //Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
             if(Research != null)
-                if(Research.HasConstruct())
+                if(Research.HasConstruct)
                     Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
             _time = 0;
         }

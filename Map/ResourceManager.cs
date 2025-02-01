@@ -211,7 +211,7 @@ public partial class ResourceManager : Node
     }
 
     public bool HasResource(int resourceName){
-        return (Resources.ContainsKey(resourceName));
+        return Resources.ContainsKey(resourceName);
     }
 
     public bool HasResource(int resourceName, int quantity){

@@ -6,9 +6,13 @@ public partial class BuildingLabel : Control
 
     public ProgressBar Progress { get; set; }
 
+    public Button BButton { get; set; }
+
+    
+    public Building RefBuilding { get; set; }
+
     bool IsProgressing = false;
     
-    public Button BButton { get; set; }
 
     void GetNodes(){
         BButton = GetNode<Button>("Button");

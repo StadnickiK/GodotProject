@@ -10,6 +10,10 @@ public partial class BuildingManager : Node
 
     public bool BuildingsChanged { get; set; } = false; // changed when build is finished
 
+    public delegate void BuildingFinishedEventHandler(List<Building> building);
+
+    public event BuildingFinishedEventHandler BuildingFinished; // subscribe here to event like BuildingManager.BuildingFinished += MyMethod, unsubscribe with -=
+
     public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
 
     ConstructionManager _constructions = new ConstructionManager();
@@ -63,6 +67,7 @@ public partial class BuildingManager : Node
         if(_constructions.ConstructionList.Count > 0){
             LastBuilding = IbuildingToBuilding(_constructions.UpdateConstruction());
             ConstructionListChanged = true;
+            BuildingFinished?.Invoke(LastBuilding); // call BuildingFinished event with finioshed building list
             if(LastBuilding.Count>0){
                 Buildings.AddRange(LastBuilding);
                 BuildingsChanged = true;

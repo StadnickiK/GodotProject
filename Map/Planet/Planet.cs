@@ -1,9 +1,11 @@
 using Godot;
 using System;
-using Godot.Collections;
+//using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible, IResourceManager, IGetTotalUpkeep, IGetTotalProdCost
+public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible
+//, IResourceManager
+//, IGetTotalUpkeep, IGetTotalProdCost
 {
 
     [Export]
@@ -36,7 +38,7 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
    
     public Player Controller { get; set; } = null;
 
-    public Array<Tile> Tiles { get; set; } = new Array<Tile>();
+    //public Array<Tile> Tiles { get; set; } = new Array<Tile>();
 
     public Random Rand { get; set; } = new Random();
 
@@ -66,13 +68,15 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         Occupied
     }
 
-    ConstructionManager _constructions = new ConstructionManager();
+    ConstructionManager _constructions; // = new ConstructionManager();
     public ConstructionManager Constructions
     {
         get { return _constructions; }
     }
     
-    public BuildingManager BuildingsManager { get; } = new BuildingManager();
+    BuildingManager _buildingsManager;
+
+    public BuildingManager BuildingsManager { get { return _buildingsManager; } } // = new BuildingManager();
 
     private MeshInstance3D _mesh = null;
     public MeshInstance3D Mesh
@@ -81,7 +85,14 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     }
 
     double _time = 0;
-    public ResourceManager ResourcesManager { get; set; } = new ResourceManager();
+    public ResourceManager ResourcesManager { get; set; }// = new ResourceManager();
+
+    // private Dictionary<int, int> _resources = new Dictionary<int, int>();
+    // public Dictionary<int, int> Resources
+    // {
+    //     get { return _resources; }
+    // }
+
 
     [Signal]
     public delegate void OpenPlanetInterfaceEventHandler(Planet planet);
@@ -89,17 +100,17 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     [Signal]
     public delegate void GameAlertEventHandler(World.GameAlert alert);
 
-    public enum Type
-    {
-        Balanced,
-        Aggro,
-        MegaCity,
-        Colony,
-        Mine,
-        Industrial,
-        HeavyIndustrial,
-        HellIndustrial
-    }
+    // public enum Type
+    // {
+    //     Balanced,
+    //     Aggro,
+    //     MegaCity,
+    //     Colony,
+    //     Mine,
+    //     Industrial,
+    //     HeavyIndustrial,
+    //     HellIndustrial
+    // }
 
     void Generate(){
         Size = Rand.Next(3,6);
@@ -196,36 +207,36 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         Pops = GetNode<Populations>("Populations");
     }
 
-    public void ProduceResources(ResourceManager playerResManager){
-            foreach(Building building in BuildingsManager.Buildings){
-                foreach(var productName in building.Products.Keys){
-                    if(!playerResManager.Resources.ContainsKey(productName)){
-                        var quantity = building.Products[productName];
-                        if(playerResManager.ResourceLimits.ContainsKey(productName))
-                            if(quantity < playerResManager.ResourceLimits[productName]){  // case for no resource limit may be required
-                                if(playerResManager.PayCost(building.ProductCost)){
-                                    playerResManager.Resources.Add(productName, quantity);
-                                    playerResManager.ResourcesChanged = true;
-                                }
-                            }
-                    }else{
-                        var quantity = building.Products[productName];
-                        if(playerResManager.ResourceLimits.ContainsKey(productName))
-                            if(playerResManager.Resources[productName] + quantity<playerResManager.ResourceLimits[productName]){
-                                if(playerResManager.PayCost(building.ProductCost)){
-                                    playerResManager.Resources[productName] += quantity;
-                                    playerResManager.ResourcesChanged = true;
-                                }
-                        }else{
-                            if(playerResManager.PayCost(building.ProductCost)){
-                                playerResManager.Resources[productName] = playerResManager.ResourceLimits[productName];
-                                playerResManager.ResourcesChanged = true;
-                            }
-                        }
-                    }
-                }
-            }
-    }
+    // public void ProduceResources(ResourceManager playerResManager){
+    //         foreach(Building building in BuildingsManager.Buildings){
+    //             foreach(var productName in building.Products.Keys){
+    //                 if(!playerResManager.Resources.ContainsKey(productName)){
+    //                     var quantity = building.Products[productName];
+    //                     if(playerResManager.ResourceLimits.ContainsKey(productName))
+    //                         if(quantity < playerResManager.ResourceLimits[productName]){  // case for no resource limit may be required
+    //                             if(playerResManager.PayCost(building.ProductCost)){
+    //                                 playerResManager.Resources.Add(productName, quantity);
+    //                                 playerResManager.ResourcesChanged = true;
+    //                             }
+    //                         }
+    //                 }else{
+    //                     var quantity = building.Products[productName];
+    //                     if(playerResManager.ResourceLimits.ContainsKey(productName))
+    //                         if(playerResManager.Resources[productName] + quantity<playerResManager.ResourceLimits[productName]){
+    //                             if(playerResManager.PayCost(building.ProductCost)){
+    //                                 playerResManager.Resources[productName] += quantity;
+    //                                 playerResManager.ResourcesChanged = true;
+    //                             }
+    //                     }else{
+    //                         if(playerResManager.PayCost(building.ProductCost)){
+    //                             playerResManager.Resources[productName] = playerResManager.ResourceLimits[productName];
+    //                             playerResManager.ResourcesChanged = true;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    // }
 
     public bool StartConstruction(Unit unit){
             if(Controller.ResManager.PayCost(unit.BuildCost)){
@@ -392,8 +403,12 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         Name = PlanetName;
         MapObjectName3.Text = Name;
 
-        AddChild(BuildingsManager);
-        AddChild(ResourcesManager);
+        _constructions = GetNode<ConstructionManager>("ConstructionManager");
+        _buildingsManager = GetNode<BuildingManager>("BuildingManager");
+        ResourcesManager = GetNode<ResourceManager>("ResourceManager");
+
+        //AddChild(BuildingsManager);
+        //AddChild(ResourcesManager);
     }
 
     public override void _Process(double delta){
@@ -430,29 +445,29 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         }
     }
 
-    public void GetTotalUpkeep(System.Collections.Generic.Dictionary<int, int> costs)
-    {
-        foreach(var building in BuildingsManager.Buildings){
-            foreach(var resource in building.Upkeep.Keys){
-                if(costs.ContainsKey(resource)){
-                    costs[resource] += building.Upkeep[resource];
-                }else{
-                    costs.Add(resource, building.Upkeep[resource]);
-                }
-            }
-        }
-    }
+    // public void GetTotalUpkeep(System.Collections.Generic.Dictionary<int, int> costs)
+    // {
+    //     foreach(var building in BuildingsManager.Buildings){
+    //         foreach(var resource in building.Upkeep.Keys){
+    //             if(costs.ContainsKey(resource)){
+    //                 costs[resource] += building.Upkeep[resource];
+    //             }else{
+    //                 costs.Add(resource, building.Upkeep[resource]);
+    //             }
+    //         }
+    //     }
+    // }
 
-    public void GetTotalProdCost(System.Collections.Generic.Dictionary<int, int> costs)
-    {
-        foreach(var building in BuildingsManager.Buildings){
-            foreach(var resource in building.ProductCost.Keys){
-                if(costs.ContainsKey(resource)){
-                    costs[resource] += building.ProductCost[resource];
-                }else{
-                    costs.Add(resource, building.ProductCost[resource]);
-                }
-            }
-        }
-    }
+    // public void GetTotalProdCost(System.Collections.Generic.Dictionary<int, int> costs)
+    // {
+    //     foreach(var building in BuildingsManager.Buildings){
+    //         foreach(var resource in building.ProductCost.Keys){
+    //             if(costs.ContainsKey(resource)){
+    //                 costs[resource] += building.ProductCost[resource];
+    //             }else{
+    //                 costs.Add(resource, building.ProductCost[resource]);
+    //             }
+    //         }
+    //     }
+    // }
 }

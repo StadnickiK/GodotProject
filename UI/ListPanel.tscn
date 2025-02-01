@@ -1,48 +1,38 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://c3el1l887xo8a"]
 
-[ext_resource path="res://UI/ListPanel.cs" type="Script" id=1]
+[ext_resource type="Script" path="res://UI/ListPanel.cs" id="1"]
 
 [node name="ListPanel" type="VBoxContainer"]
+anchors_preset = -1
 anchor_right = 0.236
 anchor_bottom = 0.292
 offset_right = 0.335983
 offset_bottom = -0.200012
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
 [node name="Header" type="HBoxContainer" parent="."]
-offset_right = 453.0
-offset_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="Header"]
-offset_right = 453.0
-offset_bottom = 20.0
-custom_minimum_size = Vector2( 0, 20 )
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Title"
-align = 1
+horizontal_alignment = 1
 
 [node name="ItemList" type="ScrollContainer" parent="."]
-offset_top = 24.0
-offset_right = 453.0
-offset_bottom = 291.0
-grow_horizontal = 2
-grow_vertical = 2
-custom_minimum_size = Vector2( 0, 155 )
+custom_minimum_size = Vector2(0, 155)
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Items" type="VBoxContainer" parent="ItemList"]
-offset_right = 453.0
+layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Foot" type="HBoxContainer" parent="."]
-offset_top = 295.0
-offset_right = 453.0
-offset_bottom = 315.0
-custom_minimum_size = Vector2( 0, 20 )
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2

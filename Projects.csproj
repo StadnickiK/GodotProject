@@ -127,6 +127,8 @@
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
     <Compile Include="World\World.cs" />
+    <Compile Include="UI\BuildingPanel.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+  </ItemGroup>
 </Project>

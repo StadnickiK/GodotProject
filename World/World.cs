@@ -133,6 +133,7 @@ private Data _data = null;
 		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
 		_UI.PInterface._data = _data;
+		_UI.PInterface.InitBuildingsPanel();
 		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
 		_UI.OrbitList.Connect("SelectObject", new Callable(this, nameof(_on_SelectUnit)));
 		_UI.CommandPanel.Connect("ShipCommand", new Callable(this, nameof(_on_ShipCommand)));
@@ -159,8 +160,30 @@ private Data _data = null;
 				PlayerNumber = WorldGenParameters["Players"];
 			}
 		}
+		GD.Print("World 1: "+GetInstanceId());
 		for(int i = 0; i<PlayerNumber;i++){
-			var player = new AIPlayer(_data);//(Player)_PlayerScene.Instance();
+			// var player = new AIPlayer(_data);//(Player)_PlayerScene.Instance();
+			var player = (Player)_PlayerScene.Instantiate();
+			// player.SetMap(_map);
+			Players.AddChild(player);
+			player.PlayerID = player.GetIndex();
+			if(i == 0){
+				_Player = player;
+				player.IsLocal = true;
+			}
+			PlayerIDs.Add(player.PlayerID);
+			PlayersList.Add(player);
+		}
+	}
+
+	void InitAIPlayers(){
+		if(WorldGenParameters != null){
+			if(WorldGenParameters.ContainsKey("Players")){
+				PlayerNumber = WorldGenParameters["Players"];
+			}
+		}
+		for(int i = 0; i<PlayerNumber;i++){
+			var player = new AIPlayer(_data);  //(Player)_PlayerScene.Instance();
 			player.SetMap(_map);
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
@@ -322,16 +345,22 @@ private Data _data = null;
 					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 					// 	}
 					// }
-					foreach(var rNode in _data.GetData("Resources")){
+					var resources = _data.GetData("Resources");
+					foreach(var rNode in resources){
 						if(rNode is Resource resource)
 							if(resource.IsStarter == true && 
 								planet.Controller != null && 
 								(resource.ResourceType == Resource.Type.Ore))
 							{
-								planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
+								 planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
+								// GD.Print("1 ", rNode.Name);
+								//planet.Resources.Add(resource.Index, resource.Quantity);
 							}else if((resource.ResourceType == Resource.Type.Ore)){
-								if(Rand.Next(0,100)>(100 - resource.Rarity))
+								// GD.Print("2 ", rNode.Name);
+								if(Rand.Next(0,100)>(100 - resource.Rarity))	
 									planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
+									//planet.Resources.Add(resource.Index, resource.Quantity);
+									
 							}
 					}
 				}
@@ -429,13 +458,13 @@ private Data _data = null;
 	{
 		GetNodes();
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
-		if(_Player != null){
-			_wcc.LocalPlayerID = _Player.PlayerID;
-		}
 		_wcc.Connect("Deselect", new Callable(this, nameof(_on_Deselect)));
+		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
 		InitWorld();
+		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
+			_wcc.LocalPlayerID = _Player.PlayerID;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");

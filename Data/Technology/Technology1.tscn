@@ -1,10 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cep163g2ine47"]
 
-[ext_resource path="res://Data/Technology.cs" type="Script" id=1]
+[ext_resource type="Script" path="res://Data/Technology.cs" id="1"]
 
 [node name="Technology 1" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 BuildTime = 10
-BuildCost = {
-"Research points": 100
-}

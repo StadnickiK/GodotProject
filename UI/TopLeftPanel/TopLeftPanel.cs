@@ -27,7 +27,7 @@ public partial class TopLeftPanel : Control
  public override void _Process(double delta)
  {
 	if(_Player != null){
-		 if(_Player.Research.HasConstruct()){
+		 if(_Player.Research.HasConstruct){
 			 if(TechPanel._Player == null) TechPanel._Player = _Player;
 			 TechPanel.UpdateResearch(WorldTechnology, _Player.Research.CurrentConstruction());
 		 }

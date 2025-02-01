@@ -19,7 +19,7 @@ public partial class ListPanel : VBoxContainer
         _titleLabel.Text = Title;
     }
 
-    void GetNodes(){
+    public void GetNodes(){
         _titleLabel = GetNode<Label>("Header/Title");
         _items = GetNode("ItemList/Items");
     }
@@ -75,13 +75,15 @@ public partial class ListPanel : VBoxContainer
         }
     }
 
-    public void ConnectToEvent(Node node, string methodName, string eventName){
+    public void ConnectToEvent(PlanetInterface node, string methodName, string eventName){
         foreach(Node child in _items.GetChildren()){
             if(child is BuildingLabel control){
                 if(!control.BButton.IsConnected(eventName, new Callable(node, methodName))){
-                    Godot.Collections.Array array = new Godot.Collections.Array();
-                    array.Add(control);
-                    control.BButton.Connect(eventName, new Callable(node, methodName));
+                    //Godot.Collections.Array array = new Godot.Collections.Array();
+                    //array.Add(control);
+                    //control.BButton.Connect(eventName, new Callable(node, methodName));
+                    //var p = (PlanetInterface)node;
+                    control.BButton.ButtonUp += () => node._on_BuildingLabelGuiInputEvent(control.RefBuilding);
                     //control.BButton.Connect(eventName, new Callable(node, methodName), array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
@@ -105,6 +107,22 @@ public partial class ListPanel : VBoxContainer
         foreach(Node n in _items.GetChildren()){
             n.Name = "Remove"; // if i need to reuse the name of the node it is better to rename it before using qfree
             n.QueueFree();
+        }
+    }
+
+    public void HideItems(){
+        foreach(Node n in _items.GetChildren()){
+            if(n is Control control){
+                control.Hide();
+            }
+        }
+    }
+
+    public void ShowItems(){
+        foreach(Node n in _items.GetChildren()){
+            if(n is Control control){
+                control.Show();
+            }
         }
     }
 

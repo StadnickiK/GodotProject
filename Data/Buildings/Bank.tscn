@@ -1,14 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://bar1ugho7sf3m"]
 
-[ext_resource path="res://Map/Planet/Building.cs" type="Script" id=1]
+[ext_resource type="Script" path="res://Map/Planet/Building.cs" id="1"]
 
 [node name="Bank" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 IsStarter = true
-BuildCost = {
-"Resource 0": 500
-}
-ResourceLimits = {
-"Credits": 40000
-}
 Type = 1

@@ -80,6 +80,11 @@ public partial class OverviewPanel : VBoxContainer
         listPanel.ClearItems();
     }
 
+    public void HidePanelItems(string name){
+        var listPanel = GetNode<ListPanel>(name);
+        listPanel.HideItems();
+    }
+
     void InitButtons(){
         foreach(string s in Values){
             AddPanel(s);
@@ -114,7 +119,7 @@ public partial class OverviewPanel : VBoxContainer
         listPanel.ConnectToOnGuiInput(node, methodName);
     }
 
-    public void ConnectToEvent(Node node, string nodeName, string methodName, string eventName){
+    public void ConnectToEvent(PlanetInterface node, string nodeName, string methodName, string eventName){
         var listPanel = GetNode<ListPanel>(nodeName);
         listPanel.ConnectToEvent(node, methodName, eventName);
     }

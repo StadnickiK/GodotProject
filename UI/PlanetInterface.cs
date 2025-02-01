@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // using System.Collections.Generic;
 
 
-public partial class PlanetInterface : Panel
+public partial class PlanetInterface : Control
 {
 
 	Button _closeButton = null;
@@ -22,26 +22,28 @@ public partial class PlanetInterface : Panel
 
 	bool Cleanup = false;
 
-	OverviewPanel _overviewPanel = null;
+	//OverviewPanel _overviewPanel = null;
+
+	BuildingPanel _buildingsPanel = null;
 
 	BuildingInterface _buildingInterface = null;
 
 	[Export]
 	public string Title { get; set; } = "Title";
 
-	[Export]
-	public Godot.Collections.Dictionary<string, string> Options { get; set; } = new Godot.Collections.Dictionary<string, string>();
+	// [Export]
+	// public Godot.Collections.Dictionary<string, string> Options { get; set; } = new Godot.Collections.Dictionary<string, string>();
 
-	[Export]
-	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
+	// [Export]
+	// public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
 
-	PackedScene _transferLabelScene = (PackedScene)ResourceLoader.Load("res://UI/TransferLabel.tscn");
+	// PackedScene _transferLabelScene = (PackedScene)ResourceLoader.Load("res://UI/TransferLabel.tscn");
 
 	public int LocalPlayerID { get; set; }
 
 	PackedScene ItemScene = null;
 
-	BuildingLabel _selectedBuilding = null;
+	// BuildingLabel _selectedBuilding = null;
 
 	[Signal]
 	public delegate void SelectObjectInOrbitEventHandler(Planet planet, Node node);
@@ -49,13 +51,12 @@ public partial class PlanetInterface : Panel
 	void GetNodes(){
 		_closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
 		_header = GetNode<Header>("VBoxContainer/Header");
-		_overviewPanel = GetNode<OverviewPanel>("VBoxContainer/OverviewPanel");
+		//_overviewPanel = GetNode<OverviewPanel>("VBoxContainer/OverviewPanel");
 		_buildingInterface = GetNode<BuildingInterface>("BuildingInterface");
 	}
 
 	void ConnectSignals(){
 		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
-		_buildingInterface.ConnecToStartConstruction(this, nameof(_on_StartConstruction));
 	}
 
 	public void SetTitle(string title){
@@ -83,9 +84,15 @@ public partial class PlanetInterface : Panel
 	{
 		GetNodes();
 		ConnectSignals();
-		InitOverviewPanel();
+		//InitOverviewPanel();
 		ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		//InitBuildingsPanel();
 		//_overviewPanel.AddNodeToPanel("Resource transfer", _transfer);
+	}
+
+    public void InitBuildingsPanel(){
+        _buildingsPanel = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
+		_buildingsPanel.InitAllBuildings(_data.GetData("Buildings"), this);
 	}
 
 	void ClearPlanetInterface(){
@@ -249,7 +256,8 @@ public partial class PlanetInterface : Panel
 	void UpdatePlanetBuildings(List<Building> buildings){
 		foreach(Building building in buildings){
 			var label = (BuildingLabel)ItemScene.Instantiate();
-			label.SetMeta(building.Name, building);
+			//label.SetMeta(building.Name, building);
+			label.RefBuilding = building;
 			label.Name = building.Name;
 			if(label.BButton != null){
 				label.BButton.Text = building.Name;
@@ -273,7 +281,8 @@ public partial class PlanetInterface : Panel
 				if(CheckBuildingResources(planet, building)){
 					if(_planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null){
 						var label = (BuildingLabel)ItemScene.Instantiate();
-						label.SetMeta(building.Name, building);
+						label.RefBuilding = building;
+						// label.SetMeta(building.Name.Replace(" ",""), building);
 						label.Name = building.Name;
 						if(label.BButton != null){
 							label.BButton.Text = building.Name;
@@ -326,7 +335,7 @@ public partial class PlanetInterface : Panel
 		foreach(var node in _data.GetData("Units"))
 			if(node is Unit unit){
 				var label = (BuildingLabel)ItemScene.Instantiate();
-				label.SetMeta(unit.Name, unit);
+				label.SetMeta(unit.Name.ToString().Replace(" ", ""), unit);
 				label.Name = unit.Name;
 				if(label.BButton != null){
 					label.BButton.Text = unit.Name;
@@ -361,25 +370,27 @@ public partial class PlanetInterface : Panel
 		}
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(Node node){
+	public void _on_BuildingLabelGuiInputEvent(Building building){
 		// if(input is InputEventMouseButton button){
 		// 	if(button.ButtonIndex == (int)ButtonList.Left){
-				if(node is BuildingLabel label){
-					if((object)label.GetMeta(label.BButton.Text) is Building building)
-						if(building != null && _planet != null){
-							_buildingInterface.Visible = true;
-							_buildingInterface.UpdateInterface(building, _planet);
-							_selectedBuilding = label;
-						}
-					if((object)label.GetMeta(label.BButton.Text) is Unit unit){
-							_buildingInterface.Visible = true;
-							_buildingInterface.UpdateInterface(unit, _planet);
-							_selectedBuilding = label;
-					}
-				}
+
+					_buildingInterface.Visible = true;
+					_buildingInterface.UpdateInterface(building);
+					// _selectedBuilding = label;
+						
+					// if((object)label.GetMeta(label.BButton.Text.Replace(" ","")) is Unit unit){
+					// 		_buildingInterface.Visible = true;
+					// 		_buildingInterface.UpdateInterface(unit, _planet);
+					// 		_selectedBuilding = label;
+					// }
+				
 		// 	}
 		// }
 	}
+
+	public void _mouseLeftBuildingLabel(){
+		_buildingInterface.Visible = false;
+	}	
 
 	void _on_XButton_button_up(){
 		Visible = false;
@@ -389,11 +400,15 @@ public partial class PlanetInterface : Panel
 	void _on_StartConstruction(Node node){
 		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
-				
-				//_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.Filename)).Instance());
+				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.SceneFilePath)).Instantiate());
 				// _planet.ConstructUnit(unit);
 			}
 		}
+	}
+
+	void _on_StartUnitConstruction(Unit unit){
+				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
+				_planet.ConstructUnit(unit);
 	}
 
 	public void ConnectToSelectObjectInOrbit(Node node, string methodName){
@@ -407,7 +422,7 @@ public partial class PlanetInterface : Panel
 					UpdateBuildings(_planet);
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
-				if(_planet.Constructions.HasConstruct() || Cleanup == true){
+				if(_planet.Constructions.HasConstruct || Cleanup == true){
 					UpdateConstruction(_planet);
 				}
 			}

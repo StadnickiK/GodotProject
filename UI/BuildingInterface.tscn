@@ -1,38 +1,40 @@
-[gd_scene load_steps=4 format=3 uid="uid://dkw0uv5rxi6sc"]
+[gd_scene load_steps=2 format=3 uid="uid://dkw0uv5rxi6sc"]
 
-[ext_resource type="PackedScene" path="res://UI/ListPanel.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://UI/Header.tscn" id="2"]
 [ext_resource type="Script" path="res://UI/BuildingInterface.cs" id="3"]
 
 [node name="BuildingInterface" type="Panel"]
-offset_right = 161.0
-offset_bottom = 272.0
+offset_right = 284.0
+offset_bottom = 460.0
 script = ExtResource("3")
 
-[node name="Header" parent="." instance=ExtResource("2")]
-layout_mode = 0
-offset_right = 161.0
-size_flags_vertical = 3
-theme_override_constants/separation = 53
+[node name="TitleLabel" type="Label" parent="."]
+process_mode = 4
+clip_contents = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -141.5
+offset_right = 142.5
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Title"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ListPanel" parent="." instance=ExtResource("1")]
-layout_mode = 0
-anchor_right = 0.426
-anchor_bottom = 0.0
-offset_top = 44.0
-offset_right = 91.414
-offset_bottom = 164.576
-Title = "Details"
-
-[node name="Build" type="Button" parent="."]
-layout_mode = 0
-anchor_left = 1.0
+[node name="Description" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -31.0
-text = "Build"
-
-[connection signal="gui_input" from="." to="." method="_on_BuildingInterface_gui_input"]
-[connection signal="button_up" from="Build" to="." method="_on_Build_button_up"]
+offset_left = -141.5
+offset_top = -425.0
+offset_right = 142.5
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 0
+bbcode_enabled = true
+text = "text"
