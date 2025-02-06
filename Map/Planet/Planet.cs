@@ -384,11 +384,11 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     public void ChangeController(Player player){
             if(player != Controller){
                 if(Controller != null){
-                    // Controller.RemoveMapObject(this);
+                    Controller.RemoveMapObject(this);
                 }
                 Controller = player;
                 if(player != null){
-                    // player.AddMapObject(this);
+                    player.AddMapObject(this);
                 }
             }
     }
@@ -445,6 +445,21 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         }
     }
 
+    public void SetVisibility(bool visible)
+    {
+        Visible = visible;
+    }
+
+    public int ReturnIndex()
+    {
+        return GetIndex();
+    }
+
+    public bool ReturnVisible()
+    {
+        return Visible;
+    }
+
     // public void GetTotalUpkeep(System.Collections.Generic.Dictionary<int, int> costs)
     // {
     //     foreach(var building in BuildingsManager.Buildings){
@@ -470,4 +485,5 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     //         }
     //     }
     // }
+
 }

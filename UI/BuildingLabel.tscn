@@ -2,32 +2,40 @@
 
 [ext_resource type="Script" path="res://UI/BuildingLabel.cs" id="1"]
 
-[node name="BuildingLabel" type="Container"]
-custom_minimum_size = Vector2(200, 22)
-offset_right = 200.0
-offset_bottom = 30.0
+[node name="BuildingLabel" type="Control"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 3
+anchors_preset = 0
+offset_top = 1.0
+offset_right = 100.0
+offset_bottom = 101.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1")
 
-[node name="Progress" type="ProgressBar" parent="."]
-visible = false
-show_behind_parent = true
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 1
-step = 1.0
-
 [node name="Button" type="Button" parent="."]
-custom_minimum_size = Vector2(200, 14)
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+offset_right = 100.0
+offset_bottom = 100.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tooltip_text = "
 "
 mouse_filter = 1
 text = "Item1"
+
+[node name="Progress" type="ProgressBar" parent="."]
+visible = false
+top_level = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+offset_top = 73.0
+offset_right = 100.0
+offset_bottom = 100.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+mouse_filter = 1
+step = 1.0
 
 [connection signal="value_changed" from="Progress" to="." method="_on_Progress_value_changed"]

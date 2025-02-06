@@ -58,9 +58,9 @@ using System;
 
     new protected void ResetVelocity(){
         _velocityController.ResetSpeed();
-        LinearVelocity = Vector3.Zero;
-        AngularVelocity = Vector3.Zero;
-        Sleeping = true;
+        // LinearVelocity = Vector3.Zero;
+        // AngularVelocity = Vector3.Zero;
+        // Sleeping = true;
     }
 
     protected Vector3 DirToTarget(){
@@ -78,18 +78,18 @@ using System;
         projectile.Launch(dir);
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState3D state){
+    // public void _IntegrateForces(PhysicsDirectBodyState3D state){
 
-        if(targetManager.HasTarget){
-            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
-            if(targetPos != Vector3.Zero){
-                UpdateYrotation(state, targetPos);
-                UpdateMuzzle(targetPos);
-            }else{
-                Sleeping = true;
-            }
-        }
-    }
+    //     if(targetManager.HasTarget){
+    //         Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
+    //         if(targetPos != Vector3.Zero){
+    //             UpdateYrotation(state, targetPos);
+    //             UpdateMuzzle(targetPos);
+    //         }else{
+    //             Sleeping = true;
+    //         }
+    //     }
+    // }
 
     void ReadyBarrel(){
         if(barrelScene != null){

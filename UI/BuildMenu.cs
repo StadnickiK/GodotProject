@@ -3,27 +3,32 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
-public partial class BuildingPanel : ScrollContainer
+public partial class BuildMenu : ScrollContainer
 {
+
+	Node container;
+
+	List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
 
-	List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
-
-	Node container;
-
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-        container = GetNode("BuildingPanel");
+		container = GetNode("BuildMenu");
+		//ConnectBuildButtons();
 	}
 
-	public void ConnectBuildButtons(PlanetInterface planetInterface){
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+	{
+	}
+
+	void ConnectBuildButtons(){
 		foreach (var node in container.GetChildren()){
 			var b = (Button)node.GetChild(0);
-			
-			b.MouseEntered += () => planetInterface._on_build_button_mouse_entered();
+			b.MouseExited += () => _on_mouse_exited();
 		}
 	}
 
@@ -43,23 +48,32 @@ public partial class BuildingPanel : ScrollContainer
 				}
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(building);
 				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
+				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);
 				buildingLabels.Add(label);
 			}
 		}
 	}
 
-	public void UpdatePlanetBuildings(BuildingManager buildingManager){
+	public void UpdateBuildMenu(BuildingManager buildingManager){
 		foreach(var label in buildingLabels)
-			if(buildingManager.Buildings.Contains(label.RefBuilding)){
+			if(buildingManager.AvaiableBuildings.Contains(label.RefBuilding)){
 				label.Show();
 			}else{
 				label.Hide();
 			}
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+	void _on_mouse_entered(){
+		if(!Visible)
+			Show();
 	}
+
+	void _on_mouse_exited(){
+		//GD.Print(GetRect() + " " + GetGlobalMousePosition());
+		if(!GetRect().HasPoint(GetGlobalMousePosition())){
+			Hide();
+		}
+	}
+
 }

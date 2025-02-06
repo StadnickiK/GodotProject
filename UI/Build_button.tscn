@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://4l0t3vw6ub8r"]
+
+[node name="BuildButton" type="MarginContainer"]
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "+"

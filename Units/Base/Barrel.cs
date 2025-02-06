@@ -51,9 +51,9 @@ public partial class Barrel : Turret
     }
 
     new void ResetVelocity(){
-        LinearVelocity = Vector3.Zero;
-        AngularVelocity = Vector3.Zero;
-        Sleeping = true;
+        // LinearVelocity = Vector3.Zero;
+        // AngularVelocity = Vector3.Zero;
+        // Sleeping = true;
     }
     
     void Recoil(PhysicsDirectBodyState3D state){
@@ -77,15 +77,15 @@ public partial class Barrel : Turret
                     }
                 }
             }else{
-                Sleeping = true;
+                // Sleeping = true;
             }
         }
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
-    {
-        Update(state);
-    }
+    // public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+    // {
+    //     Update(state);
+    // }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
   //public override void _Process(float delta)

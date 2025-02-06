@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcpv7sufrhbcq"]
+
+[ext_resource type="Script" path="res://Map/Resource.cs" id="1_6dhi6"]
+
+[node name="Common Ores" type="Node"]
+script = ExtResource("1_6dhi6")
+Index = 5
+Rarity = 60
+IsStarter = true

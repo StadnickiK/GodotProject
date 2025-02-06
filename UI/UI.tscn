@@ -84,15 +84,7 @@ grow_vertical = 2
 [node name="PlanetInterface" parent="." instance=ExtResource("6")]
 visible = false
 layout_mode = 1
-grow_horizontal = 2
 grow_vertical = 2
-Options = {
-"Buildings": null,
-"Construction": null,
-"Orbit": null,
-"Overview": null,
-"Resource transfer": null
-}
 
 [node name="BattlePanel" parent="." instance=ExtResource("8")]
 visible = false

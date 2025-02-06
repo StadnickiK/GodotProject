@@ -128,7 +128,8 @@
     <Compile Include="Map\Resource.cs" />
     <Compile Include="World\World.cs" />
     <Compile Include="UI\BuildingPanel.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="UI\BuildMenu.cs" />
+    <Compile Include="UI\BuildButton.cs" />
+    <Compile Include="Units\VisibilityConroller.cs" />
   </ItemGroup>
 </Project>

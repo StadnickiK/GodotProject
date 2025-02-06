@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dufp5i1gb2nls"]
+[gd_scene load_steps=13 format=3 uid="uid://dufp5i1gb2nls"]
 
 [ext_resource type="Script" path="res://Map/Planet/Planet.cs" id="1"]
 [ext_resource type="Script" path="res://Map/Planet/Orbit.cs" id="2"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" path="res://Map/ResourceManager.cs" id="7_tamxe"]
 [ext_resource type="Script" path="res://Map/ConstructionManager.cs" id="8_144ly"]
 [ext_resource type="Script" path="res://Map/BuildingManager.cs" id="9_tnti5"]
+[ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="10_gmh37"]
+[ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionArea.tscn" id="11_wx722"]
 
 [sub_resource type="BoxShape3D" id="1"]
 
@@ -43,5 +45,9 @@ script = ExtResource("8_144ly")
 
 [node name="BuildingManager" type="Node3D" parent="."]
 script = ExtResource("9_tnti5")
+
+[node name="VisibilityConroller" parent="." instance=ExtResource("10_gmh37")]
+
+[node name="VisionArea" parent="." instance=ExtResource("11_wx722")]
 
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
+public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
 {
     [Signal]
     public delegate void SelectUnitEventHandler(RigidBody3D unit);
@@ -65,9 +65,9 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
 
     protected void ResetVelocity(){
         _velocityController.ResetSpeed();
-        LinearVelocity = Vector3.Zero;
-        AngularVelocity = Vector3.Zero;
-        Sleeping = true;
+        // LinearVelocity = Vector3.Zero;
+        // AngularVelocity = Vector3.Zero;
+        // Sleeping = true;
     }
 
     protected void ResetVelocity(PhysicsDirectBodyState3D state){
@@ -99,7 +99,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
     }
 
     public void MoveToTarget(Node3D target){
-        Sleeping = false;
+        // Sleeping = false;
         Node starSysObj = null;
         if((GetParent() is Orbit orbit)){ 
             starSysObj = orbit.GetParent().GetParent();
@@ -135,7 +135,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
     }
 
     public void MoveToPos(Vector3 destination){
-        Sleeping = false;
+        // Sleeping = false;
         var target = new Node3D(); // leak
         target.SetProcess(false);
         var transform = target.Transform;
@@ -163,7 +163,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
                 state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
                 UpdateLinearVelocity(state);
             }else{
-                AngularVelocity = Vector3.Zero;
+                // AngularVelocity = Vector3.Zero;
                 UpdateLinearVelocity(state);
             }
             if(targetPos != Vector3.Zero){
@@ -187,7 +187,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
         ship.QueueFree();
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState3D state){
+    public void _IntegrateForces(PhysicsDirectBodyState3D state){
         if(targetManager.HasTarget){
             Vector3 targetPos = Vector3.Zero;
             if(targetManager.currentTarget is PhysicsBody3D){
@@ -227,7 +227,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
         }else{
             state.AngularVelocity = Vector3.Zero;
             state.LinearVelocity = Vector3.Zero;
-            Sleeping = true;
+            // Sleeping = true;
             state.Sleeping = true;
             _control.Stop();
         }
@@ -275,7 +275,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
     void _on_Area_body_entered(Node body){
         // to do test in galaxy
         if(body is IVisible visionObject){
-            if(visionObject.Controller != Controller && visionObject.IsVisible() == false && body.GetParent() == GetParent()){
+            if(visionObject.Controller != Controller && visionObject.ReturnVisible() == false && body.GetParent() == GetParent()){
                 visionObject.ChangeVision();
             }
             if(Controller != null)
@@ -292,7 +292,7 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
     void _on_Area_body_exited(Node body){
         if(body is IVisible visionObject){
             if(Controller != null){
-                if(visionObject.Controller != Controller && visionObject.IsVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
+                if(visionObject.Controller != Controller && visionObject.ReturnVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
                     visionObject.ChangeVision();
                 }
                 if(body is Planet planet){
@@ -341,15 +341,31 @@ public partial class Ship : RigidBody3D, ISelectMapObject, IMapObjectController,
         }
     }
 
-    public bool IsVisible()
+    public void SetVisibility(bool visible)
+    {
+        Visible = visible;
+    }
+
+    public int ReturnIndex()
+    {
+        return GetIndex();
+    }
+
+    public bool ReturnVisible()
     {
         return Visible;
     }
+
+    // public bool IsVisible()
+    // {
+    //     return Visible;
+    // }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {
     //      
     //  }
+
 
 }

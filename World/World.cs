@@ -389,6 +389,26 @@ private Data _data = null;
 		}
 	}
 
+	bool CheckBuildingResources(Planet planet, Building building){
+		if(building.Type == Building.Category.Mine)
+			foreach(var resName in building.Products.Keys){
+				if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+					return false;
+				}
+			}
+		return true;
+	}
+
+	void InitAvaiableBuildings(Planet planet){ // todo: Separate construction and building list into separate nodes for better organization
+		var construction = planet.BuildingsManager.CurrentConstruction();
+		foreach(Node node in _data.GetData("Buildings"))
+			if(node is Building building)
+				if(building.Requirements.Count == 0)
+					if(CheckBuildingResources(planet, building))
+						if(planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null)
+							planet.BuildingsManager.AvaiableBuildings.Add(building);
+	}
+
 	void InitWorldBuildings(){
 		var startBuildings = new List<Building>();
 		foreach(Node node in _data.GetData("Buildings")){
@@ -399,6 +419,7 @@ private Data _data = null;
 		foreach(Player player in Players.GetChildren()){
 			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){
 				planet.BuildingsManager.Buildings.AddRange(startBuildings);
+				InitAvaiableBuildings(planet);
 			}
 			player.InitResourceLimit();
 		}

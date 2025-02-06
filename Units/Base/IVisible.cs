@@ -3,9 +3,13 @@ using System;
 
 public interface IVisible : IMapObjectController
 {
-    bool Visible { get; set; }
+    //bool Visible { get; set; }
 
     void ChangeVision();
 
-    bool IsVisible();
+    void SetVisibility(bool visible);
+
+    public int ReturnIndex();
+
+    public bool ReturnVisible();
 }

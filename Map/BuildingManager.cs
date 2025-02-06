@@ -46,6 +46,8 @@ public partial class BuildingManager : Node
     }
 
     public List<Building> Buildings { get; } = new List<Building>();
+
+    public List<Building> AvaiableBuildings { get; } = new List<Building>();
     public override void _Ready()
     {
         AddChild(_constructions);
@@ -63,6 +65,10 @@ public partial class BuildingManager : Node
     //     }
     // }
 
+    public void UpdateAvaiableBuildings(List<Building> buildings){
+        AvaiableBuildings.AddRange(buildings);
+    }
+
     void UpdateConstruction(){
         if(_constructions.ConstructionList.Count > 0){
             LastBuilding = IbuildingToBuilding(_constructions.UpdateConstruction());
@@ -70,6 +76,7 @@ public partial class BuildingManager : Node
             BuildingFinished?.Invoke(LastBuilding); // call BuildingFinished event with finioshed building list
             if(LastBuilding.Count>0){
                 Buildings.AddRange(LastBuilding);
+                AvaiableBuildings.RemoveAll(x => LastBuilding.Contains(x));
                 BuildingsChanged = true;
             }
         }

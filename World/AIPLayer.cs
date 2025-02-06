@@ -143,7 +143,7 @@ public partial class AIPlayer : Player
         var fleets = (Dictionary<Ship, int>)blackBoard["IdleFleets"];
         foreach(Node node in MapObjects){
             if(node is Ship ship)
-                if(!fleets.ContainsKey(ship) && (ship.Sleeping == true || (!scoutMissions.ContainsKey(ship) && !invasions.ContainsKey(ship))))
+                if(!fleets.ContainsKey(ship) && (/*ship.Sleeping == true ||*/ (!scoutMissions.ContainsKey(ship) && !invasions.ContainsKey(ship))))
                     return ship;
         }
         return null;
@@ -166,7 +166,7 @@ public partial class AIPlayer : Player
                         }
                     }
                     var count = (_worldMap.galaxy.StarSystems.FirstOrDefault( x => x.Name == systemName)).Planets.Count;
-                    if(map[systemName].Count == count || scout.Sleeping == true){
+                    if(map[systemName].Count == count /*|| scout.Sleeping == true*/){
                         scoutMissions.Remove(scout);
                     }
 
