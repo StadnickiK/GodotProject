@@ -119,6 +119,11 @@ public partial class OverviewPanel : VBoxContainer
         listPanel.ConnectToOnGuiInput(node, methodName);
     }
 
+    public void ConnectToGuiInputEvent(GuiInputEventHandler method, string nodeName){
+        var listPanel = GetNode<ListPanel>(nodeName);
+        listPanel.ConnectToOnGuiInput(method);
+    }
+
     public void ConnectToEvent(PlanetInterface node, string nodeName, string methodName, string eventName){
         var listPanel = GetNode<ListPanel>(nodeName);
         listPanel.ConnectToEvent(node, methodName, eventName);

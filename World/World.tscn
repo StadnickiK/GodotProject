@@ -51,6 +51,6 @@ mesh = SubResource("6")
 [node name="Players" type="Node" parent="."]
 
 [node name="Ground" parent="." instance=ExtResource("6")]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
 
 [connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

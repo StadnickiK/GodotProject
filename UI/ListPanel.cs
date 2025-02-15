@@ -64,13 +64,26 @@ public partial class ListPanel : VBoxContainer
             if(child is Label control){
                 if(!control.IsConnected("gui_input", new Callable(node, methodName))){
                     Godot.Collections.Array array = new Godot.Collections.Array();
-                    array.Add(control);
+                    //array.Add(control);
                     control.Connect("gui_input", new Callable(node, methodName));
+                    
                     //control.Connect("gui_input", new Callable(node, methodName), array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
                     //GD.Print("Already connected");
                 }
+            }
+        }
+    }
+
+    public void ConnectToOnGuiInput(GuiInputEventHandler method){
+        foreach(Node child in _items.GetChildren()){
+            if(child is Label control){
+                    Godot.Collections.Array array = new Godot.Collections.Array();
+                    control.GuiInput += method;
+                    //control.Connect("gui_input", new Callable(node, methodName), array);
+                    control.MouseFilter = MouseFilterEnum.Stop;
+
             }
         }
     }

@@ -20,12 +20,12 @@ public partial class StarSystem : Area3D //, IEnterMapObject, IExitMapObject
 	[Signal]
 	public delegate void SelectTargetEventHandler(StarSystem target);
 
-private int _radius;
-public int Radius
-{
-	get { return _radius; }
-	set { _radius = value; }
-}
+	private int _radius;
+	public int Radius
+	{
+		get { return _radius; }
+		set { _radius = value; }
+	}
 
 
 	MeshInstance3D _size = null;

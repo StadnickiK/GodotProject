@@ -2,9 +2,25 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+
+    
+
+
     public partial class TargetManager<T> : Node{
 
-        public T currentTarget = default(T);
+        public struct Target
+        {
+            public Target(Vector3 vector3,T obj = default) { TargetNode = obj; Point = vector3; }
+            public Vector3 Point { get; set; }
+
+            public T TargetNode { get; set; }
+        }  
+
+        public Target currentTarget;  
+
+        public delegate void AtTargetEventHandeler(T node);
+
+        public event AtTargetEventHandeler AtTarget;
 
         private bool _hasTarget = false;
         public bool HasTarget
@@ -18,21 +34,21 @@ using System.Collections.Generic;
             SetProcess(false);
         }
 
-        private List<T> _targets = new List<T>();
-        public List<T> Targets
+        private List<Target> _targets = new List<Target>();
+        public List<Target> Targets
         {
             get { return _targets; }
         }
         
 
-        public void SetTarget(T Target){
+        public void SetTarget(Target Target){
             _targets.Clear();
             _hasTarget = true;
             currentTarget = Target;
             _targets.Add(currentTarget);
         }
 
-        public void AddTarget(T Target){
+        public void AddTarget(Target Target){
             if(!_hasTarget){
                 SetTarget(Target);
             }else{
@@ -42,11 +58,12 @@ using System.Collections.Generic;
 
         public void NextTarget(){
             if(_targets.Count > 1){
+                AtTarget?.Invoke(currentTarget.TargetNode);
                 _targets.RemoveAt(0);
                 currentTarget = _targets[0];
             }else{
                 ClearTargets();
-                currentTarget = default(T);
+                currentTarget = default(Target);
             }
         }
 
@@ -59,8 +76,9 @@ using System.Collections.Generic;
         }
 
         public void ClearTargets(){
-            currentTarget = default(T);
+            currentTarget = default(Target);
             _targets.Clear();
             _hasTarget = false;
         }
     }
+

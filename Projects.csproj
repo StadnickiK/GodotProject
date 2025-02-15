@@ -131,5 +131,10 @@
     <Compile Include="UI\BuildMenu.cs" />
     <Compile Include="UI\BuildButton.cs" />
     <Compile Include="Units\VisibilityConroller.cs" />
+    <Compile Include="Units\StateMachine\StateMachine.cs" />
+    <Compile Include="Units\StateMachine\IdleState.cs" />
+    <Compile Include="Units\StateMachine\MoveState.cs" />
+    <Compile Include="Units\StateMachine\OrbitState.cs" />
+    <Compile Include="Ground.cs" />
   </ItemGroup>
 </Project>

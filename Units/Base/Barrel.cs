@@ -37,7 +37,7 @@ public partial class Barrel : Turret
     }
 
     new protected Vector3 DirToTarget(){
-        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.GlobalTransform.Origin);
+        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.Point);
     }
 
     public override void _Ready()
@@ -66,7 +66,7 @@ public partial class Barrel : Turret
 
     void Update(PhysicsDirectBodyState3D state){
         if(targetManager.HasTarget){
-            Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
+            Vector3 targetPos = targetManager.currentTarget.Point;
             if(targetPos != Vector3.Zero){
                 float angle = _velocityController.GetAngleToTargetOnXAxis(GlobalTransform, targetPos); 
                 if(angle > 0.05f || angle < -0.05f ){

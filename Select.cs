@@ -68,9 +68,9 @@ public partial class Select : Node
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(target);
+                    ship.targetManager.AddTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
                 }else{
-                    ship.targetManager.SetTarget(target);
+                    ship.targetManager.SetTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
                     ship.MoveToTarget(target);
                 }
             }
@@ -82,10 +82,10 @@ public partial class Select : Node
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(target);
+                    ship.targetManager.AddTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
                     ship.Task = task;
                 }else{
-                    ship.targetManager.SetTarget(target);
+                    ship.targetManager.SetTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
                     ship.Task = task;
                     ship.MoveToTarget(target);
                 }

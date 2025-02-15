@@ -68,11 +68,11 @@ public partial class WorldCursorControl : Node3D
         if(inputEvent is InputEventMouseButton button){
             if(HasSelected()){ // mouse
                 if(button.ButtonIndex == MouseButton.Right){   // right click
-                    select.MoveToPosition(GetMouseWorldPosition());
+                    select.MoveToPosition(click_position);
                 }
                 if(button.ButtonIndex == MouseButton.Left && select != null){    // left click
                     select.ClearSelection();
-                    EmitSignal(nameof(DeselectEventHandler));
+                    EmitSignal(nameof(SignalName.Deselect));
                 }
             }
         }

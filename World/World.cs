@@ -316,7 +316,7 @@ private Data _data = null;
 		ship.Units.AddChild(unit);
 		ConnectShip(ship);
 		planet.Controller.AddMapObject(ship);
-		planet.AddToOrbit(ship);
+		 planet.AddToOrbit(ship);
 		return ship;
 	}
 

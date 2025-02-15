@@ -110,11 +110,11 @@ public partial class ScoutSystem : TreeNode
                         }
                         foreach(Node node in system.StarSysObjects.GetChildren()){
                             if(node is Planet targetPlanet && node != planet){
-                                var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.Origin);
+                                //var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.Origin);
                                 if(scout.targetManager.HasTarget){
-                                    scout.targetManager.AddTarget(target);
-                                }else{
-                                    scout.targetManager.SetTarget(target);
+                                //     scout.targetManager.AddTarget(target);
+                                // }else{
+                                //     scout.targetManager.SetTarget(target);
                                 }
                             }
                         }

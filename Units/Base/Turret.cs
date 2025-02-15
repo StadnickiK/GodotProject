@@ -7,6 +7,7 @@ using System;
     // private int a = 2;
     // private string b = "text";
 
+    protected VelocityController _velocityController = null;
 
     [Export]
     public int EffectiveRange { get; set; } = 10;
@@ -64,7 +65,7 @@ using System;
     }
 
     protected Vector3 DirToTarget(){
-        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.GlobalTransform.Origin);
+        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.Point);
     }
 
     protected void Shoot(){
