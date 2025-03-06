@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class ResourcePanel : Panel
 {
@@ -53,7 +54,16 @@ public partial class ResourcePanel : Panel
         }
     }
 
+    public void InitResourcePanel(Godot.Collections.Array<Node> nodes){
+        foreach(var r in nodes){
+            if(r is Resource resource){
+                CreateResourceLabel(resource);
+            }
+        }
+    }
+
     ResourceLabel CreateResourceLabel(int resName, int quantity = 0){
+        if(resLabels.Keys.Contains(resName)) return null;
          var label = (ResourceLabel)ResourceLabelScene.Instantiate();
         resLabels.Add(resName, label);
         _hBox.AddChild(label);
@@ -69,6 +79,14 @@ public partial class ResourcePanel : Panel
         }
         label.ResourceName.Text = resName.ToString();
         label.Value.Text = quantity.ToString();
+        return label;
+    }
+
+    ResourceLabel CreateResourceLabel(Resource resource, int quantity = 0){
+        if(resLabels.Keys.Contains(resource.Index)) return null;
+        var label = CreateResourceLabel(resource.Index);
+        if(resource.IconPlaceholder != null)
+            label.ResourceName.Text = resource.IconPlaceholder.ToString();
         return label;
     }
 

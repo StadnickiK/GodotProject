@@ -83,10 +83,10 @@ public partial class Select : Node
                 Ship ship = (Ship)rigidB;
                 if(ship.targetManager.HasTarget){
                     ship.targetManager.AddTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
-                    ship.Task = task;
+                    // ship.Task = task;
                 }else{
                     ship.targetManager.SetTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
-                    ship.Task = task;
+                    // ship.Task = task;
                     ship.MoveToTarget(target);
                 }
             }

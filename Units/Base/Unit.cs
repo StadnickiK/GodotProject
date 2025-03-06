@@ -33,6 +33,8 @@ public partial class Unit : Node, IBuilding, IUpkeep
 	//public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
 	public Node Stats { get; set; }
+
+	public System.Collections.Generic.List<BaseStat> StatsList { get; set; } = new List<BaseStat>();
     string IBuilding.Name { get; set; }
 
     // World - initStartFleets, InitResistance
@@ -81,8 +83,17 @@ public partial class Unit : Node, IBuilding, IUpkeep
 		Stats = GetNode("Stats");
 	}
 
+	/// <summary>
+	/// Returns requested stat or null
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns> <summary>
+	/// 
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	public BaseStat GetStat(string name){
-		return GetNode<BaseStat>("Stats/"+name);
+		return GetNodeOrNull<BaseStat>("Stats/"+name);
 	}
 
 }

@@ -6,6 +6,12 @@ public partial class Resource : Node
     [Export]
     public int Index { get; set; }
 
+    [Export]
+    public string ResourceName { get; set; }
+
+    [Export]
+    public string IconPlaceholder { get; set; }
+
     //public int Quantity { get; set; } = 0;
     public int Quantity = 0;
 

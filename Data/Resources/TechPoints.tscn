@@ -4,5 +4,7 @@
 
 [node name="Technology Points" type="Node"]
 script = ExtResource("1")
-Index = 8
+Index = 9
+ResourceName = "Technology Points"
+IconPlaceholder = "TP"
 ResourceType = 3

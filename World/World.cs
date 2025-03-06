@@ -132,11 +132,15 @@ private Data _data = null;
 	void ConnectSignals(){
 		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
+		_UI.ResPanel.InitResourcePanel(_data.GetData("Resources"));
 		_UI.PInterface._data = _data;
 		_UI.PInterface.InitBuildingsPanel();
-		_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
+		//_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
 		_UI.OrbitList.Connect("SelectObject", new Callable(this, nameof(_on_SelectUnit)));
 		_UI.CommandPanel.Connect("ShipCommand", new Callable(this, nameof(_on_ShipCommand)));
+		_UI.ArmyInterfce._data = _data;
+		_UI.ArmyInterfce.InitRecruitmentPanel();
+		_UI.ArmyInterfce.Connect(ArmyInterface.SignalName.Deselect, new Callable(this, nameof(_on_Deselect)));
 		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
@@ -146,13 +150,18 @@ private Data _data = null;
 
 	void _on_SelectUnit(PhysicsBody3D body){
 		_wcc._SelectUnit(body);
-		_UI.UInfo.Visible = true;
-		_UI.UInfo.UpdatePanel(body);
+		
+		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
+	}
+
+	void _on_HideArmyInterface(){
+		_UI.ArmyInterfce.Visible = false;
 	}
 
 	void _on_Deselect(){
-		_UI.UInfo.Visible = false;
+		WCC.ClearSelection();
 	}
+
 
 	void InitPlayers(){
 		if(WorldGenParameters != null){
@@ -277,7 +286,7 @@ private Data _data = null;
 						player.MapObjects.Add(ship);
 						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
 						for(int i = 0;i<5;i++){
-							ship.Units.AddChild(((PackedScene)GD.Load(unitFileName)).Instantiate());
+							ship.Units.AddUnit(((PackedScene)GD.Load(unitFileName)).Instantiate<Unit>());
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
@@ -304,7 +313,7 @@ private Data _data = null;
 		var transform = ship.Transform;
 		transform.Origin = planet.Transform.Origin;
 		//transform.origin += new Vector3(3,0,3);
-		ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
+		// ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
 		ship.Transform = transform;
 		ship.Controller = planet.Controller;
 		ship.IsLocal = planet.Vision;
@@ -316,7 +325,7 @@ private Data _data = null;
 		ship.Units.AddChild(unit);
 		ConnectShip(ship);
 		planet.Controller.AddMapObject(ship);
-		 planet.AddToOrbit(ship);
+		//  planet.AddToOrbit(ship);
 		return ship;
 	}
 
@@ -345,9 +354,7 @@ private Data _data = null;
 					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 					// 	}
 					// }
-					var resources = _data.GetData("Resources");
-					foreach(var rNode in resources){
-						if(rNode is Resource resource)
+					foreach(Resource resource in _data.Resources.Values){
 							if(resource.IsStarter == true && 
 								planet.Controller != null && 
 								(resource.ResourceType == Resource.Type.Ore))
@@ -355,14 +362,16 @@ private Data _data = null;
 								 planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
 								// GD.Print("1 ", rNode.Name);
 								//planet.Resources.Add(resource.Index, resource.Quantity);
-							}else if((resource.ResourceType == Resource.Type.Ore)){
+							}else if(resource.ResourceType == Resource.Type.Ore){
 								// GD.Print("2 ", rNode.Name);
-								if(Rand.Next(0,100)>(100 - resource.Rarity))	
+								if(Rand.Next(0,100)>(100 - resource.Rarity)){
 									planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
 									//planet.Resources.Add(resource.Index, resource.Quantity);
+								}
 									
 							}
 					}
+					planet.InfoLabel.InitResources(planet, _data.Resources);
 				}
 			}
 		}
@@ -381,7 +390,7 @@ private Data _data = null;
 							var stat = unit.GetNode<BaseStat>("Stats/Attack");
 							ship.Units.AddChild(unit);
 						}
-						planet.AddToOrbit(ship);
+						// planet.AddToOrbit(ship);
 						//var transform = ship.Transform;
 					}
 				}
@@ -433,7 +442,7 @@ private Data _data = null;
 		InitStartPlanets();
 		InitStartFleets();
 		InitStartResources();
-		InitResistance();
+		//InitResistance(); needs work
 		InitWorldBuildings();
 		ConnectPlanets();
 		ConnectPlayers();
@@ -479,7 +488,7 @@ private Data _data = null;
 	{
 		GetNodes();
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
-		_wcc.Connect("Deselect", new Callable(this, nameof(_on_Deselect)));
+		_wcc.Connect("Deselect", new Callable(this, nameof(_on_HideArmyInterface)));
 		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
 		InitWorld();

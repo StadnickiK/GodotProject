@@ -1,42 +1,40 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://lek1os6cpmrp"]
 
-[ext_resource path="res://UI/ResourcePanel.cs" type="Script" id=2]
+[ext_resource type="Script" path="res://UI/ResourcePanel.cs" id="2"]
 
-[sub_resource type="FontFile" id=1]
-size = 20
-use_filter = true
+[sub_resource type="FontFile" id="1"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
-[sub_resource type="Theme" id=2]
-default_font = SubResource( 1 )
+[sub_resource type="Theme" id="2"]
+default_font = SubResource("1")
 
 [node name="ResourcePanel" type="Panel"]
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -960.0
 offset_right = 960.0
 offset_bottom = 24.0
 size_flags_horizontal = 3
-theme = SubResource( 2 )
-script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+theme = SubResource("2")
+script = ExtResource("2")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBox" type="HBoxContainer" parent="ScrollContainer"]
-offset_right = 1920.0
-offset_bottom = 24.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}

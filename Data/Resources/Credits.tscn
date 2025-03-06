@@ -3,4 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cppir4h1jjmnd" path="res://Data/Resources/Energy.tscn" id="1"]
 
 [node name="Credits" instance=ExtResource("1")]
+Index = 1
+ResourceName = "Union Credits"
+IconPlaceholder = "U"
 Location = 0

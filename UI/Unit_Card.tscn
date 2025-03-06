@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://ceejx2dqj3b7h"]
+
+[ext_resource type="Script" path="res://UI/UnitCard.cs" id="1_5oevl"]
+
+[node name="UnitCard" type="Control"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 56.0
+offset_bottom = 90.0
+script = ExtResource("1_5oevl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_right = 56.0
+offset_bottom = 104.0
+theme_override_constants/separation = 0
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "U"
+
+[node name="Health" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+show_percentage = false
+
+[node name="Shield" type="ProgressBar" parent="VBoxContainer"]
+layout_mode = 2
+show_percentage = false
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+visible = false
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 0
+offset_top = 76.0
+offset_right = 56.0
+offset_bottom = 103.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_top = 76.0
+offset_right = 56.0
+offset_bottom = 99.0
+text = "x/x"
+horizontal_alignment = 1

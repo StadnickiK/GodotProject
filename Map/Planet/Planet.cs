@@ -3,7 +3,8 @@ using System;
 //using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjectControllerChanger, IVisible
+public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
+// IEnterMapObject, IExitMapObject,
 //, IResourceManager
 //, IGetTotalUpkeep, IGetTotalProdCost
 {
@@ -45,6 +46,8 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     public string PlanetName { get; set; } = "PlanetName";
 
     public Label3D MapObjectName3 { get; set; } = null;
+
+    public PlanetInfoLabel InfoLabel { get; set; }
 
     public Icon3D IcoOrbit { get; set; } = null;
 
@@ -149,55 +152,55 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
     void _on_Planet_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
         if(inputEvent is InputEventMouseButton eventMouseButton){
             switch(eventMouseButton.ButtonIndex){
-            case MouseButton.Left:
-                EmitSignal(nameof(SignalName.OpenPlanetInterface), this);
-                break;
-            case MouseButton.Right:
-                // EmitSignal(nameof(SelectTargetEventHandler), (PhysicsBody)this);
-                EmitSignal(nameof(SignalName.OpenCmdPanel), this);
-                break;
-        }
-      } 
-    }
-
-    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
-        if(node is Ship ship)
-            if(GetParent() == ship.GetParent() || ship.GetParent() == null)
-                if(!Orbit.GetChildren().Contains(ship) && ship.MapObject != this){
-                    AddToOrbit(ship);
-                    ship.PlanetPos = (Transform.Origin - ship.GlobalTransform.Origin);
-                    if(state != null){
-                        var transform = state.Transform;
-                        transform.Origin = GlobalTransform.Origin;
-                        state.Transform = transform;
-                    }
-                    CheckOrbit(ship);
-                    // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
-                    //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
-                    // }
-                    ship.MapObject = this;
-                    ship.targetManager.ClearTargets();
-                }
-    }
-
-    public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState3D state){
-        var transform = Transform;
-        transform.Origin = GlobalTransform.Origin;
-        if(node != null)
-            if(node is Ship ship){
-                if(ship.MapObject == this){
-                    if(((Transform.Origin - ship.GlobalTransform.Origin) - ship.PlanetPos).Length()>2){
-                        ship.MapObject = null; 
-                        RemoveFromOrbit(ship);
-                        ship.Visible = ship.IsLocal; 
-                        //ship.targetManager.NextTarget();
-                        //ship.targetManager.ClearTargets();
-                    }
-                }
-
+                case MouseButton.Left:
+                    EmitSignal(nameof(SignalName.OpenPlanetInterface), this);
+                    break;
+                case MouseButton.Right:
+                    EmitSignal(nameof(SignalName.SelectTarget), this);
+                    //EmitSignal(nameof(SignalName.OpenCmdPanel), this);
+                    break;
             }
-        state.Transform = transform;
+        } 
     }
+
+    // public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){
+    //     if(node is Ship ship)
+    //         if(GetParent() == ship.GetParent() || ship.GetParent() == null)
+    //             if(!Orbit.GetChildren().Contains(ship) && ship.MapObject != this){
+    //                 AddToOrbit(ship);
+    //                 ship.PlanetPos = (Transform.Origin - ship.GlobalTransform.Origin);
+    //                 if(state != null){
+    //                     var transform = state.Transform;
+    //                     transform.Origin = GlobalTransform.Origin;
+    //                     state.Transform = transform;
+    //                 }
+    //                 CheckOrbit(ship);
+    //                 // if(!ship.IsConnected("LeavePlanet", this, nameof(_on_Ship_LeavePlanet))){
+    //                 //     ship.ConnectToLeavePlanet(this, nameof(_on_Ship_LeavePlanet));
+    //                 // }
+    //                 ship.MapObject = this;
+    //                 ship.targetManager.ClearTargets();
+    //             }
+    // }
+
+    // public void ExitMapObject(Node node, Vector3 exitVec, PhysicsDirectBodyState3D state){
+    //     var transform = Transform;
+    //     transform.Origin = GlobalTransform.Origin;
+    //     if(node != null)
+    //         if(node is Ship ship){
+    //             if(ship.MapObject == this){
+    //                 if(((Transform.Origin - ship.GlobalTransform.Origin) - ship.PlanetPos).Length()>2){
+    //                     ship.MapObject = null; 
+    //                     RemoveFromOrbit(ship);
+    //                     ship.Visible = ship.IsLocal; 
+    //                     //ship.targetManager.NextTarget();
+    //                     //ship.targetManager.ClearTargets();
+    //                 }
+    //             }
+
+    //         }
+    //     state.Transform = transform;
+    // }
 
     public void GetNodes(){
         _mesh = GetNode<MeshInstance3D>("MeshInstance3D");
@@ -205,6 +208,7 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         MapObjectName3 = GetNode<Label3D>("Label3D");
         // IcoOrbit = GetNode<Icon3D>("IcoOrbit");
         Pops = GetNode<Populations>("Populations");
+        InfoLabel = GetNode<PlanetInfoLabel>("PlanetInfoLabel3D/Sprite3D/SubViewport/PlanetInfoLabel");
     }
 
     // public void ProduceResources(ResourceManager playerResManager){
@@ -330,20 +334,20 @@ public partial class Planet : Area3D, IEnterMapObject, IExitMapObject, IMapObjec
         return Vision;
     }
 
-    public void AddToOrbit(Node ship){
-        if(ship.GetParent() != null){
-            ship.GetParent().RemoveChild(ship);
-        }
-        Orbit.AddNode(ship);
-        Orbit.OrbitChanged = true;
-        if(ship is IMapObject mapObject)
-            mapObject.MapObject = this;
-        if(IsVisible()){
-            IcoOrbit.Visible =  true;
-            if(Orbit.GetChildren().Count == 1)
-                IcoOrbit.SetGreen();
-        }
-    }
+    // public void AddToOrbit(Node ship){
+    //     if(ship.GetParent() != null){
+    //         ship.GetParent().RemoveChild(ship);
+    //     }
+    //     Orbit.AddNode(ship);
+    //     Orbit.OrbitChanged = true;
+    //     if(ship is IMapObject mapObject)
+    //         mapObject.MapObject = this;
+    //     if(IsVisible()){
+    //         IcoOrbit.Visible =  true;
+    //         if(Orbit.GetChildren().Count == 1)
+    //             IcoOrbit.SetGreen();
+    //     }
+    // }
 
     public void RemoveFromOrbit(Ship ship){
         if(ship != null){

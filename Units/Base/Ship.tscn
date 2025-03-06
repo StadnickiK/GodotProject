@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene load_steps=12 format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" path="res://Units/Base/Ship.cs" id="1"]
 [ext_resource type="PackedScene" uid="uid://b1hr47d4opkbc" path="res://Models/ship model.glb" id="2"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://Units/Base/SimpleFireControl.cs" id="5"]
 [ext_resource type="Script" path="res://Controllers/VelocityController.cs" id="6"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
+[ext_resource type="Script" path="res://Units/Base/UnitController.cs" id="7_tumiq"]
+[ext_resource type="Script" path="res://Map/Planet/UpkeepComponent.cs" id="8_5crgs"]
 [ext_resource type="Script" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
 
 [sub_resource type="BoxShape3D" id="1"]
@@ -26,7 +28,7 @@ shape = SubResource("1")
 [node name="Area3D" parent="." instance=ExtResource("3")]
 
 [node name="ship model" parent="." instance=ExtResource("2")]
-transform = Transform3D(-1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="FireControl" type="Node3D" parent="."]
 script = ExtResource("5")
@@ -43,7 +45,11 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.
 [node name="Fire3" parent="FireControl" instance=ExtResource("4")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494)
 
-[node name="Units" type="Node" parent="."]
+[node name="UnitController" type="Node" parent="."]
+script = ExtResource("7_tumiq")
+
+[node name="UpkeepComponent" type="Node" parent="UnitController"]
+script = ExtResource("8_5crgs")
 
 [node name="StateMachine" parent="." instance=ExtResource("7_1l317")]
 script = ExtResource("8_bc3ov")

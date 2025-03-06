@@ -4,6 +4,8 @@
 
 [node name="Resource 0" type="Node"]
 script = ExtResource("1")
-Index = 3
+Index = 5
+ResourceName = "Resource 0"
+IconPlaceholder = "R0"
 Rarity = 80
 IsStarter = true

@@ -34,8 +34,8 @@ using System.Collections.Generic;
             SetProcess(false);
         }
 
-        private List<Target> _targets = new List<Target>();
-        public List<Target> Targets
+        private Stack<Target> _targets = new Stack<Target>();
+        public Stack<Target> Targets
         {
             get { return _targets; }
         }
@@ -45,22 +45,22 @@ using System.Collections.Generic;
             _targets.Clear();
             _hasTarget = true;
             currentTarget = Target;
-            _targets.Add(currentTarget);
+            _targets.Push(currentTarget);
         }
 
         public void AddTarget(Target Target){
             if(!_hasTarget){
                 SetTarget(Target);
             }else{
-                _targets.Add(Target);
+                _targets.Push(Target);
             }
         }
 
         public void NextTarget(){
             if(_targets.Count > 1){
                 AtTarget?.Invoke(currentTarget.TargetNode);
-                _targets.RemoveAt(0);
-                currentTarget = _targets[0];
+                _targets.Pop();
+                currentTarget = _targets.Peek();
             }else{
                 ClearTargets();
                 currentTarget = default(Target);

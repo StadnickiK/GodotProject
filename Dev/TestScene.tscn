@@ -1,0 +1,49 @@
+[gd_scene load_steps=9 format=3 uid="uid://31th8we0sdns"]
+
+[ext_resource type="PackedScene" uid="uid://j71w4i837oot" path="res://UI/FreeCamera.tscn" id="1"]
+[ext_resource type="Script" path="res://Dev/A.cs" id="2"]
+[ext_resource type="Script" path="res://Dev/MovingTarget.cs" id="3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ckxgj"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_khyny"]
+sky_material = SubResource("ProceduralSkyMaterial_ckxgj")
+
+[sub_resource type="Environment" id="Environment_lthvp"]
+background_mode = 2
+sky = SubResource("Sky_khyny")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="1"]
+
+[sub_resource type="BoxShape3D" id="2"]
+
+[node name="TestScene" type="Node"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_lthvp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 3.35341, -26.0917)
+shadow_enabled = true
+
+[node name="CameraGimbal" parent="." instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.77838)
+
+[node name="A" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+script = ExtResource("2")
+
+[node name="KB" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+script = ExtResource("3")
+
+[node name="Mesh" type="MeshInstance3D" parent="KB"]
+mesh = SubResource("1")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KB"]
+shape = SubResource("2")

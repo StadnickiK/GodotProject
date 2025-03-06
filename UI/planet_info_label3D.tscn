@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwcjlw47wuri0"]
+
+[ext_resource type="PackedScene" uid="uid://chopfeujvatk6" path="res://UI/planet_info_label.tscn" id="1_pelxv"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mqtoo"]
+viewport_path = NodePath("Sprite3D/SubViewport")
+
+[node name="PlanetInfoLabel3D" type="Node3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+billboard = 1
+texture = SubResource("ViewportTexture_mqtoo")
+
+[node name="SubViewport" type="SubViewport" parent="Sprite3D"]
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="PlanetInfoLabel" parent="Sprite3D/SubViewport" instance=ExtResource("1_pelxv")]

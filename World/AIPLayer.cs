@@ -96,25 +96,25 @@ public partial class AIPlayer : Player
 
     void _on_MapObject_Entered(Node node, Ship ship){
         if(node is Planet planet){
-            if(ship.MapObject == planet.GetParent().GetParent())
-                if(blackBoard.ContainsKey("Map")){
-                    var MapObject = blackBoard["Map"];
-                    var map = (Dictionary<string, List<Planet>>)MapObject;
-                    if(planet.System != null){
-                        if(!map.ContainsKey(planet.System.Name)){
-                            List<Planet> list = new List<Planet>();
-                            list.Add(planet);
-                            map.Add(planet.System.Name, list);
-                        }else{
-                            var list = map[planet.System.Name];
-                            if(!list.Contains(planet)){
-                                list.Add(planet);
-                            }else{
+            // if(ship.MapObject == planet.GetParent().GetParent())
+            //     if(blackBoard.ContainsKey("Map")){
+            //         var MapObject = blackBoard["Map"];
+            //         var map = (Dictionary<string, List<Planet>>)MapObject;
+            //         if(planet.System != null){
+            //             if(!map.ContainsKey(planet.System.Name)){
+            //                 List<Planet> list = new List<Planet>();
+            //                 list.Add(planet);
+            //                 map.Add(planet.System.Name, list);
+            //             }else{
+            //                 var list = map[planet.System.Name];
+            //                 if(!list.Contains(planet)){
+            //                     list.Add(planet);
+            //                 }else{
 
-                            }
-                        }
-                    }
-                }
+            //                 }
+            //             }
+            //         }
+            //     }
         }
     }
 
@@ -508,7 +508,7 @@ public partial class AIPlayer : Player
                 var plan = plans.ElementAt(i);
                 if(!invasions.ContainsKey(plan.Key)){
                     plan.Key.targetManager.AddTarget(new TargetManager<Node3D>.Target(plan.Value.GlobalPosition,plan.Value));
-                    plan.Key.Task = CmdPanel.CmdPanelOption.Conquer;
+                    // plan.Key.Task = CmdPanel.CmdPanelOption.Conquer;
                     plan.Key.MoveToTarget(plan.Value);
                     plans.Remove(plan.Key);
                     invasions.Add(plan.Key, plan.Value);

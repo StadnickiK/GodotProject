@@ -10,6 +10,9 @@ public partial class Player : Node
 
     public string PlayerName { get; set; }
 
+    [Export]
+    public Color PlayerColor { get; set; }
+
     public bool IsLocal { get; set; } = false;
 
     public bool MapObjectsChanged { get; set; } = true;

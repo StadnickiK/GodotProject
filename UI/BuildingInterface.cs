@@ -67,34 +67,20 @@ public partial class BuildingInterface : Panel
     }
 
     public void UpdateInterface(Unit unit){
-        // _building = null;
-        // _unit = null;
-        // _listPanel.ClearItems();
-        // if(unit != null){
-        //     _unit = unit;
-        //     _header.SetTitle(unit.Name);
-        //     var label = new Label();
-        //     label.Text = "\nBuild Cost\n";
-        //     _listPanel.AddListItem(label);
-        //     foreach(var resName in unit.BuildCost.Keys){
-        //         label = new Label();
-        //         label.Text = resName + " " + unit.BuildCost[resName];
-        //         _listPanel.AddListItem(label);
-        //     }
-        //     label = new Label();
-        //     label.Text = "\nConstruction time: "+unit.BuildTime;
-        //     _listPanel.AddListItem(label);
-        //     label = new Label();
-        //     label.Text = "\nStatistics:\n";
-        //     _listPanel.AddListItem(label);
-        //     foreach(var node in unit.Stats.GetChildren()){
-        //         if(node is BaseStat stat){
-        //             label = new Label();
-        //             label.Text = stat.Name + ": " + stat.BaseValue;
-        //             _listPanel.AddListItem(label);
-        //         }
-        //     }
-        // }
+        if(unit != null){
+            _title.Text = unit.Name;
+            _desc.Text = "";
+            _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
+            foreach(var resName in unit.BuildCost.Keys){
+                _desc.Text = resName + " - " + unit.BuildCost[resName] + "\n";
+            }
+            _desc.AppendText("\n[b]Construction time: [/b]" + unit.BuildTime + "\n");
+
+            _desc.AppendText("\n[b][font_size=20]Stats: [/font_size][/b]\n");
+            foreach(var stat in unit.StatsList){
+                _desc.AppendText(stat.Name + " " + stat.CurrentValue + "\n");
+            }
+        }
     }
 
 

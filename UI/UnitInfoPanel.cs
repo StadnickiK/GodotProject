@@ -77,11 +77,11 @@ void GetNodes(){
             label.Text += "Player "+ship.Controller.PlayerID;
         }
         _overviewPanel.AddNodeToPanel("Overview", label); 
-        foreach(BaseStat stat in ship.Stats){
-                label = new Label();
-                label.Text = stat.StatName + " " + stat.BaseValue;
-                _overviewPanel.AddNodeToPanel("Overview", label); 
-        }
+        // foreach(BaseStat stat in ship.Stats){
+        //         label = new Label();
+        //         label.Text = stat.StatName + " " + stat.BaseValue;
+        //         _overviewPanel.AddNodeToPanel("Overview", label); 
+        // }
     }
 
     void CreateOverviewPanelLabel(string panelName, string name, Node mapObject){

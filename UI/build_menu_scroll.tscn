@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://4h88d7nq7l62"]
+
+[ext_resource type="Script" path="res://UI/BuildMenu.cs" id="1_qjv6o"]
+
+[node name="BuildMenuScroll" type="ScrollContainer"]
+visible = false
+top_level = true
+custom_minimum_size = Vector2(536, 212)
+offset_left = 692.0
+offset_top = 614.0
+offset_right = 1228.0
+offset_bottom = 826.0
+script = ExtResource("1_qjv6o")
+
+[node name="BuildMenu" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 5
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

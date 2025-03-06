@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public partial class BuildingManager : Node
 {
@@ -14,8 +15,6 @@ public partial class BuildingManager : Node
 
     public event BuildingFinishedEventHandler BuildingFinished; // subscribe here to event like BuildingManager.BuildingFinished += MyMethod, unsubscribe with -=
 
-    public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
-
     ConstructionManager _constructions = new ConstructionManager();
     public ConstructionManager Constructions
     {
@@ -23,6 +22,11 @@ public partial class BuildingManager : Node
     }
 
     public List<Building> LastBuilding { get; set; } = new List<Building>();
+
+    public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
+
+    public bool HasConstruction => Constructions.CurrentConstruction().Count > 0;
+
 
     public List<Building> CurrentConstruction(){
         var currentConstruction = _constructions.CurrentConstruction();
@@ -33,7 +37,8 @@ public partial class BuildingManager : Node
     List<Building> IbuildingToBuilding(List<IBuilding> originalArray){
         var Array = new List<Building>();
         foreach(IBuilding building in originalArray){
-            Array.Add((Building)building);
+            if(building is Building)
+                Array.Add((Building)building);
         }
         return Array;
     }

@@ -11,7 +11,7 @@ public partial class UI : Control
     
     public RightPanel RPanel { get; set; } = null;
  
-    public UnitInfoPanel UInfo { get; set; } = null;
+    public ArmyInterface ArmyInterfce { get; set; } = null;
 
     public SmallList OrbitList { get; set; } = null;
 
@@ -41,7 +41,7 @@ public partial class UI : Control
         RPanel = GetNode<RightPanel>("RightPanel");
         _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
-        UInfo = GetNode<UnitInfoPanel>("UnitInfoPanel");
+        ArmyInterfce = GetNode<ArmyInterface>("ArmyInterface");
         ABox = GetNode<AlertBox>("AlertBox");
         OrbitList = GetNode<SmallList>("OrbitList");
         CommandPanel = GetNode<CmdPanel>("CmdPanel");

@@ -12,6 +12,45 @@ public partial class Data : Node
     }
 
     void GetNodes(){
+        GetResources();
+        GetBuildings();
+    }
+
+    public Dictionary<int, Resource> Resources { get; set; } = new Dictionary<int, Resource>();
+
+    void GetResources(){
+        var arr = GetData("Resources");
+        foreach(Resource resource in arr){
+            if(!Resources.ContainsKey(resource.Index)){}
+                Resources.Add(resource.Index, resource);
+        }
+    }
+
+    public List<Building> Buildings { get; set; } = new List<Building>();
+
+    void GetBuildings(){
+        var arr = GetData("Buildings");
+        foreach(Building resource in arr){
+            Buildings.Add(resource);
+        }
+    }
+
+    public List<Technology> Technologies { get; set; } = new List<Technology>();
+
+    void GetTechnologies(){
+        var arr = GetData("Technologies");
+        foreach(Technology resource in arr){
+            Technologies.Add(resource);
+        }
+    }
+
+    public List<Unit> Units { get; set; } = new List<Unit>();
+
+    void GetUnits(){
+        var arr = GetData("Units");
+        foreach(Unit resource in arr){
+            Units.Add(resource);
+        }
     }
 
     /// <summary>

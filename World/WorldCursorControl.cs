@@ -93,6 +93,10 @@ public partial class WorldCursorControl : Node3D
         return select.HasSelected();
     }
 
+    public void ClearSelection(){
+        select.ClearSelection();
+    }
+
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {

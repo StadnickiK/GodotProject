@@ -136,5 +136,14 @@
     <Compile Include="Units\StateMachine\MoveState.cs" />
     <Compile Include="Units\StateMachine\OrbitState.cs" />
     <Compile Include="Ground.cs" />
+    <Compile Include="UI\ArmyPanel.cs" />
+    <Compile Include="UI\ArmyInterface.cs" />
+    <Compile Include="UI\UnitCard.cs" />
+    <Compile Include="Units\Base\UnitController.cs" />
+    <Compile Include="UI\ArmyRecruitment.cs" />
+    <Compile Include="UI\PlanetInfoLabel.cs" />
+    <Compile Include="UI\PlanetInterfaceBuildQueue.cs" />
+    <Compile Include="Map\Planet\UpkeepComponent.cs" />
+    <Compile Include="Map\Planet\ResourceProductionComponent.cs" />
   </ItemGroup>
 </Project>

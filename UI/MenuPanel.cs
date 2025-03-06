@@ -33,7 +33,7 @@ public partial class MenuPanel : Panel
         GetNodes();
         _closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
         var parent = (Game)GetParent().GetParent();
-        parent.ConnectToStartNewGame(this);
+        //parent.ConnectToStartNewGame(this);
         StartNewGame += parent._on_StartNewGame;
         //Connect("StartNewGame", new Callable(parent, "_on_StartNewGame"));
     }

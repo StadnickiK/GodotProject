@@ -204,11 +204,11 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
                     ship.QueueFree();
                 }else{
                     Participants.RemoveChild(ship);
-                    if(GetParent().GetParent() is Planet planet){
-                        planet.EnterMapObject(ship, Vector3.Zero, null);
-                        if(ship.Task == CmdPanel.CmdPanelOption.Conquer)
-                            planet.ChangeController(ship.Controller);
-                    }
+                    // if(GetParent().GetParent() is Planet planet){
+                    //     planet.EnterMapObject(ship, Vector3.Zero, null);
+                    //     if(ship.Task == CmdPanel.CmdPanelOption.Conquer)
+                    //         planet.ChangeController(ship.Controller);
+                    // }
                     if(ship.IsLocal){
                         ship.Visible = true;
                     }

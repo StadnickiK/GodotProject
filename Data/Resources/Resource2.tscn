@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://5x480s8jyuuc"]
 
-[ext_resource path="res://Map/Resource.cs" type="Script" id=1]
+[ext_resource type="Script" path="res://Map/Resource.cs" id="1"]
 
 [node name="Resource 2" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
+Index = 6
+ResourceName = "Resource 2"
+IconPlaceholder = "R2"
 Rarity = 45

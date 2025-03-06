@@ -5,11 +5,14 @@ using System.Collections.Generic;
 
 public partial class BuildingPanel : ScrollContainer
 {
+	List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
+	
+	PackedScene scene;
 
-	List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
+	public Vector2 LabelSize { get; set; } = new Vector2(100,100);
 
 	Node container;
 
@@ -27,36 +30,47 @@ public partial class BuildingPanel : ScrollContainer
 		}
 	}
 
-	public void InitAllBuildings(Array<Node> nodes, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
+	public void InitAllBuildings(List<Building> buildings, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
 		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
-		foreach(Node node in nodes){
-			if(node is Building building){
+		foreach(var building in buildings){
 				var label = (BuildingLabel)ItemScene.Instantiate();
-				label.RefBuilding = building;
-				label.Size = new Vector2(100, 100);
-				label.Name = building.Name;
-				if(label.BButton != null){
-					label.BButton.Text = building.Name;
-				}else{
-					label.BButton = label.GetNode<Button>("Button");
-					label.BButton.Text = building.Name;
-				}
+				label.Size = LabelSize;
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(building);
 				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
 				container.AddChild(label);
 				buildingLabels.Add(label);
-			}
+				label.Hide();	
 		}
 	}
 
 	public void UpdatePlanetBuildings(BuildingManager buildingManager){
-		foreach(var label in buildingLabels)
-			if(buildingManager.Buildings.Contains(label.RefBuilding)){
-				label.Show();
-			}else{
-				label.Hide();
+		var count = buildingManager.Buildings.Count + buildingManager.Constructions.ConstructionList.Count;
+		if(count > buildingLabels.Count)
+			AddBuildingLabel(count - buildingLabels.Count);
+		int j = 0;
+		for(int i = 0; i < count; i++){
+			if(i < buildingManager.Constructions.ConstructionList.Count){
+				buildingLabels[i].UpdateProgress(buildingManager.Constructions.ConstructionList[i]);
 			}
+			if(i > buildingManager.Constructions.ConstructionList.Count || buildingManager.Constructions.ConstructionList.Count == 0){
+				buildingLabels[i].UpdateBuilding(buildingManager.Buildings[j]);
+				j++;
+			}
+			if(i > count)
+				buildingLabels[i].Hide();
+		}
 	}
+
+	public void AddBuildingLabel(int Count){
+		for(int i = 0; i < Count; i++){
+			var s = scene.Instantiate<BuildingLabel>();
+			s.SelfModulate = new Color(1, 1, 1, 0.5f);
+			s.InitProgress();
+			buildingLabels.Add(s);
+			container.AddChild(s);
+		}
+	}
+
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)

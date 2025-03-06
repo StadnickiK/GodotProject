@@ -4,6 +4,8 @@
 
 [node name="Common Ores" type="Node"]
 script = ExtResource("1_6dhi6")
-Index = 5
+Index = 4
+ResourceName = "Common Ores"
+IconPlaceholder = "CO"
 Rarity = 60
 IsStarter = true

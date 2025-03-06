@@ -1,0 +1,288 @@
+[gd_scene load_steps=8 format=3 uid="uid://cd8trni2dvfhs"]
+
+[ext_resource type="Script" path="res://UI/ArmyInterface.cs" id="1_d84et"]
+[ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="3_e5ywv"]
+[ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="3_e85fu"]
+[ext_resource type="Script" path="res://UI/ArmyPanel.cs" id="3_susb5"]
+[ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="5_f5nni"]
+[ext_resource type="Script" path="res://UI/ArmyRecruitment.cs" id="7_10yej"]
+[ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="7_voeq7"]
+
+[node name="ArmyInterface" type="Control"]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -960.0
+offset_top = -1079.0
+offset_right = 960.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 6
+size_flags_vertical = 10
+mouse_filter = 2
+script = ExtResource("1_d84et")
+
+[node name="UnitInterface" parent="." instance=ExtResource("7_voeq7")]
+visible = false
+layout_direction = 1
+layout_mode = 2
+offset_top = 608.0
+offset_bottom = 1068.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="BuildMenuScroll" parent="." instance=ExtResource("3_e85fu")]
+layout_mode = 0
+offset_left = 667.0
+offset_top = 757.0
+offset_right = 1203.0
+offset_bottom = 969.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -174.0
+offset_top = -180.0
+offset_right = 148.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Header" parent="VBoxContainer" instance=ExtResource("3_e5ywv")]
+layout_mode = 2
+
+[node name="InfoPanel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Owned by"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ArmyPanel" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+clip_contents = false
+custom_minimum_size = Vector2(272, 104)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_susb5")
+
+[node name="Grid" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ArmyPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="UnitCard" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard2" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard3" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard4" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard5" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard6" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard7" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="Recruitment" type="HBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+script = ExtResource("7_10yej")
+
+[node name="UnitCard" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard2" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard3" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard4" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard5" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard6" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard7" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard21" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard22" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard23" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard24" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard25" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard26" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard27" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard28" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard29" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard30" parent="VBoxContainer/HBoxContainer/Recruitment" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="BuildButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "+"
+
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_mouse_exited"]

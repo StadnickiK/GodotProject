@@ -2,7 +2,8 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectController, IVision, IMapObject, IGetTotalUpkeep//, IResourceManager
+public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectController, IVision, IGetTotalUpkeep
+// IMapObject,
 {
     [Signal]
     public delegate void SelectUnitEventHandler(RigidBody3D unit);
@@ -32,15 +33,13 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
     public bool IsLocal { get; set; } = false;
     public Player Controller { get; set; } = null;
 
-    public IEnterMapObject MapObject { get; set; } = null;
+    //public IEnterMapObject MapObject { get; set; } = null;
 
-    public List<BaseStat> Stats { get; set; } = new List<BaseStat>(); // leak
+    public UnitController Units { get; set; }
 
-    //public List<Unit> Units { get; set; } = new List<Unit>(); // probably leak
+    //public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
-    public Node Units { get; set; } = new Node();
-
-    public Vector3 PlanetPos { get; set; } = Vector3.Zero;
+    public Planet ClosePlanet { get; set; }
 
     public MeshInstance3D Mesh { get; set; } = null;  
 
@@ -51,15 +50,15 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
 
     public VisionArea _area { get; set; }
 
-    //protected VelocityController _velocityController = null;
-
     public StateMachine StateMach { get; set; }
 
     public TargetManager<Node3D> targetManager { get; set; } = new TargetManager<Node3D>();
 
-    public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
+    //public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
 
     SimpleFireControl _control = null;
+
+
 
     // protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
     //     // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)
@@ -308,10 +307,10 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
 
     void _on_Ship_body_entered(Node node){
         if(node is Ship ship){
-            if(ship.MapObject == MapObject){
-                EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)node, GetParent());
-                //ResetVelocity();
-            }
+            // if(ship.MapObject == MapObject){
+            //     EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)node, GetParent());
+            //     //ResetVelocity();
+            // }
         }
     }
 
@@ -321,7 +320,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
         _control = GetNode<SimpleFireControl>("FireControl");
         StateMach = GetNode<StateMachine>("StateMachine");
         //_velocityController = GetNode<VelocityController>("VelocityController");
-        AddChild(Units);
+        Units = GetNode<UnitController>("UnitController");
         AddChild(targetManager);
     }
 

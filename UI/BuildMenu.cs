@@ -8,7 +8,7 @@ public partial class BuildMenu : ScrollContainer
 
 	Node container;
 
-	List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
+	public List<BuildingLabel> buildingLabels = new List<BuildingLabel>();
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
@@ -48,6 +48,50 @@ public partial class BuildMenu : ScrollContainer
 				}
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(building);
 				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
+				label.MouseExited += () => _on_mouse_exited();
+				container.AddChild(label);
+				buildingLabels.Add(label);
+			}
+		}
+	}
+
+	public void InitAllUnits(Array<Node> nodes, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
+		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		foreach(Node node in nodes){
+			if(node is Unit unit){
+				var label = (BuildingLabel)ItemScene.Instantiate();
+				label.RefUnit = unit;
+				label.Size = new Vector2(100, 100);
+				label.Name = unit.Name;
+				if(label.BButton != null){
+					label.BButton.Text = unit.Name;
+				}else{
+					label.BButton = label.GetNode<Button>("Button");
+					label.BButton.Text = unit.Name;
+				}
+				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit);
+				label.MouseExited += () => _on_mouse_exited();
+				container.AddChild(label);
+				buildingLabels.Add(label);
+			}
+		}
+	}
+
+	public void InitAllUnits(Array<Node> nodes, ArmyInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
+		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		foreach(Node node in nodes){
+			if(node is Unit unit){
+				var label = (BuildingLabel)ItemScene.Instantiate();
+				label.RefUnit = unit;
+				label.Size = new Vector2(100, 100);
+				label.Name = unit.Name;
+				if(label.BButton != null){
+					label.BButton.Text = unit.Name;
+				}else{
+					label.BButton = label.GetNode<Button>("Button");
+					label.BButton.Text = unit.Name;
+				}
+				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit);
 				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);
 				buildingLabels.Add(label);

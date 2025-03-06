@@ -26,6 +26,8 @@ public partial class PlanetInterface : Control
 
 	BuildMenu _buildMenu;
 
+	BuildMenu _recruitmentMenu;
+
 	BuildingInterface _buildingInterface = null;
 
 	[Export]
@@ -43,6 +45,7 @@ public partial class PlanetInterface : Control
 		_header = GetNode<Header>("VBoxContainer/Header");
 		_buildingInterface = GetNode<BuildingInterface>("BuildingInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
+		_recruitmentMenu = GetNode<BuildMenu>("VBoxContainer/Tabs/Recruitment");
 		_buildings = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
 	}
 
@@ -50,6 +53,9 @@ public partial class PlanetInterface : Control
 		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
 		_buildings.ConnectBuildButtons(this);
 		// _buildMenu.ConnectBuildButtons(this);
+		foreach(BuildingLabel buildingLabel in _buildMenu.buildingLabels){
+			buildingLabel.BButton.ButtonUp += () => _on_StartConstruction(buildingLabel.RefBuilding);
+		}
 	}
 
 	public void SetTitle(string title){
@@ -64,8 +70,9 @@ public partial class PlanetInterface : Control
     public void InitBuildingsPanel(){
         _buildings = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
 		_buildMenu.InitAllBuildings(_data.GetData("Buildings"), this);
+		_recruitmentMenu.InitAllUnits(_data.GetData("Units"), this);
 		ConnectSignals();
-		_buildings.InitAllBuildings(_data.GetData("Buildings"), this);
+		_buildings.InitAllBuildings(_data.Buildings, this);
 	}
 
 	public void UpdatePlanetInterface(Planet planet){
@@ -77,7 +84,9 @@ public partial class PlanetInterface : Control
 				UpdateOrbit(planet);
 				UpdateBuildings(planet);
 				// UpdateTransferPanel(planet);
-				UpdateConstruction(planet);
+				//UpdateConstruction(planet);
+				// if(planet.BuildingsManager.HasConstruction)
+				// 	_buildQueue.UpdateBuildQueue(planet.BuildingsManager.CurrentConstruction());
 			}
 		}
 	}
@@ -333,21 +342,13 @@ public partial class PlanetInterface : Control
 	}
 
 	public void _on_BuildingLabelGuiInputEvent(Building building){
-		// if(input is InputEventMouseButton button){
-		// 	if(button.ButtonIndex == (int)ButtonList.Left){
+		_buildingInterface.Visible = true;
+		_buildingInterface.UpdateInterface(building);
+	}
 
-					_buildingInterface.Visible = true;
-					_buildingInterface.UpdateInterface(building);
-					// _selectedBuilding = label;
-						
-					// if((object)label.GetMeta(label.BButton.Text.Replace(" ","")) is Unit unit){
-					// 		_buildingInterface.Visible = true;
-					// 		_buildingInterface.UpdateInterface(unit, _planet);
-					// 		_selectedBuilding = label;
-					// }
-				
-		// 	}
-		// }
+	public void _on_BuildingLabelGuiInputEvent(Unit unit){
+		_buildingInterface.Visible = true;
+		_buildingInterface.UpdateInterface(unit);
 	}
 
 	public void _mouseLeftBuildingLabel(){
@@ -362,7 +363,7 @@ public partial class PlanetInterface : Control
 	void _on_StartConstruction(Node node){
 		if(node is IBuilding unit){
 			if(unit != null && _planet != null){
-				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.SceneFilePath)).Instantiate());
+				_planet.StartConstruction(unit);
 				// _planet.ConstructUnit(unit);
 			}
 		}

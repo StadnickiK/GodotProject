@@ -105,9 +105,9 @@ public partial class ScoutSystem : TreeNode
                         system = planet.System;
                     }
                     if(system != null){
-                        if(scout.MapObject != system){
-                            scout.MoveToTarget(system);
-                        }
+                        // if(scout.MapObject != system){
+                        //     scout.MoveToTarget(system);
+                        // }
                         foreach(Node node in system.StarSysObjects.GetChildren()){
                             if(node is Planet targetPlanet && node != planet){
                                 //var target = scout.GetTempWaypoint(targetPlanet.GlobalTransform.Origin);
