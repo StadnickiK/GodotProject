@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://6xqb64kn3s3k"]
 
-[ext_resource path="res://Behaviour Tree/TreeNode.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://c51tsn7fwn8g8" path="res://Behaviour Tree/TreeNode.cs" id="1"]
 
 [node name="TreeNode" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")

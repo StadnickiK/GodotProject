@@ -1,36 +1,36 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=8 format=3 uid="uid://cm5jkvg58uq5j"]
 
-[sub_resource type="Gradient" id=1]
-offsets = PackedFloat32Array( 0 )
-colors = PackedColorArray( 0.46875, 0.46875, 0.46875, 1 )
+[sub_resource type="Gradient" id="1"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.46875, 0.46875, 0.46875, 1)
 
-[sub_resource type="GradientTexture2D" id=2]
-gradient = SubResource( 1 )
+[sub_resource type="GradientTexture2D" id="2"]
+gradient = SubResource("1")
 
-[sub_resource type="Gradient" id=3]
-offsets = PackedFloat32Array( 0 )
-colors = PackedColorArray( 0.0193634, 0.550781, 0.214493, 1 )
+[sub_resource type="Gradient" id="3"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.0193634, 0.550781, 0.214493, 1)
 
-[sub_resource type="GradientTexture2D" id=4]
-gradient = SubResource( 3 )
+[sub_resource type="GradientTexture2D" id="4"]
+gradient = SubResource("3")
 
-[sub_resource type="StyleBoxTexture" id=5]
-texture = SubResource( 4 )
-region_rect = Rect2( 0, 0, 2048, 1 )
+[sub_resource type="StyleBoxTexture" id="5"]
+texture = SubResource("4")
+region_rect = Rect2(0, 0, 2048, 1)
 
-[sub_resource type="Gradient" id=6]
-offsets = PackedFloat32Array( 0 )
-colors = PackedColorArray( 0, 0, 0, 1 )
+[sub_resource type="Gradient" id="6"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id=7]
-gradient = SubResource( 6 )
+[sub_resource type="GradientTexture2D" id="7"]
+gradient = SubResource("6")
 
 [node name="TileMap" type="Node2D"]
 
 [node name="Background" type="TextureRect" parent="."]
 offset_right = 1000.0
 offset_bottom = 500.0
-texture = SubResource( 2 )
+texture = SubResource("2")
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -51,27 +51,27 @@ __meta__ = {
 [node name="Panel" type="Panel" parent="GridContainer"]
 offset_right = 100.0
 offset_bottom = 100.0
-custom_minimum_size = Vector2( 100, 100 )
-theme_override_styles/panel = SubResource( 5 )
+custom_minimum_size = Vector2(100, 100)
+theme_override_styles/panel = SubResource("5")
 
 [node name="Panel2" type="Panel" parent="GridContainer"]
 offset_left = 100.0
 offset_right = 200.0
 offset_bottom = 100.0
-custom_minimum_size = Vector2( 100, 100 )
-theme_override_styles/panel = SubResource( 5 )
+custom_minimum_size = Vector2(100, 100)
+theme_override_styles/panel = SubResource("5")
 
 [node name="Panel3" type="Panel" parent="GridContainer"]
 offset_left = 200.0
 offset_right = 300.0
 offset_bottom = 100.0
-custom_minimum_size = Vector2( 100, 100 )
-theme_override_styles/panel = SubResource( 5 )
+custom_minimum_size = Vector2(100, 100)
+theme_override_styles/panel = SubResource("5")
 
 [node name="TextureButton" type="TextureButton" parent="GridContainer"]
 offset_left = 300.0
 offset_right = 310.0
 offset_bottom = 100.0
-custom_minimum_size = Vector2( 10, 10 )
-texture_normal = SubResource( 7 )
+custom_minimum_size = Vector2(10, 10)
+texture_normal = SubResource("7")
 expand = true

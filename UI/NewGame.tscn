@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cth8qdcx4tb8j"]
 
-[ext_resource type="PackedScene" path="res://UI/MenuPanel.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://UI/ValueSlider.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://cl5lyf2ofjpin" path="res://UI/MenuPanel.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://dh2130j8vd8pv" path="res://UI/ValueSlider.tscn" id="3"]
 
 [node name="NewGame" instance=ExtResource("2")]
 offset_bottom = 153.0

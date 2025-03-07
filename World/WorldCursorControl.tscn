@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://5vkwnunfc0kc"]
 
-[ext_resource path="res://Select.cs" type="Script" id=1]
-[ext_resource path="res://World/WorldCursorControl.cs" type="Script" id=2]
+[ext_resource type="Script" uid="uid://g4f5whqg718x" path="res://Select.cs" id="1"]
+[ext_resource type="Script" uid="uid://f5d4innysaee" path="res://World/WorldCursorControl.cs" id="2"]
 
 [node name="WorldCursorControl" type="Node3D"]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="Select" type="Node3D" parent="."]
-script = ExtResource( 1 )
+script = ExtResource("1")

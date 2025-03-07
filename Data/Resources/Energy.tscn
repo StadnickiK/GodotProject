@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cppir4h1jjmnd"]
 
-[ext_resource type="PackedScene" path="res://Map/Resource.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://bs05faxbvj47f" path="res://Map/Resource.tscn" id="1"]
 
 [node name="Energy" instance=ExtResource("1")]
 Index = 2

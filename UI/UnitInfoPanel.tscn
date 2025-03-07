@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhh5y2rxq0xdg" path="res://UI/OverviewPanel.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="2"]
-[ext_resource type="Script" path="res://UI/UnitInfoPanel.cs" id="3"]
+[ext_resource type="Script" uid="uid://c1g86dc0tqbdu" path="res://UI/UnitInfoPanel.cs" id="3"]
 
 [node name="UnitInfoPanel" type="Panel"]
 anchors_preset = 2

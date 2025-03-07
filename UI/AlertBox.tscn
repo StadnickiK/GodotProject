@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://g2iumgomdpct"]
 
-[ext_resource path="res://Themes/Main_Menu_theme.tres" type="Theme" id=1]
-[ext_resource path="res://UI/AlertBox.cs" type="Script" id=2]
+[ext_resource type="Theme" uid="uid://herq15xa5tcn" path="res://Themes/Main_Menu_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://bnk8hr7y4ni7l" path="res://UI/AlertBox.cs" id="2"]
 
 [node name="AlertBox" type="Panel"]
 anchor_left = 0.5
@@ -12,7 +12,7 @@ offset_left = -195.5
 offset_top = -51.0
 offset_right = 195.5
 offset_bottom = 51.0
-script = ExtResource( 2 )
+script = ExtResource("2")
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -22,7 +22,7 @@ offset_right = 392.0
 offset_bottom = 58.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
-theme = ExtResource( 1 )
+theme = ExtResource("1")
 text = "Not enough resources"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -38,7 +38,7 @@ offset_top = -42.0
 offset_right = 36.5
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme = ExtResource( 1 )
+theme = ExtResource("1")
 text = "OK"
 __meta__ = {
 "_edit_use_anchors_": false

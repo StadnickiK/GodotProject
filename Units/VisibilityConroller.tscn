@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://orskboynr3eu"]
 
-[ext_resource type="Script" path="res://Units/VisibilityConroller.cs" id="1_nipl2"]
+[ext_resource type="Script" uid="uid://bk5ye5kmobwy6" path="res://Units/VisibilityConroller.cs" id="1_nipl2"]
 
 [node name="VisibilityConroller" type="Node"]
 script = ExtResource("1_nipl2")

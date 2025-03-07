@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ceejx2dqj3b7h"]
 
-[ext_resource type="Script" path="res://UI/UnitCard.cs" id="1_5oevl"]
+[ext_resource type="Script" uid="uid://ijnsw8dewly4" path="res://UI/UnitCard.cs" id="1_5oevl"]
 
 [node name="UnitCard" type="Control"]
 custom_minimum_size = Vector2(50, 0)

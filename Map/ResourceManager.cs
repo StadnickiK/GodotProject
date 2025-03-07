@@ -11,11 +11,7 @@ public partial class ResourceManager : Node
         get { return _resources; }
     }
 
-    private Dictionary<int, int> _resourceLimits = new Dictionary<int, int>();
-    public Dictionary<int, int> ResourceLimits
-    {
-        get { return _resourceLimits; }
-    }
+    public UpkeepComponent ResourceLimits { get; set; }
 
     public Dictionary<int, int> ProdCost { get; set; } = new Dictionary<int, int>();
 
@@ -69,6 +65,27 @@ public partial class ResourceManager : Node
                     ResourceLimitChanged = true;   
                 }else{
                     ResourceLimits.Add(resourceName, building.ResourceLimits[resourceName]);
+                    ResourceLimitChanged = true;   
+                }
+            }
+    }
+
+    public void UpdateResourceLimit(Dictionary<int, int> resourceLimits){
+            foreach(var res in resourceLimits){
+                if(ResourceLimits.ContainsKey(res.Key)){
+                    ResourceLimits[res.Key] += res.Value;
+                    ResourceLimitChanged = true;   
+                }else{
+                    ResourceLimits.Add(res.Key, res.Value);
+                    ResourceLimitChanged = true;   
+                }
+            }
+    }
+
+    public void RemoveResourceLimit(Dictionary<int, int> resourceLimits){
+            foreach(var res in resourceLimits){
+                if(ResourceLimits.ContainsKey(res.Key)){
+                    ResourceLimits[res.Key] -= res.Value;
                     ResourceLimitChanged = true;   
                 }
             }

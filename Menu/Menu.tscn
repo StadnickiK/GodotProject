@@ -1,17 +1,21 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=8 format=3 uid="uid://bqxom23btjo2r"]
 
-[ext_resource path="res://Themes/Main_Menu_theme.tres" type="Theme" id=1]
-[ext_resource path="res://Menu/PlayButton.cs" type="Script" id=2]
-[ext_resource path="res://Fonts/times.ttf" type="FontFile" id=3]
-[ext_resource path="res://Menu/ExitButton.cs" type="Script" id=4]
-[ext_resource path="res://Menu/MainMenuButton.cs" type="Script" id=5]
+[ext_resource type="Theme" uid="uid://herq15xa5tcn" path="res://Themes/Main_Menu_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://csvmaah707ebn" path="res://Menu/PlayButton.cs" id="2"]
+[ext_resource type="FontFile" uid="uid://crb4458vw1ato" path="res://Fonts/times.ttf" id="3"]
+[ext_resource type="Script" uid="uid://cpb8hv2w7bk6y" path="res://Menu/ExitButton.cs" id="4"]
+[ext_resource type="Script" uid="uid://n4m8y0v5rk2h" path="res://Menu/MainMenuButton.cs" id="5"]
 
-[sub_resource type="FontFile" id=1]
-size = 24
-font_data = ExtResource( 3 )
+[sub_resource type="FontFile" id="1"]
+fallbacks = Array[Font]([ExtResource("3")])
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
-[sub_resource type="Theme" id=2]
-default_font = SubResource( 1 )
+[sub_resource type="Theme" id="2"]
+default_font = SubResource("1")
 
 [node name="Menu" type="Control"]
 anchor_left = 0.5
@@ -35,7 +39,7 @@ offset_left = -150.0
 offset_top = -95.0
 offset_right = 150.0
 offset_bottom = 95.0
-theme = ExtResource( 1 )
+theme = ExtResource("1")
 theme_override_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
@@ -46,7 +50,7 @@ offset_left = 122.0
 offset_right = 178.0
 offset_bottom = 28.0
 size_flags_horizontal = 4
-theme = SubResource( 2 )
+theme = SubResource("2")
 text = "Menu"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -58,7 +62,7 @@ offset_right = 300.0
 offset_bottom = 80.0
 size_flags_horizontal = 3
 text = "Continue"
-script = ExtResource( 2 )
+script = ExtResource("2")
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -68,7 +72,7 @@ offset_top = 90.0
 offset_right = 300.0
 offset_bottom = 132.0
 text = "Main Menu"
-script = ExtResource( 5 )
+script = ExtResource("5")
 
 [node name="Exit" type="Button" parent="VBoxContainer"]
 offset_top = 142.0
@@ -76,10 +80,11 @@ offset_right = 300.0
 offset_bottom = 184.0
 size_flags_horizontal = 3
 text = "Exit"
-script = ExtResource( 4 )
+script = ExtResource("4")
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="button_up" from="VBoxContainer/PlayButton" to="VBoxContainer/PlayButton" method="_on_PlayButton_button_up"]
 [connection signal="button_up" from="VBoxContainer/MainMenu" to="VBoxContainer/MainMenu" method="_on_MainMenu_button_up"]
 [connection signal="button_up" from="VBoxContainer/Exit" to="VBoxContainer/Exit" method="_on_Exit_button_up"]

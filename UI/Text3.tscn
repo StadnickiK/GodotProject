@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cldsuxnnwmghg"]
 
-[ext_resource path="res://UI/Text3.cs" type="Script" id=2]
+[ext_resource type="Script" uid="uid://cbvj44y3xuca2" path="res://UI/Text3.cs" id="2"]
 
 [node name="Text3" type="Sprite3D"]
-transform = Transform3D( 10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 cast_shadow = 0
 flip_v = true
 billboard = 1
-script = ExtResource( 2 )
+script = ExtResource("2")
 Text = "text"
 
 [node name="SubViewport" type="SubViewport" parent="."]

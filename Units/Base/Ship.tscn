@@ -1,15 +1,15 @@
 [gd_scene load_steps=12 format=3 uid="uid://bdcl5y1xnxhkk"]
 
-[ext_resource type="Script" path="res://Units/Base/Ship.cs" id="1"]
+[ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1"]
 [ext_resource type="PackedScene" uid="uid://b1hr47d4opkbc" path="res://Models/ship model.glb" id="2"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionArea.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Effects/Fire.tscn" id="4"]
-[ext_resource type="Script" path="res://Units/Base/SimpleFireControl.cs" id="5"]
-[ext_resource type="Script" path="res://Controllers/VelocityController.cs" id="6"]
+[ext_resource type="PackedScene" uid="uid://ets0luse0ggc" path="res://Effects/Fire.tscn" id="4"]
+[ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="5"]
+[ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="6"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
-[ext_resource type="Script" path="res://Units/Base/UnitController.cs" id="7_tumiq"]
-[ext_resource type="Script" path="res://Map/Planet/UpkeepComponent.cs" id="8_5crgs"]
-[ext_resource type="Script" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
+[ext_resource type="Script" uid="uid://cxxxpr522njfh" path="res://Units/Base/UnitController.cs" id="7_tumiq"]
+[ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="8_5crgs"]
+[ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
 
 [sub_resource type="BoxShape3D" id="1"]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dhh5y2rxq0xdg"]
 
-[ext_resource type="Script" path="res://UI/OverviewPanel.cs" id="2"]
+[ext_resource type="Script" uid="uid://cukqg02tj0ic2" path="res://UI/OverviewPanel.cs" id="2"]
 
 [node name="OverviewPanel" type="VBoxContainer"]
 offset_top = 46.0

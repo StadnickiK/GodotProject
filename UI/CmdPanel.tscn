@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://bhd3jcgg7dbs3"]
 
-[ext_resource path="res://UI/CmdPanel.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://cvu2s81cf1rmr" path="res://UI/CmdPanel.cs" id="1"]
 
 [node name="CmdPanel" type="Panel"]
 offset_right = 178.0
 offset_bottom = 96.0
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }

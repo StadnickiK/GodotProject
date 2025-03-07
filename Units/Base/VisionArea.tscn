@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dkcnoybahr1p"]
 
-[ext_resource type="Script" path="res://Units/Base/VisionArea.cs" id="1"]
+[ext_resource type="Script" uid="uid://bl42sbtcsmakf" path="res://Units/Base/VisionArea.cs" id="1"]
 
 [sub_resource type="CylinderShape3D" id="1"]
 height = 0.2

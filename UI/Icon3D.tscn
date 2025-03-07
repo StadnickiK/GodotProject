@@ -1,30 +1,30 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=6 format=3 uid="uid://dwc2su3ae571"]
 
-[ext_resource path="res://Themes/rocket_w.png" type="Texture2D" id=1]
-[ext_resource path="res://UI/Icon3D.cs" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://cu8xc2g623r60" path="res://Themes/rocket_w.png" id="1"]
+[ext_resource type="Script" uid="uid://dfwj1vwvvlsaq" path="res://UI/Icon3D.cs" id="2"]
 
-[sub_resource type="BoxShape3D" id=1]
+[sub_resource type="BoxShape3D" id="1"]
 
-[sub_resource type="QuadMesh" id=2]
+[sub_resource type="QuadMesh" id="2"]
 
-[sub_resource type="StandardMaterial3D" id=3]
-flags_unshaded = true
+[sub_resource type="StandardMaterial3D" id="3"]
+blend_mode = 1
+shading_mode = 0
 vertex_color_use_as_albedo = true
-params_blend_mode = 1
-params_billboard_mode = 1
-albedo_color = Color( 0, 1, 0, 1 )
-albedo_texture = ExtResource( 1 )
+albedo_color = Color(0, 1, 0, 1)
+albedo_texture = ExtResource("1")
+billboard_mode = 1
 
 [node name="Icon3D" type="Area3D"]
 collision_mask = 0
 monitoring = false
 monitorable = false
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D( 0.483843, 0, 0, 0, 0.483843, 0, 0, 0, 0.483843, 0, 0, 0 )
-shape = SubResource( 1 )
+transform = Transform3D(0.483843, 0, 0, 0, 0.483843, 0, 0, 0, 0.483843, 0, 0, 0)
+shape = SubResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+mesh = SubResource("2")
+material/0 = SubResource("3")

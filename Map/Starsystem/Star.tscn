@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://by423fssuvao0"]
 
-[ext_resource type="Script" path="res://Map/Starsystem/Star.cs" id="1"]
+[ext_resource type="Script" uid="uid://d36qblqb5w6vd" path="res://Map/Starsystem/Star.cs" id="1"]
 
 [sub_resource type="FastNoiseLite" id="1"]
 

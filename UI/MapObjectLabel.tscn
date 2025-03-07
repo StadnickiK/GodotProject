@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://brfhel7aghw0c"]
 
-[ext_resource path="res://UI/MapObjectLabel.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://bunhfx7n4215w" path="res://UI/MapObjectLabel.cs" id="1"]
 
 [node name="MapObjectLabel" type="VBoxContainer"]
 anchor_left = 0.5
@@ -11,7 +11,7 @@ offset_left = -20.0
 offset_top = -20.0
 offset_right = 20.0
 offset_bottom = 20.0
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }

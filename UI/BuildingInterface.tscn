@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dkw0uv5rxi6sc"]
 
-[ext_resource type="Script" path="res://UI/BuildingInterface.cs" id="3"]
+[ext_resource type="Script" uid="uid://beuqw1kbgvco1" path="res://UI/BuildingInterface.cs" id="3"]
 
 [node name="BuildingInterface" type="Panel"]
 offset_right = 284.0

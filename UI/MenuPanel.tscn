@@ -1,16 +1,16 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://cl5lyf2ofjpin"]
 
-[ext_resource path="res://UI/MenuPanel.cs" type="Script" id=1]
-[ext_resource path="res://UI/Header.tscn" type="PackedScene" id=2]
+[ext_resource type="Script" uid="uid://b85ixiywt7sod" path="res://UI/MenuPanel.cs" id="1"]
+[ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="2"]
 
 [node name="MenuPanel" type="Panel"]
 offset_right = 322.0
 offset_bottom = 80.0
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Header" parent="." instance=ExtResource( 2 )]
+[node name="Header" parent="." instance=ExtResource("2")]
 offset_right = 321.0
 theme_override_constants/separation = 209

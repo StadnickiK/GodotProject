@@ -1,7 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://drl0nfvfxqb8b"]
 
-[ext_resource path="res://Map/Planet/Building.cs" type="Script" id=1]
-
+[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Map/Planet/Building.cs" id="1"]
 
 [node name="Building" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")

@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=4 uid="uid://csudfi7npqyku"]
 
 [ext_resource type="FontFile" uid="uid://crb4458vw1ato" path="res://Fonts/times.ttf" id="1"]
-[ext_resource type="PackedScene" path="res://UI/XButton.tscn" id="2"]
-[ext_resource type="Script" path="res://UI/Header.cs" id="3"]
+[ext_resource type="PackedScene" uid="uid://b1p7giocx3d7k" path="res://UI/XButton.tscn" id="2"]
+[ext_resource type="Script" uid="uid://dapoyxjj8x5ry" path="res://UI/Header.cs" id="3"]
 
 [sub_resource type="Image" id="Image_k7nds"]
 data = {

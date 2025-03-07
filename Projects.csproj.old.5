@@ -1,11 +1,12 @@
-<Project Sdk="Godot.NET.Sdk/4.1.2">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Godot.NET.Sdk/4.3.0">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Projects</RootNamespace>
     <AssemblyName>Projects</AssemblyName>
     <GodotProjectGeneratorVersion>1.0.7374.16792</GodotProjectGeneratorVersion>
-    <TargetFramework>net60</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!--The following properties were overriden during migration to prevent errors.
     Enabling them may require other manual changes to the project and its files.-->
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -126,6 +127,23 @@
     <Compile Include="World\WorldCursorControl.cs" />
     <Compile Include="Map\Resource.cs" />
     <Compile Include="World\World.cs" />
+    <Compile Include="UI\BuildingPanel.cs" />
+    <Compile Include="UI\BuildMenu.cs" />
+    <Compile Include="UI\BuildButton.cs" />
+    <Compile Include="Units\VisibilityConroller.cs" />
+    <Compile Include="Units\StateMachine\StateMachine.cs" />
+    <Compile Include="Units\StateMachine\IdleState.cs" />
+    <Compile Include="Units\StateMachine\MoveState.cs" />
+    <Compile Include="Units\StateMachine\OrbitState.cs" />
+    <Compile Include="Ground.cs" />
+    <Compile Include="UI\ArmyPanel.cs" />
+    <Compile Include="UI\ArmyInterface.cs" />
+    <Compile Include="UI\UnitCard.cs" />
+    <Compile Include="Units\Base\UnitController.cs" />
+    <Compile Include="UI\ArmyRecruitment.cs" />
+    <Compile Include="UI\PlanetInfoLabel.cs" />
+    <Compile Include="UI\PlanetInterfaceBuildQueue.cs" />
+    <Compile Include="Map\Planet\UpkeepComponent.cs" />
+    <Compile Include="Map\Planet\ResourceProductionComponent.cs" />
   </ItemGroup>
-  <ItemGroup />
 </Project>

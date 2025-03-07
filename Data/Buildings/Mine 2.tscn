@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://dp1riyg0yf7bh"]
 
-[ext_resource path="res://Map/Planet/Building.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Map/Planet/Building.cs" id="1"]
 
 [node name="Mine 2" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 BuildTime = 10
 Products = {
 "Resource 2": 20
@@ -16,5 +16,5 @@ ResourceLimits = {
 "Resource 2": 300
 }
 Requirements = {
-"Technology": [ "Technology 1" ]
+"Technology": ["Technology 1"]
 }

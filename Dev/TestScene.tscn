@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://31th8we0sdns"]
 
 [ext_resource type="PackedScene" uid="uid://j71w4i837oot" path="res://UI/FreeCamera.tscn" id="1"]
-[ext_resource type="Script" path="res://Dev/A.cs" id="2"]
-[ext_resource type="Script" path="res://Dev/MovingTarget.cs" id="3"]
+[ext_resource type="Script" uid="uid://dwql2bafwgx4f" path="res://Dev/A.cs" id="2"]
+[ext_resource type="Script" uid="uid://iyk6lcnildye" path="res://Dev/MovingTarget.cs" id="3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ckxgj"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)

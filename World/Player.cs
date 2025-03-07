@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using Godot.Collections;
 using System.Linq;
@@ -25,13 +24,15 @@ public partial class Player : Node
 
     public List<int> Technologies { get; set; } = new List<int>();
 
-    public Array<Planet> Planets { get; set; } = new Array<Planet>();
-
     public Array<Ship> Ships { get; set; } = new Array<Ship>();
 
     public ConstructionManager Research { get; set; } //= new ConstructionManager();
 
     double _time = 0;
+
+    public List<Planet> Planets { get; set; } = new List<Planet>();
+
+    public UpkeepComponent Upkeep { get; set; }
 
     private Array<CollisionObject3D> _MapObejcts = new Array<CollisionObject3D>();
     public Array<CollisionObject3D> MapObjects
@@ -112,7 +113,7 @@ public partial class Player : Node
         
         _resourceManager = GetNode<ResourceManager>("ResourceManager");
         Research = GetNode<ConstructionManager>("TechManager");
-
+        Upkeep = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
         // AddChild(ResManager);
         // AddChild(Research);
         // for(int i = 0; i<5; i++){
@@ -152,7 +153,7 @@ public partial class Player : Node
     // }
 
     protected void UpdatePlayerResources(){
-        _resourceManager.Upkeep.Clear();
+        
         foreach(var node in MapObjects){
             if(node is Planet planet){
                 UpdateResourceLimit(planet);
@@ -170,6 +171,14 @@ public partial class Player : Node
         //_resourceManager.PayUpkeep(_resourceManager.Upkeep);
     }
 
+    protected void InitPlayerResources(List<Resource> resources){
+        for(int i = 0; i < resources.Count; i++){
+            if(!ResManager.Resources.ContainsKey(resources[i].Index))
+                ResManager.Resources.Add(resources[i].Index, 0);
+        }
+        //_resourceManager.PayUpkeep(_resourceManager.Upkeep);
+    }
+
     public void InitResourceLimit(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
             _resourceManager.UpdateResourceLimit(planet.BuildingsManager.Buildings);
@@ -182,11 +191,27 @@ public partial class Player : Node
         }
     }
 
+    public void UpdateResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
+        ResManager.UpdateResourceLimit(resourceLimits);
+    }
+
+    public void RemoveResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
+        ResManager.RemoveResourceLimit(resourceLimits);
+    }
+
+    public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
+        Upkeep.UpdateUpkeep(resources);
+    }
+
+    public void RemoveUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
+        Upkeep.RemoveUpkeep(resources);
+    }
+
     public void UpdateResourceLimit(Planet planet){
         if(planet.BuildingsManager.BuildingsChanged){
             var buildings = planet.BuildingsManager.LastBuilding;
             _resourceManager.UpdateResourceLimit(buildings);
-            _resourceManager.UpdateUpkeep(buildings);
+            Upkeep.UpdateUpkeep(buildings);
             planet.BuildingsManager.BuildingsChanged = false;
         }
     }
@@ -203,7 +228,7 @@ public partial class Player : Node
     public override void _Process(double delta){
         _time += delta;
         if(_time >= TimeStep){
-            UpdatePlayerResources();
+            //UpdatePlayerResources();
             //Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
             if(Research != null)
                 if(Research.HasConstruct)

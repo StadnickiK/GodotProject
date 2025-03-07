@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://cxdgkxed2tx1t"]
 
-[ext_resource type="Script" path="res://Map/Starsystem/StarSystem.cs" id="1"]
-[ext_resource type="PackedScene" path="res://UI/MapName3D.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://UI/XButton.tscn" id="3"]
+[ext_resource type="Script" uid="uid://cd8o4mx52h2ux" path="res://Map/Starsystem/StarSystem.cs" id="1"]
+[ext_resource type="PackedScene" uid="uid://brjomq8ccfjka" path="res://UI/MapName3D.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://b1p7giocx3d7k" path="res://UI/XButton.tscn" id="3"]
 
 [sub_resource type="BoxShape3D" id="1"]
 

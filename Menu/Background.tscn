@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://2tb1823d4u38"]
 
 [ext_resource type="PackedScene" uid="uid://lnnpy38q0r1f" path="res://PlanetMesh.tscn" id="1"]
-[ext_resource type="Script" path="res://Menu/MenuPlanet.cs" id="3"]
+[ext_resource type="Script" uid="uid://c7s0pxl536lh5" path="res://Menu/MenuPlanet.cs" id="3"]
 [ext_resource type="PackedScene" uid="uid://bl1jmx0xuh3jm" path="res://PlanetMesh2.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://LavaPlanetMesh.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://kilgyqdh02op" path="res://LavaPlanetMesh.tscn" id="5"]
 
 [sub_resource type="Sky" id="1"]
 

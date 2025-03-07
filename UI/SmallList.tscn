@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://biagx72xi2rqt"]
 
-[ext_resource path="res://UI/SmallList.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://jtdffiemopv6" path="res://UI/SmallList.cs" id="1"]
 
 [node name="SmallList" type="Panel"]
 offset_right = 189.0
 offset_bottom = 183.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }

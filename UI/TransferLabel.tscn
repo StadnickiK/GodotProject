@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://b003alrq5y4i1"]
 
-[ext_resource path="res://UI/TransferLabel.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://dony6k6l385xy" path="res://UI/TransferLabel.cs" id="1"]
 
 [node name="TransferLabel" type="HBoxContainer"]
 offset_right = 480.0
 offset_bottom = 24.0
-custom_minimum_size = Vector2( 480, 22 )
+custom_minimum_size = Vector2(480, 22)
 size_flags_horizontal = 3
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -69,6 +69,7 @@ offset_top = 5.0
 offset_right = 480.0
 offset_bottom = 19.0
 text = "Resource 0 : 1000000"
+
 [connection signal="button_up" from="FastLeft" to="." method="_on_FastLeft_button_up"]
 [connection signal="button_up" from="Left" to="." method="_on_Left_button_up"]
 [connection signal="button_up" from="Right" to="." method="_on_Right_button_up"]

@@ -1,14 +1,15 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://b0eyr3dmo0rhe"]
 
-[ext_resource path="res://Menu/NewSceneButton.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://cdtlrdnq56ego" path="res://Menu/NewSceneButton.cs" id="1"]
 
 [node name="NewSceneButton" type="Button"]
 offset_right = 272.0
 offset_bottom = 53.0
 size_flags_vertical = 3
 text = "Play"
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="button_up" from="." to="." method="_on_button_up"]

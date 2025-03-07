@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3 uid="uid://crtw5r4628b2h"]
 
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="1"]
-[ext_resource type="Script" path="res://UI/PlanetInterface.cs" id="2"]
+[ext_resource type="Script" uid="uid://p7qk3xtfike7" path="res://UI/PlanetInterface.cs" id="2"]
 [ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="2_4b3kr"]
-[ext_resource type="Script" path="res://UI/BuildMenu.cs" id="2_a1sp5"]
+[ext_resource type="Script" uid="uid://kt6pxl3077rj" path="res://UI/BuildMenu.cs" id="2_a1sp5"]
 [ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="4"]
-[ext_resource type="Script" path="res://UI/BuildingPanel.cs" id="4_cb1m1"]
+[ext_resource type="Script" uid="uid://cg0wvj3psirpa" path="res://UI/BuildingPanel.cs" id="4_cb1m1"]
 [ext_resource type="PackedScene" uid="uid://4l0t3vw6ub8r" path="res://UI/Build_button.tscn" id="5_5o4pk"]
-[ext_resource type="Script" path="res://UI/BuildButton.cs" id="6_1gfal"]
+[ext_resource type="Script" uid="uid://dmqv3lqisku2g" path="res://UI/BuildButton.cs" id="6_1gfal"]
 
 [node name="PlanetInterface" type="Control"]
 layout_mode = 3

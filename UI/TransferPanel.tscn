@@ -1,14 +1,14 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://d12g7ebb4638d"]
 
-[ext_resource path="res://UI/TransferPanel.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://bdmy4xu4qwo66" path="res://UI/TransferPanel.cs" id="1"]
 
 [node name="TransferPanel" type="ScrollContainer"]
 offset_right = 500.0
 offset_bottom = 231.0
-custom_minimum_size = Vector2( 0, 250 )
+custom_minimum_size = Vector2(0, 250)
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -25,7 +25,7 @@ __meta__ = {
 [node name="Top" type="HBoxContainer" parent="Container"]
 offset_right = 500.0
 offset_bottom = 28.0
-custom_minimum_size = Vector2( 0, 28 )
+custom_minimum_size = Vector2(0, 28)
 size_flags_horizontal = 3
 
 [node name="Local" type="Label" parent="Container/Top"]

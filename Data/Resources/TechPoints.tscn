@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://y34xe6vvtka5"]
 
-[ext_resource type="Script" path="res://Map/Resource.cs" id="1"]
+[ext_resource type="Script" uid="uid://dn3aujlofwcj7" path="res://Map/Resource.cs" id="1"]
 
 [node name="Technology Points" type="Node"]
 script = ExtResource("1")

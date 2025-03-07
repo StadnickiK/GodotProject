@@ -1,22 +1,23 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://cjxm6r5s77ar3"]
 
-[ext_resource path="res://KinematicCube.cs" type="Script" id=1]
-[ext_resource path="res://Barrel.tscn" type="PackedScene" id=2]
+[ext_resource type="Script" uid="uid://65recohmmhue" path="res://KinematicCube.cs" id="1"]
+[ext_resource type="PackedScene" uid="uid://c25j2tdxv0ohn" path="res://Barrel.tscn" id="2"]
 
-[sub_resource type="BoxMesh" id=1]
+[sub_resource type="BoxMesh" id="1"]
 
-[sub_resource type="BoxShape3D" id=2]
+[sub_resource type="BoxShape3D" id="2"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource( 1 )
+mesh = SubResource("1")
 material/0 = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource( 2 )
+shape = SubResource("2")
 
-[node name="Barrel" parent="." instance=ExtResource( 2 )]
-transform = Transform3D( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 2, 0, 0.940136, -3.4843 )
+[node name="Barrel" parent="." instance=ExtResource("2")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 2, 0, 0.940136, -3.4843)
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]

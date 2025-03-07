@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://4h88d7nq7l62"]
 
-[ext_resource type="Script" path="res://UI/BuildMenu.cs" id="1_qjv6o"]
+[ext_resource type="Script" uid="uid://kt6pxl3077rj" path="res://UI/BuildMenu.cs" id="1_qjv6o"]
 
 [node name="BuildMenuScroll" type="ScrollContainer"]
 visible = false

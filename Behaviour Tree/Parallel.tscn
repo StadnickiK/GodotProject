@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://ya5h2etpx6da"]
 
-[ext_resource path="res://Behaviour Tree/Parallel.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://bdhjgqem3py3c" path="res://Behaviour Tree/Parallel.cs" id="1"]
 
 [node name="Parallel" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")

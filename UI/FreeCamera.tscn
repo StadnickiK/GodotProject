@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://j71w4i837oot"]
 
-[ext_resource type="Script" path="res://InnerGimbal.cs" id="1"]
-[ext_resource type="Script" path="res://CameraGimbal.cs" id="2"]
-[ext_resource type="Script" path="res://Camera.cs" id="3"]
+[ext_resource type="Script" uid="uid://x1rvpy48d4g0" path="res://InnerGimbal.cs" id="1"]
+[ext_resource type="Script" uid="uid://lk0u6cugutm3" path="res://CameraGimbal.cs" id="2"]
+[ext_resource type="Script" uid="uid://dwd6uj2cwt86l" path="res://Camera.cs" id="3"]
 
 [node name="CameraGimbal" type="Node3D"]
 script = ExtResource("2")

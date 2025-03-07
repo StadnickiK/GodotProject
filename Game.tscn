@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://eelyfleej1wb"]
 
 [ext_resource type="PackedScene" uid="uid://c0lhmp3fj6tkb" path="res://Menu/MainMenu.tscn" id="1"]
-[ext_resource type="Script" path="res://Map/Generator.cs" id="2"]
-[ext_resource type="Script" path="res://Game.cs" id="3"]
+[ext_resource type="Script" uid="uid://dnbi0a2oao2o" path="res://Map/Generator.cs" id="2"]
+[ext_resource type="Script" uid="uid://dieyn7q3vdibs" path="res://Game.cs" id="3"]
 
 [node name="Game" type="Node3D"]
 script = ExtResource("3")

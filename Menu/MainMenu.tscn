@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://c0lhmp3fj6tkb"]
 
 [ext_resource type="PackedScene" uid="uid://2tb1823d4u38" path="res://Menu/Background.tscn" id="1"]
-[ext_resource type="Script" path="res://Menu/ExitButton.cs" id="2"]
+[ext_resource type="Script" uid="uid://cpb8hv2w7bk6y" path="res://Menu/ExitButton.cs" id="2"]
 [ext_resource type="PackedScene" uid="uid://cth8qdcx4tb8j" path="res://UI/NewGame.tscn" id="3"]
-[ext_resource type="Script" path="res://Menu/MainMenu.cs" id="4"]
+[ext_resource type="Script" uid="uid://dskq2wrugl1ab" path="res://Menu/MainMenu.cs" id="4"]
 [ext_resource type="Theme" uid="uid://herq15xa5tcn" path="res://Themes/Main_Menu_theme.tres" id="5"]
 
 [node name="MainMenu" type="Control"]

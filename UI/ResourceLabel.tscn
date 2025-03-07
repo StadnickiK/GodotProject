@@ -1,16 +1,16 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://dgeimfas4j6wc"]
 
-[ext_resource path="res://Themes/Resource_Panel_theme.tres" type="Theme" id=1]
-[ext_resource path="res://UI/ResourceLabel.cs" type="Script" id=2]
+[ext_resource type="Theme" path="res://Themes/Resource_Panel_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://b3by5jmn0upke" path="res://UI/ResourceLabel.cs" id="2"]
 
 [node name="ResourceLabel" type="HBoxContainer"]
 offset_right = 76.0
 offset_bottom = 14.0
 tooltip_text = "Resource Name"
-theme = ExtResource( 1 )
+theme = ExtResource("1")
 theme_override_constants/separation = 5
 alignment = 1
-script = ExtResource( 2 )
+script = ExtResource("2")
 __meta__ = {
 "_edit_use_anchors_": false
 }
