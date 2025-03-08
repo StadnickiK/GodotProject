@@ -81,6 +81,10 @@ Right_click={
 
 pointing/emulate_touch_from_mouse=true
 
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
 [rendering]
 
 environment/defaults/default_environment="res://default_env.tres"
