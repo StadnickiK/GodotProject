@@ -162,10 +162,10 @@ public partial class Player : Node
                 ResourcesChanged = true;
             }
             if(node is IGetTotalUpkeep upkeep){
-                upkeep.GetTotalUpkeep(_resourceManager.Upkeep);
+                //upkeep.GetTotalUpkeep(_resourceManager.Upkeep);
             }
             if(node is IGetTotalProdCost prodCost){
-                prodCost.GetTotalProdCost(_resourceManager.ProdCost);
+                prodCost.GetTotalProdCost(_resourceManager.ProdCost.Upkeep);
             }
         }
         //_resourceManager.PayUpkeep(_resourceManager.Upkeep);
@@ -181,7 +181,7 @@ public partial class Player : Node
 
     public void InitResourceLimit(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-            _resourceManager.UpdateResourceLimit(planet.BuildingsManager.Buildings);
+            _resourceManager.ResourceLimits.UpdateUpkeep(planet.BuildingsManager.Buildings);
         }
     }
 
@@ -192,11 +192,11 @@ public partial class Player : Node
     }
 
     public void UpdateResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
-        ResManager.UpdateResourceLimit(resourceLimits);
+        ResManager.ResourceLimits.UpdateUpkeep(resourceLimits);
     }
 
     public void RemoveResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
-        ResManager.RemoveResourceLimit(resourceLimits);
+        ResManager.ResourceLimits.RemoveUpkeep(resourceLimits);
     }
 
     public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
@@ -210,7 +210,7 @@ public partial class Player : Node
     public void UpdateResourceLimit(Planet planet){
         if(planet.BuildingsManager.BuildingsChanged){
             var buildings = planet.BuildingsManager.LastBuilding;
-            _resourceManager.UpdateResourceLimit(buildings);
+            _resourceManager.ResourceLimits.UpdateUpkeep(buildings);
             Upkeep.UpdateUpkeep(buildings);
             planet.BuildingsManager.BuildingsChanged = false;
         }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dufp5i1gb2nls"]
+[gd_scene load_steps=14 format=3 uid="uid://dufp5i1gb2nls"]
 
 [ext_resource type="Script" uid="uid://bjxlbphmllo8f" path="res://Map/Planet/Planet.cs" id="1"]
 [ext_resource type="Script" uid="uid://n78lmvf8vbys" path="res://Map/Planet/Orbit.cs" id="2"]
@@ -6,9 +6,8 @@
 [ext_resource type="Script" uid="uid://bcf05ukffighv" path="res://Map/Planet/Populations.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://lnnpy38q0r1f" path="res://PlanetMesh.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://yl8cdcu0qwep" path="res://Map/Planet/Population.tscn" id="7"]
-[ext_resource type="Script" uid="uid://c8lmkdqi58akp" path="res://Map/ResourceManager.cs" id="7_tamxe"]
+[ext_resource type="PackedScene" uid="uid://cy4um4b67wiwl" path="res://Map/resource_manager.tscn" id="7_jd6dn"]
 [ext_resource type="Script" uid="uid://b0q0d1cts1tdt" path="res://Map/ConstructionManager.cs" id="8_144ly"]
-[ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="8_y0cwd"]
 [ext_resource type="Script" uid="uid://cbugmctr4xjbw" path="res://Map/BuildingManager.cs" id="9_tnti5"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="10_gmh37"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionArea.tscn" id="11_wx722"]
@@ -39,11 +38,7 @@ script = ExtResource("5")
 [node name="Label3D" parent="." instance=ExtResource("3")]
 transform = Transform3D(0.117576, 0, 0, 0, 0.117576, 0, 0, 0, 0.117576, 0, 1, 0)
 
-[node name="ResourceManager" type="Node3D" parent="."]
-script = ExtResource("7_tamxe")
-
-[node name="Node" type="Node" parent="ResourceManager"]
-script = ExtResource("8_y0cwd")
+[node name="ResourceManager" parent="." instance=ExtResource("7_jd6dn")]
 
 [node name="ConstructionManager" type="Node3D" parent="."]
 script = ExtResource("8_144ly")

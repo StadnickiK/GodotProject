@@ -13,23 +13,19 @@ public partial class ResourceManager : Node
 
     public UpkeepComponent ResourceLimits { get; set; }
 
-    public Dictionary<int, int> ProdCost { get; set; } = new Dictionary<int, int>();
+    public UpkeepComponent ProdCost { get; set; }
 
     public bool ProdCostChanged { get; set; } = false;
 
-    public Dictionary<int, int> Production { get; set; } = new Dictionary<int, int>();
-
-    public bool ProductionChanged { get; set; } = false;
+    public UpkeepComponent Production { get; set; }
 
     public int TotalResourceLimit { get; set; } = -1; // used for dynamaic resource limit allocation, -1 if not used
 
-    public bool ResourceLimitChanged { get; set; } = false;
-
-    public bool ResourcesChanged { get; set; } = false;
-
     public override void _Ready()
     {
-        
+        ResourceLimits = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
+        Production = GetNodeOrNull<UpkeepComponent>("Production");
+        ProdCost = GetNodeOrNull<UpkeepComponent>("ProdCost");
     }
 
     public bool TransferResources(IResourceManager target, int resourceName, int quantity){
@@ -48,72 +44,6 @@ public partial class ResourceManager : Node
                 return true;
             }
         return false;
-    }
-
-    public void UpdateResourceLimit(List<Building> buildings){  
-        foreach(Building building in buildings){
-            if(building.ResourceLimits != null)
-                UpdateResourceLimit(building);
-        }
-    }
-
-    public void UpdateResourceLimit(Building building){
-        if(building.ResourceLimits != null)
-            foreach(var resourceName in building.ResourceLimits.Keys){
-                if(ResourceLimits.ContainsKey(resourceName)){
-                    ResourceLimits[resourceName] += building.ResourceLimits[resourceName];
-                    ResourceLimitChanged = true;   
-                }else{
-                    ResourceLimits.Add(resourceName, building.ResourceLimits[resourceName]);
-                    ResourceLimitChanged = true;   
-                }
-            }
-    }
-
-    public void UpdateResourceLimit(Dictionary<int, int> resourceLimits){
-            foreach(var res in resourceLimits){
-                if(ResourceLimits.ContainsKey(res.Key)){
-                    ResourceLimits[res.Key] += res.Value;
-                    ResourceLimitChanged = true;   
-                }else{
-                    ResourceLimits.Add(res.Key, res.Value);
-                    ResourceLimitChanged = true;   
-                }
-            }
-    }
-
-    public void RemoveResourceLimit(Dictionary<int, int> resourceLimits){
-            foreach(var res in resourceLimits){
-                if(ResourceLimits.ContainsKey(res.Key)){
-                    ResourceLimits[res.Key] -= res.Value;
-                    ResourceLimitChanged = true;   
-                }
-            }
-    }
-
-    public void RemoveResourceLimit(Building building){
-        if(building.ResourceLimits != null)
-            foreach(var resourceName in building.ResourceLimits.Keys){
-                if(ResourceLimits.ContainsKey(resourceName)){
-                    ResourceLimits[resourceName] -= building.ResourceLimits[resourceName];
-                    ResourceLimitChanged = true;   
-                }
-            }
-    }
-
-    public void UpdateResourceLimit(Building newBuilding, Building oldBuilding){
-        RemoveResourceLimit(oldBuilding);
-        UpdateResourceLimit(newBuilding);
-    }
-
-    public void UpdateResourceLimit(int resourceName, int quantity){
-                if(ResourceLimits.ContainsKey(resourceName)){
-                    ResourceLimits[resourceName] += quantity;
-                    ResourceLimitChanged = true;   
-                }else{
-                    ResourceLimits.Add(resourceName, quantity);
-                    ResourceLimitChanged = true;   
-                }
     }
 
     public bool PayCost(Dictionary<int, int> BuildCost){
@@ -216,12 +146,12 @@ public partial class ResourceManager : Node
 
     public bool HasLimit(int resourceName, int quantity){
         if(TotalResourceLimit < 0){
-            if(ResourceLimits.ContainsKey(resourceName))
+            if(ResourceLimits.Upkeep.ContainsKey(resourceName))
                 if(HasResource(resourceName)){
-                    if((ResourceLimits[resourceName] - Resources[resourceName]) > quantity)
+                    if((ResourceLimits.Upkeep[resourceName] - Resources[resourceName]) > quantity)
                         return true;
                 }else{
-                    if(ResourceLimits[resourceName] > quantity)
+                    if(ResourceLimits.Upkeep[resourceName] > quantity)
                         return true;
                 }
         }else{
@@ -231,17 +161,17 @@ public partial class ResourceManager : Node
     }
 
     public bool CheckDynamicLimit(int resourceName, int quantity){
-        if(ResourceLimits.ContainsKey(resourceName)){
+        if(ResourceLimits.Upkeep.ContainsKey(resourceName)){
             if(HasResource(resourceName)){
-                if((ResourceLimits[resourceName] - Resources[resourceName]) > quantity)
+                if((ResourceLimits.Upkeep[resourceName] - Resources[resourceName]) > quantity)
                     return true;
             }else{
-                if(ResourceLimits[resourceName] > quantity)
+                if(ResourceLimits.Upkeep[resourceName] > quantity)
                     return true;
             }
         }else{
             if(quantity <= TotalResourceLimit){
-                ResourceLimits.Add(resourceName, quantity);
+                ResourceLimits.Upkeep.Add(resourceName, quantity);
                 return true;
             }
         }
@@ -249,8 +179,8 @@ public partial class ResourceManager : Node
     }
 
     public int GetResourceFillPercent(int resName){
-        if(ResourceLimits.ContainsKey(resName) && Resources.ContainsKey(resName)){
-            return Resources[resName] / ResourceLimits[resName];
+        if(ResourceLimits.Upkeep.ContainsKey(resName) && Resources.ContainsKey(resName)){
+            return Resources[resName] / ResourceLimits.Upkeep[resName];
         }
         return 0;
     }
@@ -260,25 +190,22 @@ public partial class ResourceManager : Node
                 foreach(int productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
-                        if(ResourceLimits.ContainsKey(productName))
-                            if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
+                        if(ResourceLimits.Upkeep.ContainsKey(productName))
+                            if(quantity<ResourceLimits.Upkeep[productName]){  // case for no resource limit may be required
                                 if(PayCost(building.ProductCost)){
                                     Resources.Add(productName, quantity);
-                                    ResourcesChanged = true;
                                 }
                             }
                     }else{
                         var quantity = building.Products[productName];
-                        if(ResourceLimits.ContainsKey(productName))
-                            if(Resources[productName] + quantity<ResourceLimits[productName]){
+                        if(ResourceLimits.Upkeep.ContainsKey(productName))
+                            if(Resources[productName] + quantity<ResourceLimits.Upkeep[productName]){
                                 if(PayCost(building.ProductCost)){
                                     Resources[productName] += quantity;
-                                    ResourcesChanged = true;
                                 }
                         }else{
                             if(PayCost(building.ProductCost)){
-                                Resources[productName] = ResourceLimits[productName];
-                                ResourcesChanged = true;
+                                Resources[productName] = ResourceLimits.Upkeep[productName];
                             }
                         }
                     }
@@ -292,25 +219,22 @@ public partial class ResourceManager : Node
                 foreach(int productName in building.Products.Keys){
                     if(!Resources.ContainsKey(productName)){
                         var quantity = building.Products[productName];
-                        if(ResourceLimits.ContainsKey(productName))
-                            if(quantity<ResourceLimits[productName]){  // case for no resource limit may be required
+                        if(ResourceLimits.Upkeep.ContainsKey(productName))
+                            if(quantity<ResourceLimits.Upkeep[productName]){  // case for no resource limit may be required
                                 if(PayCost(building.ProductCost)){
                                     Resources.Add(productName, quantity);
-                                    ResourcesChanged = true;
                                 }
                             }
                     }else{
                         var quantity = building.Products[productName];
-                        if(ResourceLimits.ContainsKey(productName))
-                            if(Resources[productName] + quantity<ResourceLimits[productName]){
+                        if(ResourceLimits.Upkeep.ContainsKey(productName))
+                            if(Resources[productName] + quantity<ResourceLimits.Upkeep[productName]){
                                 if(PayCost(building.ProductCost)){
                                     Resources[productName] += quantity;
-                                    ResourcesChanged = true;
                                 }
                         }else{
                             if(PayCost(building.ProductCost)){
-                                Resources[productName] = ResourceLimits[productName];
-                                ResourcesChanged = true;
+                                Resources[productName] = ResourceLimits.Upkeep[productName];
                             }
                         }
                     }
@@ -319,42 +243,39 @@ public partial class ResourceManager : Node
     }
 
         public void AddResource(Resource resource){
-                    if(Resources[resource.Index] + resource.Quantity<ResourceLimits[resource.Index]){
+                    if(Resources[resource.Index] + resource.Quantity<ResourceLimits.Upkeep[resource.Index]){
                             if(Resources.ContainsKey(resource.Index)){
                                 Resources[resource.Index] += resource.Quantity;
                             }else{
                                 Resources.Add(resource.Index, resource.Quantity);
                             }
-                            ResourcesChanged = true;
                         
                     }else{
                             if(Resources.ContainsKey(resource.Index)){
-                                Resources[resource.Index] = ResourceLimits[resource.Index];
+                                Resources[resource.Index] = ResourceLimits.Upkeep[resource.Index];
                             }else{
                                 Resources.Add(resource.Index, resource.Quantity);
                             }
-                            ResourcesChanged = true;
                         
                     }
         }
 
     public void AddResource(int resourceName, int quantity){
         if(Resources.ContainsKey(resourceName)){
-            if(ResourceLimits.ContainsKey(resourceName))
-                if(Resources[resourceName] + quantity <= ResourceLimits[resourceName]){
+            if(ResourceLimits.Upkeep.ContainsKey(resourceName))
+                if(Resources[resourceName] + quantity <= ResourceLimits.Upkeep[resourceName]){
                     Resources[resourceName] += quantity;
                 }else{
-                    Resources[resourceName] = ResourceLimits[resourceName];
+                    Resources[resourceName] = ResourceLimits.Upkeep[resourceName];
                 }
         }else{
-            if(ResourceLimits.ContainsKey(resourceName)){
-                if(quantity <= ResourceLimits[resourceName]){
+            if(ResourceLimits.Upkeep.ContainsKey(resourceName)){
+                if(quantity <= ResourceLimits.Upkeep[resourceName]){
                     Resources.Add(resourceName, quantity);
                 }
             }else{
                 Resources.Add(resourceName, 0);
             }
         }
-        ResourcesChanged = true;  
     }
 }

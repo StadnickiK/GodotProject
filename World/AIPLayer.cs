@@ -799,7 +799,7 @@ public partial class AIPlayer : Player
             var reqResObj = GetBlackBoardObj("ResourceRequirements");
             var reqRes = (Dictionary<string, int>)reqResObj;
             foreach(var res in ResManager.Resources.Keys){
-                if(ResManager.Resources[res] >= ResManager.ResourceLimits[res]){
+                if(ResManager.Resources[res] >= ResManager.ResourceLimits.Upkeep[res]){
                     var stockpiles = _data.GetBuildingsList().FirstOrDefault(x => (x.Products.Count == 0 && x.ResourceLimits.ContainsKey(res)));
                     if(stockpiles != null){
                         var reqBuildings = (Dictionary<Building, int>)GetBlackBoardObj("BuildingsToBuild");
