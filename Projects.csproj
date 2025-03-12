@@ -145,5 +145,6 @@
     <Compile Include="UI\PlanetInterfaceBuildQueue.cs" />
     <Compile Include="Map\Planet\UpkeepComponent.cs" />
     <Compile Include="Map\Planet\ResourceProductionComponent.cs" />
+    <Compile Include="UI\InfoPanel.cs" />
   </ItemGroup>
 </Project>

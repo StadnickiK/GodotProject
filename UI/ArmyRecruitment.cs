@@ -8,7 +8,7 @@ public partial class ArmyRecruitment : HBoxContainer
 	public List<UnitCard> unitCards { get; set; } = new List<UnitCard>();
 
 	[Export]
-	public string ItemScenePath { get; set; } = "res://UI/UnitCard.cs";
+	public string ItemScenePath { get; set; } = "res://UI/Unit_Card.tscn";
 	
 	PackedScene scene;
 

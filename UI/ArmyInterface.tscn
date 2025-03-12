@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cd8trni2dvfhs"]
+[gd_scene load_steps=9 format=3 uid="uid://cd8trni2dvfhs"]
 
 [ext_resource type="Script" uid="uid://bx7dpobofd476" path="res://UI/ArmyInterface.cs" id="1_d84et"]
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="3_e5ywv"]
 [ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="3_e85fu"]
 [ext_resource type="Script" uid="uid://06i2q4qhrlqd" path="res://UI/ArmyPanel.cs" id="3_susb5"]
 [ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="5_f5nni"]
+[ext_resource type="Script" uid="uid://bibq2sy8hsrc6" path="res://UI/InfoPanel.cs" id="5_rae23"]
 [ext_resource type="Script" uid="uid://c0p30ub3sq80t" path="res://UI/ArmyRecruitment.cs" id="7_10yej"]
 [ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="7_voeq7"]
 
@@ -59,10 +60,20 @@ size_flags_vertical = 3
 [node name="Header" parent="VBoxContainer" instance=ExtResource("3_e5ywv")]
 layout_mode = 2
 
-[node name="InfoPanel" type="Label" parent="VBoxContainer"]
+[node name="InfoPanel" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+script = ExtResource("5_rae23")
+
+[node name="Controller" type="Label" parent="VBoxContainer/InfoPanel"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
 text = "Owned by"
+
+[node name="Upkeep" type="Label" parent="VBoxContainer/InfoPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Upkeep:"
+horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -1,9 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://dgeimfas4j6wc"]
 
-[ext_resource type="Theme" path="res://Themes/Resource_Panel_theme.tres" id="1"]
+[ext_resource type="Theme" uid="uid://b7crhjawdbgw3" path="res://Themes/Resource_Panel_theme.tres" id="1"]
 [ext_resource type="Script" uid="uid://b3by5jmn0upke" path="res://UI/ResourceLabel.cs" id="2"]
 
 [node name="ResourceLabel" type="HBoxContainer"]
+custom_minimum_size = Vector2(100, 20)
 offset_right = 76.0
 offset_bottom = 14.0
 tooltip_text = "Resource Name"
@@ -11,22 +12,23 @@ theme = ExtResource("1")
 theme_override_constants/separation = 5
 alignment = 1
 script = ExtResource("2")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Name" type="Label" parent="."]
-offset_right = 135.0
-offset_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
 text = "Very long name of resource:"
 
 [node name="Value" type="Label" parent="."]
-offset_left = 140.0
-offset_right = 185.0
-offset_bottom = 14.0
-mouse_filter = 0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+mouse_filter = 0
 text = "1000000"
+
+[node name="Income" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+mouse_filter = 0
+text = "(-1000000)"

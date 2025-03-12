@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c8lmkdqi58akp" path="res://Map/ResourceManager.cs" id="1_2y0qy"]
 [ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="2_4qau0"]
 
-[node name="ResourceManager" type="Node3D"]
+[node name="ResourceManager" type="Node"]
 script = ExtResource("1_2y0qy")
 
 [node name="ResourceLimits" type="Node" parent="."]

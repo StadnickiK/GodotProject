@@ -132,7 +132,7 @@ private Data _data = null;
 	void ConnectSignals(){
 		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
-		_UI.ResPanel.InitResourcePanel(_data.GetData("Resources"));
+		_UI.ResPanel.InitResourcePanel(_data.Resources);
 		_UI.PInterface._data = _data;
 		_UI.PInterface.InitBuildingsPanel();
 		//_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
@@ -151,7 +151,7 @@ private Data _data = null;
 	void _on_SelectUnit(PhysicsBody3D body){
 		_wcc._SelectUnit(body);
 		
-		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
+		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body, _data.Resources);
 	}
 
 	void _on_HideArmyInterface(){

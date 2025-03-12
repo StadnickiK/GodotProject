@@ -24,7 +24,7 @@ public partial class ArmyInterface : Control
 
 	ArmyPanel _army = null;
 
-	Label info;
+	InfoPanel info;
 
 	BuildMenu _buildMenu;
 
@@ -47,11 +47,17 @@ public partial class ArmyInterface : Control
 		_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
 		_army = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
-		info = GetNode<Label>("VBoxContainer/InfoPanel");
+		info = GetNode<InfoPanel>("VBoxContainer/InfoPanel");
 	}
 
-	void UpdateInfo(Ship ship){
-		info.Text = "Owned by " + ship.Controller.Name;
+	void UpdateInfo(Ship ship, System.Collections.Generic.Dictionary<int, Resource> resources){
+		info.Controller.Text = "Owned by " + ship.Controller.Name;
+		var upkeep = "\tUpkeep: ";
+		foreach (var item in ship.Units.UpkeepComponent.Upkeep)
+		{
+			upkeep += resources[item.Key].ResourceName +":"+item.Value+" ";
+		}
+		info.Upkeep.Text = upkeep;
 	}
 
 	void ConnectSignals(){
@@ -78,12 +84,12 @@ public partial class ArmyInterface : Control
 		//_buildings.InitAllBuildings(_data.GetData("Buildings"), this);
 	}
 
-	public void UpdateArmyPanel(Ship ship){
+	public void UpdateArmyPanel(Ship ship, System.Collections.Generic.Dictionary<int, Resource> resources){
 		if(ship != null){
 			Visible = true;
 			_mapArmy = ship;
 			SetTitle(ship.Name);
-			UpdateInfo(ship);
+			UpdateInfo(ship, resources);
 			_army.UpdateArmyList(ship.Units.UnitsList);
 			// if(ship.Vision){
 

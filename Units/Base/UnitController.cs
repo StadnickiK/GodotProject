@@ -6,8 +6,6 @@ public partial class UnitController : Node
 {
     public List<Unit> UnitsList { get; } = new List<Unit>();
 
-    public Dictionary<int, int> Upkeep { get; set; }
-
     public UpkeepComponent UpkeepComponent { get; set; }
 
 	public override void _Ready()

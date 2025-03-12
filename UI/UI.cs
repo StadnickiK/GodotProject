@@ -19,6 +19,7 @@ public partial class UI : Control
 
     public TopLeftPanel TopLeft { get; set; } = null;
 
+    public RichTextLabel ResLabelTooltip { get; set; }
     private Control _menu = null;
     public Control WorldMenu
     {
@@ -57,7 +58,7 @@ public partial class UI : Control
         }
         if(player.ResourcesChanged){
             if(player.ResManager != null){
-                ResPanel.UpdatePanel(player.ResManager.Resources);
+                ResPanel.UpdatePanel(player.ResManager, player.Upkeep);
                 player.ResourcesChanged = false;
             }
         }

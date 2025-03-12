@@ -385,6 +385,13 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
         }
     }
 
+    public void _on_BuildingFinished(List<Building> buildings){
+        ResourcesManager.Production.UpdateUpkeep(buildings);
+        ResourcesManager.ProdCost.UpdateUpkeep(buildings);
+        Controller.ResManager.Production.UpdateUpkeep(buildings);
+        Controller.ResManager.ProdCost.UpdateUpkeep(buildings);
+    }
+
     public void ChangeController(Player player){
             if(player != Controller){
                 if(Controller != null){
@@ -409,6 +416,8 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
 
         _constructions = GetNode<ConstructionManager>("ConstructionManager");
         _buildingsManager = GetNode<BuildingManager>("BuildingManager");
+        var list = new List<Building>();
+        _buildingsManager.BuildingFinished += _on_BuildingFinished;
         ResourcesManager = GetNode<ResourceManager>("ResourceManager");
 
         //AddChild(BuildingsManager);

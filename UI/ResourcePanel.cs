@@ -15,6 +15,12 @@ public partial class ResourcePanel : Panel
     [Export]
     public string ScenePath { get; set; } = "res://UI/ResourceLabel.tscn";
 
+    [Export]
+    public Color Positive { get; set; } = new Color("green");
+
+    [Export]
+    public Color Negative { get; set; } = new Color("red");
+
     Dictionary<int, ResourceLabel> resLabels = new Dictionary<int, ResourceLabel>();
 
     void GetNodes(){
@@ -27,38 +33,27 @@ public partial class ResourcePanel : Panel
         ResourceLabelScene = (PackedScene)ResourceLoader.Load(ScenePath);
     }
 
-    public void UpdatePanel(Dictionary<int, int> Resources){
-        if(Initialized){
-            foreach(var resName in Resources.Keys){
-                if(resLabels.ContainsKey(resName)){
-                    resLabels[resName].SetValue(Resources[resName]);
+    public void UpdatePanel(ResourceManager resourceManager, UpkeepComponent upkeepComponent){
+            foreach(var res in resourceManager.Resources){
+                if(resLabels.ContainsKey(res.Key)){
+                    resLabels[res.Key].Update(res.Value, resourceManager.Production.Upkeep[res.Key]);
+                    resLabels[res.Key].TooltipText = "[b]"+ resLabels[res.Key].ResourceName + "[/b]\n\n";
+                    resLabels[res.Key].TooltipText += "[color="+Positive.ToHtml()+"][b]Production: [/b]" + resourceManager.Production.Upkeep[res.Key] +"[/color]\n\n";
+
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Production cost: [/b]" + resourceManager.ProdCost.Upkeep[res.Key] +"[/color]\n";
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Upkeep: [/b]" + upkeepComponent.Upkeep[res.Key] +"[/color]\n\n";
+                    
+                    var color = resourceManager.Production.Upkeep[res.Key] > 0 ? Positive.ToHtml() : Negative.ToHtml();
+                    resLabels[res.Key].TooltipText += "[color="+color+"][b]Total: [/b]" + resourceManager.Production.Upkeep[res.Key] +"[/color]\n\n";
                 }else{
-                    CreateResourceLabel(resName, Resources[resName]);
+                    //CreateResourceLabel(resName, Resources[resName]);
                 }
             }
-            foreach(Node node in _hBox.GetChildren()){ // horizontalBox
-                if(node is ResourceLabel label){
-                    // if(Resources.ContainsKey(label.ResourceName.Text)){
-                    //     //label.SetValue(Resources[label.ResourceName.Text].Quantity);
-                    //     label.SetValue(Resources[label.ResourceName.Text]);
-                    // }else{
-                    //     //GD.Print("Update resource panel "+label.ResourceName.Text);
-                    // }
-                }
-            }
-        }else{
-            foreach(KeyValuePair<int, int> resource in Resources){
-                CreateResourceLabel(resource.Key, resource.Value);
-            }
-            Initialized = true; 
-        }
     }
 
-    public void InitResourcePanel(Godot.Collections.Array<Node> nodes){
-        foreach(var r in nodes){
-            if(r is Resource resource){
-                CreateResourceLabel(resource);
-            }
+    public void InitResourcePanel(Dictionary<int, Resource> resources){
+        foreach(var r in resources){
+            CreateResourceLabel(r.Value);  
         }
     }
 
