@@ -51,10 +51,18 @@ public partial class ResourcePanel : Panel
             }
     }
 
-    public void InitResourcePanel(Dictionary<int, Resource> resources){
+    public void InitResourcePanel(List<Resource> resources){
         foreach(var r in resources){
-            CreateResourceLabel(r.Value);  
+            CreateResourceLabel(r);  
         }
+    }
+
+    ResourceLabel CreateResourceLabel(Resource resource, int quantity = 0){
+        if(resLabels.Keys.Contains(resource.Index)) return null;
+        var label = CreateResourceLabel(resource.Index);
+        if(resource.IconPlaceholder != null)
+            label.ResourceName.Text = resource.IconPlaceholder.ToString();
+        return label;
     }
 
     ResourceLabel CreateResourceLabel(int resName, int quantity = 0){
@@ -74,14 +82,6 @@ public partial class ResourcePanel : Panel
         }
         label.ResourceName.Text = resName.ToString();
         label.Value.Text = quantity.ToString();
-        return label;
-    }
-
-    ResourceLabel CreateResourceLabel(Resource resource, int quantity = 0){
-        if(resLabels.Keys.Contains(resource.Index)) return null;
-        var label = CreateResourceLabel(resource.Index);
-        if(resource.IconPlaceholder != null)
-            label.ResourceName.Text = resource.IconPlaceholder.ToString();
         return label;
     }
 

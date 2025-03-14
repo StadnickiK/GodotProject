@@ -18,35 +18,35 @@ public partial class Building : Node, IBuilding, IUpkeep
     public int CurrentTime { get; set; } = 0;
 
     [Export]
-    Godot.Collections.Dictionary<int, int> ExportProducts { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportProducts { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> Products { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportProductCost { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportProductCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
     public System.Collections.Generic.Dictionary<int, int> ProductCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     // public bool HasProductCost { get; set; } = false;
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportResourceLimits { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportResourceLimits { get; set; } = new Godot.Collections.Dictionary<string, int>();
     public System.Collections.Generic.Dictionary<int, int> ResourceLimits { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportOperationCost { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportOperationCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
      public List<Resource> OperationCost { get; set; } = new List<Resource>();
 
     [Export]
-     Godot.Collections.Dictionary<int, Array<int>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<int>>();
+    public Godot.Collections.Dictionary<int, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<string>>();
 
      public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
 

@@ -4,6 +4,6 @@
 
 [node name="Credits" instance=ExtResource("1")]
 Index = 1
-ResourceName = "Union Credits"
-IconPlaceholder = "U"
+ResourceName = "Credits"
+IconPlaceholder = "C"
 Location = 0

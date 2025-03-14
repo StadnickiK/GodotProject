@@ -50,7 +50,7 @@ public partial class ArmyInterface : Control
 		info = GetNode<InfoPanel>("VBoxContainer/InfoPanel");
 	}
 
-	void UpdateInfo(Ship ship, System.Collections.Generic.Dictionary<int, Resource> resources){
+	void UpdateInfo(Ship ship, System.Collections.Generic.List<Resource> resources){
 		info.Controller.Text = "Owned by " + ship.Controller.Name;
 		var upkeep = "\tUpkeep: ";
 		foreach (var item in ship.Units.UpkeepComponent.Upkeep)
@@ -84,7 +84,7 @@ public partial class ArmyInterface : Control
 		//_buildings.InitAllBuildings(_data.GetData("Buildings"), this);
 	}
 
-	public void UpdateArmyPanel(Ship ship, System.Collections.Generic.Dictionary<int, Resource> resources){
+	public void UpdateArmyPanel(Ship ship, System.Collections.Generic.List<Resource> resources){
 		if(ship != null){
 			Visible = true;
 			_mapArmy = ship;

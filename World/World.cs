@@ -354,7 +354,7 @@ private Data _data = null;
 					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 					// 	}
 					// }
-					foreach(Resource resource in _data.Resources.Values){
+					foreach(Resource resource in _data.Resources){
 							if(resource.IsStarter == true && 
 								planet.Controller != null && 
 								(resource.ResourceType == Resource.Type.Ore))

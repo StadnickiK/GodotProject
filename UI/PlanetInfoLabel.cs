@@ -29,7 +29,7 @@ public partial class PlanetInfoLabel : Control
 		Container.AddChild(label);
 	}
 
-	public void InitResources(Planet planet, Dictionary<int, Resource> resources){
+	public void InitResources(Planet planet, List<Resource> resources){
 		this.planet = planet;
 		foreach(int resID in planet.ResourcesManager.Resources.Keys){
 			AddLabel(resources[resID]);

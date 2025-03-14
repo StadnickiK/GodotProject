@@ -23,7 +23,7 @@ public partial class ResourceManager : Node
 
     public override void _Ready()
     {
-        ResourceLimits = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
+        ResourceLimits = GetNodeOrNull<UpkeepComponent>("ResourceLimits");
         Production = GetNodeOrNull<UpkeepComponent>("Production");
         ProdCost = GetNodeOrNull<UpkeepComponent>("ProdCost");
     }

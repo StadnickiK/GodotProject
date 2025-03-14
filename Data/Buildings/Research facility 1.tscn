@@ -4,14 +4,7 @@
 
 [node name="Research facility 1" instance=ExtResource("1")]
 IsStarter = false
-Products = {
-"Research points": 20
-}
-BuildCost = {
-"Resource 0": 200,
-"Resource 1": 200
-}
-ResourceLimits = {
-"Research points": 300
-}
+ExportProducts = Dictionary[String, int]({
+"Technology Points": 100
+})
 Type = 1

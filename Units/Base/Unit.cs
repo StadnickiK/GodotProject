@@ -16,17 +16,17 @@ public partial class Unit : Node, IBuilding, IUpkeep
 	public int CurrentTime { get; set; } = 0;
 
     [Export]
-     Godot.Collections.Dictionary<int, Array<int>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<int>>();
+    public Godot.Collections.Dictionary<int, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<string>>();
 
      public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
 
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-     Godot.Collections.Dictionary<int, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<int, int>();
+    public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 

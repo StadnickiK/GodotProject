@@ -2,6 +2,8 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 public partial class Data : Node
 {
@@ -9,6 +11,8 @@ public partial class Data : Node
     public override void _Ready()
     {
         GetNodes();
+        LoadBuildingResources();
+        LoadUnitResources();
     }
 
     void GetNodes(){
@@ -16,13 +20,16 @@ public partial class Data : Node
         GetBuildings();
     }
 
-    public Dictionary<int, Resource> Resources { get; set; } = new Dictionary<int, Resource>();
+    public List<Resource> Resources { get; set; } = new List<Resource>();
 
     void GetResources(){
         var arr = GetData("Resources");
-        foreach(Resource resource in arr){
-            if(!Resources.ContainsKey(resource.Index)){}
-                Resources.Add(resource.Index, resource);
+        for(int i = 0; i < arr.Count; i++){
+            var resource = (Resource)arr[i];
+            if(!Resources.Contains(resource)){
+                resource.Index = i;
+                Resources.Add(resource);
+            }
         }
     }
 
@@ -33,6 +40,43 @@ public partial class Data : Node
         foreach(Building resource in arr){
             Buildings.Add(resource);
         }
+    }
+
+    void LoadBuildingResources(){
+        System.Threading.Tasks.Parallel.ForEach (Buildings, building => {
+            building.ResourceLimits = LoadResourceCost(building.ExportResourceLimits);
+            building.ProductCost = LoadResourceCost(building.ExportProductCost);
+            building.Products = LoadResourceCost(building.ExportProducts);
+            building.BuildCost = LoadResourceCost(building.ExportBuildCost);
+            building.Upkeep = LoadResourceCost(building.ExportUpkeep);
+        });
+    }
+
+    void LoadUnitResources(){
+        System.Threading.Tasks.Parallel.ForEach (Units, unit => {
+            unit.BuildCost = LoadResourceCost(unit.ExportBuildCost);
+            unit.Upkeep = LoadResourceCost(unit.ExportUpkeep);
+        });
+    }
+
+    Dictionary<int, int> LoadResourceCost(Godot.Collections.Dictionary<string, int> exportResourceCost){
+        var cost = new Dictionary<int, int>();
+        string resName = "";
+        try
+        {
+            foreach(var resource in exportResourceCost){
+                resName = resource.Key;
+                cost.Add(Resources.FirstOrDefault(x => x.ResourceName == resName).Index ,resource.Value);
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine("Erro searching for given resource name "+resName+"\n"+ex.Message);
+            throw;
+        }
+        
+
+        return cost;
     }
 
     public List<Technology> Technologies { get; set; } = new List<Technology>();

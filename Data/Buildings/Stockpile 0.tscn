@@ -5,10 +5,10 @@
 [node name="Stockpile 0" type="Node"]
 script = ExtResource("1")
 BuildTime = 10
-BuildCost = {
-"Resource 0": 200
-}
-ResourceLimits = {
-"Resource 0": 1000
-}
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 2500
+})
+ExportResourceLimits = Dictionary[String, int]({
+"Common Ores": 1000
+})
 Type = 1

@@ -5,13 +5,12 @@
 
 [node name="Unit 1" type="Node"]
 script = ExtResource("1")
-BuildCost = {
-"Credits": 5000,
-"Resource 0": 200
-}
-Upkeep = {
-"Credits": 1000
-}
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 5000
+})
+ExportUpkeep = Dictionary[String, int]({
+"Credits": 100
+})
 
 [node name="Stats" type="Node" parent="."]
 

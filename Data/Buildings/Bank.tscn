@@ -5,4 +5,13 @@
 [node name="Bank" type="Node"]
 script = ExtResource("1")
 IsStarter = true
+ExportProducts = Dictionary[String, int]({
+"Credits": 500
+})
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 4000
+})
+ExportResourceLimits = Dictionary[String, int]({
+"Credits": 10000
+})
 Type = 1

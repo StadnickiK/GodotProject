@@ -6,3 +6,9 @@
 script = ExtResource("1")
 IsStarter = true
 BuildTime = 10
+ExportProducts = Dictionary[String, int]({
+"Common Ores": 500
+})
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 5000
+})
