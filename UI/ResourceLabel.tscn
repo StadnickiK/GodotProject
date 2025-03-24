@@ -23,12 +23,10 @@ text = "Very long name of resource:"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
-mouse_filter = 0
 text = "1000000"
 
 [node name="Income" type="Label" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
-mouse_filter = 0
 text = "(-1000000)"

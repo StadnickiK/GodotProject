@@ -18,6 +18,7 @@ public partial class Data : Node
     void GetNodes(){
         GetResources();
         GetBuildings();
+        GetUnits();
     }
 
     public List<Resource> Resources { get; set; } = new List<Resource>();
@@ -31,6 +32,24 @@ public partial class Data : Node
                 Resources.Add(resource);
             }
         }
+    }
+
+    public Dictionary<int,int> GetResourcesIndexList(){
+        var resources = new Dictionary<int,int>();
+		foreach (var res in Resources)
+		{
+			resources.Add(res.Index, 0);
+		}
+        return resources;
+    }
+
+    public Dictionary<int,int> GetStartResources(){
+        var resources = new Dictionary<int,int>();
+		foreach (var res in Resources)
+		{
+			resources.Add(res.Index, 0);
+		}
+        return resources;
     }
 
     public List<Building> Buildings { get; set; } = new List<Building>();
@@ -57,6 +76,15 @@ public partial class Data : Node
             unit.BuildCost = LoadResourceCost(unit.ExportBuildCost);
             unit.Upkeep = LoadResourceCost(unit.ExportUpkeep);
         });
+    }
+
+    public Unit GetUnit(int id){
+        var unit = (Unit)Units[id].Duplicate();
+        unit.UnitName = Units[id].UnitName;
+        unit.BuildCost = Units[id].BuildCost;
+        unit.Upkeep = Units[id].Upkeep;
+
+        return unit;
     }
 
     Dictionary<int, int> LoadResourceCost(Godot.Collections.Dictionary<string, int> exportResourceCost){
@@ -92,8 +120,9 @@ public partial class Data : Node
 
     void GetUnits(){
         var arr = GetData("Units");
-        foreach(Unit resource in arr){
-            Units.Add(resource);
+        foreach(Unit unit in arr){
+            unit.UnitName = unit.Name;
+            Units.Add(unit);
         }
     }
 

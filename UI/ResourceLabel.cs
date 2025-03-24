@@ -7,7 +7,13 @@ public partial class ResourceLabel : HBoxContainer
     // private int a = 2;
     // private string b = "text";
 
-    
+    public delegate void ResourceLabelDelegate(ResourceLabel sender);
+
+    public event ResourceLabelDelegate MouseEnteredResLabel;
+
+    public event ResourceLabelDelegate MouseExitedResLabel;
+
+    public string ResName { get; set; } = "";
 
     private Label _resourceName = null;
     public Label ResourceName
@@ -53,12 +59,9 @@ public partial class ResourceLabel : HBoxContainer
     }
 
     public void SetIncome(int income){
-        Value.Text = income.ToString();
+        var text = income > 0 ? "+"+income : income.ToString();
+        _income.Text = text;
     }
-
-     public void SetValueTooltip(string tip){
-         Value.TooltipText = tip;
-     }
 
      public void SetTip(string tip){
          TooltipText = tip;
@@ -69,12 +72,16 @@ public partial class ResourceLabel : HBoxContainer
         _resourceName.Theme = theme;
      }
 
-    // public override Control _MakeCustomTooltip(string forText)
-    // {
-    //     var tooltip = new RichTextLabel();
-    //     tooltip.Text = TooltipText;
-    //     return tooltip;
-    // }
+    public override Control _MakeCustomTooltip(string forText)
+    {
+        var tooltip = new RichTextLabel();
+        tooltip.Text = TooltipText;
+        tooltip.BbcodeEnabled = true;
+        tooltip.Show();
+        tooltip.FitContent = true;
+        tooltip.CustomMinimumSize = new Vector2(200, 100);
+        return tooltip;
+    }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()

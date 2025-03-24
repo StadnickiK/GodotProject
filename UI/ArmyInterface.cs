@@ -52,10 +52,10 @@ public partial class ArmyInterface : Control
 
 	void UpdateInfo(Ship ship, System.Collections.Generic.List<Resource> resources){
 		info.Controller.Text = "Owned by " + ship.Controller.Name;
-		var upkeep = "\tUpkeep: ";
+		var upkeep = "\tUpkeep:";
 		foreach (var item in ship.Units.UpkeepComponent.Upkeep)
 		{
-			upkeep += resources[item.Key].ResourceName +":"+item.Value+" ";
+			upkeep += " " + item.Value+" " + resources[item.Key].IconPlaceholder;
 		}
 		info.Upkeep.Text = upkeep;
 	}

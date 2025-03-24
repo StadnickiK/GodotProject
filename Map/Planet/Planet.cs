@@ -386,10 +386,12 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
     }
 
     public void _on_BuildingFinished(List<Building> buildings){
-        ResourcesManager.Production.UpdateUpkeep(buildings);
-        ResourcesManager.ProdCost.UpdateUpkeep(buildings);
-        Controller.ResManager.Production.UpdateUpkeep(buildings);
-        Controller.ResManager.ProdCost.UpdateUpkeep(buildings);
+        var prod = Building.GetBuildingsProduction(buildings);
+        var prodCost = Building.GetBuildingsProductionCost(buildings);
+        ResourcesManager.Production.UpdateUpkeep(prod);
+        ResourcesManager.ProdCost.UpdateUpkeep(prodCost);
+        Controller.AddProduction(prod);
+        Controller.AddProductionCost(prodCost);
     }
 
     public void ChangeController(Player player){

@@ -71,4 +71,30 @@ public partial class Building : Node, IBuilding, IUpkeep
     {
         Name = base.Name;
     }
+
+    public static System.Collections.Generic.Dictionary<int, int> GetBuildingsProduction(System.Collections.Generic.List<Building> buildings){
+        var production = new System.Collections.Generic.Dictionary<int, int>();
+        foreach (var building in buildings){
+            foreach(var res in building.Products)
+            if(production.ContainsKey(res.Key)){
+                production[res.Key] = res.Value;
+            }else{
+                production.Add(res.Key, res.Value);
+            }
+        }
+        return production;
+    }
+
+    public static System.Collections.Generic.Dictionary<int, int> GetBuildingsProductionCost(System.Collections.Generic.List<Building> buildings){
+        var production = new System.Collections.Generic.Dictionary<int, int>();
+        foreach (var building in buildings){
+            foreach(var res in building.ProductCost)
+                if(production.ContainsKey(res.Key)){
+                    production[res.Key] = res.Value;
+                }else{
+                    production.Add(res.Key, res.Value);
+                }
+        }
+        return production;
+    }
 }

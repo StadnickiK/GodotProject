@@ -68,7 +68,7 @@ public partial class BuildingInterface : Panel
 
     public void UpdateInterface(Unit unit){
         if(unit != null){
-            _title.Text = unit.Name;
+            _title.Text = unit.UnitName;
             _desc.Text = "";
             _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
             foreach(var resName in unit.BuildCost.Keys){

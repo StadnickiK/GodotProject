@@ -9,6 +9,14 @@ public partial class Player : Node
 
     public string PlayerName { get; set; }
 
+    public delegate void ResourcesChangedEventHandler(Player player);
+
+    public event ResourcesChangedEventHandler ProdChanged;
+
+    public event ResourcesChangedEventHandler ProdCostChanged;
+
+    public event ResourcesChangedEventHandler UpkeepChanged;
+
     [Export]
     public Color PlayerColor { get; set; }
 
@@ -24,7 +32,7 @@ public partial class Player : Node
 
     public List<int> Technologies { get; set; } = new List<int>();
 
-    public Array<Ship> Ships { get; set; } = new Array<Ship>();
+    public List<Ship> Ships { get; set; } = new List<Ship>();
 
     public ConstructionManager Research { get; set; } //= new ConstructionManager();
 
@@ -33,6 +41,8 @@ public partial class Player : Node
     public List<Planet> Planets { get; set; } = new List<Planet>();
 
     public UpkeepComponent Upkeep { get; set; }
+
+    public UpkeepComponent TotalProduction { get; set; }
 
     private Array<CollisionObject3D> _MapObejcts = new Array<CollisionObject3D>();
     public Array<CollisionObject3D> MapObjects
@@ -86,21 +96,70 @@ public partial class Player : Node
         return null;
     }    
 
+    public void AddUpkeep(System.Collections.Generic.Dictionary<int, int> upkeep){
+        Upkeep.UpdateUpkeep(upkeep);
+        TotalProduction.RemoveUpkeep(upkeep);
+        UpkeepChanged?.Invoke(this);
+           
+    }
+
+    public void RemoveUpkeep(System.Collections.Generic.Dictionary<int, int> upkeep){
+        Upkeep.RemoveUpkeep(upkeep);
+        TotalProduction.UpdateUpkeep(upkeep);
+        UpkeepChanged?.Invoke(this);
+    }
+
+    public void AddProduction(System.Collections.Generic.Dictionary<int, int> prod){
+        ResManager.Production.UpdateUpkeep(prod);
+        TotalProduction?.UpdateUpkeep(prod);
+        ProdChanged?.Invoke(this); 
+    }
+
+    public void RemoveProduction(System.Collections.Generic.Dictionary<int, int> prod){
+        ResManager.Production.RemoveUpkeep(prod);
+        TotalProduction.RemoveUpkeep(prod); 
+        ProdChanged?.Invoke(this); 
+    }
+
+    public void AddProductionCost(System.Collections.Generic.Dictionary<int, int> prod){
+        ResManager.ProdCost.UpdateUpkeep(prod);
+        TotalProduction?.RemoveUpkeep(prod); 
+        ProdCostChanged?.Invoke(this); 
+    }
+
+    public void RemoveProductionCost(System.Collections.Generic.Dictionary<int, int> prod){
+        ResManager.ProdCost.RemoveUpkeep(prod);
+        TotalProduction.UpdateUpkeep(prod); 
+        ProdCostChanged?.Invoke(this); 
+    }
+
     public void AddMapObject(CollisionObject3D mapObject){
         MapObjects.Add(mapObject);
-        if(mapObject is Ship ship)
+        if(mapObject is Ship ship){
             Ships.Add(ship);
-        if(mapObject is Planet planet)
+            ship.Units.AddUpkeep += UpdateUpkeep;
+            ship.Units.RemoveUpkeep += RemoveUpkeep;
+        }
+        if(mapObject is Planet planet){
             Planets.Add(planet);
+            AddProduction(planet.ResourcesManager.Production.Upkeep);
+            AddProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+        }
         MapObjectsChanged = true;
     }
 
     public void RemoveMapObject(CollisionObject3D mapObject){
         MapObjects.Remove(mapObject);
-        if(mapObject is Ship ship)
+        if(mapObject is Ship ship){
             Ships.Remove(ship);
-        if(mapObject is Planet planet)
+            ship.Units.AddUpkeep -= UpdateUpkeep;
+            ship.Units.RemoveUpkeep -= RemoveUpkeep;
+        }
+        if(mapObject is Planet planet){
             Planets.Remove(planet);
+            RemoveProduction(planet.ResourcesManager.Production.Upkeep);
+            RemoveProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+        }
         MapObjectsChanged = true;
     }
 
@@ -114,6 +173,7 @@ public partial class Player : Node
         _resourceManager = GetNode<ResourceManager>("ResourceManager");
         Research = GetNode<ConstructionManager>("TechManager");
         Upkeep = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
+        TotalProduction = GetNodeOrNull<UpkeepComponent>("TotalProduction");
         // AddChild(ResManager);
         // AddChild(Research);
         // for(int i = 0; i<5; i++){
@@ -201,10 +261,6 @@ public partial class Player : Node
 
     public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
         Upkeep.UpdateUpkeep(resources);
-    }
-
-    public void RemoveUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
-        Upkeep.RemoveUpkeep(resources);
     }
 
     public void UpdateResourceLimit(Planet planet){

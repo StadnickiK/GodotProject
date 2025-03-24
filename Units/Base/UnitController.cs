@@ -8,6 +8,12 @@ public partial class UnitController : Node
 
     public UpkeepComponent UpkeepComponent { get; set; }
 
+    public delegate void ChangeUpkeepEventHandler(Dictionary<int, int> upkeep);
+
+    public event ChangeUpkeepEventHandler AddUpkeep;
+
+    public event ChangeUpkeepEventHandler RemoveUpkeep;
+
 	public override void _Ready()
 	{
 		UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
@@ -17,12 +23,15 @@ public partial class UnitController : Node
         AddChild(unit);
         UnitsList.Add(unit);
         UpkeepComponent?.UpdateUpkeep(unit);
+        AddUpkeep?.Invoke(unit.Upkeep);
     }
 
     public void RemoveUnit(int unitID){
         UpkeepComponent?.RemoveUpkeep(UnitsList[unitID]);
+        RemoveUpkeep?.Invoke(UnitsList[unitID].Upkeep);
+        RemoveChild(UnitsList[unitID]);
         UnitsList.RemoveAt(unitID);
-        //GetChildren()[unitID].QueueFree();
+    
     }
 
     public void TranferUnit(UnitController unitController, int unitID){

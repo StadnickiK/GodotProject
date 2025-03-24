@@ -13,6 +13,8 @@ public partial class Unit : Node, IBuilding, IUpkeep
 	[Export]
 	public int BuildTime { get; set; } = 10;
 
+	public string UnitName { get; set; }
+
 	public int CurrentTime { get; set; } = 0;
 
     [Export]

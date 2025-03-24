@@ -50,6 +50,10 @@ public partial class UI : Control
         UnitTransferP = GetNode<UnitTransferPanel>("UnitTransferPanel");
     }
 
+    public void UpdateResPanel(Player player){
+        ResPanel.UpdatePanel(player.ResManager, player.Upkeep);
+    }
+
     public void UpdateUI(Player player){
         if(player.MapObjectsChanged){
             RPanel.UpdateRightPanel(player);
@@ -58,7 +62,7 @@ public partial class UI : Control
         }
         if(player.ResourcesChanged){
             if(player.ResManager != null){
-                ResPanel.UpdatePanel(player.ResManager, player.Upkeep);
+                UpdateResPanel(player);
                 player.ResourcesChanged = false;
             }
         }

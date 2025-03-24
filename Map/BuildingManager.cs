@@ -77,13 +77,22 @@ public partial class BuildingManager : Node
     void UpdateConstruction(){
         if(_constructions.ConstructionList.Count > 0){
             LastBuilding = IbuildingToBuilding(_constructions.UpdateConstruction());
-            ConstructionListChanged = true;
-            BuildingFinished?.Invoke(LastBuilding); // call BuildingFinished event with finioshed building list
             if(LastBuilding.Count>0){
+                ConstructionListChanged = true;
+                BuildingFinished?.Invoke(LastBuilding); // call BuildingFinished event with finioshed building list
                 Buildings.AddRange(LastBuilding);
                 AvaiableBuildings.RemoveAll(x => LastBuilding.Contains(x));
                 BuildingsChanged = true;
             }
+        }
+    }
+
+    public void AddBuildings(List<Building> buildings){   
+        if(buildings.Count>0){
+            BuildingFinished?.Invoke(buildings); // call BuildingFinished event with finioshed building list
+            Buildings.AddRange(buildings);
+            AvaiableBuildings.RemoveAll(buildings.Contains);
+            BuildingsChanged = true;
         }
     }
 

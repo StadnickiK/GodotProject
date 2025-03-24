@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class ResourcePanel : Panel
+public partial class ResourcePanel : Control
 {
     
     Control _hBox = null;
@@ -36,13 +36,20 @@ public partial class ResourcePanel : Panel
     public void UpdatePanel(ResourceManager resourceManager, UpkeepComponent upkeepComponent){
             foreach(var res in resourceManager.Resources){
                 if(resLabels.ContainsKey(res.Key)){
+                    
                     resLabels[res.Key].Update(res.Value, resourceManager.Production.Upkeep[res.Key]);
-                    resLabels[res.Key].TooltipText = "[b]"+ resLabels[res.Key].ResourceName + "[/b]\n\n";
-                    resLabels[res.Key].TooltipText += "[color="+Positive.ToHtml()+"][b]Production: [/b]" + resourceManager.Production.Upkeep[res.Key] +"[/color]\n\n";
+                    resLabels[res.Key].TooltipText = "[font_size=24][b]"+ resLabels[res.Key].ResName + "[/b][/font_size]\n\n";
+                    resLabels[res.Key].TooltipText += " \n";
+
+                    resLabels[res.Key].TooltipText += "[color="+Positive.ToHtml()+"][b]Production: [/b]" + resourceManager.Production.Upkeep[res.Key] +"[/color]\n";
+                    resLabels[res.Key].TooltipText += " \n";
 
                     resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Production cost: [/b]" + resourceManager.ProdCost.Upkeep[res.Key] +"[/color]\n";
-                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Upkeep: [/b]" + upkeepComponent.Upkeep[res.Key] +"[/color]\n\n";
-                    
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Upkeep: [/b]" + upkeepComponent.Upkeep[res.Key] +"[/color]\n";
+                    var total = resourceManager.ProdCost.Upkeep[res.Key] + upkeepComponent.Upkeep[res.Key];
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Total spending: [/b]" + total +"[/color]\n";
+                    resLabels[res.Key].TooltipText += " \n";
+
                     var color = resourceManager.Production.Upkeep[res.Key] > 0 ? Positive.ToHtml() : Negative.ToHtml();
                     resLabels[res.Key].TooltipText += "[color="+color+"][b]Total: [/b]" + resourceManager.Production.Upkeep[res.Key] +"[/color]\n\n";
                 }else{
@@ -60,6 +67,7 @@ public partial class ResourcePanel : Panel
     ResourceLabel CreateResourceLabel(Resource resource, int quantity = 0){
         if(resLabels.Keys.Contains(resource.Index)) return null;
         var label = CreateResourceLabel(resource.Index);
+        label.ResName = resource.ResourceName;
         if(resource.IconPlaceholder != null)
             label.ResourceName.Text = resource.IconPlaceholder.ToString();
         return label;

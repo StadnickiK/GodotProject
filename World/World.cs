@@ -283,12 +283,12 @@ private Data _data = null;
 						//ship.MapObject = planet.System;
 						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
-						player.MapObjects.Add(ship);
+						player.AddMapObject(ship);
 						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
 						for(int i = 0;i<5;i++){
-							ship.Units.AddUnit(((PackedScene)GD.Load(unitFileName)).Instantiate<Unit>());
+							var unit = _data.GetUnit(0);
+							ship.Units.AddUnit(unit);
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
-							// ship.ResourcesManager.TotalResourceLimit += unit.Stats["Storage"].BaseValue;
 						}
 						if(_Player != player){
 							//ship.Visible = false;
@@ -377,6 +377,20 @@ private Data _data = null;
 		}
 	}
 
+	void InitPlayerStartResources(){
+		var resources = _data.GetResourcesIndexList();
+		var starResources = _data.GetStartResources();
+
+		foreach (var player in PlayersList)
+		{
+			// without new dictionary the game would use one for all of those instead of separate ones
+			player.ResManager.Resources = new Dictionary<int, int>(starResources);
+			player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);;
+			player.ResManager.ProdCost.Upkeep = new Dictionary<int, int>(resources);
+			player.Upkeep.Upkeep = new Dictionary<int, int>(resources);;
+		}
+	}
+
 	void InitResistance(){
 		foreach(StarSystem system in _map.galaxy.StarSystems){
 			foreach(Node node in system.StarSysObjects.GetChildren()){
@@ -420,19 +434,22 @@ private Data _data = null;
 
 	void InitWorldBuildings(){
 		var startBuildings = new List<Building>();
-		foreach(Node node in _data.GetData("Buildings")){
-			if(node is Building building)
+		foreach(var building in _data.Buildings){
 				if(building.IsStarter == true)
 					startBuildings.Add(building);			
 		}
 		foreach(Player player in Players.GetChildren()){
 			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){
-				planet.BuildingsManager.Buildings.AddRange(startBuildings);
+				planet.BuildingsManager.AddBuildings(startBuildings);
 				InitAvaiableBuildings(planet);
 			}
 			player.InitResourceLimit();
 		}
 	}	
+
+	void ChangePlayer(Player player){
+	   	
+	}
 
 	void InitWorld(){
 		InitRand();
@@ -442,6 +459,7 @@ private Data _data = null;
 		InitStartPlanets();
 		InitStartFleets();
 		InitStartResources();
+		InitPlayerStartResources();
 		//InitResistance(); needs work
 		InitWorldBuildings();
 		ConnectPlanets();
@@ -498,6 +516,7 @@ private Data _data = null;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
+			_UI.ResPanel.UpdatePanel(_Player.ResManager, _Player.Upkeep);
 		}
 
 	}

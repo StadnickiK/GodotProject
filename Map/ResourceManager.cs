@@ -9,6 +9,7 @@ public partial class ResourceManager : Node
     public Dictionary<int, int> Resources
     {
         get { return _resources; }
+        set { _resources = value; }
     }
 
     public UpkeepComponent ResourceLimits { get; set; }

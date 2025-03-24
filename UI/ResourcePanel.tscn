@@ -15,14 +15,17 @@ cache/0/16/0/scale = 1.0
 [sub_resource type="Theme" id="2"]
 default_font = SubResource("1")
 
-[node name="ResourcePanel" type="Panel"]
+[node name="ResourcePanel" type="Control"]
+layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -960.0
 offset_right = 960.0
 offset_bottom = 24.0
+grow_horizontal = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 theme = SubResource("2")
 script = ExtResource("2")
 
