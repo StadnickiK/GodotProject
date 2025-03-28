@@ -273,19 +273,32 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
     /// <returns>bool</returns>
     public bool StartConstruction(IBuilding building){
         if(building != null)
-            if(Controller.ResManager.PayCost(building.BuildCost)){
-                if(building is Unit unit){
+                if(building is Unit unit)
+                    return StartRecruitment(unit);
+                if(building is Building b)
+                    return StartBuilding(b);
+        return false;
+    }
+
+    public bool StartRecruitment(Unit unit){
+            if(Controller.ResManager.PayCost(unit.BuildCost)){
                     _constructions.ConstructBuilding((unit));
                     return true;
-                }else{
-                    if(building is Building b){
-                        BuildingsManager.ConstructBuilding(b);
-                        return true;
-                    }
-                }
             }else{
                 EmitSignal(nameof(GameAlertEventHandler), this);
             }
+            return false;
+    }
+
+    public bool StartBuilding(Building building){
+        if(building != null)
+            if(!BuildingsManager.HasBuildingOrConstruct(building)) // check for duplicates
+                if(Controller.ResManager.PayCost(building.BuildCost)){
+                    BuildingsManager.ConstructBuilding(building);
+                    return true;
+                }else{
+                    EmitSignal(nameof(GameAlertEventHandler), this);
+                }
         return false;
     }
 

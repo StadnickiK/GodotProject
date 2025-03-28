@@ -46,23 +46,31 @@ public partial class BuildingInterface : Panel
         if(building != null){
             _title.Text = building.Name;
             _desc.Text = "";
-            _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
-            foreach(var resName in building.BuildCost.Keys){
-                _desc.Text = resName + " - " + building.BuildCost[resName] + "\n";
+            _desc.AppendText("[b][font_size=20]Build Cost[/font_size][/b]\n\n");
+            foreach(var resName in building.ExportBuildCost.Keys){
+                _desc.AppendText(resName + " - " + building.ExportBuildCost[resName] + "\n");
             }
             _desc.AppendText("\n[b]Construction time: [/b]" + building.BuildTime + "\n");
 
-            _desc.AppendText("\n[b][font_size=20]Production[/font_size][/b]\n");
-            foreach(var resourceName in building.Products.Keys){
-                _desc.AppendText(resourceName + " " + building.Products[resourceName] + "\n");
+            if(building.ExportProducts.Count > 0){
+                _desc.AppendText("\n[b][font_size=20]Production[/font_size][/b]\n");
+                foreach(var resourceName in building.ExportProducts.Keys){
+                    _desc.AppendText(resourceName + " " + building.ExportProducts[resourceName] + "\n");
+                }
             }
-            _desc.AppendText("\n[b][font_size=20]Production cost[/font_size][/b]\n");
-            foreach(var resName in building.ProductCost.Keys){
-                _desc.AppendText(resName + " " + building.ProductCost[resName] + "\n");
+            if(building.ExportProductCost.Count > 0){
+                _desc.AppendText("\n[b][font_size=20]Production cost[/font_size][/b]\n");
+                foreach(var resName in building.ExportProductCost.Keys){
+                    _desc.AppendText(resName + " " + building.ExportProductCost[resName] + "\n");
+                }
             }
-            foreach(var resName in building.ResourceLimits.Keys){
-                _desc.AppendText("\n[b]Storage capacity: [/b]" + building.ResourceLimits[resName]+"\n");
+            if(building.ExportResourceLimits.Count > 0){
+                _desc.AppendText("\n[b]Storage capacity: [/b]");
+                foreach(var resName in building.ExportResourceLimits.Keys){
+                    _desc.AppendText( resName + " "+ building.ExportResourceLimits[resName]+"\n");
+                }
             }
+            
         }
     }
 
@@ -71,8 +79,8 @@ public partial class BuildingInterface : Panel
             _title.Text = unit.UnitName;
             _desc.Text = "";
             _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
-            foreach(var resName in unit.BuildCost.Keys){
-                _desc.Text = resName + " - " + unit.BuildCost[resName] + "\n";
+            foreach(var resName in unit.ExportBuildCost.Keys){
+                _desc.Text = resName + " - " + unit.ExportBuildCost[resName] + "\n";
             }
             _desc.AppendText("\n[b]Construction time: [/b]" + unit.BuildTime + "\n");
 

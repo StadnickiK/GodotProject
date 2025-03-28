@@ -106,6 +106,12 @@ public partial class BuildingManager : Node
         return false;
     }
 
+    public bool HasBuildingOrConstruct(Building building){
+        if(Buildings.Contains(building) || Constructions.ConstructionList.Contains(building)) 
+            return true;
+        return false;
+    }
+
     public bool HasBuilding(string name){
         return (Buildings.FirstOrDefault(x => x.Name == name) != null);
     }

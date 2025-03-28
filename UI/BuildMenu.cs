@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class BuildMenu : ScrollContainer
 {
@@ -106,6 +107,10 @@ public partial class BuildMenu : ScrollContainer
 			}else{
 				label.Hide();
 			}
+	}
+
+	public void HideBuilding(Building building){
+		buildingLabels.FirstOrDefault(x => x.RefBuilding == building).Hide();
 	}
 
 	void _on_mouse_entered(){

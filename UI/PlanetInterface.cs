@@ -361,11 +361,13 @@ public partial class PlanetInterface : Control
 	}
 
 	void _on_StartConstruction(Node node){
-		if(node is IBuilding unit){
-			if(unit != null && _planet != null){
-				_planet.StartConstruction(unit);
-				// _planet.ConstructUnit(unit);
+		if(node is Unit unit){
+			if(node != null && _planet != null){
+				_planet.StartRecruitment(unit);
 			}
+		}else if(node is Building building){
+			if(_planet.StartBuilding(building))
+				_buildMenu.HideBuilding(building);
 		}
 	}
 
