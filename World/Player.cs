@@ -17,6 +17,8 @@ public partial class Player : Node
 
     public event ResourcesChangedEventHandler UpkeepChanged;
 
+    public event ResourcesChangedEventHandler PlayerResourcesChanged;
+
     [Export]
     public Color PlayerColor { get; set; }
 
@@ -212,23 +214,10 @@ public partial class Player : Node
     //     }
     // }
 
-    protected void UpdatePlayerResources(){
+    protected void UpdatePlayerResources(){ 
+        _resourceManager.AddResource(TotalProduction.Upkeep);
+        PlayerResourcesChanged?.Invoke(this);
         
-        foreach(var node in MapObjects){
-            if(node is Planet planet){
-                UpdateResourceLimit(planet);
-                //_resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
-                _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
-                ResourcesChanged = true;
-            }
-            if(node is IGetTotalUpkeep upkeep){
-                //upkeep.GetTotalUpkeep(_resourceManager.Upkeep);
-            }
-            if(node is IGetTotalProdCost prodCost){
-                prodCost.GetTotalProdCost(_resourceManager.ProdCost.Upkeep);
-            }
-        }
-        //_resourceManager.PayUpkeep(_resourceManager.Upkeep);
     }
 
     protected void InitPlayerResources(List<Resource> resources){

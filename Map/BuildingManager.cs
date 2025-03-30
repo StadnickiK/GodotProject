@@ -23,15 +23,39 @@ public partial class BuildingManager : Node
 
     public List<Building> LastBuilding { get; set; } = new List<Building>();
 
+    public List<Building> Buildings { get; } = new List<Building>();
+
+    public List<Building> AvaiableBuildings { get; } = new List<Building>();
+
+    public List<Building> CanPay { get; set; } = new List<Building>();
+
+    public List<Building> CantPay { get; set; } = new List<Building>();
+
     public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
 
     public bool HasConstruction => Constructions.CurrentConstruction().Count > 0;
 
+    public override void _Ready()
+    {
+        AddChild(_constructions);
+    }
 
     public List<Building> CurrentConstruction(){
         var currentConstruction = _constructions.CurrentConstruction();
         var Array = IbuildingToBuilding(currentConstruction);
         return Array;
+    }
+
+    public void UpdateCanPayBuildings(ResourceManager resourceManager){
+        CanPay.Clear();
+        CantPay.Clear();
+        foreach (var building in AvaiableBuildings){
+            if (resourceManager.CanPayCost(building.BuildCost)){
+                CanPay.Add(building);
+            }else{
+                CantPay.Add(building);
+            }   
+        }
     }
 
     List<Building> IbuildingToBuilding(List<IBuilding> originalArray){
@@ -46,17 +70,15 @@ public partial class BuildingManager : Node
     public void ConstructBuilding(Building building){
         if(building != null){
             _constructions.ConstructionList.Add(building);
-            // ConstructionArrayChanged = true;
+            AvaiableBuildings.Remove(building);
         }
     }
 
-    public List<Building> Buildings { get; } = new List<Building>();
-
-    public List<Building> AvaiableBuildings { get; } = new List<Building>();
-    public override void _Ready()
-    {
-        AddChild(_constructions);
+    public void CancelConstruction(Building building){
+        _constructions.ConstructionList.Remove(building);
+        AvaiableBuildings.Add(building);
     }
+
 
     // void UpdateConstruction(){
     //     if(CurrentConstruction != null){
@@ -69,6 +91,10 @@ public partial class BuildingManager : Node
     //         BuildingsChanged = true;
     //     }
     // }
+
+    public void UpdateAvaiableBuildings(Building building){
+        AvaiableBuildings.Add(building);
+    }
 
     public void UpdateAvaiableBuildings(List<Building> buildings){
         AvaiableBuildings.AddRange(buildings);

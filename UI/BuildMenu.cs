@@ -33,10 +33,9 @@ public partial class BuildMenu : ScrollContainer
 		}
 	}
 
-	public void InitAllBuildings(Array<Node> nodes, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
+	public void InitAllBuildings(List<Building> buildings, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
 		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
-		foreach(Node node in nodes){
-			if(node is Building building){
+		foreach(var building in buildings){
 				var label = (BuildingLabel)ItemScene.Instantiate();
 				label.RefBuilding = building;
 				label.Size = new Vector2(100, 100);
@@ -52,7 +51,6 @@ public partial class BuildMenu : ScrollContainer
 				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);
 				buildingLabels.Add(label);
-			}
 		}
 	}
 
@@ -104,6 +102,11 @@ public partial class BuildMenu : ScrollContainer
 		foreach(var label in buildingLabels)
 			if(buildingManager.AvaiableBuildings.Contains(label.RefBuilding)){
 				label.Show();
+				if(buildingManager.CanPay.Contains(label.RefBuilding)){
+					label.BButton.Disabled = false;
+				}else{
+					label.BButton.Disabled = true;
+				}
 			}else{
 				label.Hide();
 			}

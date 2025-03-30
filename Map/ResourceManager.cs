@@ -186,64 +186,7 @@ public partial class ResourceManager : Node
         return 0;
     }
 
-    public void UpdateResources(List<Building> buildings){
-            foreach(Building building in buildings){
-                foreach(int productName in building.Products.Keys){
-                    if(!Resources.ContainsKey(productName)){
-                        var quantity = building.Products[productName];
-                        if(ResourceLimits.Upkeep.ContainsKey(productName))
-                            if(quantity<ResourceLimits.Upkeep[productName]){  // case for no resource limit may be required
-                                if(PayCost(building.ProductCost)){
-                                    Resources.Add(productName, quantity);
-                                }
-                            }
-                    }else{
-                        var quantity = building.Products[productName];
-                        if(ResourceLimits.Upkeep.ContainsKey(productName))
-                            if(Resources[productName] + quantity<ResourceLimits.Upkeep[productName]){
-                                if(PayCost(building.ProductCost)){
-                                    Resources[productName] += quantity;
-                                }
-                        }else{
-                            if(PayCost(building.ProductCost)){
-                                Resources[productName] = ResourceLimits.Upkeep[productName];
-                            }
-                        }
-                    }
-                }
-            }
-    }
-
-    public void UpdateResources(Planet planet ){
-            foreach(Building building in planet.BuildingsManager.Buildings){
-                
-                foreach(int productName in building.Products.Keys){
-                    if(!Resources.ContainsKey(productName)){
-                        var quantity = building.Products[productName];
-                        if(ResourceLimits.Upkeep.ContainsKey(productName))
-                            if(quantity<ResourceLimits.Upkeep[productName]){  // case for no resource limit may be required
-                                if(PayCost(building.ProductCost)){
-                                    Resources.Add(productName, quantity);
-                                }
-                            }
-                    }else{
-                        var quantity = building.Products[productName];
-                        if(ResourceLimits.Upkeep.ContainsKey(productName))
-                            if(Resources[productName] + quantity<ResourceLimits.Upkeep[productName]){
-                                if(PayCost(building.ProductCost)){
-                                    Resources[productName] += quantity;
-                                }
-                        }else{
-                            if(PayCost(building.ProductCost)){
-                                Resources[productName] = ResourceLimits.Upkeep[productName];
-                            }
-                        }
-                    }
-                }
-            }
-    }
-
-        public void AddResource(Resource resource){
+    public void AddResource(Resource resource){
                     if(Resources[resource.Index] + resource.Quantity<ResourceLimits.Upkeep[resource.Index]){
                             if(Resources.ContainsKey(resource.Index)){
                                 Resources[resource.Index] += resource.Quantity;
@@ -259,7 +202,7 @@ public partial class ResourceManager : Node
                             }
                         
                     }
-        }
+    }
 
     public void AddResource(int resourceName, int quantity){
         if(Resources.ContainsKey(resourceName)){
@@ -278,5 +221,25 @@ public partial class ResourceManager : Node
                 Resources.Add(resourceName, 0);
             }
         }
+    }
+
+    public void AddResource(Dictionary<int, int> resources){
+        foreach(var resource in resources)
+            if(Resources.ContainsKey(resource.Key)){
+                if(ResourceLimits.Upkeep.ContainsKey(resource.Key))
+                    if(Resources[resource.Key] + resource.Value <= ResourceLimits.Upkeep[resource.Key]){
+                        Resources[resource.Key] += resource.Value;
+                    }else{
+                        Resources[resource.Key] = ResourceLimits.Upkeep[resource.Key];
+                    }
+            }else{
+                if(ResourceLimits.Upkeep.ContainsKey(resource.Key)){
+                    if(resource.Value <= ResourceLimits.Upkeep[resource.Key]){
+                        Resources.Add(resource.Key, resource.Value);
+                    }
+                }else{
+                    Resources.Add(resource.Key, 0);
+                }
+            }
     }
 }

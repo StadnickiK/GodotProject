@@ -10,6 +10,8 @@ public partial class BuildingPanel : ScrollContainer
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
 	
+	public BuildButton BuildButton { get; set; }
+
 	PackedScene scene;
 
 	public Vector2 LabelSize { get; set; } = new Vector2(100,100);
@@ -20,6 +22,7 @@ public partial class BuildingPanel : ScrollContainer
 	public override void _Ready()
 	{
         container = GetNode("BuildingPanel");
+		BuildButton = container.GetNode<BuildButton>("BuildButton");
 	}
 
 	public void ConnectBuildButtons(PlanetInterface planetInterface){
@@ -58,6 +61,12 @@ public partial class BuildingPanel : ScrollContainer
 			}
 			if(i > count)
 				buildingLabels[i].Hide();
+		}
+	}
+
+	public void	HidePlanetBuildings(){
+		foreach(var building in buildingLabels){
+			building.Hide();
 		}
 	}
 

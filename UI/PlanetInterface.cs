@@ -2,6 +2,7 @@ using Godot;
 using System;
 using Godot.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 // using System.Collections.Generic;
 
 
@@ -69,7 +70,7 @@ public partial class PlanetInterface : Control
 
     public void InitBuildingsPanel(){
         _buildings = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
-		_buildMenu.InitAllBuildings(_data.GetData("Buildings"), this);
+		_buildMenu.InitAllBuildings(_data.Buildings, this);
 		_recruitmentMenu.InitAllUnits(_data.GetData("Units"), this);
 		ConnectSignals();
 		_buildings.InitAllBuildings(_data.Buildings, this);
@@ -82,12 +83,13 @@ public partial class PlanetInterface : Control
 			if(planet.Vision){
 				UpdateOverview(planet);
 				UpdateOrbit(planet);
-				UpdateBuildings(planet);
+				
 				// UpdateTransferPanel(planet);
 				//UpdateConstruction(planet);
 				// if(planet.BuildingsManager.HasConstruction)
 				// 	_buildQueue.UpdateBuildQueue(planet.BuildingsManager.CurrentConstruction());
 			}
+			UpdateBuildings(planet);
 		}
 	}
 
@@ -211,67 +213,18 @@ public partial class PlanetInterface : Control
 	}
 
 	void UpdateBuildings(Planet planet){
-		// _overviewPanel.ClearPanel("Buildings");
-		UpdatePlanetBuildings(planet.BuildingsManager.Buildings);
 		if(planet.Controller != null){
 			if(planet.Controller.PlayerID == LocalPlayerID){
-				var tempLabel = new Label();
-				tempLabel.Text = "\n Construction list: \n";
-				_buildMenu.UpdateBuildMenu(planet.BuildingsManager);
+				_buildings.BuildButton.Show();
 				_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
-				UpdateAllBuildings(planet);
+			}else{
+				_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+				_buildings.BuildButton.Hide();
 			}
+		}else{
+			_buildings.HidePlanetBuildings();
+			_buildings.BuildButton.Hide();
 		}
-	}
-
-	void UpdatePlanetBuildings(List<Building> buildings){
-		// foreach(Building building in buildings){
-		// 	var label = (BuildingLabel)ItemScene.Instantiate();
-		// 	//label.SetMeta(building.Name, building);
-		// 	label.RefBuilding = building;
-		// 	label.Name = building.Name;
-		// 	if(label.BButton != null){
-		// 		label.BButton.Text = building.Name;
-		// 	}else{
-		// 		label.BButton = label.GetNode<Button>("Button");
-		// 		label.BButton.Text = building.Name;
-		// 	}
-		// 	// _overviewPanel.AddNodeToPanel("Buildings", label);
-		// 	label.Progress.Visible = false;
-		// 	if(label.Progress != null){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-		// 		label.Progress.Value = 0;							// has to be 0 otherwise progress is visible
-		// 		label.Progress.MaxValue = building.BuildTime;
-		// 	}
-		// }
-	}
-
-	void UpdateAllBuildings(Planet planet){ // todo: Separate construction and building list into separate nodes for better organization
-		// var construction = planet.BuildingsManager.CurrentConstruction();
-		// foreach(Node node in _data.GetData("Buildings")){
-		// 	if(node is Building building)
-		// 		if(CheckBuildingResources(planet, building)){
-		// 			if(_planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null){
-		// 				var label = (BuildingLabel)ItemScene.Instantiate();
-		// 				label.RefBuilding = building;
-		// 				// label.SetMeta(building.Name.Replace(" ",""), building);
-		// 				label.Name = building.Name;
-		// 				if(label.BButton != null){
-		// 					label.BButton.Text = building.Name;
-		// 				}else{
-		// 					label.BButton = label.GetNode<Button>("Button");
-		// 					label.BButton.Text = building.Name;
-		// 				}
-		// 				// _overviewPanel.AddNodeToPanel("Buildings", label);
-		// 				if(label.Progress != null && construction.Count > 0){                             // ProgressBar was null, bcs label.getnodes method is executed when label enters the tree, so it has to be done after AddNodeToPanel
-		// 					var currentBuilding = construction.Find(x => x.Name == building.Name);
-		// 					if(currentBuilding != null){
-		// 						label.Progress.Value = currentBuilding.CurrentTime;
-		// 						label.Progress.MaxValue = currentBuilding.BuildTime;
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// }
 	}
 
 	bool CheckBuildingResources(Planet planet, Building building){
@@ -287,50 +240,6 @@ public partial class PlanetInterface : Control
 		// 	}
 		// }
 		return true;
-	}
-
-	void UpdateConstruction(Planet planet){
-		// _overviewPanel.ClearPanel("Construction");
-		if(planet.Controller != null){
-			if(planet.Controller.PlayerID == LocalPlayerID){
-				var tempLabel = new Label();
-				tempLabel.Text = "\n Construction list: \n";
-				// _overviewPanel.AddNodeToPanel("Construction", tempLabel);
-				UpdateConstructionList(planet);
-			}
-		}
-	}
-
-	void UpdateConstructionList(Planet planet){
-		// Cleanup = true;
-		// foreach(var node in _data.GetData("Units"))
-		// 	if(node is Unit unit){
-		// 		var label = (BuildingLabel)ItemScene.Instantiate();
-		// 		label.SetMeta(unit.Name.ToString().Replace(" ", ""), unit);
-		// 		label.Name = unit.Name;
-		// 		if(label.BButton != null){
-		// 			label.BButton.Text = unit.Name;
-		// 		}else{
-		// 			label.BButton = label.GetNode<Button>("Button");
-		// 			label.BButton.Text = unit.Name;
-		// 		}
-		// 		// _overviewPanel.AddNodeToPanel("Construction", label);
-		// 		var constList = planet.Constructions.CurrentConstruction();
-		// 		if(constList != null){
-		// 			if(constList.Count > 0){
-		// 				if(constList[0] is Unit currentUnit){
-		// 					if(currentUnit.Name == unit.Name){
-		// 						label.Progress.Value = currentUnit.CurrentTime;
-		// 						label.Progress.MaxValue = currentUnit.BuildTime;
-		// 					}
-		// 				}
-		// 			}else{
-		// 				label.Progress.Value = 0;
-		// 				label.Progress.MaxValue = unit.BuildTime;
-		// 				Cleanup = false;
-		// 			}
-		// 		}
-		// 	}
 	}
 
 	public void _on_LabelGuiInputEvent(InputEvent input, Node node){
@@ -366,8 +275,11 @@ public partial class PlanetInterface : Control
 				_planet.StartRecruitment(unit);
 			}
 		}else if(node is Building building){
-			if(_planet.StartBuilding(building))
+			if(_planet.StartBuilding(building)){
 				_buildMenu.HideBuilding(building);
+				_buildings.UpdatePlanetBuildings(_planet.BuildingsManager);
+			}
+				
 		}
 	}
 
@@ -385,6 +297,8 @@ public partial class PlanetInterface : Control
 		var x = pos.X-(_buildMenu.Size.X/2);
 		var y = pos.Y-_buildMenu.Size.Y+20;
 		_buildMenu.Position = new Vector2(x, y);
+		_planet.BuildingsManager.UpdateCanPayBuildings(_planet.Controller.ResManager);
+		_buildMenu.UpdateBuildMenu(_planet.BuildingsManager);
 		_buildMenu.Show(); 
 	}
 
@@ -400,7 +314,7 @@ public partial class PlanetInterface : Control
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
 				if(_planet.Constructions.HasConstruct || Cleanup == true){
-					UpdateConstruction(_planet);
+					//UpdateConstruction(_planet);
 				}
 			}
 		}

@@ -10,6 +10,12 @@ public partial class BuildingLabel : Control
 
     public Button BButton { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <value></value>
+    [Export]
+    public bool ReversProgress { get; set; } = false;
     
     public Building RefBuilding { get; set; }
 
@@ -44,10 +50,7 @@ public partial class BuildingLabel : Control
         Show();
         RefBuilding = building;
         BButton.Text = building.Name;
-        Progress.Visible = true;
-        Progress.MaxValue = building.BuildTime;
-        Progress.Value = building.CurrentTime;
-        ProgressLabel.Text = building.CurrentTime +"/"+ building.BuildTime;
+        UpdateProgressBar(building);
     }
 
     public void UpdateProgress(IBuilding building){
@@ -56,10 +59,19 @@ public partial class BuildingLabel : Control
         SelfModulate = new Color(1, 1, 1, 0.5f);
         BButton.Text = building.Name;
         Show();
+        UpdateProgressBar(building);
+    }
+
+    void UpdateProgressBar(IBuilding building){
         Progress.Visible = true;
         Progress.MaxValue = building.BuildTime;
-        Progress.Value = building.CurrentTime;
-        ProgressLabel.Text = building.CurrentTime +"/"+ building.BuildTime;
+        if(ReversProgress){
+            Progress.Value = building.BuildTime - building.CurrentTime; // reverse build time, so it shows time remaining
+            ProgressLabel.Text = Progress.Value.ToString();
+        }else{
+            Progress.Value = building.CurrentTime;
+            ProgressLabel.Text = Progress.Value +"/"+ building.BuildTime;
+        }
     }
 
     public void UpdateBuilding(Building building){
@@ -94,8 +106,8 @@ public partial class BuildingLabel : Control
 
     void _on_Progress_value_changed(float value){
         if(value >= Progress.MaxValue){
-            BButton.Visible = true;
             Progress.Visible = false;
+            BButton.Visible = true;  
         }
         if(value < Progress.MaxValue){
             Progress.Visible = true;

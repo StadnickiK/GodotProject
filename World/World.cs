@@ -424,8 +424,7 @@ private Data _data = null;
 
 	void InitAvaiableBuildings(Planet planet){ // todo: Separate construction and building list into separate nodes for better organization
 		var construction = planet.BuildingsManager.CurrentConstruction();
-		foreach(Node node in _data.GetData("Buildings"))
-			if(node is Building building)
+		foreach(var building in _data.Buildings)
 				if(building.Requirements.Count == 0)
 					if(CheckBuildingResources(planet, building))
 						if(planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null)
