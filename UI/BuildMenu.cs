@@ -102,7 +102,7 @@ public partial class BuildMenu : ScrollContainer
 		foreach(var label in buildingLabels)
 			if(buildingManager.AvaiableBuildings.Contains(label.RefBuilding)){
 				label.Show();
-				if(buildingManager.CanPay.Contains(label.RefBuilding)){
+				if(buildingManager.CanPay.Contains(label.RefBuilding.Index)){
 					label.BButton.Disabled = false;
 				}else{
 					label.BButton.Disabled = true;

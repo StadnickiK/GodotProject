@@ -27,9 +27,9 @@ public partial class BuildingManager : Node
 
     public List<Building> AvaiableBuildings { get; } = new List<Building>();
 
-    public List<Building> CanPay { get; set; } = new List<Building>();
+    public List<int> CanPay { get; set; } = new List<int>();
 
-    public List<Building> CantPay { get; set; } = new List<Building>();
+    public List<int> CantPay { get; set; } = new List<int>();
 
     public bool ConstructionListChanged { get; set; } = false; // changed when building current build time changes
 
@@ -51,9 +51,9 @@ public partial class BuildingManager : Node
         CantPay.Clear();
         foreach (var building in AvaiableBuildings){
             if (resourceManager.CanPayCost(building.BuildCost)){
-                CanPay.Add(building);
+                CanPay.Add(building.Index);
             }else{
-                CantPay.Add(building);
+                CantPay.Add(building.Index);
             }   
         }
     }

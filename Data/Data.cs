@@ -58,6 +58,7 @@ public partial class Data : Node
         var arr = GetData("Buildings");
         foreach(Building resource in arr){
             Buildings.Add(resource);
+            resource.Index = Buildings.Count-1;
         }
     }
 

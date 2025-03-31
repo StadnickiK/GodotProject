@@ -9,6 +9,8 @@ public partial class Building : Node, IBuilding, IUpkeep
     //[Export]
     new public string Name { get; set; }
 
+    public int Index { get; set; }
+
     [Export]
     public bool IsStarter { get; set; } = false;
 
