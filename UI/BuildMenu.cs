@@ -99,9 +99,15 @@ public partial class BuildMenu : ScrollContainer
 	}
 
 	public void UpdateBuildMenu(BuildingManager buildingManager){
+
+		var newOrder = new List<int>();
+		newOrder.AddRange(buildingManager.CanPay);
+		newOrder.AddRange(buildingManager.CantPay);
+		var labels = new List<BuildingLabel>();
 		foreach(var label in buildingLabels)
 			if(buildingManager.AvaiableBuildings.Contains(label.RefBuilding)){
 				label.Show();
+				labels.Add(label);
 				if(buildingManager.CanPay.Contains(label.RefBuilding.Index)){
 					label.BButton.Disabled = false;
 				}else{
@@ -110,6 +116,15 @@ public partial class BuildMenu : ScrollContainer
 			}else{
 				label.Hide();
 			}
+		
+		SortBuildLabels(labels, newOrder);
+	}
+
+	void SortBuildLabels(List<BuildingLabel> labels, List<int> newOrder){
+		labels.Sort((a, b) => newOrder.IndexOf(a.RefBuilding.Index).CompareTo(newOrder.IndexOf(b.RefBuilding.Index)));
+		for(int i = 0; i < labels.Count; i++){
+			container.MoveChild(labels[i], i);
+		}
 	}
 
 	public void HideBuilding(Building building){
