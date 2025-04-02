@@ -250,9 +250,9 @@ public partial class PlanetInterface : Control
 		}
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(Building building){
+	public void _on_BuildingLabelGuiInputEvent(Building building, bool tooExpensive){
 		_buildingInterface.Visible = true;
-		_buildingInterface.UpdateInterface(building);
+		_buildingInterface.UpdateInterface(building, tooExpensive);
 	}
 
 	public void _on_BuildingLabelGuiInputEvent(Unit unit){

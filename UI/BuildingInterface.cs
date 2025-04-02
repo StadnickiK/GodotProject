@@ -7,6 +7,8 @@ public partial class BuildingInterface : Panel
 
     RichTextLabel _desc = null;
 
+    [Export]
+    public Color Negative { get; set; } = new Color("red");
     // [Signal]
     // public delegate void StartConstructionEventHandler(Node building);
 
@@ -42,7 +44,7 @@ public partial class BuildingInterface : Panel
         // }
     }
 
-    public void UpdateInterface(Building building){
+    public void UpdateInterface(Building building, bool tooExpensive){
         if(building != null){
             _title.Text = building.Name;
             _desc.Text = "";
@@ -50,6 +52,9 @@ public partial class BuildingInterface : Panel
             foreach(var resName in building.ExportBuildCost.Keys){
                 _desc.AppendText(resName + " - " + building.ExportBuildCost[resName] + "\n");
             }
+
+            if(tooExpensive) _desc.AppendText("[b][color="+Negative.ToHtml()+"][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
+
             _desc.AppendText("\n[b]Construction time: [/b]" + building.BuildTime + "\n");
 
             if(building.ExportProducts.Count > 0){

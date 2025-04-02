@@ -46,7 +46,7 @@ public partial class BuildMenu : ScrollContainer
 					label.BButton = label.GetNode<Button>("Button");
 					label.BButton.Text = building.Name;
 				}
-				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(building);
+				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(label.RefBuilding, label.BButton.Disabled);
 				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
 				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);

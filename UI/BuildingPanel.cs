@@ -38,7 +38,8 @@ public partial class BuildingPanel : ScrollContainer
 		foreach(var building in buildings){
 				var label = (BuildingLabel)ItemScene.Instantiate();
 				label.Size = LabelSize;
-				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(building);
+				label.RefBuilding = building;
+				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(label.RefBuilding, label.BButton.Disabled);
 				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
 				container.AddChild(label);
 				buildingLabels.Add(label);

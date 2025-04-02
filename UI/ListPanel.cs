@@ -96,7 +96,7 @@ public partial class ListPanel : VBoxContainer
                     //array.Add(control);
                     //control.BButton.Connect(eventName, new Callable(node, methodName));
                     //var p = (PlanetInterface)node;
-                    control.BButton.ButtonUp += () => node._on_BuildingLabelGuiInputEvent(control.RefBuilding);
+                    control.BButton.ButtonUp += () => node._on_BuildingLabelGuiInputEvent(control.RefBuilding, control.BButton.Disabled);
                     //control.BButton.Connect(eventName, new Callable(node, methodName), array);
                     control.MouseFilter = MouseFilterEnum.Stop;
                 }else{
