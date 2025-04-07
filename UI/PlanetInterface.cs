@@ -29,6 +29,8 @@ public partial class PlanetInterface : Control
 
 	BuildMenu _recruitmentMenu;
 
+	TabContainer tabContainer;
+
 	BuildingInterface _buildingInterface = null;
 
 	[Export]
@@ -48,6 +50,7 @@ public partial class PlanetInterface : Control
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
 		_recruitmentMenu = GetNode<BuildMenu>("VBoxContainer/Tabs/Recruitment");
 		_buildings = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
+		tabContainer = GetNode<TabContainer>("VBoxContainer/Tabs");
 	}
 
 	void ConnectSignals(){
@@ -80,15 +83,6 @@ public partial class PlanetInterface : Control
 		if(planet != null){
 			_planet = planet;
 			SetTitle(planet.Name);
-			if(planet.Vision){
-				UpdateOverview(planet);
-				UpdateOrbit(planet);
-				
-				// UpdateTransferPanel(planet);
-				//UpdateConstruction(planet);
-				// if(planet.BuildingsManager.HasConstruction)
-				// 	_buildQueue.UpdateBuildQueue(planet.BuildingsManager.CurrentConstruction());
-			}
 			UpdateBuildings(planet);
 		}
 	}
@@ -213,17 +207,27 @@ public partial class PlanetInterface : Control
 	}
 
 	void UpdateBuildings(Planet planet){
-		if(planet.Controller != null){
-			if(planet.Controller.PlayerID == LocalPlayerID){
-				_buildings.BuildButton.Show();
-				_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+		var visibility = planet.VisibilityConroller.GetVisibility(LocalPlayerID);
+		if( visibility.Visible == true && visibility.Visibility == VisibilityConroller.VisibilityState.Visible){
+			if(planet.Controller != null){
+				if(planet.Controller.PlayerID == LocalPlayerID){
+					_buildings.BuildButton.Show();
+					_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+					tabContainer.SetTabDisabled(1, false);
+				}else{
+					_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+					_buildings.BuildButton.Hide();
+					tabContainer.SetTabDisabled(1, true);
+				}
 			}else{
 				_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
 				_buildings.BuildButton.Hide();
+				tabContainer.SetTabDisabled(1, true);
 			}
 		}else{
 			_buildings.HidePlanetBuildings();
 			_buildings.BuildButton.Hide();
+			tabContainer.SetTabDisabled(1, true);
 		}
 	}
 

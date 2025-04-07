@@ -239,11 +239,8 @@ private Data _data = null;
 				var player = (Player)Players.GetChild(id);
 				var planet = planetList[Rand.Next(0,planetList.Count)];
 				planet.ChangeController(player);
-				if(player == _Player){
-					planet.Vision = true;
-				}else{
-					planet.Vision = false;
-				}
+				planet.VisibilityConroller.UpdateVisibility(new VisibilityConroller.VisibilityStruct() { Visible = true, Visibility = VisibilityConroller.VisibilityState.Visible }, player.PlayerID);
+				
 			}
 		}else{
 			var usedPlanetList = new List<Planet>();
@@ -257,11 +254,7 @@ private Data _data = null;
 				}
 				planet.ChangeController(player);
 				usedPlanetList.Add(planet);
-				if(player == _Player){
-					planet.Vision = true;
-				}else{
-					planet.Vision = false;
-				}
+				planet.VisibilityConroller.UpdateVisibility(new VisibilityConroller.VisibilityStruct() { Visible = true, Visibility = VisibilityConroller.VisibilityState.Visible }, player.PlayerID);
 			}
 		}
 	}
@@ -316,7 +309,7 @@ private Data _data = null;
 		// ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
 		ship.Transform = transform;
 		ship.Controller = planet.Controller;
-		ship.IsLocal = planet.Vision;
+		// ship.IsLocal = planet.Vision;
 		ship.ID_Owner = ship.Controller.PlayerID;
 		ship.Name = planet.Name +" "+Rand.Next(0,1000);
 		var parent = unit.GetParent();

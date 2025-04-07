@@ -5,11 +5,13 @@ public interface IVisible : IMapObjectController
 {
     //bool Visible { get; set; }
 
-    void ChangeVision();
+    public VisibilityConroller VisibilityConroller { get; set; }
 
-    void SetVisibility(bool visible);
+    void ChangeVision(VisibilityConroller.VisibilityStruct visibilityStruct ,int playerID);
 
     public int ReturnIndex();
+
+    public void SetVisibility(bool visible);
 
     public bool ReturnVisible();
 }

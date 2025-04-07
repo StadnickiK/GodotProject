@@ -2,8 +2,9 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 using System.Linq;
+using System;
 
-public partial class Player : Node
+public partial class Player : Node, IEquatable<Player>
 {
     public int PlayerID { get; set; }
 
@@ -282,4 +283,34 @@ public partial class Player : Node
         }
     }
 
+    // public static bool operator== (Player player1, Player player2)
+    // {
+    //     if(player1 == null || player2 == null) return false;
+    //     return player1.PlayerID == player2.PlayerID;
+    // }
+
+    // this is second one '!='
+    // public static bool operator!= (Player player1, Player player2)
+    // {
+    //     if(player1 == null || player2 == null) return true;
+    //     return player1.PlayerID != player2.PlayerID;
+    // }
+
+    public bool  Equals(Player other)
+    {
+        if(other == null)
+            return false;      
+        return PlayerID == other.PlayerID;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if(obj is Player player) return Equals(player);
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return PlayerID.GetHashCode();
+    }
 }

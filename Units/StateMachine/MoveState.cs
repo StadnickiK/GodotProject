@@ -34,7 +34,7 @@ public partial class MoveState : State
     {
         // Calculate the direction toward the target.
         Vector3 currentPosition = Body.GlobalPosition;
-        Vector3 direction = _target.Point - currentPosition;
+        Vector3 direction = _target.Point - currentPosition; 
         float distance = direction.Length();
 
         // If we’re close enough to the target...
@@ -57,7 +57,7 @@ public partial class MoveState : State
         }
 
         // Normalize the direction and update horizontal velocity.
-        direction = direction.Normalized();
+        direction = direction.Normalized(); // * new Vector3(1,0,1); // remove y axis since the movement on campaign map is 2dss
         Body.Velocity = direction * Speed;  // Y velocity remains unchanged
         Body.MoveAndSlide();
 

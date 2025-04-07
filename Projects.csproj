@@ -101,7 +101,6 @@
     <Compile Include="Units\Base\IVision.cs" />
     <Compile Include="Units\Base\ShipBT.cs" />
     <Compile Include="Units\Base\SimpleFireControl.cs" />
-    <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\AIPLayer.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />
@@ -146,5 +145,8 @@
     <Compile Include="Map\Planet\UpkeepComponent.cs" />
     <Compile Include="Map\Planet\ResourceProductionComponent.cs" />
     <Compile Include="UI\InfoPanel.cs" />
+    <Compile Include="Units\Base\VisionComponent.cs" />
+    <Compile Include="Units\Base\RecruitmentComponent.cs" />
+    <Compile Include="Map\Planet\RecruitmentManager.cs" />
   </ItemGroup>
 </Project>

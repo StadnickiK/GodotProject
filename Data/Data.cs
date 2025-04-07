@@ -100,7 +100,7 @@ public partial class Data : Node
         }
         catch (System.Exception ex)
         {
-            Console.WriteLine("Erro searching for given resource name "+resName+"\n"+ex.Message);
+            Console.WriteLine("Error searching for given resource name "+resName+"\n"+ex.Message);
             throw;
         }
         

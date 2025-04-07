@@ -48,7 +48,7 @@ public partial class Building : Node, IBuilding, IUpkeep
      public List<Resource> OperationCost { get; set; } = new List<Resource>();
 
     [Export]
-    public Godot.Collections.Dictionary<int, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<string>>();
+    public Godot.Collections.Dictionary<string, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<string, Array<string>>();
 
      public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
 

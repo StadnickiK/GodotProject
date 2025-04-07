@@ -3,7 +3,7 @@ using System;
 //using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
+public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisible
 // IEnterMapObject, IExitMapObject,
 //, IResourceManager
 //, IGetTotalUpkeep, IGetTotalProdCost
@@ -20,8 +20,6 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
 
     [Export]
     public int TimeStep { get; set; } = 1;
-
-    public bool Vision { get; set; } = false;
 
     PackedScene TileScene = null;
 
@@ -86,6 +84,8 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
     {
         get { return _mesh; }
     }
+
+    public VisibilityConroller VisibilityConroller { get; set; }
 
     double _time = 0;
     public ResourceManager ResourcesManager { get; set; }// = new ResourceManager();
@@ -209,6 +209,7 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
         // IcoOrbit = GetNode<Icon3D>("IcoOrbit");
         Pops = GetNode<Populations>("Populations");
         InfoLabel = GetNode<PlanetInfoLabel>("PlanetInfoLabel3D/Sprite3D/SubViewport/PlanetInfoLabel");
+        VisibilityConroller = GetNode<VisibilityConroller>("VisibilityConroller");
     }
 
     // public void ProduceResources(ResourceManager playerResManager){
@@ -322,8 +323,8 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
                 if(ship != orbitNode && orbitNode is Ship orbitShip){
                     if(ship.Controller != orbitShip.Controller){
                         ship.EmitSignal("EnterCombat", ship, orbitShip, Orbit);
-                        if(ship.IsLocal)
-                            Vision = ship.IsLocal;
+                        // if(ship.IsLocal)
+                        //     Vision = ship.IsLocal;
                     }else{
                         //ChangeController(ship.ShipOwner);
                     }
@@ -334,17 +335,9 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
         }
     }
 
-    public void ChangeVision(){
+    public void ChangeVision(VisibilityConroller.VisibilityStruct visibilityStruct, int playerID){
         var orbit = Orbit.GetChildren();
-        if(Vision){
-            Vision = false;
-        }else{
-            Vision = true;
-        }
-    }
-
-    public new bool IsVisible(){
-        return Vision;
+        VisibilityConroller.UpdateVisibility(new VisibilityConroller.VisibilityStruct(){Visibility = VisibilityConroller.VisibilityState.Visible, Visible = true}, playerID);
     }
 
     // public void AddToOrbit(Node ship){
@@ -446,9 +439,9 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
         //     _time = 0;
         // }
         if(Orbit.OrbitChanged){
-            if(_orbit.HasLocal()){
-                Vision = true;
-            }
+            // if(_orbit.HasLocal()){
+            //     Vision = true;
+            // }
         }
         if(_time >= TimeStep){
             var list = _constructions.UpdateConstruction();
@@ -475,7 +468,7 @@ public partial class Planet : Area3D,  IMapObjectControllerChanger, IVisible
 
     public void SetVisibility(bool visible)
     {
-        Visible = visible;
+        
     }
 
     public int ReturnIndex()

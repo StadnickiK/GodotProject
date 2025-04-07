@@ -23,6 +23,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
     [Signal]
     public delegate void OpenUnitTransferPanelEventHandler(Ship left, Ship right);
 
+    public VisibilityConroller VisibilityConroller { get; set; }
+
     [Export]
     public int effectiveRange = 10;
 
@@ -48,7 +50,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
     [Export]
     public int VisionRange { get; set; } = 4;
 
-    public VisionArea _area { get; set; }
+    public VisionComponent _area { get; set; }
 
     public StateMachine StateMach { get; set; }
 
@@ -265,57 +267,14 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
       } 
     }
 
-    public void ChangeVision(){
-        if(Visible){
-            Visible = false;
-        }else{
-            Visible = true;
-        }
+    public void ChangeVision(VisibilityConroller.VisibilityStruct visibilityStruct, int playerID){
+        VisibilityConroller.UpdateVisibility(new VisibilityConroller.VisibilityStruct(){Visibility = VisibilityConroller.VisibilityState.Visible, Visible = true}, playerID);
     }
 
-    void _on_Area_body_entered(Node body){
-        // to do test in galaxy
-        if(body is IVisible visionObject){
-            if(visionObject.Controller != Controller && visionObject.ReturnVisible() == false && body.GetParent() == GetParent()){
-                visionObject.ChangeVision();
-            }
-            if(Controller != null)
-                if(body is Planet planet){ 
-                        if(Controller.IsLocal && planet.Orbit.GetChildren().Count > 0){
-                            planet.IcoOrbit.Visible = true;
-                            if(planet.Orbit.HasEnemy(this))
-                                planet.IcoOrbit.SetRed();
-                        }
-                }
-        }
-    }
-
-    void _on_Area_body_exited(Node body){
-        if(body is IVisible visionObject){
-            if(Controller != null){
-                if(visionObject.Controller != Controller && visionObject.ReturnVisible() == true && body.GetParent() == GetParent() && Controller.IsLocal){
-                    visionObject.ChangeVision();
-                }
-                if(body is Planet planet){
-                    if(Controller.IsLocal && visionObject.Controller != Controller){
-                        planet.IcoOrbit.Visible = false;
-                    }
-                }
-            }
-        }
-    }
-
-    void _on_Ship_body_entered(Node node){
-        if(node is Ship ship){
-            // if(ship.MapObject == MapObject){
-            //     EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)node, GetParent());
-            //     //ResetVelocity();
-            // }
-        }
-    }
 
     void GetNodes(){
-        _area = GetNode<VisionArea>("Area3D");
+        _area = GetNode<VisionComponent>("Area3D");
+        VisibilityConroller = GetNode<VisibilityConroller>("VisibilityConroller");
         Mesh = GetNode<MeshInstance3D>("ship model/Cube");
         _control = GetNode<SimpleFireControl>("FireControl");
         StateMach = GetNode<StateMachine>("StateMachine");

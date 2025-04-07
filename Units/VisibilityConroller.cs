@@ -58,28 +58,4 @@ public partial class VisibilityConroller : Node
     {
         return PlayerVisibility.ContainsKey(playerId) ? PlayerVisibility[playerId] : new VisibilityStruct() {Visibility = VisibilityState.Unexplored, Visible = DefaultVisible};
     }
-
-        void _on_Area_body_entered(Node body){
-        // to do test in galaxy
-        if(body is IVisible visionObject && body.GetIndex() == VisibleParent.ReturnIndex()){
-            if(visionObject.Controller != VisibleParent.Controller && body.GetParent() == GetParent() /*&& visionObject.ReturnVisible() == false*/){
-                visionObject.ChangeVision();
-            }
-        }
-    }
-
-    void _on_Area_body_exited(Node body){
-        if(body is IVisible visionObject){
-            if(VisibleParent.Controller != null){
-                if(body.GetParent() == GetParent()){
-                    if(visionObject.Controller != VisibleParent.Controller && visionObject.ReturnVisible() == true  && VisibleParent.Controller.IsLocal){
-                        UpdateVisible(new VisibilityStruct(){Visibility=VisibilityState.Hidden, Visible= DefaultVisible},visionObject.Controller.PlayerID, DefaultVisible);
-                    }else{
-                        UpdateVisible(new VisibilityStruct(){Visibility=VisibilityState.Explored, Visible = DefaultVisible}, visionObject.Controller.PlayerID, DefaultVisible);
-                    }
-                }
-            }
-            
-        }
-    }
 }
