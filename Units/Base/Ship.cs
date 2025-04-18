@@ -52,6 +52,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
 
     public VisionComponent _area { get; set; }
 
+    public RecruitmentComponent RecruitmentComponent { get; set; }
+
     public StateMachine StateMach { get; set; }
 
     public TargetManager<Node3D> targetManager { get; set; } = new TargetManager<Node3D>();
@@ -280,6 +282,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
         StateMach = GetNode<StateMachine>("StateMachine");
         //_velocityController = GetNode<VelocityController>("VelocityController");
         Units = GetNode<UnitController>("UnitController");
+        RecruitmentComponent = GetNode<RecruitmentComponent>("RecruitmentComponent");
         AddChild(targetManager);
     }
 

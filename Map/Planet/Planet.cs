@@ -69,11 +69,11 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
         Occupied
     }
 
-    ConstructionManager _constructions; // = new ConstructionManager();
-    public ConstructionManager Constructions
-    {
-        get { return _constructions; }
-    }
+    // ConstructionManager _constructions; // = new ConstructionManager();
+    // public ConstructionManager Constructions
+    // {
+    //     get { return _constructions; }
+    // }
     
     BuildingManager _buildingsManager;
 
@@ -242,22 +242,12 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     //             }
     //         }
     // }
-
-    public bool StartConstruction(Unit unit){
-            if(Controller.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding(unit);
-                return true;
-            }else{
-                EmitSignal(nameof(GameAlertEventHandler), this);
-                return false;
-            }
-    }
     
     public int StartConstruction(Unit unit, int count = 1){
         int build = 0;
         for(int i = 0; i < count; i++){
             if(Controller.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding((unit), count);
+                //_constructions.ConstructBuilding((unit), count);
                 build++;
             }else{
                 EmitSignal(nameof(GameAlertEventHandler), this);
@@ -268,11 +258,11 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     }
 
     /// <summary>
-    /// Start construction of IBuilding, return true if IBuildCost was payed, or false if construction didnt start.
+    /// Start construction of IConstruct, return true if IBuildCost was payed, or false if construction didnt start.
     /// </summary>
-    /// <param name="building">IBuilding</param>
+    /// <param name="building">IConstruct</param>
     /// <returns>bool</returns>
-    public bool StartConstruction(IBuilding building){
+    public bool StartConstruction(IConstruct building){
         if(building != null)
                 if(building is Unit unit)
                     return StartRecruitment(unit);
@@ -283,7 +273,7 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
 
     public bool StartRecruitment(Unit unit){
             if(Controller.ResManager.PayCost(unit.BuildCost)){
-                    _constructions.ConstructBuilding((unit));
+                    //_constructions.ConstructBuilding((unit));
                     return true;
             }else{
                 EmitSignal(nameof(GameAlertEventHandler), this);
@@ -422,7 +412,7 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
         Name = PlanetName;
         MapObjectName3.Text = Name;
 
-        _constructions = GetNode<ConstructionManager>("ConstructionManager");
+        //_constructions = GetNode<ConstructionManager>("ConstructionManager");
         _buildingsManager = GetNode<BuildingManager>("BuildingManager");
         var list = new List<Building>();
         _buildingsManager.BuildingFinished += _on_BuildingFinished;
@@ -444,24 +434,24 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
             // }
         }
         if(_time >= TimeStep){
-            var list = _constructions.UpdateConstruction();
-            if(list.Count > 0){
-                var ship = GetLocalShip();
-                foreach(IBuilding ib in list){
-                    if(ib is Unit unit){
-                        if(ship != null){
-                            if(unit.GetParent() != null){
-                                unit.GetParent().RemoveChild(unit);
-                            }
-                            ship.Units.AddChild(unit);
-                            var count = ship.Units.GetChildCount();
-                        }else{
-                            EmitSignal(nameof(CreateShipEventHandler), this, unit);
-                        }
-                    }
-                }   
+            // var list = _constructions.UpdateConstruction();
+            // if(list.Count > 0){
+            //     var ship = GetLocalShip();
+            //     foreach(IConstruct ib in list){
+            //         if(ib is Unit unit){
+            //             if(ship != null){
+            //                 if(unit.GetParent() != null){
+            //                     unit.GetParent().RemoveChild(unit);
+            //                 }
+            //                 ship.Units.AddChild(unit);
+            //                 var count = ship.Units.GetChildCount();
+            //             }else{
+            //                 EmitSignal(nameof(CreateShipEventHandler), this, unit);
+            //             }
+            //         }
+            //     }   
 
-            }
+            // }
             _time = 0;
         }
     }

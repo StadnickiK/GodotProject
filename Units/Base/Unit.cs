@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Unit : Node, IBuilding, IUpkeep
+public partial class Unit : Construct, IUpkeep
 {
 
 	[Export]
@@ -10,22 +10,7 @@ public partial class Unit : Node, IBuilding, IUpkeep
 
 	public bool HasHitpoints { get; set; } = true;  
 
-	[Export]
-	public int BuildTime { get; set; } = 10;
-
 	public string UnitName { get; set; }
-
-	public int CurrentTime { get; set; } = 0;
-
-    [Export]
-    public Godot.Collections.Dictionary<int, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<int, Array<string>>();
-
-     public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
-
-    [Export]
-    public Godot.Collections.Dictionary<string, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
-
-    public System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
     public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
@@ -37,7 +22,6 @@ public partial class Unit : Node, IBuilding, IUpkeep
 	public Node Stats { get; set; }
 
 	public System.Collections.Generic.List<BaseStat> StatsList { get; set; } = new List<BaseStat>();
-    string IBuilding.Name { get; set; }
 
     // World - initStartFleets, InitResistance
     public Unit(){  

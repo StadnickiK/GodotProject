@@ -48,14 +48,9 @@ public partial class BuildingInterface : Panel
         if(building != null){
             _title.Text = building.Name;
             _desc.Text = "";
-            _desc.AppendText("[b][font_size=20]Build Cost[/font_size][/b]\n\n");
-            foreach(var resName in building.ExportBuildCost.Keys){
-                _desc.AppendText(resName + " - " + building.ExportBuildCost[resName] + "\n");
-            }
-
-            if(tooExpensive) _desc.AppendText("[b][color="+Negative.ToHtml()+"][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
-
-            _desc.AppendText("\n[b]Construction time: [/b]" + building.BuildTime + "\n");
+            BuildCost(building);
+            TooExpensive(tooExpensive);
+            ConstructionTime(building.BuildTime);
 
             if(building.ExportProducts.Count > 0){
                 _desc.AppendText("\n[b][font_size=20]Production[/font_size][/b]\n");
@@ -79,21 +74,34 @@ public partial class BuildingInterface : Panel
         }
     }
 
-    public void UpdateInterface(Unit unit){
+    public void UpdateInterface(Unit unit, bool tooExpensive){
         if(unit != null){
             _title.Text = unit.UnitName;
             _desc.Text = "";
-            _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
-            foreach(var resName in unit.ExportBuildCost.Keys){
-                _desc.Text = resName + " - " + unit.ExportBuildCost[resName] + "\n";
-            }
-            _desc.AppendText("\n[b]Construction time: [/b]" + unit.BuildTime + "\n");
+            BuildCost(unit);
+            TooExpensive(tooExpensive);
+            ConstructionTime(unit.BuildTime);
 
             _desc.AppendText("\n[b][font_size=20]Stats: [/font_size][/b]\n");
             foreach(var stat in unit.StatsList){
                 _desc.AppendText(stat.Name + " " + stat.CurrentValue + "\n");
             }
         }
+    }
+
+    public void TooExpensive(bool TooExpensive){
+        if(TooExpensive) _desc.AppendText("[b][color="+Negative.ToHtml()+"][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
+    }
+
+    public void ConstructionTime(int time){
+        _desc.AppendText("\n[b]Construction time: [/b]" + time + "\n");
+    }
+
+    public void BuildCost(Construct construct){
+            _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
+            foreach(var resName in construct.ExportBuildCost.Keys){
+                _desc.Text = resName + " - " + construct.ExportBuildCost[resName] + "\n";
+            }
     }
 
 

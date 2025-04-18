@@ -58,9 +58,9 @@ public partial class BuildingManager : Node
         }
     }
 
-    List<Building> IbuildingToBuilding(List<IBuilding> originalArray){
+    List<Building> IbuildingToBuilding(List<IConstruct> originalArray){
         var Array = new List<Building>();
-        foreach(IBuilding building in originalArray){
+        foreach(IConstruct building in originalArray){
             if(building is Building)
                 Array.Add((Building)building);
         }

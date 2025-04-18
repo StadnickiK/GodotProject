@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://doy25xpjpmsmt"]
+
+[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Data/Building.cs" id="1_jk68b"]
+
+[node name="Hangar" type="Node"]
+script = ExtResource("1_jk68b")
+IsStarter = true
+ExportProducts = Dictionary[String, int]({
+"Credits": 300
+})
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 4000
+})
+ExportResourceLimits = Dictionary[String, int]({
+"Credits": 10000
+})
+ExportUnits = Dictionary[String, int]({
+"Unit 1": 1
+})
+Type = 1

@@ -68,15 +68,16 @@ public partial class BuildMenu : ScrollContainer
 					label.BButton = label.GetNode<Button>("Button");
 					label.BButton.Text = unit.Name;
 				}
-				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit);
-				label.MouseExited += () => _on_mouse_exited();
+				label.BButton.ButtonUp += () => planetInterface._on_StartUnitConstruction(unit);
+				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
+				label.MouseExited += _on_mouse_exited;
 				container.AddChild(label);
 				buildingLabels.Add(label);
 			}
 		}
 	}
 
-	public void InitAllUnits(Array<Node> nodes, ArmyInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
+	public void InitAllUnits(Array<Node> nodes, ArmyInterface ArmyInterface){ // todo: Separate construction and building list into separate nodes for better organization
 		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
 		foreach(Node node in nodes){
 			if(node is Unit unit){
@@ -90,7 +91,8 @@ public partial class BuildMenu : ScrollContainer
 					label.BButton = label.GetNode<Button>("Button");
 					label.BButton.Text = unit.Name;
 				}
-				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit);
+				label.BButton.ButtonUp += () => ArmyInterface._on_StartUnitConstruction(unit);
+				label.MouseEntered += () => ArmyInterface._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
 				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);
 				buildingLabels.Add(label);
@@ -117,6 +119,27 @@ public partial class BuildMenu : ScrollContainer
 				label.Hide();
 			}
 		
+		SortBuildLabels(labels, newOrder);
+	}
+
+	public void UpdateBuildMenu(RecruitmentManager recManager){
+
+		var newOrder = new List<int>();
+		newOrder.AddRange(recManager.CanPay);
+		newOrder.AddRange(recManager.CantPay);
+		var labels = new List<BuildingLabel>();
+		foreach(var label in buildingLabels)
+			if(recManager.AvaiableUnits.ContainsKey(label.RefUnit.Index)){
+				label.Show();
+				labels.Add(label);
+				if(recManager.CanPay.Contains(label.RefUnit.Index)){
+					label.BButton.Disabled = false;
+				}else{
+					label.BButton.Disabled = true;
+				}
+			}else{
+				label.Hide();
+			}	
 		SortBuildLabels(labels, newOrder);
 	}
 

@@ -44,12 +44,12 @@ public partial class TechnologyPanel : Panel
         }
     }
 
-    public void UpdateResearch(Node WorldTechnology, System.Collections.Generic.List<IBuilding> technologies){  
+    public void UpdateResearch(Node WorldTechnology, System.Collections.Generic.List<IConstruct> technologies){  
         overview.ClearPanel("Research");
         foreach(var technology in technologies){
             var label = new Label();
-            label.Text = technology.Name;
-            label.Name = technology.Name;
+            label.Text = technology.ConstructName;
+            label.Name = technology.ConstructName;
             overview.AddNodeToPanel("Research", label);
             var progress = new ProgressBar();
             progress.MaxValue = technology.BuildTime;
@@ -57,7 +57,7 @@ public partial class TechnologyPanel : Panel
             overview.AddNodeToPanel("Research", progress);
         }
         foreach(Node node in WorldTechnology.GetChildren()){
-            if(node is Technology tech && !technologies.Contains((IBuilding)node)){
+            if(node is Technology tech && !technologies.Contains((IConstruct)node)){
                 if(!_Player.Technologies.Contains(tech.Index)){
                     overview.AddNodeToPanel("Research", CreateTechButton(tech));
                 }

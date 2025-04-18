@@ -259,9 +259,9 @@ public partial class PlanetInterface : Control
 		_buildingInterface.UpdateInterface(building, tooExpensive);
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(Unit unit){
+	public void _on_BuildingLabelGuiInputEvent(Unit unit, bool tooExpensive){
 		_buildingInterface.Visible = true;
-		_buildingInterface.UpdateInterface(unit);
+		_buildingInterface.UpdateInterface(unit, tooExpensive);
 	}
 
 	public void _mouseLeftBuildingLabel(){
@@ -287,8 +287,8 @@ public partial class PlanetInterface : Control
 		}
 	}
 
-	void _on_StartUnitConstruction(Unit unit){
-				_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
+	public void _on_StartUnitConstruction(Unit unit){
+				_planet.StartConstruction((IConstruct)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
 				_planet.ConstructUnit(unit);
 	}
 
@@ -317,9 +317,9 @@ public partial class PlanetInterface : Control
 					UpdateBuildings(_planet);
 					_planet.BuildingsManager.ConstructionListChanged = false;
 				}
-				if(_planet.Constructions.HasConstruct || Cleanup == true){
-					//UpdateConstruction(_planet);
-				}
+				// if(_planet.Constructions.HasConstruct || Cleanup == true){
+				// 	//UpdateConstruction(_planet);
+				// }
 			}
 		}
 	}

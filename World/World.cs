@@ -277,7 +277,6 @@ private Data _data = null;
 						ConnectShip(ship);
 						planet.System.AddMapObject(ship);
 						player.AddMapObject(ship);
-						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
 						for(int i = 0;i<5;i++){
 							var unit = _data.GetUnit(0);
 							ship.Units.AddUnit(unit);
@@ -378,9 +377,10 @@ private Data _data = null;
 		{
 			// without new dictionary the game would use one for all of those instead of separate ones
 			player.ResManager.Resources = new Dictionary<int, int>(starResources);
-			player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);;
+			player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);
 			player.ResManager.ProdCost.Upkeep = new Dictionary<int, int>(resources);
-			player.Upkeep.Upkeep = new Dictionary<int, int>(resources);;
+			player.Upkeep.Upkeep = new Dictionary<int, int>(resources);
+			player.TotalProduction.Upkeep = new Dictionary<int, int>(resources);
 		}
 	}
 
@@ -448,10 +448,10 @@ private Data _data = null;
 		InitPlayers();
 		InitGalaxy();
 		UpdateGround();
-		InitStartPlanets();
-		InitStartFleets();
-		InitStartResources();
 		InitPlayerStartResources();
+		InitStartPlanets();
+		InitStartResources();
+		InitStartFleets();		
 		//InitResistance(); needs work
 		InitWorldBuildings();
 		ConnectPlanets();
@@ -508,7 +508,11 @@ private Data _data = null;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
-			_UI.ResPanel.UpdatePanel(_Player.ResManager, _Player.Upkeep);
+			_UI.ResPanel.UpdatePanel(_Player);
+			_Player.ProdChanged += _UI.ResPanel.UpdatePanel;
+			_Player.UpkeepChanged += _UI.ResPanel.UpdatePanel;
+			_Player.ProdCostChanged += _UI.ResPanel.UpdatePanel;
+			_Player.PlayerResourcesChanged += _UI.ResPanel.UpdatePanel;
 		}
 
 	}

@@ -51,7 +51,7 @@ public partial class UI : Control
     }
 
     public void UpdateResPanel(Player player){
-        ResPanel.UpdatePanel(player.ResManager, player.Upkeep);
+        ResPanel.UpdatePanel(player);
     }
 
     public void UpdateUI(Player player){

@@ -99,11 +99,10 @@ public partial class Player : Node, IEquatable<Player>
         return null;
     }    
 
-    public void AddUpkeep(System.Collections.Generic.Dictionary<int, int> upkeep){
-        Upkeep.UpdateUpkeep(upkeep);
-        TotalProduction.RemoveUpkeep(upkeep);
+    public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
+        Upkeep.UpdateUpkeep(resources);
+        TotalProduction.RemoveUpkeep(resources);
         UpkeepChanged?.Invoke(this);
-           
     }
 
     public void RemoveUpkeep(System.Collections.Generic.Dictionary<int, int> upkeep){
@@ -249,10 +248,6 @@ public partial class Player : Node, IEquatable<Player>
         ResManager.ResourceLimits.RemoveUpkeep(resourceLimits);
     }
 
-    public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
-        Upkeep.UpdateUpkeep(resources);
-    }
-
     public void UpdateResourceLimit(Planet planet){
         if(planet.BuildingsManager.BuildingsChanged){
             var buildings = planet.BuildingsManager.LastBuilding;
@@ -262,10 +257,10 @@ public partial class Player : Node, IEquatable<Player>
         }
     }
 
-    List<Technology> IBuildingToTechnology(List<IBuilding> ibuildings){
+    List<Technology> IConstructToTechnology(List<IConstruct> IConstructs){
         var Array = new List<Technology>();
-        foreach(var ibuilding in ibuildings){
-            if(ibuilding is Technology technology)
+        foreach(var IConstruct in IConstructs){
+            if(IConstruct is Technology technology)
                 Array.Add(technology);
         }
         return Array;
@@ -275,10 +270,10 @@ public partial class Player : Node, IEquatable<Player>
         _time += delta;
         if(_time >= TimeStep){
             //UpdatePlayerResources();
-            //Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()));
+            //Technologies.AddRange(IConstructToTechnology(Research.UpdateConstruction()));
             if(Research != null)
                 if(Research.HasConstruct)
-                    Technologies.AddRange(IBuildingToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
+                    Technologies.AddRange(IConstructToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
             _time = 0;
         }
     }

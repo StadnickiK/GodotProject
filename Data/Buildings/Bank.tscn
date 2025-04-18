@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bar1ugho7sf3m"]
 
-[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Map/Planet/Building.cs" id="1"]
+[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Data/Building.cs" id="1"]
 
 [node name="Bank" type="Node"]
 script = ExtResource("1")
@@ -8,10 +8,10 @@ IsStarter = true
 ExportProducts = Dictionary[String, int]({
 "Credits": 400
 })
-ExportBuildCost = Dictionary[String, int]({
-"Credits": 4000
-})
 ExportResourceLimits = Dictionary[String, int]({
 "Credits": 10000
 })
 Type = 1
+ExportBuildCost = Dictionary[String, int]({
+"Credits": 4000
+})

@@ -27,10 +27,11 @@ mouse_filter = 2
 script = ExtResource("1_d84et")
 
 [node name="UnitInterface" parent="." instance=ExtResource("7_voeq7")]
-visible = false
 layout_direction = 1
 layout_mode = 2
+offset_left = 19.0
 offset_top = 608.0
+offset_right = 303.0
 offset_bottom = 1068.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -41,6 +42,104 @@ offset_left = 667.0
 offset_top = 757.0
 offset_right = 1203.0
 offset_bottom = 969.0
+
+[node name="TransferArmy" type="ScrollContainer" parent="."]
+visible = false
+clip_contents = false
+custom_minimum_size = Vector2(272, 104)
+layout_mode = 2
+offset_left = 786.0
+offset_top = 857.0
+offset_right = 1064.0
+offset_bottom = 961.0
+scale = Vector2(1.16, 1)
+size_flags_horizontal = 3
+script = ExtResource("3_susb5")
+
+[node name="Grid" type="HBoxContainer" parent="TransferArmy"]
+custom_minimum_size = Vector2(278, 104)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="UnitCard" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard2" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard3" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard4" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard5" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard6" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard7" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -81,91 +180,11 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ArmyPanel" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
-clip_contents = false
-custom_minimum_size = Vector2(272, 104)
+[node name="BuildButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 60)
 layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("3_susb5")
-
-[node name="Grid" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ArmyPanel"]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="UnitCard" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-layout_mode = 2
-
-[node name="UnitCard2" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-layout_mode = 2
-
-[node name="UnitCard3" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-layout_mode = 2
-
-[node name="UnitCard4" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-layout_mode = 2
-
-[node name="UnitCard5" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-layout_mode = 2
-
-[node name="UnitCard6" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard7" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard8" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard9" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard10" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard11" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard12" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard13" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard14" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard15" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard16" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard17" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard18" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard19" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
-
-[node name="UnitCard20" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
-visible = false
-layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "+"
 
 [node name="Recruitment" type="HBoxContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -291,11 +310,91 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="BuildButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 60)
+[node name="ArmyPanel" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+clip_contents = false
+custom_minimum_size = Vector2(272, 104)
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
-text = "+"
+size_flags_horizontal = 3
+script = ExtResource("3_susb5")
+
+[node name="Grid" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ArmyPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="UnitCard" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard2" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard3" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard4" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard5" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+layout_mode = 2
+
+[node name="UnitCard6" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard7" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
+visible = false
+layout_mode = 2
 
 [connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_mouse_exited"]

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Godot.NET.Sdk/4.3.0">
+<Project Sdk="Godot.NET.Sdk/4.4.1">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -41,7 +41,6 @@
     <Compile Include="Map\Combat.cs" />
     <Compile Include="Map\ConstructionManager.cs" />
     <Compile Include="Map\IMap\IBuildCost.cs" />
-    <Compile Include="Map\IMap\IBuilding.cs" />
     <Compile Include="Map\IMap\IBuildTime.cs" />
     <Compile Include="Map\IMap\IEnterMapObject.cs" />
     <Compile Include="Map\IMap\IExitMapObject.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="InnerGimbal.cs" />
     <Compile Include="KinematicBody.cs" />
     <Compile Include="KinematicCube.cs" />
-    <Compile Include="Map\Planet\Building.cs" />
     <Compile Include="Map\Galaxy.cs" />
     <Compile Include="Map\Planet\Planet.cs" />
     <Compile Include="Map\Tile.cs" />
@@ -101,7 +99,6 @@
     <Compile Include="Units\Base\IVision.cs" />
     <Compile Include="Units\Base\ShipBT.cs" />
     <Compile Include="Units\Base\SimpleFireControl.cs" />
-    <Compile Include="Units\Base\VisionArea.cs" />
     <Compile Include="World\AIPLayer.cs" />
     <Compile Include="World\Map.cs" />
     <Compile Include="World\MapObjects.cs" />
@@ -145,5 +142,13 @@
     <Compile Include="UI\PlanetInterfaceBuildQueue.cs" />
     <Compile Include="Map\Planet\UpkeepComponent.cs" />
     <Compile Include="Map\Planet\ResourceProductionComponent.cs" />
+    <Compile Include="UI\InfoPanel.cs" />
+    <Compile Include="Units\Base\VisionComponent.cs" />
+    <Compile Include="Units\Base\RecruitmentComponent.cs" />
+    <Compile Include="Map\Planet\RecruitmentManager.cs" />
+    <Compile Include="Tools.cs" />
+    <Compile Include="Data\Construct.cs" />
+    <Compile Include="Data\Building.cs" />
+    <Compile Include="Map\IMap\IConstruct.cs" />
   </ItemGroup>
 </Project>

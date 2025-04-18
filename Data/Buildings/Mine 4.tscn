@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://6qo7jt6vnxd4"]
 
-[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Map/Planet/Building.cs" id="1"]
+[ext_resource type="Script" uid="uid://biwld2rhhjp78" path="res://Data/Building.cs" id="1"]
 
 [node name="Mine 4" type="Node"]
 script = ExtResource("1")

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public partial class ConstructionManager : Node
 {
-    public delegate void ConstrucctionFinishedEventHandler(List<IBuilding> building);
+    public delegate void ConstrucctionFinishedEventHandler(List<IConstruct> building);
 
     public bool ConstructionListChanged { get; set; } = false;
 
-    private List<IBuilding> _constructionList = new List<IBuilding>();
-    public List<IBuilding> ConstructionList
+    private List<IConstruct> _constructionList = new List<IConstruct>();
+    public List<IConstruct> ConstructionList
     {
         get { return _constructionList; }
     }
@@ -18,9 +18,10 @@ public partial class ConstructionManager : Node
 
     public bool ConstructionChanged { get; set; } = false;
 
+    [Export]
     public int ConstructionSlots { get; set; } = 1;
 
-    public void ConstructBuilding(IBuilding building, int count = 1){
+    public void ConstructBuilding(IConstruct building, int count = 1){
         if(building != null){
             for(int i = 0; i<count;i++)
                 ConstructionList.Add(building);
@@ -34,12 +35,12 @@ public partial class ConstructionManager : Node
     }
 
     /// <summary>
-    ///     Update all IBuilding objects in the construction List and return a List of finished ones.
+    ///     Update all IConstruct objects in the construction List and return a List of finished ones.
     /// </summary>
-    /// <returns>List<IBuilding></returns>
-    public List<IBuilding> UpdateConstruction(){
+    /// <returns>List<IConstruct></returns>
+    public List<IConstruct> UpdateConstruction(){
         var count = ConstructionList.Count;
-        var List = new List<IBuilding>();
+        var List = new List<IConstruct>();
         if(count > 0){
             if(count > ConstructionSlots){
                 for(int i = 0; i < ConstructionSlots; i++){
@@ -68,9 +69,9 @@ public partial class ConstructionManager : Node
         ConstructionList[id].CurrentTime++;
     }
 
-    public List<IBuilding> CurrentConstruction(){
+    public List<IConstruct> CurrentConstruction(){
         var count = ConstructionList.Count;
-        List<IBuilding> List = new List<IBuilding>();
+        List<IConstruct> List = new List<IConstruct>();
         if(count > 0){
             if(count > ConstructionSlots){
                 for(int i = 0; i < ConstructionSlots; i++){

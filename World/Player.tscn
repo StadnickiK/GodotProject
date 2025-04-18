@@ -18,3 +18,4 @@ script = ExtResource("4_m5k62")
 
 [node name="TotalProduction" type="Node" parent="."]
 script = ExtResource("4_m5k62")
+CanGoNegative = true

@@ -26,7 +26,7 @@ subdivide_depth = 500
 [node name="World" type="Node3D"]
 script = ExtResource("5")
 
-[node name="Data" parent="." instance=ExtResource("10")]
+[node name="Data" parent="." groups=["GameData"] instance=ExtResource("10")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("2")

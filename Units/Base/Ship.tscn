@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene load_steps=14 format=3 uid="uid://bdcl5y1xnxhkk"]
 
+[ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
 [ext_resource type="PackedScene" uid="uid://b1hr47d4opkbc" path="res://Models/ship model.glb" id="2"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_dgjf5"]
@@ -17,6 +18,7 @@ size = Vector3(3, 3, 3)
 
 [node name="Ship" type="CharacterBody3D" groups=["Selectable", "Targetable"]]
 motion_mode = 1
+script = ExtResource("1_hq6pt")
 
 [node name="VelocityController" type="Node" parent="."]
 script = ExtResource("6")

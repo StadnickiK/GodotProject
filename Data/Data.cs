@@ -17,8 +17,8 @@ public partial class Data : Node
 
     void GetNodes(){
         GetResources();
-        GetBuildings();
         GetUnits();
+        GetBuildings();
     }
 
     public List<Resource> Resources { get; set; } = new List<Resource>();
@@ -56,9 +56,12 @@ public partial class Data : Node
 
     void GetBuildings(){
         var arr = GetData("Buildings");
-        foreach(Building resource in arr){
-            Buildings.Add(resource);
-            resource.Index = Buildings.Count-1;
+        foreach(Building building in arr){
+            Buildings.Add(building);
+            building.Index = Buildings.Count-1;
+            foreach(var unit in building.ExportUnits){
+                building.Units.Add(Units.FirstOrDefault(x => x.UnitName == unit.Key).Index, unit.Value);
+            }
         }
     }
 
@@ -122,8 +125,9 @@ public partial class Data : Node
     void GetUnits(){
         var arr = GetData("Units");
         foreach(Unit unit in arr){
-            unit.UnitName = unit.Name;
+            unit.UnitName = unit.ConstructName = unit.Name;
             Units.Add(unit);
+            unit.Index = Units.Count - 1;
         }
     }
 

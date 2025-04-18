@@ -122,9 +122,9 @@ public partial class ArmyInterface : Control
 		}
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(Unit unit){
+	public void _on_BuildingLabelGuiInputEvent(Unit unit, bool tooExpensive){
 		_buildingInterface.Visible = true;
-		_buildingInterface.UpdateInterface(unit);
+		_buildingInterface.UpdateInterface(unit, tooExpensive);
 	}
 
 	public void _mouseLeftBuildingLabel(){
@@ -138,16 +138,18 @@ public partial class ArmyInterface : Control
 	}
 
 	void _on_StartConstruction(Node node){
-		if(node is IBuilding unit){
+		if(node is IConstruct unit){
 			// if(unit != null && _planet != null){
-			// 	_planet.StartConstruction((IBuilding)((PackedScene)GD.Load(node.SceneFilePath)).Instantiate());
+			// 	_planet.StartConstruction((IConstruct)((PackedScene)GD.Load(node.SceneFilePath)).Instantiate());
 			// 	// _planet.ConstructUnit(unit);
 			// }
 		}
 	}
 
-	void _on_StartUnitConstruction(Unit unit){
-				// _planet.StartConstruction((IBuilding)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
+	public void _on_StartUnitConstruction(Unit unit){
+		_mapArmy.RecruitmentComponent.RecruitmentManager.StartConstruction(unit);
+		
+				//_planet.StartConstruction((IConstruct)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
 				// _planet.ConstructUnit(unit);
 	}
 
@@ -160,7 +162,15 @@ public partial class ArmyInterface : Control
 		var x = pos.X-(_buildMenu.Size.X/2);
 		var y = pos.Y-_buildMenu.Size.Y+20;
 		_buildMenu.Position = new Vector2(x, y);
-		_buildMenu.Show(); 
+		_buildMenu.Show();
+		var rc = _mapArmy.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
+		if(rc != null){
+			if(rc.RecruitmentManager != null){
+				rc.RecruitmentManager.UpdateCanPayUnits(_mapArmy.Controller.ResManager, _data.Units);
+				_buildMenu.UpdateBuildMenu(rc.RecruitmentManager);
+			} 
+		}
+			
 	}
 
 	public override void _Process(double delta){

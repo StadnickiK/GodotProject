@@ -53,16 +53,16 @@ public partial class BuildingLabel : Control
         UpdateProgressBar(building);
     }
 
-    public void UpdateProgress(IBuilding building){
+    public void UpdateProgress(IConstruct building){
         if (building is Building b)
             RefBuilding = b;
         SelfModulate = new Color(1, 1, 1, 0.5f);
-        BButton.Text = building.Name;
+        BButton.Text = building.ConstructName;
         Show();
         UpdateProgressBar(building);
     }
 
-    void UpdateProgressBar(IBuilding building){
+    void UpdateProgressBar(IConstruct building){
         Progress.Visible = true;
         Progress.MaxValue = building.BuildTime;
         if(ReversProgress){

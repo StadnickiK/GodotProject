@@ -2,31 +2,20 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Building : Node, IBuilding, IUpkeep
+public partial class Building : Construct, IUpkeep
 {
     // public List<Resource> Resources { get; set; } = new List<Resource>();
 
     //[Export]
     new public string Name { get; set; }
 
-    public int Index { get; set; }
-
     [Export]
     public bool IsStarter { get; set; } = false;
-
-    [Export]
-    public int BuildTime { get; set; } = 5;
-    
-    public int CurrentTime { get; set; } = 0;
 
     [Export]
     public Godot.Collections.Dictionary<string, int> ExportProducts { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> Products { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
-    [Export]
-    public Godot.Collections.Dictionary<string, int> ExportBuildCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
-
-    public System.Collections.Generic.Dictionary<int, int> BuildCost { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
     public Godot.Collections.Dictionary<string, int> ExportProductCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
@@ -43,14 +32,10 @@ public partial class Building : Node, IBuilding, IUpkeep
     public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-    public Godot.Collections.Dictionary<string, int> ExportOperationCost { get; set; } = new Godot.Collections.Dictionary<string, int>();
+    public Godot.Collections.Dictionary<string, int> ExportUnits { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-     public List<Resource> OperationCost { get; set; } = new List<Resource>();
+    public System.Collections.Generic.Dictionary<int, int> Units { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
-    [Export]
-    public Godot.Collections.Dictionary<string, Array<string>> ExportRequirements { get; set; } = new Godot.Collections.Dictionary<string, Array<string>>();
-
-     public System.Collections.Generic.Dictionary<int, List<int>> Requirements { get; set; } = new System.Collections.Generic.Dictionary<int, List<int>>();
 
     [Export]
      public bool Enabled { get; set; } = true;
@@ -79,7 +64,7 @@ public partial class Building : Node, IBuilding, IUpkeep
         foreach (var building in buildings){
             foreach(var res in building.Products)
             if(production.ContainsKey(res.Key)){
-                production[res.Key] = res.Value;
+                production[res.Key] += res.Value;
             }else{
                 production.Add(res.Key, res.Value);
             }
@@ -92,7 +77,7 @@ public partial class Building : Node, IBuilding, IUpkeep
         foreach (var building in buildings){
             foreach(var res in building.ProductCost)
                 if(production.ContainsKey(res.Key)){
-                    production[res.Key] = res.Value;
+                    production[res.Key] += res.Value;
                 }else{
                     production.Add(res.Key, res.Value);
                 }

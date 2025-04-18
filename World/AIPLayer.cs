@@ -209,9 +209,9 @@ public partial class AIPlayer : Player
 
     public Planet GetIdleShipConstructionPlanet(){
         foreach(Node node in MapObjects){
-            if(node is Planet planet)
-                if(!planet.Constructions.HasConstruct)
-                    return planet;
+            // if(node is Planet planet)
+                // if(!planet.Constructions.HasConstruct)
+                //     return planet;
         }
         return null;
     }

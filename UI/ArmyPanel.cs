@@ -42,7 +42,7 @@ public partial class ArmyPanel : ScrollContainer
 	public void ConnectUnitCards(ArmyInterface planetInterface){
 		foreach(var node in unitCards){
 			var b = node.GetChild(0).GetNode<Button>("Button");
-			b.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(node.Unit);
+			b.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(node.Unit, b.Disabled);
 			b.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
 		}
 	}

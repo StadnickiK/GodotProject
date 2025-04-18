@@ -62,7 +62,11 @@ public partial class UpkeepComponent : Node
                 }
         }else
         {
-            Upkeep.Add(resName, 0);
+            if(CanGoNegative){
+                Upkeep.Add(resName, -quantity);                
+            }else{
+                Upkeep.Add(resName, 0);
+            }
         }
     }
 }
