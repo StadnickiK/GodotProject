@@ -8,6 +8,12 @@ public partial class CameraGimbal : Node3D
 	public float MovementSpeed { get; set; } = 20;
 	[Export] 
 	public float RotationSpeed { get; set; } = 0.7f;
+	[Export]
+	public float ZoomSpeed { get; set; } = 80f;
+	[Export]
+	public float MinZoom { get; set; } = 10f;
+	[Export]
+	public float MaxZoom { get; set; } = 70f;
 
 	public Vector3 LimitCenter { get; set; } = Vector3.Zero;
 
@@ -22,7 +28,10 @@ public partial class CameraGimbal : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		
+		var camera3D = GetChildren()[0].GetChild<Camera>(0);
+		camera3D.ZoomSpeed = ZoomSpeed;
+		camera3D.MinZoom = MinZoom;
+		camera3D.MaxZoom = MaxZoom;
 	}
 
 public override void _Input(InputEvent inputEvent){

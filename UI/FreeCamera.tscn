@@ -6,6 +6,7 @@
 
 [node name="CameraGimbal" type="Node3D"]
 script = ExtResource("2")
+MovementSpeed = 100.0
 
 [node name="InnerGimbal" type="Node3D" parent="."]
 script = ExtResource("1")
@@ -16,3 +17,4 @@ far = 200.0
 script = ExtResource("3")
 MinZoom = 10.0
 MaxZoom = 70.0
+ZoomSpeed = 80.0
