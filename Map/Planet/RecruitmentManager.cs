@@ -6,7 +6,7 @@ using System.Linq;
 public partial class RecruitmentManager : Node, IMapObjectController
 {
     [Export]
-    public string VisionComponentPath { get; set; } = "res://Units/Base/VisionComponent.cs";
+    public string VisionComponentPath { get; set; } = "res://Units/Base/VisionComponent.tscn";
 
     [Export]
     public int RecruitmentSlots { get; set; } = 1;
@@ -30,6 +30,12 @@ public partial class RecruitmentManager : Node, IMapObjectController
         InitVisionComponent(parent);
         InitAvaiableUnits(parent);
         GetConstructionManager();
+        GetController(parent);
+    }
+
+    void GetController(Node parent){
+        if(parent is IMapObjectController controller)
+            Controller = controller.Controller;
     }
 
     void InitVisionComponent(Node parent){
@@ -67,14 +73,19 @@ public partial class RecruitmentManager : Node, IMapObjectController
         }
     }
 
-    public bool StartConstruction(Unit unit){
-            if(Controller.ResManager.PayCost(unit.BuildCost)){
+    public bool StartConstruction(Player player, Unit unit){
+            if(player.ResManager.PayCost(unit.BuildCost)){
                 _constructions.ConstructBuilding(unit);
                 return true;
             }else{
                 //EmitSignal(nameof(GameAlertEventHandler), this); //game alert should be static
                 return false;
             }
+    }
+
+    public void StopConstruction(Player player, int Position){
+        var c = _constructions.StopConstruction(Position);
+        player.ResManager.AddResource(c.BuildCost);
     }
 
     public void UpdateAvaiableUnits(List<Building> buildings){
@@ -102,16 +113,14 @@ public partial class RecruitmentManager : Node, IMapObjectController
     void _on_area_body_Entered(Node node){
         var rc = node.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
         if (rc != null){
-            rc.AddAvaialableUnits(AvaiableUnits.Keys.ToList());
-            rc.RecruitmentManager = this;
+            rc.SetAvaialableUnits(this, AvaiableUnits.Keys.ToList());
         }
     } 
 
     void _on_area_body_Exited(Node node){
         var rc = node.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
         if (rc != null){
-            rc.RemoveAvaialableUnits(AvaiableUnits.Keys.ToList());
-            rc.RecruitmentManager = this;
+            rc.RemoveAvaialableUnits(this, AvaiableUnits.Keys.ToList());
         }
     } 
 }

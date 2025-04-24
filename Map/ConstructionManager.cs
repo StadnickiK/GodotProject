@@ -29,6 +29,12 @@ public partial class ConstructionManager : Node
         }
     }
 
+    public IConstruct StopConstruction(int Position){
+        var c = ConstructionList[Position];
+        ConstructionList.RemoveAt(Position);
+        return c;
+    }
+
     public override void _Ready()
     {
         

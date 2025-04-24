@@ -26,17 +26,16 @@ public partial class ArmyRecruitment : HBoxContainer
 		}
 	}
 
-	public void UpdateUnitCards(UnitController unitController){
-		if(unitController.UnitsList.Count > unitCards.Count)
-			AddLabel(unitController.UnitsList.Count - unitCards.Count);
+	public void UpdateRecruitment(RecruitmentComponent recruitmentComponent, List<Unit> units){
+		if(recruitmentComponent.CurrentlyRecruitedUnits.Count > unitCards.Count)
+			AddLabel(recruitmentComponent.CurrentlyRecruitedUnits.Count - unitCards.Count);
 		for (int i = 0; i < unitCards.Count; i++)
 		{	
-			if(unitController.UnitsList.Count < i){
-				unitCards[i].UpdateProgress(unitController.UnitsList[i]);
+			if(recruitmentComponent.CurrentlyRecruitedUnits.Count > i){
+				unitCards[i].UpdateProgress(units[recruitmentComponent.CurrentlyRecruitedUnits[i]]);
 			}else{
 				unitCards[i].Hide();
 			}	
-			
 		}
 	}
 

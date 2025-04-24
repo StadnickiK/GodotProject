@@ -64,7 +64,7 @@ script = ExtResource("4_cb1m1")
 metadata/_tab_index = 0
 
 [node name="BuildingPanel" type="GridContainer" parent="VBoxContainer/Tabs/Buildings"]
-custom_minimum_size = Vector2(536, 212)
+custom_minimum_size = Vector2(536, 106)
 layout_mode = 2
 columns = 5
 

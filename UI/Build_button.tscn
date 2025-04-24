@@ -2,6 +2,7 @@
 
 [node name="BuildButton" type="MarginContainer"]
 custom_minimum_size = Vector2(104, 104)
+size_flags_vertical = 4
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
@@ -14,6 +15,8 @@ theme_override_font_sizes/font_size = 64
 text = "+"
 
 [node name="Label" type="Label" parent="."]
+visible = false
+top_level = true
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 10

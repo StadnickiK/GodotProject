@@ -20,6 +20,10 @@ public partial class Player : Node, IEquatable<Player>
 
     public event ResourcesChangedEventHandler PlayerResourcesChanged;
 
+    public delegate void UnitssChangedEventHandler(Ship mapArmy);
+
+    public event UnitssChangedEventHandler UnitsChanged;
+
     [Export]
     public Color PlayerColor { get; set; }
 
@@ -141,6 +145,7 @@ public partial class Player : Node, IEquatable<Player>
             Ships.Add(ship);
             ship.Units.AddUpkeep += UpdateUpkeep;
             ship.Units.RemoveUpkeep += RemoveUpkeep;
+            UnitsChanged?.Invoke(ship);
         }
         if(mapObject is Planet planet){
             Planets.Add(planet);

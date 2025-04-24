@@ -30,7 +30,7 @@ public partial class UnitCard : Control
 	public void UpdateCard(Unit unit){
 		Unit = unit;
 		var health = unit.GetStat("Health");
-		SelfModulate = new Color(1, 1, 1, 1);
+		Modulate = new Color(1, 1, 1, 1);
 		Progress.Hide();
 		Label.Hide();
 		if(health != null){
@@ -44,9 +44,10 @@ public partial class UnitCard : Control
 	public void UpdateProgress(Unit unit){
 		Show();
 		UpdateCard(unit);
-		SelfModulate = new Color(1, 1, 1, 0.5f);
+		Modulate = new Color(1, 1, 1, 0.5f);
 		Progress.Show();
 		Label.Show();
+		Label.Text = unit.CurrentTime + "/" + unit.BuildTime;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

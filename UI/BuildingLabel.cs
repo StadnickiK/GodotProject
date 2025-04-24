@@ -56,7 +56,7 @@ public partial class BuildingLabel : Control
     public void UpdateProgress(IConstruct building){
         if (building is Building b)
             RefBuilding = b;
-        SelfModulate = new Color(1, 1, 1, 0.5f);
+        BButton.Modulate = new Color(1, 1, 1, 0.5f);
         BButton.Text = building.ConstructName;
         Show();
         UpdateProgressBar(building);
@@ -78,7 +78,7 @@ public partial class BuildingLabel : Control
         Show();
         Progress.Visible = false;
         BButton.Text = building.Name;
-        SelfModulate = new Color(1, 1, 1, 1);
+        BButton.Modulate = new Color(1, 1, 1, 1);
     }
 
     /// <summary>

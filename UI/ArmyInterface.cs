@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using Godot.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 public partial class ArmyInterface : Control
 {
@@ -18,11 +20,11 @@ public partial class ArmyInterface : Control
 
 	Ship _mapArmy = null;
 
-	Array<Unit> _allUnits = null;
-
 	public Data _data { get; set; }
 
-	ArmyPanel _army = null;
+	ArmyPanel _armyPanel = null;
+
+	ArmyRecruitment _armyRecruitment= null;
 
 	InfoPanel info;
 
@@ -46,7 +48,8 @@ public partial class ArmyInterface : Control
 		_header = GetNode<Header>("VBoxContainer/Header");
 		_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
-		_army = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
+		_armyPanel = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
+		_armyRecruitment = GetNode<ArmyRecruitment>("VBoxContainer/HBoxContainer/Recruitment");
 		info = GetNode<InfoPanel>("VBoxContainer/InfoPanel");
 	}
 
@@ -62,7 +65,7 @@ public partial class ArmyInterface : Control
 
 	void ConnectSignals(){
 		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
-		_army.ConnectUnitCards(this);
+		_armyPanel.ConnectUnitCards(this);
 		//_buildings.ConnectBuildButtons(this);
 		// _buildMenu.ConnectBuildButtons(this);
 	}
@@ -90,17 +93,32 @@ public partial class ArmyInterface : Control
 			_mapArmy = ship;
 			SetTitle(ship.Name);
 			UpdateInfo(ship, resources);
-			_army.UpdateArmyList(ship.Units.UnitsList);
+			_armyPanel.UpdateArmyList(ship.Units.UnitsList);
+			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units);
+			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
 			// if(ship.Vision){
 
 			// }
 		}
 	}
 
+	void UpdateRecruitment(RecruitmentComponent recruitmentComponent){
+		_armyRecruitment.UpdateRecruitment(recruitmentComponent, _data.Units);
+	}
+
+	public void DeselectArmy(){
+		_mapArmy.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent -= UpdateRecruitment;
+	}
+
 	
 
 	public void InitRecruitmentPanel(){
 		_buildMenu.InitAllUnits(_data.GetData("Units"), this);
+		int pos = _armyRecruitment.unitCards.Count;
+		foreach(UnitCard unit in _armyRecruitment.unitCards){
+			unit.button.ButtonUp += () => _on_StopUnitConstruction(pos);
+			pos--;
+		}
 	}
 
 	void UpdateConstruction(Planet planet){
@@ -147,10 +165,15 @@ public partial class ArmyInterface : Control
 	}
 
 	public void _on_StartUnitConstruction(Unit unit){
-		_mapArmy.RecruitmentComponent.RecruitmentManager.StartConstruction(unit);
+		_mapArmy.RecruitmentComponent.StartConstruction(unit);
+
 		
 				//_planet.StartConstruction((IConstruct)((PackedScene)GD.Load(unit.SceneFilePath)).Instantiate());
 				// _planet.ConstructUnit(unit);
+	}
+
+	public void _on_StopUnitConstruction(int Position){
+		_mapArmy.RecruitmentComponent.StopConstruction(Position);
 	}
 
 	void _on_build_button_mouse_exited(){
@@ -165,9 +188,9 @@ public partial class ArmyInterface : Control
 		_buildMenu.Show();
 		var rc = _mapArmy.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
 		if(rc != null){
-			if(rc.RecruitmentManager != null){
-				rc.RecruitmentManager.UpdateCanPayUnits(_mapArmy.Controller.ResManager, _data.Units);
-				_buildMenu.UpdateBuildMenu(rc.RecruitmentManager);
+			if(rc.AvaialableUnitsMap.Count > 0 ){
+				rc.AvaialableUnitsMap.Keys.ElementAt(0).UpdateCanPayUnits(_mapArmy.Controller.ResManager, _data.Units);
+				_buildMenu.UpdateBuildMenu(rc.AvaialableUnitsMap.Keys.ElementAt(0));
 			} 
 		}
 			

@@ -1,46 +1,81 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public partial class RecruitmentComponent : Node
+public partial class RecruitmentComponent : Node, IMapObjectController
 {
-    public delegate void RecruitmentComponentEventHandler(List<int> Units);
+    public delegate void RecruitmentComponentEventHandler(RecruitmentManager recruitmentManager,List<int> Units);
 
     public event RecruitmentComponentEventHandler UpdateAvaialableUnitsEvent;
 
     public event RecruitmentComponentEventHandler RemoveAvaialableUnitsEvent;
 
-    public event RecruitmentComponentEventHandler UpdateRecruitedUnitsEvent;
+     public delegate void CurrentlyRecruitedUnitsEventHandler(RecruitmentComponent recruitmentComponent);
 
-    public event RecruitmentComponentEventHandler RemoveRecruitedUnitsEvent;
-    
-    public List<int> AvaialableUnits { get; set; } = new List<int>();
+    public event CurrentlyRecruitedUnitsEventHandler UpdateCurrentlyRecruitedUnitsEvent;
 
-    public RecruitmentManager RecruitmentManager { get; set; }
+    public event CurrentlyRecruitedUnitsEventHandler RemoveCurrentlyRecruitedUnitsEvent;
 
-    public List<int> RecruitedUnits { get; set; } = new List<int>();
+    public Dictionary<RecruitmentManager, List<int>> AvaialableUnitsMap { get;} = new Dictionary<RecruitmentManager, List<int>>();
 
-    public void AddAvaialableUnits(List<int> Units){
-        AvaialableUnits.AddRange(Units);
-        UpdateAvaialableUnitsEvent?.Invoke(Units);
+    public List<int> CurrentlyRecruitedUnits { get; set; } = new List<int>();
+    public Player Controller { get; set; }
+
+    public override void _Ready()
+    {
+        var parent = GetParent();
+        GetController(parent);
     }
 
-    public void RemoveAvaialableUnits(List<int> Units){
-        foreach(int UnitsToRemove in Units){
-            AvaialableUnits.Remove(UnitsToRemove);
+    void GetController(Node parent){
+        if(parent is IMapObjectController controller)
+            Controller = controller.Controller;
+    }
+
+    public void AddAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){
+        AvaialableUnitsMap[recruitmentManager].AddRange(Units);
+        UpdateAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
+    }
+
+    public void SetAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){
+        if(AvaialableUnitsMap.ContainsKey(recruitmentManager)){
+            AvaialableUnitsMap[recruitmentManager] = Units;
+        }else{
+            AvaialableUnitsMap.Add(recruitmentManager, Units);
         }
-        RemoveAvaialableUnitsEvent?.Invoke(Units);
+        UpdateAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
     }
 
-    public void AddRecruitedUnits(List<int> Units){
-        RecruitedUnits.AddRange(Units);
-        UpdateAvaialableUnitsEvent?.Invoke(Units);
+    public void RemoveAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){        
+        AvaialableUnitsMap.Remove(recruitmentManager);        
+        RemoveAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
     }
 
-    public void RemoveRecruitedUnitsAt(List<int> Units){
-        foreach(int pos in Units){
-            RecruitedUnits.RemoveAt(pos);
+    public void AddCurrentlyRecruitedUnits(List<int> Units){
+        CurrentlyRecruitedUnits.AddRange(Units);
+        UpdateCurrentlyRecruitedUnitsEvent?.Invoke(this);
+    }
+
+    public void RemoveCurrentlyRecruitedUnitsAt(List<int> UnitsPositions){
+        foreach(int pos in UnitsPositions){
+            CurrentlyRecruitedUnits.RemoveAt(pos);
         }
-        RemoveAvaialableUnitsEvent?.Invoke(Units);
+        RemoveCurrentlyRecruitedUnitsEvent?.Invoke(this);
+    }
+
+    public bool StartConstruction(Unit unit){
+        if(AvaialableUnitsMap.Keys.ElementAt(0).StartConstruction(Controller, unit)){
+            AddCurrentlyRecruitedUnits(new List<int>() {unit.Index});
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void StopConstruction(int Position){
+        AvaialableUnitsMap.Keys.ElementAt(0).StopConstruction(Controller, Position);
+        CurrentlyRecruitedUnits.RemoveAt(Position);
+        UpdateCurrentlyRecruitedUnitsEvent?.Invoke(this);
     }
 }

@@ -56,7 +56,7 @@ public partial class Building : Construct, IUpkeep
 
     public override void _Ready()
     {
-        Name = base.Name;
+        Name = ConstructName = base.Name;
     }
 
     public static System.Collections.Generic.Dictionary<int, int> GetBuildingsProduction(System.Collections.Generic.List<Building> buildings){

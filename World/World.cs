@@ -159,6 +159,7 @@ private Data _data = null;
 	}
 
 	void _on_Deselect(){
+		_UI.ArmyInterfce.DeselectArmy();
 		WCC.ClearSelection();
 	}
 
