@@ -35,19 +35,22 @@ public partial class BuildingPanel : ScrollContainer
 
 	public void InitAllBuildings(List<Building> buildings, PlanetInterface planetInterface){ // todo: Separate construction and building list into separate nodes for better organization
 		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		int i = buildings.Count;
 		foreach(var building in buildings){
 				var label = (BuildingLabel)ItemScene.Instantiate();
 				label.Size = LabelSize;
 				label.RefBuilding = building;
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(label.RefBuilding, label.BButton.Disabled);
-				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
+				label.MouseExited += planetInterface._mouseLeftBuildingLabel;
+				label.StopConstructionEventHandler += () => planetInterface._on_StopBuildingConstruction(i);
 				container.AddChild(label);
 				buildingLabels.Add(label);
 				label.Hide();	
+				i--;
 		}
 	}
 
-	public void UpdatePlanetBuildings(BuildingManager buildingManager){
+	public void UpdatePlanetBuildings(BuildingManager buildingManager, bool IsController){
 		var count = buildingManager.Buildings.Count + buildingManager.Constructions.ConstructionList.Count;
 		if(count > buildingLabels.Count)
 			AddBuildingLabel(count - buildingLabels.Count);
@@ -55,6 +58,7 @@ public partial class BuildingPanel : ScrollContainer
 		for(int i = 0; i < count; i++){
 			if(i < buildingManager.Constructions.ConstructionList.Count){
 				buildingLabels[i].UpdateProgress(buildingManager.Constructions.ConstructionList[i]);
+				buildingLabels[i].BButton.Disabled = !IsController;
 			}
 			if(i > buildingManager.Constructions.ConstructionList.Count || buildingManager.Constructions.ConstructionList.Count == 0){
 				buildingLabels[i].UpdateBuilding(buildingManager.Buildings[j]);

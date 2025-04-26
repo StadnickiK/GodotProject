@@ -212,15 +212,15 @@ public partial class PlanetInterface : Control
 			if(planet.Controller != null){
 				if(planet.Controller.PlayerID == LocalPlayerID){
 					_buildings.BuildButton.Show();
-					_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+					_buildings.UpdatePlanetBuildings(planet.BuildingsManager, true);
 					tabContainer.SetTabDisabled(1, false);
 				}else{
-					_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+					_buildings.UpdatePlanetBuildings(planet.BuildingsManager, false);
 					_buildings.BuildButton.Hide();
 					tabContainer.SetTabDisabled(1, true);
 				}
 			}else{
-				_buildings.UpdatePlanetBuildings(planet.BuildingsManager);
+				_buildings.UpdatePlanetBuildings(planet.BuildingsManager, false);
 				_buildings.BuildButton.Hide();
 				tabContainer.SetTabDisabled(1, true);
 			}
@@ -264,6 +264,16 @@ public partial class PlanetInterface : Control
 		_buildingInterface.UpdateInterface(unit, tooExpensive);
 	}
 
+	public void _on_StopBuildingConstruction(int Position){
+		_planet.BuildingsManager.StopConstruction(_planet.Controller, Position);
+		_buildings.UpdatePlanetBuildings(_planet.BuildingsManager, true);
+	}
+
+	public void _on_StopBuildingConstruction(Building building){
+		_planet.BuildingsManager.StopConstruction(_planet.Controller, building);
+		
+	}
+
 	public void _mouseLeftBuildingLabel(){
 		_buildingInterface.Visible = false;
 	}	
@@ -281,7 +291,7 @@ public partial class PlanetInterface : Control
 		}else if(node is Building building){
 			if(_planet.StartBuilding(building)){
 				_buildMenu.HideBuilding(building);
-				_buildings.UpdatePlanetBuildings(_planet.BuildingsManager);
+				_buildings.UpdatePlanetBuildings(_planet.BuildingsManager, true);
 			}
 				
 		}

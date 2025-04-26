@@ -74,9 +74,18 @@ public partial class BuildingManager : Node
         }
     }
 
-    public void CancelConstruction(Building building){
+    public void StopConstruction(Player player, Building building){
         _constructions.ConstructionList.Remove(building);
+        player.ResManager.AddResource(building.BuildCost);
         AvaiableBuildings.Add(building);
+    }
+
+    public void StopConstruction(Player player, int Position){
+        var c =_constructions.ConstructionList[Position];
+        _constructions.ConstructionList.RemoveAt(Position);
+        player.ResManager.AddResource(c.BuildCost);
+        if(c is Building building)
+            AvaiableBuildings.Add(building);
     }
 
 

@@ -1,8 +1,13 @@
 using Godot;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 public partial class BuildingLabel : Control
 {
+
+    public delegate void StopConstruction();
+
+    public event StopConstruction StopConstructionEventHandler;
 
     public ProgressBar Progress { get; set; }
 
@@ -21,8 +26,7 @@ public partial class BuildingLabel : Control
 
     public Unit RefUnit { get; set; }
 
-    bool IsProgressing = false;
-    
+    public bool IsProgressing { get { return Progress.Visible; } }   
 
     void GetNodes(){
         BButton = GetNode<Button>("Button");
@@ -92,8 +96,9 @@ public partial class BuildingLabel : Control
         Progress.Value = progress;
     }
 
-    void _on_Button_button_up(){
-        BButton.Visible = false;
+    void _on_button_button_up(){
+        if(IsProgressing)
+            StopConstructionEventHandler?.Invoke();
     }
 
     void _on_BuildingLabel_mouse_entered(){

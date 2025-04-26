@@ -80,21 +80,15 @@ public partial class ArmyInterface : Control
 		ConnectSignals();
 	}
 
-    public void InitBuildingsPanel(){
-        //_buildings = GetNode<BuildingPanel>("VBoxContainer/Tabs/Buildings");
-		//_buildMenu.InitAllBuildings(_data.GetData("Buildings"), this);
-		//ConnectSignals();
-		//_buildings.InitAllBuildings(_data.GetData("Buildings"), this);
-	}
-
 	public void UpdateArmyPanel(Ship ship, System.Collections.Generic.List<Resource> resources){
 		if(ship != null){
+			var visibility = ship.VisibilityConroller.GetVisibility(LocalPlayerID);
 			Visible = true;
 			_mapArmy = ship;
 			SetTitle(ship.Name);
 			UpdateInfo(ship, resources);
 			_armyPanel.UpdateArmyList(ship.Units.UnitsList);
-			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units);
+			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
 			// if(ship.Vision){
 
@@ -103,7 +97,7 @@ public partial class ArmyInterface : Control
 	}
 
 	void UpdateRecruitment(RecruitmentComponent recruitmentComponent){
-		_armyRecruitment.UpdateRecruitment(recruitmentComponent, _data.Units);
+		_armyRecruitment.UpdateRecruitment(recruitmentComponent, _data.Units, _mapArmy.Controller.PlayerID == LocalPlayerID);
 	}
 
 	public void DeselectArmy(){
