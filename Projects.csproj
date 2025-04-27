@@ -150,5 +150,6 @@
     <Compile Include="Data\Construct.cs" />
     <Compile Include="Data\Building.cs" />
     <Compile Include="Map\IMap\IConstruct.cs" />
+    <Compile Include="World\Node3DPool.cs" />
   </ItemGroup>
 </Project>

@@ -47,13 +47,14 @@ public partial class ArmyPanel : ScrollContainer
 		}
 	}
 
-	public void UpdateArmyList(List<Unit> units){
+	public void UpdateArmyList(List<Unit> units, bool IsController){
 		if(unitCards.Count < units.Count)
 			AddCards(units.Count - unitCards.Count);
 		for (int i = 0; i < unitCards.Count; i++){
 			if(i < units.Count){
 				unitCards[i].Show();
 				unitCards[i].UpdateCard(units[i]);
+				unitCards[i].button.Disabled = !IsController;
 			}else{
 				unitCards[i].Hide();
 			}

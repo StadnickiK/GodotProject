@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://c70akagmjohcx"]
+[gd_scene load_steps=13 format=3 uid="uid://c70akagmjohcx"]
 
 [ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://5vkwnunfc0kc" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" uid="uid://cotigyio4cdaf" path="res://World/World.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
+[ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="9_4sj48"]
 [ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="10"]
 [ext_resource type="Script" uid="uid://btur0gcjdfjq7" path="res://World/MapObjects.cs" id="12"]
 [ext_resource type="Script" uid="uid://brb1sc5lbnqvf" path="res://World/Map.cs" id="13"]
@@ -52,5 +53,9 @@ mesh = SubResource("6")
 
 [node name="Ground" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="ArmyPool" type="Node3D" parent="."]
+visible = false
+script = ExtResource("9_4sj48")
 
 [connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

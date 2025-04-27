@@ -87,7 +87,7 @@ public partial class ArmyInterface : Control
 			_mapArmy = ship;
 			SetTitle(ship.Name);
 			UpdateInfo(ship, resources);
-			_armyPanel.UpdateArmyList(ship.Units.UnitsList);
+			_armyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
 			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
 			// if(ship.Vision){

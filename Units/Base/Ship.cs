@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectController, IVision, IGetTotalUpkeep
+public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep
 // IMapObject,
 {
     [Signal]
@@ -33,7 +33,13 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
 
     [Export]
     public bool IsLocal { get; set; } = false;
-    public Player Controller { get; set; } = null;
+
+    private Player myVar;
+    public Player Controller
+    {
+        get { return myVar; }
+        set { myVar = value; ControllerChanged?.Invoke(Controller);}
+    }
 
     //public IEnterMapObject MapObject { get; set; } = null;
 
@@ -62,7 +68,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IMapObjectControl
 
     SimpleFireControl _control = null;
 
-
+    public event IExtendedMapObjectController.ControllerChangedEventHandler ControllerChanged;
 
     // protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
     //     // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)

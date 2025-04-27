@@ -29,8 +29,14 @@ public partial class RecruitmentComponent : Node, IMapObjectController
     }
 
     void GetController(Node parent){
-        if(parent is IMapObjectController controller)
-            Controller = controller.Controller;
+        if(parent is IExtendedMapObjectController obj){
+            Controller = obj.Controller;
+            obj.ControllerChanged += ControllerChanged;
+        }
+    }
+
+    void ControllerChanged(Player player){
+        Controller = player;
     }
 
     public void AddAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){

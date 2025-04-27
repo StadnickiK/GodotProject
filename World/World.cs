@@ -24,6 +24,8 @@ public WorldCursorControl WCC
 	get { return _wcc; }
 }
 
+public Node3DPool ArmyPool { get; set; }
+
 private Data _data = null;
 
 	Galaxy Galaxy = null;
@@ -38,8 +40,6 @@ private Data _data = null;
 	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load("res://World/Player.tscn");
 
 	PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
-
-	PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
 
 	int Seed = 0;
 	public Random Rand { get; set; }
@@ -127,6 +127,7 @@ private Data _data = null;
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		_UI = GetNode<UI>("UI");
+		ArmyPool = GetNode<Node3DPool>("ArmyPool");
 	}
 
 	void ConnectSignals(){
@@ -263,20 +264,12 @@ private Data _data = null;
 	void InitStartFleets(){
 		foreach(Node node in Players.GetChildren()){
 			if(node is Player player){
-				int maxFleets = 1;
-				var ship = (Ship)_ShipScene.Instantiate();
+				int maxFleets = 1;	
 				foreach(CollisionObject3D body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
 					if(body is Planet planet && maxFleets>0){
-						var transform = ship.Transform;
-						transform.Origin = planet.Transform.Origin;
-						transform.Origin += new Vector3(3,0,3);
-						ship.Transform = transform;
-						ship.Controller = player;
-						ship.ID_Owner = player.GetIndex();
-						ship.Name = planet.Name +" "+1;
+						var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
 						//ship.MapObject = planet.System;
 						ConnectShip(ship);
-						planet.System.AddMapObject(ship);
 						player.AddMapObject(ship);
 						for(int i = 0;i<5;i++){
 							var unit = _data.GetUnit(0);
@@ -294,24 +287,8 @@ private Data _data = null;
 		}
 	}
 
-	public Ship CreateShip(Unit unit){
-		var ship = (Ship)_ShipScene.Instantiate();
-		ConnectShip(ship);
-		ship.Units.AddChild(unit);
-		return ship;
-	}
-
 	public Ship CreateShip(Planet planet, Unit unit){
-		var ship = (Ship)_ShipScene.Instantiate();
-		var transform = ship.Transform;
-		transform.Origin = planet.Transform.Origin;
-		//transform.origin += new Vector3(3,0,3);
-		// ship.MapObject = (IEnterMapObject)planet.GetParent().GetParent();
-		ship.Transform = transform;
-		ship.Controller = planet.Controller;
-		// ship.IsLocal = planet.Vision;
-		ship.ID_Owner = ship.Controller.PlayerID;
-		ship.Name = planet.Name +" "+Rand.Next(0,1000);
+		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin+ new Vector3(3,0,3), planet.Name +" "+Rand.Next(0,1000));
 		var parent = unit.GetParent();
 		if(parent != null)
 			parent.RemoveChild(unit);
@@ -390,14 +367,14 @@ private Data _data = null;
 			foreach(Node node in system.StarSysObjects.GetChildren()){
 				if(node is Planet planet){
 					if(planet.Controller == null){
-						int amount = 2;//Rand.Next(10, 20);
-						var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
-						var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instantiate());
-						for(int i = 0;i<amount;i++){
-							var unit = ((PackedScene)GD.Load(unitFileName)).Instantiate();
-							var stat = unit.GetNode<BaseStat>("Stats/Attack");
-							ship.Units.AddChild(unit);
-						}
+						// int amount = 2;//Rand.Next(10, 20);
+						// var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
+						//var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instantiate());
+						// for(int i = 0;i<amount;i++){
+						// 	var unit = ((PackedScene)GD.Load(unitFileName)).Instantiate();
+						// 	var stat = unit.GetNode<BaseStat>("Stats/Attack");
+						// 	ship.Units.AddChild(unit);
+						// }
 						// planet.AddToOrbit(ship);
 						//var transform = ship.Transform;
 					}

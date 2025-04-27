@@ -143,6 +143,7 @@ public partial class Player : Node, IEquatable<Player>
         MapObjects.Add(mapObject);
         if(mapObject is Ship ship){
             Ships.Add(ship);
+            ship.Controller = this;
             ship.Units.AddUpkeep += UpdateUpkeep;
             ship.Units.RemoveUpkeep += RemoveUpkeep;
             UnitsChanged?.Invoke(ship);
