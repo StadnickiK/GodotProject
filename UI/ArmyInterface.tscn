@@ -27,6 +27,7 @@ mouse_filter = 2
 script = ExtResource("1_d84et")
 
 [node name="UnitInterface" parent="." instance=ExtResource("7_voeq7")]
+visible = false
 layout_direction = 1
 layout_mode = 2
 offset_left = 19.0

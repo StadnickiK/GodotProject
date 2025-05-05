@@ -22,11 +22,6 @@ using System.Collections.Generic;
 
         public event AtTargetEventHandeler AtTarget;
 
-        private bool _hasTarget = false;
-        public bool HasTarget
-        {
-            get { return _hasTarget; }
-        }
 
         public override void _Ready()
         {    
@@ -39,17 +34,21 @@ using System.Collections.Generic;
         {
             get { return _targets; }
         }
+
+        public bool HasTarget
+        {
+            get { return Targets.Count>0; }
+        }
         
 
         public void SetTarget(Target Target){
             _targets.Clear();
-            _hasTarget = true;
             currentTarget = Target;
             _targets.Push(currentTarget);
         }
 
         public void AddTarget(Target Target){
-            if(!_hasTarget){
+            if(!HasTarget){
                 SetTarget(Target);
             }else{
                 _targets.Push(Target);
@@ -67,18 +66,9 @@ using System.Collections.Generic;
             }
         }
 
-        public bool HasNextTarget(){
-            if(_targets.Count > 1){
-                return true;
-            }else{
-                return false;
-            }
-        }
-
         public void ClearTargets(){
             currentTarget = default(Target);
             _targets.Clear();
-            _hasTarget = false;
         }
     }
 

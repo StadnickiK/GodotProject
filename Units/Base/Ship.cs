@@ -2,7 +2,26 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep
+
+	public struct ShipStruct
+	{
+		public Node Parent { get; set; }
+		public Vector3 Position { get; set; }
+
+        public Player Controller { get; set; }
+
+        public Dictionary<int, VisibilityConroller.VisibilityStruct> PlayerVisibility { get; private set; }
+
+        public List<Unit> Units { get; set; }
+
+		public TargetManager<Node3D>.Target Target { get; set; }
+
+		public string Name { get; set; }
+
+        public bool Visible { get; set; }
+	}
+
+public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep, IEnterMapObject
 // IMapObject,
 {
     [Signal]
@@ -17,11 +36,17 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     [Signal]
     public delegate void SignalEnterMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state);
 
+    //public event SignalEnterMapObjectEventHandler SignalEnterMapObject;
+
     [Signal]
     public delegate void SignalExitMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state); 
 
     [Signal]
     public delegate void OpenUnitTransferPanelEventHandler(Ship left, Ship right);
+
+    public event World.SplitShipEventHandler SplitShip;
+
+    public event World.FreeShipEventHandler FreeShip;
 
     public VisibilityConroller VisibilityConroller { get; set; }
 
@@ -70,6 +95,19 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public event IExtendedMapObjectController.ControllerChangedEventHandler ControllerChanged;
 
+    public List<int> UnitsToTransfer = new List<int>();
+
+    public enum ArmyStance
+    {
+        Idle,
+        Moving,
+        Rectruiting
+    }
+
+    public ArmyStance Stance { get; set; } = ArmyStance.Idle;
+
+    public bool CanMove { get; set; } = true;
+
     // protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
     //     // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)
     //         state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.Basis * (new Vector3(0, 0, 1)),GlobalTransform.Origin,targetManager.currentTarget.Point);
@@ -110,12 +148,52 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //     return tempTarget;
     // }
 
-    public void MoveToTarget(Node3D target){
-        
+    void _on_UpdateRecruitment(RecruitmentComponent recruitmentComponent){
+        CanMove = recruitmentComponent.CurrentlyRecruitedUnits.Count == 0;
+        StateMach.Enter(new IdleState());
+        Stance = ArmyStance.Rectruiting;
+    }
+
+    public void _on_UpdateUnitsToTransfer(List<int> unitsToTransfer){
+        CanMove = unitsToTransfer.Count == 0;
+        UnitsToTransfer = unitsToTransfer;
+        StateMach.Enter(new IdleState());
+        Stance = ArmyStance.Idle;
+    } 
+
+    void Split(TargetManager<Node3D>.Target target){
+        if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < Units.UnitsList.Count){
+                SplitShip?.Invoke(new ShipStruct(){
+                    Target = target,
+                    Name = this.Name,
+                    Parent = this.GetParent(),
+                    Controller = this.Controller,
+                    Position = this.Position,
+                    Units = Units.GetUnitsForTransfer(UnitsToTransfer),
+                    Visible = this.Visible,
+                });
+                UnitsToTransfer.Clear();
+            }
+    }
+
+    void Merge(TargetManager<Node3D>.Target target){
+        if(target.TargetNode is Ship ship){
+            if(Units.Count + ship.Units.Count < ship.Units.MaxUnits){
+                Units.TransferUnit(ship.Units);
+                FreeShip?.Invoke(this);
+            }
+        }
+    }
+
+    public void MoveToTarget(TargetManager<Node3D>.Target target){
         // Sleeping = false;
-        var t = new TargetManager<Node3D>.Target(target.Position, target);
-        targetManager.SetTarget(t); 
-        StateMach.Enter(new MoveState(t));
+        if(CanMove){
+            targetManager.SetTarget(target); 
+            StateMach.Enter(new MoveState(target));
+            Stance = ArmyStance.Moving;
+        }else{
+            Split(target);
+        }
         // Node starSysObj = null;
         // if((GetParent() is Orbit orbit)){ 
         //     starSysObj = orbit.GetParent().GetParent();
@@ -152,8 +230,12 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public void MoveToPos(Vector3 destination){
         // Sleeping = false;
-        targetManager.SetTarget(new TargetManager<Node3D>.Target(destination)); 
-        StateMach.Enter(new MoveState(destination));
+        if(CanMove){
+            targetManager.SetTarget(new TargetManager<Node3D>.Target(destination)); 
+            StateMach.Enter(new MoveState(destination));
+        }else{
+            Split(new TargetManager<Node3D>.Target(destination));
+        }
     }
 
     // public void NextTarget(){
@@ -189,13 +271,14 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     // }
 
     public void Merge(Ship ship){
-        foreach(Unit unit in ship.Units.GetChildren()){
+        foreach(Unit unit in ship.Units.UnitsList){
             unit.GetParent().RemoveChild(unit);
-            Units.AddChild(unit);
+            Units.AddUnit(unit);
         }
         ship.Controller.RemoveMapObject(ship);
         ship.Controller.MapObjectsChanged = true;
-        ship.QueueFree();
+        FreeShip?.Invoke(ship);
+        //ship.QueueFree();
     }
 
     // public void _IntegrateForces(PhysicsDirectBodyState3D state){
@@ -301,6 +384,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         GetNodes();
         StateMach.Body = this;
         StateMach.Enter(new IdleState());
+        RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += _on_UpdateRecruitment;
         //_velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
     }
@@ -328,6 +412,15 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         return Visible;
     }
 
+    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state)
+    {
+        if(node is Ship ship){
+            Merge(ship);
+        }
+    }
+
+
+
     // public bool IsVisible()
     // {
     //     return Visible;
@@ -336,7 +429,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {
-         
+
     //  }
 
 

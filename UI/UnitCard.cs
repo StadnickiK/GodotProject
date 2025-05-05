@@ -6,6 +6,8 @@ public partial class UnitCard : Control
 
 	public Unit Unit { get; set; }
 
+	public int Index { get; set; }
+
 	public ProgressBar Health { get; set; }
 
 	public ProgressBar Shield { get; set; }

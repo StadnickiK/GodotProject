@@ -151,5 +151,7 @@
     <Compile Include="Data\Building.cs" />
     <Compile Include="Map\IMap\IConstruct.cs" />
     <Compile Include="World\Node3DPool.cs" />
+    <Compile Include="Units\StateMachine\RecruitmentState.cs" />
+    <Compile Include="World\MapArmyManager.cs" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public partial class VisibilityConroller : Node
 {
 
-    public Dictionary<int, VisibilityStruct> PlayerVisibility { get; private set; } = new Dictionary<int, VisibilityStruct>();
+    public Dictionary<int, VisibilityStruct> PlayerVisibility { get; set; } = new Dictionary<int, VisibilityStruct>();
 
     public enum VisibilityState
     {

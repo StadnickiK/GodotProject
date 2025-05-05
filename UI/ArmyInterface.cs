@@ -24,6 +24,8 @@ public partial class ArmyInterface : Control
 
 	ArmyPanel _armyPanel = null;
 
+	ArmyPanel _transferArmyPanel;
+
 	ArmyRecruitment _armyRecruitment= null;
 
 	InfoPanel info;
@@ -49,6 +51,7 @@ public partial class ArmyInterface : Control
 		_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
 		_armyPanel = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
+		_transferArmyPanel = GetNode<ArmyPanel>("TransferArmy");
 		_armyRecruitment = GetNode<ArmyRecruitment>("VBoxContainer/HBoxContainer/Recruitment");
 		info = GetNode<InfoPanel>("VBoxContainer/InfoPanel");
 	}
@@ -90,6 +93,7 @@ public partial class ArmyInterface : Control
 			_armyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
 			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
+			_armyPanel.UpdateUnitsToTransfer += ship._on_UpdateUnitsToTransfer;
 			// if(ship.Vision){
 
 			// }
@@ -102,6 +106,8 @@ public partial class ArmyInterface : Control
 
 	public void DeselectArmy(){
 		_mapArmy.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent -= UpdateRecruitment;
+		_armyPanel.ResetPanel();
+		_armyPanel.UpdateUnitsToTransfer -= _mapArmy._on_UpdateUnitsToTransfer;
 	}
 
 	

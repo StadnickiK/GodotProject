@@ -17,6 +17,7 @@
 size = Vector3(3, 3, 3)
 
 [node name="Ship" type="CharacterBody3D" groups=["Selectable", "Targetable"]]
+collision_mask = 2
 motion_mode = 1
 script = ExtResource("1_hq6pt")
 

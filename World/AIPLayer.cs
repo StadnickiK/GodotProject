@@ -507,9 +507,10 @@ public partial class AIPlayer : Player
             for(int i = 0; i < plans.Count; i++){
                 var plan = plans.ElementAt(i);
                 if(!invasions.ContainsKey(plan.Key)){
-                    plan.Key.targetManager.AddTarget(new TargetManager<Node3D>.Target(plan.Value.GlobalPosition,plan.Value));
+                    var t = new TargetManager<Node3D>.Target(plan.Value.GlobalPosition,plan.Value);
+                    plan.Key.targetManager.AddTarget(t);
                     // plan.Key.Task = CmdPanel.CmdPanelOption.Conquer;
-                    plan.Key.MoveToTarget(plan.Value);
+                    plan.Key.MoveToTarget(t);
                     plans.Remove(plan.Key);
                     invasions.Add(plan.Key, plan.Value);
                 }

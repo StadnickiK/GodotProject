@@ -20,7 +20,7 @@ public partial class Select : Node
         }
     }
 
-    public void MoveToTarget(Node3D target){
+    public void MoveToTarget(TargetManager<Node3D>.Target target){
         if(selectManager.SelectedUnits.Count != 0){
             foreach(Ship s in selectManager.SelectedUnits){
                 s.MoveToTarget(target);
@@ -67,11 +67,12 @@ public partial class Select : Node
         foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
+                var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
                 if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
+                    ship.targetManager.AddTarget(t);
                 }else{
-                    ship.targetManager.SetTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
-                    ship.MoveToTarget(target);
+                    ship.targetManager.SetTarget(t);
+                    ship.MoveToTarget(t);
                 }
             }
         }
@@ -81,13 +82,14 @@ public partial class Select : Node
         foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
+                var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
                 if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
+                    ship.targetManager.AddTarget(t);
                     // ship.Task = task;
                 }else{
-                    ship.targetManager.SetTarget(new TargetManager<Node3D>.Target(target.GlobalPosition,target));
+                    ship.targetManager.SetTarget(t);
                     // ship.Task = task;
-                    ship.MoveToTarget(target);
+                    ship.MoveToTarget(t);
                 }
             }
         }

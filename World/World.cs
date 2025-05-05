@@ -12,21 +12,25 @@ public partial class World : Node3D
 		NoResource
 	}
 
-private Map _map = null;
-public Map GetMap
-{
-	get { return _map; }
-}
+	public delegate void SplitShipEventHandler(ShipStruct shipStruct);
 
-private WorldCursorControl _wcc = null;
-public WorldCursorControl WCC
-{
-	get { return _wcc; }
-}
+	public delegate void FreeShipEventHandler(Ship ship);
 
-public Node3DPool ArmyPool { get; set; }
+	private Map _map = null;
+	public Map GetMap
+	{
+		get { return _map; }
+	}
 
-private Data _data = null;
+	private WorldCursorControl _wcc = null;
+	public WorldCursorControl WCC
+	{
+		get { return _wcc; }
+	}
+
+	public MapArmyManager MapArmyManager { get; set; }
+
+	private Data _data = null;
 
 	Galaxy Galaxy = null;
 	CameraGimbal Camera3D = null;
@@ -127,7 +131,7 @@ private Data _data = null;
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		_UI = GetNode<UI>("UI");
-		ArmyPool = GetNode<Node3DPool>("ArmyPool");
+		MapArmyManager = GetNode<MapArmyManager>("MapArmyManager");
 	}
 
 	void ConnectSignals(){
@@ -267,7 +271,7 @@ private Data _data = null;
 				int maxFleets = 1;	
 				foreach(CollisionObject3D body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
 					if(body is Planet planet && maxFleets>0){
-						var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
+						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);//(Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
 						//ship.MapObject = planet.System;
 						ConnectShip(ship);
 						player.AddMapObject(ship);
@@ -287,16 +291,28 @@ private Data _data = null;
 		}
 	}
 
+	void CreateShip(ShipStruct shipStruct){
+		var s = MapArmyManager.CreateShip(shipStruct);
+		ConnectShip(s);
+	}
+
 	public Ship CreateShip(Planet planet, Unit unit){
-		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin+ new Vector3(3,0,3), planet.Name +" "+Rand.Next(0,1000));
-		var parent = unit.GetParent();
-		if(parent != null)
-			parent.RemoveChild(unit);
-		ship.Units.AddChild(unit);
+		var ship = MapArmyManager.CreateShip(planet, unit);
 		ConnectShip(ship);
-		planet.Controller.AddMapObject(ship);
+		//planet.Controller.AddMapObject(ship);
 		//  planet.AddToOrbit(ship);
 		return ship;
+	}
+
+	void SplitShip(ShipStruct shipStruct){
+		var s = MapArmyManager.CreateShip(shipStruct);
+		ConnectShip(s);
+		_on_Deselect();
+		_on_SelectUnit(s);
+	}
+
+	void FreeShip(Ship ship){
+		MapArmyManager.SaveShip(ship);
 	}
 
 	void ConnectShip(Ship ship){
@@ -308,6 +324,8 @@ private Data _data = null;
 		if(ship.Controller == _Player){
 			ship.Connect(nameof(Ship.OpenUnitTransferPanel), new Callable(_UI.UnitTransferP, "_on_OpenTransferPanel"));
 		}
+		ship.SplitShip += SplitShip;
+		ship.FreeShip += FreeShip;
 	}
 
 	void InitStartResources(){
@@ -480,6 +498,7 @@ private Data _data = null;
 		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
 		InitWorld();
+		MapArmyManager.Rand = Rand;
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;

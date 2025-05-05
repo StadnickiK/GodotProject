@@ -50,7 +50,7 @@ public partial class ResourcePanel : Control
                     resLabels[res.Key].TooltipText += " \n";
 
                     var color = player.TotalProduction.Upkeep[res.Key] > 0 ? Positive.ToHtml() : Negative.ToHtml();
-                    var sign = player.TotalProduction.Upkeep[res.Key] > 0 ? '+' : '-';
+                    var sign = player.TotalProduction.Upkeep[res.Key] > 0 ? '+' : ' ';
                     resLabels[res.Key].TooltipText += "[color="+color+"][b]Total: [/b]"+sign + player.TotalProduction.Upkeep[res.Key] +"[/color]\n\n";
                 }else{
                     //CreateResourceLabel(resName, Resources[resName]);

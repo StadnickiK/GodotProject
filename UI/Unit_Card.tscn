@@ -19,6 +19,7 @@ theme_override_constants/separation = 0
 [node name="Button" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+theme_override_colors/icon_pressed_color = Color(0.5564, 0.861689, 0.964114, 1)
 theme_override_font_sizes/font_size = 64
 text = "U"
 

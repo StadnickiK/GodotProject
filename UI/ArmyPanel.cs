@@ -4,12 +4,18 @@ using System.Collections.Generic;
 
 public partial class ArmyPanel : ScrollContainer
 {
+	public delegate void UpdateUnitsToTransferEventHandler(List<int> UnitsToTransfer);
+
+	public event UpdateUnitsToTransferEventHandler UpdateUnitsToTransfer;
+
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/Unit_Card.tscn";
 
 	PackedScene scene;
 
 	List<UnitCard> unitCards = new List<UnitCard>();
+
+	public List<int> UnitsToTransfer { get; set; } = new List<int>();
 
 	Node container;
 
@@ -22,15 +28,29 @@ public partial class ArmyPanel : ScrollContainer
 
 	void GetNodes(){
 		//container = GetNode("BuildingPanel");
+		var p = 0; //GetChildren()[0].GetChildren().Count;
 		foreach (var item in GetChildren()[0].GetChildren())
 		{
 			if(item is UnitCard card){
 				unitCards.Add(card);
+				card.Index = p;
+				card.button.ToggleMode = true;
+				card.button.ButtonUp += () => _on_SelectUnit(card.Index);
 				card.Hide();
-				}
-
+				p++;
+			}
 		}
 	}
+
+	public void _on_SelectUnit(int pos){
+		//unitCards[pos].button.Disabled = true;
+		if(unitCards[pos].button.ButtonPressed){
+			UnitsToTransfer.Add(pos);
+		}else{
+			UnitsToTransfer.Remove(pos);
+		}
+		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);
+	} 
 
 	public void ConnectBuildButtons(ArmyInterface planetInterface){
 		foreach (var node in container.GetChildren()){
@@ -59,6 +79,15 @@ public partial class ArmyPanel : ScrollContainer
 				unitCards[i].Hide();
 			}
 		}
+	}
+
+	public void ResetPanel(){
+
+		foreach(var i in UnitsToTransfer){
+			unitCards[i].button.ButtonPressed = false;
+		}
+		UnitsToTransfer.Clear();
+		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);
 	}
 
 	void AddCards(int count){
