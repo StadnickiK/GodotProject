@@ -55,11 +55,9 @@ public partial class UI : Control
     }
 
     public void UpdateUI(Player player){
-        if(player.MapObjectsChanged){
-            RPanel.UpdateRightPanel(player);
-            player.MapObjectsChanged = false;
-            // GD.Print("update r panel");
-        }
+        RPanel.UpdateRightPanel(player);
+        // GD.Print("update r panel");
+        
         if(player.ResourcesChanged){
             if(player.ResManager != null){
                 UpdateResPanel(player);

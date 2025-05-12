@@ -199,7 +199,7 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
                 if(ship.Units.GetChildren().Count == 0){
                     if(ship.Controller != null){
                         ship.Controller.MapObjects.Remove(ship);
-                        ship.Controller.MapObjectsChanged = true;
+                        //ship.Controller.MapObjectsChanged = true;
                     }
                     ship.QueueFree();
                 }else{

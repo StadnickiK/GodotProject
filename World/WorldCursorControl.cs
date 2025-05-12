@@ -39,6 +39,10 @@ public partial class WorldCursorControl : Node3D
     }
 
     public void _SelectUnit(CollisionObject3D unit){
+        select.SelectUnit(unit);
+    }
+
+    public void _AddUnit(CollisionObject3D unit){
         select.AddSelectedUnit(unit);
     }
 

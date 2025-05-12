@@ -14,6 +14,10 @@ public partial class UnitController : Node
 
     public event ChangeUpkeepEventHandler RemoveUpkeep;
 
+    public event World.SplitShipEventHandler SplitShip;
+
+    public event World.FreeShipEventHandler FreeShip;
+
     [Export]
     public int MaxUnits { get; set; } = 20;
 
@@ -43,6 +47,13 @@ public partial class UnitController : Node
         UnitsList.RemoveAt(unitID);
     }
 
+    public void RemoveUnit(Unit unit){
+        UpkeepComponent?.RemoveUpkeep(unit);
+        RemoveUpkeep?.Invoke(unit.Upkeep);
+        RemoveChild(unit);
+        UnitsList.Remove(unit);
+    }
+
     public void RemoveUnit(){
         for (int i = Count - 1; i >= 0 ; i--)
         {
@@ -68,11 +79,13 @@ public partial class UnitController : Node
     }
 
     public void TransferUnit(UnitController unitController){
-        for (int i = Count; i >= 0 ; i--)
-        {
-            unitController.AddUnit(UnitsList[i]);
-            RemoveUnit(i);
+        foreach(Unit unit in UnitsList){
+            UpkeepComponent?.RemoveUpkeep(unit);
+            RemoveUpkeep?.Invoke(unit.Upkeep);
+            RemoveChild(unit);
+            unitController.AddUnit(unit);
         }
+        UnitsList.Clear();
     }
 
     public List<Unit> GetUnitsForTransfer(List<int> unitIDs){
@@ -83,6 +96,20 @@ public partial class UnitController : Node
             RemoveUnit(i);
         }
         return list;
+    }
+
+    public void RemoveUnits(List<Unit> units){
+        for (int i = units.Count - 1; i >= 0 ; i--)
+        {
+            RemoveUnit(units[i]);
+        }
+    }
+    
+    void Merge(Ship ship){
+            if(Count + ship.Units.Count < ship.Units.MaxUnits){
+                TransferUnit(ship.Units);
+                FreeShip?.Invoke(ship);
+            }
     }
 
 }

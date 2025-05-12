@@ -40,7 +40,7 @@ public partial class MapArmyManager : Node
 		return ship;
 	}
 
-    public void SaveShip(Ship ship){
+    public void FreeShip(Ship ship){
         RemoveController(ship);
         RemoveUnits(ship);
         ClearVisibility(ship);

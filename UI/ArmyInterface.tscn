@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cd8trni2dvfhs"]
+[gd_scene load_steps=10 format=3 uid="uid://cd8trni2dvfhs"]
 
 [ext_resource type="Script" uid="uid://bx7dpobofd476" path="res://UI/ArmyInterface.cs" id="1_d84et"]
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="3_e5ywv"]
 [ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="3_e85fu"]
 [ext_resource type="Script" uid="uid://06i2q4qhrlqd" path="res://UI/ArmyPanel.cs" id="3_susb5"]
+[ext_resource type="Script" uid="uid://4cbef4kp12uo" path="res://UI/ArmyTransferPanel.cs" id="4_fpnqi"]
 [ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="5_f5nni"]
 [ext_resource type="Script" uid="uid://bibq2sy8hsrc6" path="res://UI/InfoPanel.cs" id="5_rae23"]
 [ext_resource type="Script" uid="uid://c0p30ub3sq80t" path="res://UI/ArmyRecruitment.cs" id="7_10yej"]
@@ -44,103 +45,112 @@ offset_top = 757.0
 offset_right = 1203.0
 offset_bottom = 969.0
 
-[node name="TransferArmy" type="ScrollContainer" parent="."]
+[node name="ArmyTransferPanel" type="VBoxContainer" parent="."]
 visible = false
-clip_contents = false
 custom_minimum_size = Vector2(272, 104)
-layout_mode = 2
+layout_mode = 0
 offset_left = 786.0
-offset_top = 857.0
-offset_right = 1064.0
-offset_bottom = 961.0
-scale = Vector2(1.16, 1)
+offset_top = 775.0
+offset_right = 1058.0
+offset_bottom = 891.0
+script = ExtResource("4_fpnqi")
+
+[node name="TransferArmy" type="ScrollContainer" parent="ArmyTransferPanel"]
+clip_contents = false
+custom_minimum_size = Vector2(322, 104)
+layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_susb5")
 
-[node name="Grid" type="HBoxContainer" parent="TransferArmy"]
+[node name="Grid" type="HBoxContainer" parent="ArmyTransferPanel/TransferArmy"]
 custom_minimum_size = Vector2(278, 104)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="UnitCard" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard2" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard2" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard3" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard3" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard4" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard4" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard5" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard5" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard6" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard6" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard7" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard7" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard8" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard8" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard9" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard9" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard10" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard10" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard11" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard11" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard12" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard12" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard13" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard13" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard14" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard14" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard15" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard15" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard16" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard16" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard17" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard17" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard18" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard18" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard19" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard19" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
 
-[node name="UnitCard20" parent="TransferArmy/Grid" instance=ExtResource("5_f5nni")]
+[node name="UnitCard20" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
 visible = false
 layout_mode = 2
+
+[node name="Confirm" type="Button" parent="ArmyTransferPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Confirm"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

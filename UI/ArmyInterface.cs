@@ -9,6 +9,10 @@ public partial class ArmyInterface : Control
 	[Signal]
     public delegate void DeselectEventHandler();
 
+	public delegate void TransferUnitsEventHandler(List<Unit> hostIDS, List<Unit> targetIDS);
+
+	public event TransferUnitsEventHandler TransferUnits;
+
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/BuildingLabel.tscn";
 
@@ -20,11 +24,13 @@ public partial class ArmyInterface : Control
 
 	Ship _mapArmy = null;
 
+	Ship transferArmy;
+
 	public Data _data { get; set; }
 
 	ArmyPanel _armyPanel = null;
 
-	ArmyPanel _transferArmyPanel;
+	ArmyTransferPanel _armyTransferPanel;
 
 	ArmyRecruitment _armyRecruitment= null;
 
@@ -51,7 +57,7 @@ public partial class ArmyInterface : Control
 		_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
 		_armyPanel = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
-		_transferArmyPanel = GetNode<ArmyPanel>("TransferArmy");
+		_armyTransferPanel = GetNode<ArmyTransferPanel>("ArmyTransferPanel");
 		_armyRecruitment = GetNode<ArmyRecruitment>("VBoxContainer/HBoxContainer/Recruitment");
 		info = GetNode<InfoPanel>("VBoxContainer/InfoPanel");
 	}
@@ -69,6 +75,7 @@ public partial class ArmyInterface : Control
 	void ConnectSignals(){
 		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
 		_armyPanel.ConnectUnitCards(this);
+		_armyTransferPanel.ConfrimButton.ButtonUp += _on_TransferArmy;
 		//_buildings.ConnectBuildButtons(this);
 		// _buildMenu.ConnectBuildButtons(this);
 	}
@@ -83,13 +90,14 @@ public partial class ArmyInterface : Control
 		ConnectSignals();
 	}
 
-	public void UpdateArmyPanel(Ship ship, System.Collections.Generic.List<Resource> resources){
+	public void UpdateArmyPanel(Ship ship){
+		_armyTransferPanel.Hide();
 		if(ship != null){
 			var visibility = ship.VisibilityConroller.GetVisibility(LocalPlayerID);
 			Visible = true;
 			_mapArmy = ship;
 			SetTitle(ship.Name);
-			UpdateInfo(ship, resources);
+			UpdateInfo(ship, _data.Resources);
 			_armyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
 			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
@@ -98,6 +106,12 @@ public partial class ArmyInterface : Control
 
 			// }
 		}
+	}
+
+	public void UpdateArmyPanel(Ship ship, Ship target){
+		UpdateArmyPanel(ship);
+		transferArmy = target;
+		_armyTransferPanel.UpdateTransferPanel(target.Units.UnitsList);
 	}
 
 	void UpdateRecruitment(RecruitmentComponent recruitmentComponent){
@@ -110,6 +124,9 @@ public partial class ArmyInterface : Control
 		_armyPanel.UpdateUnitsToTransfer -= _mapArmy._on_UpdateUnitsToTransfer;
 	}
 
+	void _on_TransferArmy(){
+		_mapArmy.TransferUnits(transferArmy, _armyTransferPanel.TransferArmy.UnitsToTransfer);
+	}
 	
 
 	public void InitRecruitmentPanel(){
@@ -130,6 +147,15 @@ public partial class ArmyInterface : Control
 				// _overviewPanel.AddNodeToPanel("Construction", tempLabel);
 			}
 		}
+	}
+
+	public void _on_ConfirmTransferButtonUp(){
+		TransferUnits?.Invoke(_armyPanel.UnitsToTransfer, _armyTransferPanel.TransferArmy.UnitsToTransfer);
+		_armyTransferPanel.Hide();
+	}
+
+	public void OpenTransferPanel(){
+		_armyTransferPanel.Show();
 	}
 
 	public void _on_LabelGuiInputEvent(InputEvent input, Node node){

@@ -64,7 +64,7 @@ public partial class Map : Node3D
 
     void MoveToMapObject(Node mapObject, Node targetMapObject, Vector3 aproachVec = default(Vector3), PhysicsDirectBodyState3D state = null){
         if(targetMapObject is IEnterMapObject enterMapObject){
-            enterMapObject.EnterMapObject(mapObject, aproachVec, state);
+            enterMapObject.EnterMapObject(mapObject);
         }
     }
 

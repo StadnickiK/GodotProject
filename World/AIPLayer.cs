@@ -88,9 +88,9 @@ public partial class AIPlayer : Player
             if(counter >= 50)
                 counter = -1;
             counter++;
-        if(MapObjectsChanged){
-            ConnectSignals();
-        }
+        // if(MapObjectsChanged){
+        //     ConnectSignals();
+        // }
     }
 
 

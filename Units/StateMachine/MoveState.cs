@@ -6,6 +6,10 @@ public partial class MoveState : State
 {
     private TargetManager<Node3D>.Target _target;
 
+    public delegate void MoveStateExitedEventHandler(TargetManager<Node3D>.Target target);
+
+    public event MoveStateExitedEventHandler MoveStateExited;
+
     [Export]
     private float _tolerance = 0.2f;
     [Export]
@@ -40,8 +44,11 @@ public partial class MoveState : State
         // If we’re close enough to the target...
         if (distance < _tolerance)
         {
-            if(_target.TargetNode != null)
-                Body.EmitSignal(nameof(Ship.SignalName.SignalEnterMapObject), Body, _target.TargetNode);
+            if(_target.TargetNode != null){
+                //Body.EmitSignal(nameof(Ship.SignalName.SignalEnterMapObject), Body, _target.TargetNode);
+                MoveStateExited?.Invoke(_target);
+                return new IdleState();
+            }
             // Check if there’s another target in the player's queue.
             if (Body.targetManager.Targets.Count > 0)
             {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class ArmyPanel : ScrollContainer
 {
-	public delegate void UpdateUnitsToTransferEventHandler(List<int> UnitsToTransfer);
+	public delegate void UpdateUnitsToTransferEventHandler(List<Unit> UnitsToTransfer);
 
 	public event UpdateUnitsToTransferEventHandler UpdateUnitsToTransfer;
 
@@ -15,7 +15,7 @@ public partial class ArmyPanel : ScrollContainer
 
 	List<UnitCard> unitCards = new List<UnitCard>();
 
-	public List<int> UnitsToTransfer { get; set; } = new List<int>();
+	public List<Unit> UnitsToTransfer { get; set; } = new List<Unit>();
 
 	Node container;
 
@@ -28,7 +28,8 @@ public partial class ArmyPanel : ScrollContainer
 
 	void GetNodes(){
 		//container = GetNode("BuildingPanel");
-		var p = 0; //GetChildren()[0].GetChildren().Count;
+		//GetChildren()[0].GetChildren().Count;
+		var p = 0;
 		foreach (var item in GetChildren()[0].GetChildren())
 		{
 			if(item is UnitCard card){
@@ -45,9 +46,9 @@ public partial class ArmyPanel : ScrollContainer
 	public void _on_SelectUnit(int pos){
 		//unitCards[pos].button.Disabled = true;
 		if(unitCards[pos].button.ButtonPressed){
-			UnitsToTransfer.Add(pos);
+			UnitsToTransfer.Add(unitCards[pos].Unit);
 		}else{
-			UnitsToTransfer.Remove(pos);
+			UnitsToTransfer.Remove(unitCards[pos].Unit);
 		}
 		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);
 	} 
@@ -83,8 +84,8 @@ public partial class ArmyPanel : ScrollContainer
 
 	public void ResetPanel(){
 
-		foreach(var i in UnitsToTransfer){
-			unitCards[i].button.ButtonPressed = false;
+		foreach(var card in unitCards){
+			card.button.ButtonPressed = false;
 		}
 		UnitsToTransfer.Clear();
 		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);

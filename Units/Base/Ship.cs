@@ -34,19 +34,20 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     public delegate void EnterCombatEventHandler(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent);
 
     [Signal]
-    public delegate void SignalEnterMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state);
-
-    //public event SignalEnterMapObjectEventHandler SignalEnterMapObject;
-
-    [Signal]
     public delegate void SignalExitMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state); 
 
     [Signal]
     public delegate void OpenUnitTransferPanelEventHandler(Ship left, Ship right);
 
+    public delegate void PlayerDataChanged();
+
+    public event PlayerDataChanged ArmiesChanged;
+
     public event World.SplitShipEventHandler SplitShip;
 
     public event World.FreeShipEventHandler FreeShip;
+
+    public event World.TransferUnitsEventHandler OpenTransferPanel;
 
     public VisibilityConroller VisibilityConroller { get; set; }
 
@@ -95,7 +96,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public event IExtendedMapObjectController.ControllerChangedEventHandler ControllerChanged;
 
-    public List<int> UnitsToTransfer = new List<int>();
+    public List<Unit> UnitsToTransfer = new List<Unit>();
 
     public enum ArmyStance
     {
@@ -154,7 +155,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         Stance = ArmyStance.Rectruiting;
     }
 
-    public void _on_UpdateUnitsToTransfer(List<int> unitsToTransfer){
+    public void _on_UpdateUnitsToTransfer(List<Unit> unitsToTransfer){
         CanMove = unitsToTransfer.Count == 0;
         UnitsToTransfer = unitsToTransfer;
         StateMach.Enter(new IdleState());
@@ -163,13 +164,14 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     void Split(TargetManager<Node3D>.Target target){
         if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < Units.UnitsList.Count){
+                Units.RemoveUnits(UnitsToTransfer);
                 SplitShip?.Invoke(new ShipStruct(){
                     Target = target,
                     Name = this.Name,
                     Parent = this.GetParent(),
                     Controller = this.Controller,
                     Position = this.Position,
-                    Units = Units.GetUnitsForTransfer(UnitsToTransfer),
+                    Units = UnitsToTransfer,
                     Visible = this.Visible,
                 });
                 UnitsToTransfer.Clear();
@@ -177,23 +179,46 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     }
 
     void Merge(TargetManager<Node3D>.Target target){
-        if(target.TargetNode is Ship ship){
+        if(target.TargetNode is Ship ship && target.TargetNode != this){
             if(Units.Count + ship.Units.Count < ship.Units.MaxUnits){
                 Units.TransferUnit(ship.Units);
                 FreeShip?.Invoke(this);
+            }else{
+                OpenTransferPanel?.Invoke(this, ship);
             }
         }
     }
 
+    public void TransferUnits(Ship target, List<Unit> targetUnits){
+        Units.RemoveUnits(UnitsToTransfer);
+        target.Units.AddUnit(UnitsToTransfer);
+        target.Units.RemoveUnits(targetUnits);
+        Units.AddUnit(targetUnits);
+    }
+
+    public void Merge(Ship ship){
+        foreach(Unit unit in ship.Units.UnitsList){
+            unit.GetParent().RemoveChild(unit);
+            Units.AddUnit(unit);
+        }
+        ship.Controller.RemoveMapObject(ship);
+        ArmiesChanged?.Invoke();
+        FreeShip?.Invoke(ship);
+        //ship.QueueFree();
+    }
+
     public void MoveToTarget(TargetManager<Node3D>.Target target){
         // Sleeping = false;
-        if(CanMove){
-            targetManager.SetTarget(target); 
-            StateMach.Enter(new MoveState(target));
-            Stance = ArmyStance.Moving;
-        }else{
-            Split(target);
-        }
+        if(target.TargetNode != this)
+            if(CanMove){
+                targetManager.SetTarget(target); 
+                var moveState = new MoveState(target);
+                StateMach.Enter(moveState);
+                moveState.MoveStateExited += Merge;
+                Stance = ArmyStance.Moving;
+            }else{
+                Split(target);
+            }
         // Node starSysObj = null;
         // if((GetParent() is Orbit orbit)){ 
         //     starSysObj = orbit.GetParent().GetParent();
@@ -270,16 +295,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //     }
     // }
 
-    public void Merge(Ship ship){
-        foreach(Unit unit in ship.Units.UnitsList){
-            unit.GetParent().RemoveChild(unit);
-            Units.AddUnit(unit);
-        }
-        ship.Controller.RemoveMapObject(ship);
-        ship.Controller.MapObjectsChanged = true;
-        FreeShip?.Invoke(ship);
-        //ship.QueueFree();
-    }
+
 
     // public void _IntegrateForces(PhysicsDirectBodyState3D state){
     //     if(targetManager.HasTarget){
@@ -412,7 +428,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         return Visible;
     }
 
-    public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state)
+    public void EnterMapObject(Node node)
     {
         if(node is Ship ship){
             Merge(ship);

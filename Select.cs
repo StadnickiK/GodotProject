@@ -10,21 +10,28 @@ public partial class Select : Node
 
     Vector3 _destination;
 
+    public delegate void MoveToPosEventHandler(Vector3 pos);
+
+    public event MoveToPosEventHandler OnMove;
+
+    public delegate void MoveToTargetEventHandler(TargetManager<Node3D>.Target target);
+
+    public event MoveToTargetEventHandler OnTarget;
+
+    public delegate void ClearTargetEventHandler();
+
+    public event ClearTargetEventHandler OnClear;
+
     public void MoveToPosition(Vector3 destination){
         if(selectManager.SelectedUnits.Count != 0){
             _destination = destination;
-            foreach(Node node in selectManager.SelectedUnits){
-                if(node is Ship ship)
-                    ship.MoveToPos(destination);
-            }
+            OnMove?.Invoke(destination);
         }
     }
 
     public void MoveToTarget(TargetManager<Node3D>.Target target){
         if(selectManager.SelectedUnits.Count != 0){
-            foreach(Ship s in selectManager.SelectedUnits){
-                s.MoveToTarget(target);
-            }
+            OnTarget?.Invoke(target);
         }
     }
 
@@ -48,8 +55,22 @@ public partial class Select : Node
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
+            if(unit is Ship ship) 
+                SubscribeShip(ship);
             AddSelectEffect(unit);
         }
+    }
+
+    void SubscribeShip(Ship ship){
+        OnMove += ship.MoveToPos;
+        OnTarget += ship.MoveToTarget;
+        OnClear += ship.targetManager.ClearTargets;
+    }
+
+    void UnsubscribeShip(Ship ship){
+        OnMove -= ship.MoveToPos;
+        OnTarget -= ship.MoveToTarget;
+        OnClear -= ship.targetManager.ClearTargets;
     }
 
     public void AddSelectedUnit(CollisionObject3D unit){
@@ -64,18 +85,8 @@ public partial class Select : Node
     }
 
     public void AddTarget(CollisionObject3D target){
-        foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
-            if(rigidB is Ship){
-                Ship ship = (Ship)rigidB;
-                var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
-                if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(t);
-                }else{
-                    ship.targetManager.SetTarget(t);
-                    ship.MoveToTarget(t);
-                }
-            }
-        }
+        var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
+        OnTarget?.Invoke(t);
     }
 
     public void AddTarget(CollisionObject3D target, CmdPanel.CmdPanelOption task){
@@ -96,17 +107,15 @@ public partial class Select : Node
     }
 
     public void ClearTarget(){
-        foreach(CollisionObject3D k in selectManager.SelectedUnits){
-            if(k is Ship){
-                Ship ship = (Ship)k;
-                ship.targetManager.ClearTargets();
-            }
-        }
+        OnClear?.Invoke();
     }
 
 
     public void ClearSelection(){
         RemoveSelectEffect();
+        foreach(var unit in selectManager.SelectedUnits)
+            if(unit is Ship ship)
+                UnsubscribeShip(ship);
         selectManager.ClearSelection();
     }
 

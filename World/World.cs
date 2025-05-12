@@ -16,6 +16,8 @@ public partial class World : Node3D
 
 	public delegate void FreeShipEventHandler(Ship ship);
 
+	public delegate void TransferUnitsEventHandler(Ship host, Ship target);
+
 	private Map _map = null;
 	public Map GetMap
 	{
@@ -149,6 +151,14 @@ public partial class World : Node3D
 		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
+	void ConnectLocalPlayer(Player player){
+		player.ArmiesChanged += _UI.RPanel.UpdateRightPanel;
+		player.ProdChanged += _UI.ResPanel.UpdatePanel;
+		player.UpkeepChanged += _UI.ResPanel.UpdatePanel;
+		player.ProdCostChanged += _UI.ResPanel.UpdatePanel;
+		player.PlayerResourcesChanged += _UI.ResPanel.UpdatePanel;
+	}
+
 	public void ConnectToSelectUnit(Node node){
 		node.Connect("SelectUnit", new Callable(this, nameof(_on_SelectUnit)));
 	}
@@ -156,7 +166,7 @@ public partial class World : Node3D
 	void _on_SelectUnit(PhysicsBody3D body){
 		_wcc._SelectUnit(body);
 		
-		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body, _data.Resources);
+		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
 	}
 
 	void _on_HideArmyInterface(){
@@ -271,10 +281,8 @@ public partial class World : Node3D
 				int maxFleets = 1;	
 				foreach(CollisionObject3D body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
 					if(body is Planet planet && maxFleets>0){
-						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);//(Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
-						//ship.MapObject = planet.System;
+						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
 						ConnectShip(ship);
-						player.AddMapObject(ship);
 						for(int i = 0;i<5;i++){
 							var unit = _data.GetUnit(0);
 							ship.Units.AddUnit(unit);
@@ -312,20 +320,25 @@ public partial class World : Node3D
 	}
 
 	void FreeShip(Ship ship){
-		MapArmyManager.SaveShip(ship);
+		MapArmyManager.FreeShip(ship);
 	}
 
 	void ConnectShip(Ship ship){
 		ConnectToSelectUnit(ship);
         WCC.ConnectToSelectTarget(ship);
         _map.ConnectToEnterCombat(ship);
-        _map.ConnectToEnterMapObject(ship);
+        //_map.ConnectToEnterMapObject(ship);
         _map.ConnectToExitMapObject(ship);
 		if(ship.Controller == _Player){
 			ship.Connect(nameof(Ship.OpenUnitTransferPanel), new Callable(_UI.UnitTransferP, "_on_OpenTransferPanel"));
+			ship.OpenTransferPanel += OpenTransferPanel;
 		}
 		ship.SplitShip += SplitShip;
 		ship.FreeShip += FreeShip;
+	}
+
+	void OpenTransferPanel(Ship host, Ship target){
+		_UI.ArmyInterfce.UpdateArmyPanel(host, target);
 	}
 
 	void InitStartResources(){
@@ -506,17 +519,15 @@ public partial class World : Node3D
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
 			_UI.ResPanel.UpdatePanel(_Player);
-			_Player.ProdChanged += _UI.ResPanel.UpdatePanel;
-			_Player.UpkeepChanged += _UI.ResPanel.UpdatePanel;
-			_Player.ProdCostChanged += _UI.ResPanel.UpdatePanel;
-			_Player.PlayerResourcesChanged += _UI.ResPanel.UpdatePanel;
+			ConnectLocalPlayer(_Player);
+
 		}
 
 	}
 	public override void _Process(double delta)
 	{
 		if(_Player != null){
-			_UI.UpdateUI(_Player);
+			//_UI.UpdateUI(_Player);
 		}
 		if(Input.IsActionJustReleased("ui_cancel")){
 			_UI.WorldMenu.Visible = true;

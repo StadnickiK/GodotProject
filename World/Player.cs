@@ -24,12 +24,14 @@ public partial class Player : Node, IEquatable<Player>
 
     public event UnitssChangedEventHandler UnitsChanged;
 
+    public delegate void PlayerDataChanged(Player caller);
+
+    public event PlayerDataChanged ArmiesChanged;
+
     [Export]
     public Color PlayerColor { get; set; }
 
     public bool IsLocal { get; set; } = false;
-
-    public bool MapObjectsChanged { get; set; } = true;
 
     [Export]
     public int TimeStep { get; set; } = 1;
@@ -144,16 +146,18 @@ public partial class Player : Node, IEquatable<Player>
         if(mapObject is Ship ship){
             Ships.Add(ship);
             ship.Controller = this;
+            //ship.Units.AddUpkeep -= UpdateUpkeep;
             ship.Units.AddUpkeep += UpdateUpkeep;
             ship.Units.RemoveUpkeep += RemoveUpkeep;
             UnitsChanged?.Invoke(ship);
+            ArmiesChanged?.Invoke(this);
         }
         if(mapObject is Planet planet){
             Planets.Add(planet);
             AddProduction(planet.ResourcesManager.Production.Upkeep);
             AddProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
         }
-        MapObjectsChanged = true;
+        
     }
 
     public void RemoveMapObject(CollisionObject3D mapObject){
@@ -162,13 +166,13 @@ public partial class Player : Node, IEquatable<Player>
             Ships.Remove(ship);
             ship.Units.AddUpkeep -= UpdateUpkeep;
             ship.Units.RemoveUpkeep -= RemoveUpkeep;
+            ArmiesChanged?.Invoke(this);
         }
         if(mapObject is Planet planet){
             Planets.Remove(planet);
             RemoveProduction(planet.ResourcesManager.Production.Upkeep);
             RemoveProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
         }
-        MapObjectsChanged = true;
     }
 
     // Called when the node enters the scene tree for the first time.
