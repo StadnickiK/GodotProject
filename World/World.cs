@@ -331,7 +331,6 @@ public partial class World : Node3D
         //_map.ConnectToEnterMapObject(ship);
         _map.ConnectToExitMapObject(ship);
 		if(ship.Controller == _Player){
-			ship.Connect(nameof(Ship.OpenUnitTransferPanel), new Callable(_UI.UnitTransferP, "_on_OpenTransferPanel"));
 			ship.OpenTransferPanel += OpenTransferPanel;
 		}
 		ship.SplitShip += SplitShip;

@@ -33,7 +33,6 @@
     <Compile Include="Map\Planet\Populations.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
-    <Compile Include="UI\Center\UnitTransferPanel.cs" />
     <Compile Include="UI\CmdPanel.cs" />
     <Compile Include="UI\Icon3D.cs" />
     <Compile Include="UI\SmallList.cs" />
@@ -55,7 +54,7 @@
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
-    <Compile Include="UI\AlertBox.cs" />
+    <Compile Include="UI\Center\AlertBox.cs" />
     <Compile Include="UI\BattlePanel.cs" />
     <Compile Include="UI\BuildingLabel.cs" />
     <Compile Include="UI\BuildingInterface.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="UI\TopLeftPanel\TechnologyPanel.cs" />
     <Compile Include="UI\TopLeftPanel\TopLeftPanel.cs" />
     <Compile Include="UI\TransferLabel.cs" />
-    <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
     <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />

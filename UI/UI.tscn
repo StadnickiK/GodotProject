@@ -1,7 +1,6 @@
-[gd_scene load_steps=18 format=4 uid="uid://b4uuv8wu0rx6l"]
+[gd_scene load_steps=17 format=4 uid="uid://b4uuv8wu0rx6l"]
 
 [ext_resource type="PackedScene" uid="uid://br3y8uchebph0" path="res://UI/TopLeftPanel/TopLeftPanel.tscn" id="1"]
-[ext_resource type="PackedScene" uid="uid://drq3lcla8voje" path="res://UI/Center/UnitTransferPanel.tscn" id="2"]
 [ext_resource type="Script" uid="uid://bb4lgwd2ifar2" path="res://UI/UI.cs" id="4"]
 [ext_resource type="PackedScene" uid="uid://crtw5r4628b2h" path="res://UI/PlanetInterface.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://cd8trni2dvfhs" path="res://UI/ArmyInterface.tscn" id="6_p8g4q"]
@@ -12,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://biagx72xi2rqt" path="res://UI/SmallList.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://bqxom23btjo2r" path="res://Menu/Menu.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://4j4dbkx335vc" path="res://UI/RightPanel.tscn" id="13"]
-[ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/AlertBox.tscn" id="14"]
+[ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/Center/AlertBox.tscn" id="14"]
 
 [sub_resource type="Image" id="Image_017wa"]
 data = {
@@ -276,6 +275,9 @@ cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
 [sub_resource type="FontFile" id="4"]
 fallbacks = Array[Font]([SubResource("3")])
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
@@ -385,10 +387,3 @@ grow_vertical = 2
 [node name="TopLeftPanel" parent="." instance=ExtResource("1")]
 layout_mode = 1
 anchors_preset = 0
-
-[node name="UnitTransferPanel" parent="." instance=ExtResource("2")]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-grow_horizontal = 2
-grow_vertical = 2

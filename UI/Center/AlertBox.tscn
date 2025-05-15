@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://g2iumgomdpct"]
 
 [ext_resource type="Theme" uid="uid://herq15xa5tcn" path="res://Themes/Main_Menu_theme.tres" id="1"]
-[ext_resource type="Script" uid="uid://bnk8hr7y4ni7l" path="res://UI/AlertBox.cs" id="2"]
+[ext_resource type="Script" uid="uid://bnk8hr7y4ni7l" path="res://UI/Center/AlertBox.cs" id="2"]
+
 
 [node name="AlertBox" type="Panel"]
 anchor_left = 0.5
