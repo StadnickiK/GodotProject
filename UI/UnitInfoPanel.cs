@@ -84,7 +84,7 @@ void GetNodes(){
         // }
     }
 
-    void CreateOverviewPanelLabel(string panelName, string name, Node mapObject){
+    void CreateOverviewPanelLabel(string panelName, string name, Node3D mapObject){
         Node node = null;
         if(_itemScene != null){
             var label = (MapObjectLabel)_itemScene.Instantiate();

@@ -137,7 +137,8 @@ public partial class World : Node3D
 	}
 
 	void ConnectSignals(){
-		_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
+		//_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
+		_UI.RPanel.WorldCamera = Camera3D;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
 		_UI.ResPanel.InitResourcePanel(_data.Resources);
 		_UI.PInterface._data = _data;
@@ -527,7 +528,7 @@ public partial class World : Node3D
 	public override void _Process(double delta)
 	{
 		if(_Player != null){
-			//_UI.UpdateUI(_Player);
+			_UI.UpdateUI(_Player);
 		}
 		if(Input.IsActionJustReleased("ui_cancel")){
 			_UI.WorldMenu.Visible = true;
