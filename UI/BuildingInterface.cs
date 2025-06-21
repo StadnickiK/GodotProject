@@ -75,7 +75,8 @@ public partial class BuildingInterface : Panel
     }
 
     public void UpdateInterface(Unit unit, bool tooExpensive){
-        if(unit != null){
+        if (unit != null)
+        {
             _title.Text = unit.UnitName;
             _desc.Text = "";
             BuildCost(unit);
@@ -83,9 +84,11 @@ public partial class BuildingInterface : Panel
             ConstructionTime(unit.BuildTime);
 
             _desc.AppendText("\n[b][font_size=20]Stats: [/font_size][/b]\n");
-            foreach(var stat in unit.StatsList){
+            foreach (var stat in unit.StatsList)
+            {
                 _desc.AppendText(stat.Name + " " + stat.CurrentValue + "\n");
             }
+            _desc.AppendText(unit.StatManager.PrintStats());
         }
     }
 

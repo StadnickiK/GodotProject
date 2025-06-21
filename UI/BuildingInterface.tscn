@@ -3,38 +3,38 @@
 [ext_resource type="Script" uid="uid://beuqw1kbgvco1" path="res://UI/BuildingInterface.cs" id="3"]
 
 [node name="BuildingInterface" type="Panel"]
-offset_right = 284.0
-offset_bottom = 460.0
+anchors_preset = -1
+anchor_right = 0.0739583
+anchor_bottom = 0.212963
 script = ExtResource("3")
+metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
 process_mode = 4
 clip_contents = true
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -141.5
-offset_right = 142.5
-offset_bottom = 40.0
+anchors_preset = -1
+anchor_left = 0.00176035
+anchor_right = 1.00176
+anchor_bottom = 0.0869565
+offset_right = 3.05176e-05
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
 text = "Title"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Description" type="RichTextLabel" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -141.5
-offset_top = -425.0
-offset_right = 142.5
-offset_bottom = -5.0
+anchors_preset = -1
+anchor_left = 0.00176035
+anchor_top = 0.0760871
+anchor_right = 1.00176
+anchor_bottom = 0.98913
+offset_right = 3.05176e-05
 grow_horizontal = 2
 grow_vertical = 0
 bbcode_enabled = true
 text = "text"
+metadata/_edit_use_anchors_ = true

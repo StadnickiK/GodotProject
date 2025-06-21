@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cqaavyu5u5ava"]
+
+[ext_resource type="Shader" uid="uid://dbwpynybyrg8s" path="res://Shaders/star_visual_shader2.tres" id="1_g35rc"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_g35rc")
+shader_parameter/FlareColor = Color(0.982058, 0.643768, 0.380447, 1)
+shader_parameter/ColorParameter2 = Color(0.945098, 0.2, 0.2, 1)
+shader_parameter/ColorParameter3 = Color(1, 1, 1, 1)
+shader_parameter/StrengthMul = 5.0
+shader_parameter/ColorParameter = Color(0.945098, 0.54902, 0.2, 1)

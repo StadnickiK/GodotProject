@@ -5,8 +5,15 @@ using Godot.Collections;
 public partial class Unit : Construct, IUpkeep
 {
 
+	public event Node2DPool.FreeNodeEventHandler FreeUnit;
+
 	[Export]
 	public int ID_Owner { get; set; }
+
+	[Export]
+	public bool Logging { get; set; } = true;
+
+	GameLogger gameLogger = GameLogger.Instance;
 
 	public bool HasHitpoints { get; set; } = true;  
 
@@ -16,6 +23,11 @@ public partial class Unit : Construct, IUpkeep
     public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
+
+	[Export]
+    public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
+
+    public StatManager StatManager { get; set; }
 
 	//public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
@@ -34,39 +46,34 @@ public partial class Unit : Construct, IUpkeep
 		}
 	}
 
-	void CopyStats(Node stats){
-		foreach(Node node in stats.GetChildren()){
-			if(node is BaseStat stat){
-				var statCopy = new BaseStat(stat);
-				Stats.AddChild(statCopy);
-			}
-		}
-	}
-
 	public void CalculateDamage(Unit unit){
-		if(GetStat("Attack").BaseValue > unit.GetStat("Defence").BaseValue){
-			unit.GetStat("HitPoints").CurrentValue -= GetStat("Attack").BaseValue - unit.GetStat("Defence").BaseValue;
-		}else{
-			unit.GetStat("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
+		var attack = GetStat("Attack");
+		var unitDefence = unit.GetStat("Defence");
+		var unitHP = unit.GetStat("HitPoints");
+		if(Logging) gameLogger.LogInfo("Attack " + attack.CurrentValue + "");
+		if(Logging) gameLogger.LogInfo("Target Defence " + unitDefence.CurrentValue + " Target HP " + unitHP.CurrentValue);
+		if (attack.CurrentValue > unitDefence.CurrentValue)
+		{
+			var EffectiveAttack = attack.CurrentValue - unitDefence.CurrentValue;
+			unitHP.CurrentValue -= EffectiveAttack;
+			if (Logging) gameLogger.LogInfo("Damage dealt " + EffectiveAttack + " Target HP " + unitHP.CurrentValue);
 		}
-		if(GetStat("HitPoints").CurrentValue<0){
-			HasHitpoints = false;
+		else
+		{
+			unitHP.CurrentValue -= 1; // if defence is higher than attack deal minimal dmg
+			if (Logging) gameLogger.LogInfo("Damage dealt " + 1 + " Target HP " + unitHP.CurrentValue);
 		}
-		if(unit.GetStat("HitPoints").CurrentValue<=0){
+		if (unitHP.CurrentValue <= 0)
+		{
 			unit.HasHitpoints = false;
-		}else{
-			if(unit.GetStat("Attack").BaseValue > GetStat("Defence").BaseValue){
-				GetStat("HitPoints").CurrentValue -= unit.GetStat("Attack").BaseValue - GetStat("Defence").BaseValue;
-			}else{
-				GetStat("HitPoints").CurrentValue--; // if defence is higher than attack deal minimal dmg
-			}
-			// GetStat("HitPoints").CurrentValue -= unit.GetStat("Attack").BaseValue - GetStat("Defence").BaseValue;
+			if (Logging) gameLogger.LogInfo("Target has no HP");
+			//FreeUnit?.Invoke(this);
 		}
 	}
 
 	public override void _Ready()
 	{
-		Stats = GetNode("Stats");
+		StatManager = GetNode<StatManager>("StatManager");
 	}
 
 	/// <summary>
@@ -79,7 +86,7 @@ public partial class Unit : Construct, IUpkeep
 	/// <param name="name"></param>
 	/// <returns></returns>
 	public BaseStat GetStat(string name){
-		return GetNodeOrNull<BaseStat>("Stats/"+name);
+		return StatManager.GetNodeOrNull<BaseStat>(name);
 	}
 
 }

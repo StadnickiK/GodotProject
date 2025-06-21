@@ -18,15 +18,23 @@ public partial class UnitController : Node
 
     public event World.FreeShipEventHandler FreeShip;
 
+    public event Node2DPool.FreeNodeEventHandler FreeUnit;
+
+    public delegate void NoUnitsEventHandler();
+
+    public event NoUnitsEventHandler NoUnits;
+
     [Export]
     public int MaxUnits { get; set; } = 20;
 
     public int Count { get { return UnitsList.Count; } }
+    
+    public bool HasUnits { get { return UnitsList.Count > 0; } }
 
 	public override void _Ready()
-	{
-		UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
-	}
+    {
+        UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
+    }
 
     public void AddUnit(Unit unit){
         AddChild(unit);
@@ -62,17 +70,36 @@ public partial class UnitController : Node
             UnitsList[i].QueueFree();
             UnitsList.RemoveAt(i);
         }
-        
     }
 
-    public void TransferUnit(UnitController unitController, int unitID){
+    public void ClearUnits()
+    {
+        for (int i = UnitsList.Count - 1; i >= 0; i--)
+        {
+            if (UnitsList[i].HasHitpoints)
+            {
+                FreeUnit?.Invoke(UnitsList[i]);
+                RemoveUnit(UnitsList[i]);
+            }
+        }
+        CheckNoUnits();
+    }
+
+    void CheckNoUnits()
+    {
+        if (!HasUnits) NoUnits?.Invoke();
+    }
+
+    public void TransferUnit(UnitController unitController, int unitID)
+    {
         unitController.AddUnit(UnitsList[unitID]);
         RemoveUnit(unitID);
     }
 
-    public void TransferUnit(UnitController unitController, List<int> unitIDs){
-        var units  = UnitsList.Where(x => unitIDs.Contains(x.GetIndex())).ToArray();
-        for (int i = 0; i < unitIDs.Count ; i++)
+    public void TransferUnit(UnitController unitController, List<int> unitIDs)
+    {
+        var units = UnitsList.Where(x => unitIDs.Contains(x.GetIndex())).ToArray();
+        for (int i = 0; i < unitIDs.Count; i++)
         {
             TransferUnit(unitController, unitIDs[i]);
         }
@@ -99,7 +126,7 @@ public partial class UnitController : Node
     }
 
     public void RemoveUnits(List<Unit> units){
-        for (int i = units.Count - 1; i >= 0 ; i--)
+        for (int i = units.Count - 1; i >= 0; i--)
         {
             RemoveUnit(units[i]);
         }

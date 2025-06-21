@@ -4,18 +4,20 @@
 [ext_resource type="PackedScene" uid="uid://brfhel7aghw0c" path="res://UI/MapObjectLabel.tscn" id="2_ofcxn"]
 
 [node name="RightPanel" type="Control"]
+custom_minimum_size = Vector2(281, 481)
 layout_mode = 3
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
+anchor_left = 0.926823
+anchor_top = 0.393519
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -281.0
-offset_top = -230.0
-offset_bottom = 251.0
+anchor_bottom = 0.616204
+offset_left = -0.000488281
+offset_top = -0.00109863
+offset_right = -0.000488281
+offset_bottom = -0.00109863
 grow_horizontal = 0
 grow_vertical = 2
 script = ExtResource("2")
+metadata/_edit_use_anchors_ = true
 
 [node name="Vertical" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -26,12 +28,14 @@ size_flags_vertical = 3
 
 [node name="Title" type="Label" parent="Vertical"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Title"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TabContainer" type="TabContainer" parent="Vertical"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 tab_alignment = 1
 current_tab = 0
 

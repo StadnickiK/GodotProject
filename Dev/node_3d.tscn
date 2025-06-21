@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cg60kllornuvg"]
+
+[ext_resource type="PackedScene" uid="uid://vqg06krqm33s" path="res://custom_mesh_3d.tscn" id="1_knmvv"]
+[ext_resource type="Script" uid="uid://c5lbfg8bvmh2l" path="res://custom_mesh_3d.gd" id="2_omj60"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CustomMesh3D2" parent="." instance=ExtResource("1_knmvv")]
+script = ExtResource("2_omj60")
+rings = 50
+radial_segments = 50
+radius = 1
+subdivisions = 16
+reload = false

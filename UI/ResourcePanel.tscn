@@ -17,17 +17,15 @@ default_font = SubResource("1")
 
 [node name="ResourcePanel" type="Control"]
 layout_mode = 3
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -960.0
-offset_right = 960.0
-offset_bottom = 24.0
+anchor_left = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.0111111
 grow_horizontal = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 theme = SubResource("2")
 script = ExtResource("2")
+metadata/_edit_use_anchors_ = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 0

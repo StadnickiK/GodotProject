@@ -1,0 +1,110 @@
+[gd_scene load_steps=2 format=3 uid="uid://duwyuyfndt28o"]
+
+[ext_resource type="Script" uid="uid://bv0ubu27jup74" path="res://UI/CenterBattlePanel.cs" id="1_wis7c"]
+
+[node name="CenterBattlePanel" type="Panel"]
+anchors_preset = -1
+anchor_left = 0.385417
+anchor_top = 0.740741
+anchor_right = 0.614583
+anchor_bottom = 0.96837
+offset_left = -0.00134277
+offset_top = -0.000610352
+offset_right = 0.0012207
+offset_bottom = 68.3208
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1, 0.878)
+script = ExtResource("1_wis7c")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+metadata/_edit_use_anchors_ = true
+
+[node name="BattleName" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "Battle"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BattleOdds" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 50.0
+show_percentage = false
+
+[node name="Labels" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 1
+
+[node name="Attacker" type="Label" parent="VBoxContainer/Labels"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Attacker"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="vs" type="Label" parent="VBoxContainer/Labels"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "VS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Defender" type="Label" parent="VBoxContainer/Labels"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Defender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreButtons" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="Fight" type="Button" parent="VBoxContainer/PreButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Fight!"
+
+[node name="Auto" type="Button" parent="VBoxContainer/PreButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Auto battle"
+
+[node name="Retreat" type="Button" parent="VBoxContainer/PreButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Retreat"
+
+[node name="PostButtons" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="EndFight" type="Button" parent="VBoxContainer/PostButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "End battle"
+
+[node name="RepeatFight" type="Button" parent="VBoxContainer/PostButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Repeat battle"

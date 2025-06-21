@@ -7,13 +7,14 @@ public partial class Game : Node3D
 {
 	PackedScene _worldScene = (PackedScene)ResourceLoader.Load("res://World/World.tscn");
 	PackedScene _mainMenuScene = (PackedScene)ResourceLoader.Load("res://Menu/MainMenu.tscn");
+	GameLogger gameLogger = GameLogger.Instance;
 
 	World _curerentWorld = null;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-
+		gameLogger.LogInfo("Game node ready");
 	}
 
 	public void ConnectToStartNewGame(Node node){

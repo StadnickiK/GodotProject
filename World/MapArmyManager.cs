@@ -40,11 +40,13 @@ public partial class MapArmyManager : Node
 		return ship;
 	}
 
-    public void FreeShip(Ship ship){
+    public void FreeShip(Ship ship)
+    {
         RemoveController(ship);
         RemoveUnits(ship);
         ClearVisibility(ship);
         UpdateProcessing(ship, ProcessModeEnum.Disabled);
+        ArmyPool.SaveNode3D(ship);
     }
 
     void AddUnits(Ship ship, List<Unit> Units){

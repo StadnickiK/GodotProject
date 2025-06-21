@@ -1,0 +1,104 @@
+[gd_scene load_steps=3 format=3 uid="uid://bolot0f80jwmt"]
+
+[ext_resource type="Script" uid="uid://dr0qk2rfgueew" path="res://UI/Battle/ArmyContainer.cs" id="1_vffo4"]
+[ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="2_1ivea"]
+
+[node name="ArmyContainer" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.153125
+anchor_bottom = 0.498611
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_vffo4")
+metadata/_edit_use_anchors_ = true
+
+[node name="ArmyName" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Army Title"
+
+[node name="ControllerName" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Owned by"
+
+[node name="ArmyGrid" type="GridContainer" parent="."]
+custom_minimum_size = Vector2(320, 104)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 5
+
+[node name="UnitCard" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard2" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard3" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard4" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard5" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard6" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+layout_mode = 2
+
+[node name="UnitCard7" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="ArmyGrid" instance=ExtResource("2_1ivea")]
+visible = false
+layout_mode = 2

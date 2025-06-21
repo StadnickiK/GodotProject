@@ -1,16 +1,18 @@
-[gd_scene load_steps=17 format=4 uid="uid://b4uuv8wu0rx6l"]
+[gd_scene load_steps=19 format=4 uid="uid://b4uuv8wu0rx6l"]
 
 [ext_resource type="PackedScene" uid="uid://br3y8uchebph0" path="res://UI/TopLeftPanel/TopLeftPanel.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bb4lgwd2ifar2" path="res://UI/UI.cs" id="4"]
+[ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="5_npmjx"]
 [ext_resource type="PackedScene" uid="uid://crtw5r4628b2h" path="res://UI/PlanetInterface.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://cd8trni2dvfhs" path="res://UI/ArmyInterface.tscn" id="6_p8g4q"]
 [ext_resource type="PackedScene" uid="uid://j71w4i837oot" path="res://UI/FreeCamera.tscn" id="7"]
-[ext_resource type="PackedScene" uid="uid://dn5627ghg1ejn" path="res://UI/BattlePanel.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://lek1os6cpmrp" path="res://UI/ResourcePanel.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://btf37cmqx75tt" path="res://UI/battle_panel.tscn" id="9_npmjx"]
 [ext_resource type="PackedScene" uid="uid://bhd3jcgg7dbs3" path="res://UI/CmdPanel.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://biagx72xi2rqt" path="res://UI/SmallList.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://bqxom23btjo2r" path="res://Menu/Menu.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://4j4dbkx335vc" path="res://UI/RightPanel.tscn" id="13"]
+[ext_resource type="Script" uid="uid://bckbnt17am1i4" path="res://UI/UnitCardFactory.cs" id="13_017wa"]
 [ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/Center/AlertBox.tscn" id="14"]
 
 [sub_resource type="Image" id="Image_017wa"]
@@ -294,10 +296,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 1.0
-offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
@@ -318,6 +316,11 @@ offset_left = 811.0
 offset_top = 54.0
 offset_right = 1053.0
 offset_bottom = 329.0
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
 
 [node name="CameraGimbal" parent="." instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
@@ -325,10 +328,23 @@ Limit = 250
 
 [node name="Menu" parent="." instance=ExtResource("12")]
 visible = false
-anchors_preset = 0
+layout_mode = 1
+
+[node name="BuildingInterface" parent="." instance=ExtResource("5_npmjx")]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_top = -460.0
+offset_right = 284.0
+grow_vertical = 0
 
 [node name="RightPanel" parent="." instance=ExtResource("13")]
 layout_mode = 1
+offset_top = -240.5
+offset_bottom = 240.5
 
 [node name="ArmyInterface" parent="." instance=ExtResource("6_p8g4q")]
 visible = false
@@ -337,15 +353,9 @@ layout_mode = 1
 [node name="PlanetInterface" parent="." instance=ExtResource("6")]
 visible = false
 layout_mode = 1
-grow_vertical = 2
 
-[node name="BattlePanel" parent="." instance=ExtResource("8")]
+[node name="BattlePanel" parent="." instance=ExtResource("9_npmjx")]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-grow_horizontal = 2
-grow_vertical = 2
-Options = Array[String](["Overview", "Attacker", "Defender"])
 
 [node name="AlertBox" parent="." instance=ExtResource("14")]
 visible = false
@@ -385,5 +395,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TopLeftPanel" parent="." instance=ExtResource("1")]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 0
+
+[node name="UnitCardFactory" type="Node" parent="."]
+script = ExtResource("13_017wa")

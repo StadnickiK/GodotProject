@@ -1,31 +1,31 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class BaseStat : Node{
 
     public BaseStat(){}
+    
+    private List<StatModifier> Modifiers = new List<StatModifier>();
 
-    public BaseStat(BaseStat stat){
+    public BaseStat(BaseStat stat)
+    {
         Name = stat.Name;
-        _name = stat.Name;
         _baseValue = stat.BaseValue;
         _currentValue = _baseValue;
     }
 
     public BaseStat(string name){
-        _name = name;
         Name = name;
     }
 
     public BaseStat(string name, int baseValue){
-        _name = name;
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
     }
 
     public BaseStat(string name, int baseValue, int max){
-        _name = name;
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
@@ -34,7 +34,6 @@ public partial class BaseStat : Node{
     }
 
     public BaseStat(string name, int baseValue, int min,int max){
-        _name = name;
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
@@ -44,21 +43,41 @@ public partial class BaseStat : Node{
         HasMinValue = true;
     }
 
-    private string _name;
-    public string StatName
+    public void AddModifier(StatModifier statModifier)
     {
-        get { return _name; }
+        Modifiers.Add(statModifier);
+        switch (statModifier.ValueType)
+        {
+            case StatModifierValueType.Percent:
+                float newValue = _currentValue * statModifier.Value;
+                statModifier.ValueChange = newValue - CurrentValue;
+                break;
+            case StatModifierValueType.Flat:
+                statModifier.ValueChange = statModifier.Value;
+                break;
+            default:
+                break;
+        }        
+        _currentValue += statModifier.ValueChange;
     }
+
+    public void RemoveModifier(StatModifier statModifier)
+    {
+        Modifiers.Remove(statModifier);
+        _currentValue -= statModifier.ValueChange;
+    }
+
+    public int Index { get; set; }
     
     [Export]
-    private int _baseValue = 0;
-    public int BaseValue
+    private float _baseValue = 0;
+    public float BaseValue
     {
         get { return _baseValue; }
     }
 
-    private int _currentValue = 0;
-    public int CurrentValue
+    private float _currentValue = 0;
+    public float CurrentValue
     {
         get { return _currentValue; }
         set { _currentValue = value; }
@@ -84,7 +103,6 @@ public partial class BaseStat : Node{
 
     public override void _Ready()
     {
-        if(((string)Name).Length < 1)
-            _name = Name;
+        CurrentValue = BaseValue;
     }
 }

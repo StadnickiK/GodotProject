@@ -9,7 +9,7 @@ constant = 1.5
 operator = 1
 
 [sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_dqoa6"]
-constant = Color(0.678772, 0.656732, 0.559689, 1)
+constant = Color(0.630179, 0.607704, 0.509108, 1)
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_kmfjx"]
 input_name = "normal"
@@ -36,7 +36,7 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_s
 
 void fragment() {
 // ColorConstant:4
-	vec4 n_out4p0 = vec4(0.678772, 0.656732, 0.559689, 1.000000);
+	vec4 n_out4p0 = vec4(0.630179, 0.607704, 0.509108, 1.000000);
 
 
 // Input:5
@@ -79,6 +79,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-242.53, -341.51)
 nodes/fragment/2/node = SubResource("VisualShaderNodeFresnel_vfgll")
 nodes/fragment/2/position = Vector2(-260, 260)
 nodes/fragment/3/node = SubResource("VisualShaderNodeFloatOp_35oye")

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://3dfxw58lppwb"]
+[gd_scene load_steps=4 format=3 uid="uid://3dfxw58lppwb"]
 
 [ext_resource type="Script" uid="uid://bsrhsarq63iqu" path="res://Units/Base/Unit.cs" id="1"]
 [ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="2"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_w0h5o"]
 
 [node name="Unit 1" type="Node"]
 script = ExtResource("1")
@@ -10,13 +11,17 @@ ExportUpkeep = Dictionary[String, int]({
 })
 BuildTime = 10
 
-[node name="Stats" type="Node" parent="."]
+[node name="StatManager" type="Node" parent="."]
+script = ExtResource("2_w0h5o")
 
-[node name="Attack" type="Node" parent="Stats"]
+[node name="Attack" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 10.0
 
-[node name="Defence" type="Node" parent="Stats"]
+[node name="Defence" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 5.0
 
-[node name="HitPoints" type="Node" parent="Stats"]
+[node name="HitPoints" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 100.0

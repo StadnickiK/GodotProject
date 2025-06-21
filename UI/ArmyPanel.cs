@@ -17,6 +17,8 @@ public partial class ArmyPanel : ScrollContainer
 
 	public List<Unit> UnitsToTransfer { get; set; } = new List<Unit>();
 
+	public UI UI { get; set; }
+
 	Node container;
 
 	// Called when the node enters the scene tree for the first time.
@@ -61,22 +63,32 @@ public partial class ArmyPanel : ScrollContainer
 	}
 
 	public void ConnectUnitCards(ArmyInterface planetInterface){
-		foreach(var node in unitCards){
-			var b = node.GetChild(0).GetNode<Button>("Button");
-			b.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(node.Unit, b.Disabled);
-			b.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
+		foreach(var card in unitCards){
+			ConnectUnitCard(card);
 		}
 	}
 
-	public void UpdateArmyList(List<Unit> units, bool IsController){
-		if(unitCards.Count < units.Count)
+	void ConnectUnitCard(UnitCard card)
+	{
+		var b = card.GetChild(0).GetNode<Button>("Button");
+		b.MouseEntered += () => UI._on_BuildingLabelGuiInputEvent(card.Unit, b.Disabled);
+		b.MouseExited += () => UI._mouseLeftBuildingLabel();
+	}
+
+	public void UpdateArmyList(List<Unit> units, bool IsController)
+	{
+		if (unitCards.Count < units.Count)
 			AddCards(units.Count - unitCards.Count);
-		for (int i = 0; i < unitCards.Count; i++){
-			if(i < units.Count){
+		for (int i = 0; i < unitCards.Count; i++)
+		{
+			if (i < units.Count)
+			{
 				unitCards[i].Show();
 				unitCards[i].UpdateCard(units[i]);
 				unitCards[i].button.Disabled = !IsController;
-			}else{
+			}
+			else
+			{
 				unitCards[i].Hide();
 			}
 		}
@@ -93,7 +105,9 @@ public partial class ArmyPanel : ScrollContainer
 
 	void AddCards(int count){
 		for (int i = 0; i<count;i++){
-			unitCards.Add(scene.Instantiate<UnitCard>());
+			var card = scene.Instantiate<UnitCard>();
+			ConnectUnitCard(card);
+			unitCards.Add(card);
 		}
 	}
 

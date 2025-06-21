@@ -77,7 +77,7 @@ public partial class BuildMenu : ScrollContainer
 		}
 	}
 
-	public void InitAllUnits(Array<Node> nodes, ArmyInterface ArmyInterface){ // todo: Separate construction and building list into separate nodes for better organization
+	public void InitAllUnits(Array<Node> nodes, ArmyInterface ArmyInterface, UI uI){ // todo: Separate construction and building list into separate nodes for better organization
 		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
 		foreach(Node node in nodes){
 			if(node is Unit unit){
@@ -92,7 +92,7 @@ public partial class BuildMenu : ScrollContainer
 					label.BButton.Text = unit.Name;
 				}
 				label.BButton.ButtonUp += () => ArmyInterface._on_StartUnitConstruction(unit);
-				label.MouseEntered += () => ArmyInterface._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
+				label.MouseEntered += () => uI._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
 				label.MouseExited += () => _on_mouse_exited();
 				container.AddChild(label);
 				buildingLabels.Add(label);

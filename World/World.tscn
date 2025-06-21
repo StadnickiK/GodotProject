@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://c70akagmjohcx"]
+[gd_scene load_steps=15 format=3 uid="uid://c70akagmjohcx"]
 
 [ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://5vkwnunfc0kc" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" uid="uid://cotigyio4cdaf" path="res://World/World.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://7t6mr4eafrp4" path="res://Map/SpaceBattle.tscn" id="8_ecnql"]
 [ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="9_4sj48"]
 [ext_resource type="Script" uid="uid://bk0b4nk47ig03" path="res://World/MapArmyManager.cs" id="9_s53j1"]
 [ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="10"]
@@ -35,7 +36,9 @@ environment = SubResource("2")
 
 [node name="WorldCursorControl" parent="." instance=ExtResource("4")]
 
-[node name="UI" parent="." instance=ExtResource("1")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" parent="CanvasLayer" instance=ExtResource("1")]
 
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("13")
@@ -45,6 +48,8 @@ script = ExtResource("12")
 
 [node name="Combat" type="Node" parent="Map"]
 script = ExtResource("14")
+
+[node name="SpaceBattle" parent="Map/Combat" instance=ExtResource("8_ecnql")]
 
 [node name="FOW" type="MeshInstance3D" parent="Map"]
 visible = false

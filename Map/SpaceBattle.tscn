@@ -14,7 +14,6 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
 [node name="Placeholder" type="MeshInstance3D" parent="."]
 mesh = SubResource("2")
-material/0 = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("1")

@@ -4,19 +4,34 @@ using System.Collections.Generic;
 
 public partial class Combat : Node
 {
-    public List<PhysicsBody3D> Combatants { get; set; } = new List<PhysicsBody3D>();
-    PackedScene _battleScene = (PackedScene)ResourceLoader.Load("res://Map/SpaceBattle.tscn");
 
-    public SpaceBattle CreateBattle(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent){
-        
-        var battle = (SpaceBattle)_battleScene.Instantiate();
-        var trans = battle.Transform;
-        trans.Origin =  ship.Transform.Origin;
-        battle.Transform = trans;
-        battle.AddCombatants(ship, enemy);
-        HideNodes(ship, enemy);
-        parent.AddChild(battle);
-        return battle;
+    [Export]
+    string ScenePath = "res://Map/SpaceBattle.tscn";
+    PackedScene _battleScene;
+
+    public List<Ship> Combatants { get; set; }
+    
+    public SpaceBattle SpaceBattle { get; set; }
+
+    public SpaceBattle CreateBattle(List<Ship> attackers, List<Ship> defenders, Node parent)
+    {
+        Combatants.AddRange(attackers);
+        Combatants.AddRange(defenders);
+        // var trans = SpaceBattle.Transform;
+        // trans.Origin = ship.Transform.Origin;
+        // SpaceBattle.Transform = trans;
+        SpaceBattle.AddAttackers(attackers);
+        SpaceBattle.AddDefenders(defenders);
+        //HideNodes(ship, enemy);
+        //parent.AddChild(SpaceBattle);
+        return SpaceBattle;
+    }
+
+    public void ClearCombat()
+    {
+        Combatants.Clear();
+        SpaceBattle.Attackers.Clear();
+        SpaceBattle.Defenders.Clear();
     }
 
     void HideNodes(params Node3D[] Nodes){
@@ -27,7 +42,9 @@ public partial class Combat : Node
 
     public override void _Ready()
     {
-        
+        _battleScene = (PackedScene)ResourceLoader.Load(ScenePath);
+        SpaceBattle = GetNode<SpaceBattle>("SpaceBattle");
+        Combatants = new List<Ship>();
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

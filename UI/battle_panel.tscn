@@ -1,0 +1,97 @@
+[gd_scene load_steps=5 format=3 uid="uid://btf37cmqx75tt"]
+
+[ext_resource type="Script" uid="uid://cpehyxe5qqm38" path="res://UI/BattleArmyContainerHandler.cs" id="1_jyh1w"]
+[ext_resource type="Script" uid="uid://8a4r5ponf771" path="res://UI/BattlePanel.cs" id="1_qk2qf"]
+[ext_resource type="PackedScene" uid="uid://duwyuyfndt28o" path="res://center_battle_panel.tscn" id="2_qk2qf"]
+[ext_resource type="PackedScene" uid="uid://bolot0f80jwmt" path="res://army_container.tscn" id="3_jyh1w"]
+
+[node name="BattlePanel" type="CanvasLayer"]
+script = ExtResource("1_qk2qf")
+metadata/_edit_use_anchors_ = true
+
+[node name="CenterBattlePanel" parent="." instance=ExtResource("2_qk2qf")]
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(1, 1)
+
+[node name="Left" type="Panel" parent="."]
+custom_minimum_size = Vector2(272, 0)
+anchors_preset = -1
+anchor_top = 0.501389
+anchor_right = 0.153125
+anchor_bottom = 1.0
+grow_vertical = 0
+size_flags_horizontal = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ArmyPanel" type="ScrollContainer" parent="Left"]
+clip_contents = false
+custom_minimum_size = Vector2(588, 1077)
+layout_mode = 2
+anchor_top = 0.00371402
+anchor_right = 1.0
+anchor_bottom = 1.00371
+offset_right = -316.0
+offset_bottom = -661.0
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="BattleArmyContainerHandler" type="VBoxContainer" parent="Left/ArmyPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jyh1w")
+
+[node name="ArmyContainer" parent="Left/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+layout_mode = 2
+
+[node name="ArmyContainer2" parent="Left/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+visible = false
+layout_mode = 2
+
+[node name="ArmyContainer3" parent="Left/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+visible = false
+layout_mode = 2
+
+[node name="Right" type="Panel" parent="."]
+custom_minimum_size = Vector2(272, 0)
+anchors_preset = -1
+anchor_left = 0.846875
+anchor_top = 0.501389
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ArmyPanel" type="ScrollContainer" parent="Right"]
+clip_contents = false
+custom_minimum_size = Vector2(588, 1077)
+layout_mode = 2
+anchor_top = 0.00371402
+anchor_right = 1.0
+anchor_bottom = 1.00371
+offset_right = -316.0
+offset_bottom = -661.0
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="BattleArmyContainerHandler" type="VBoxContainer" parent="Right/ArmyPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jyh1w")
+
+[node name="ArmyContainer" parent="Right/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+layout_mode = 2
+
+[node name="ArmyContainer2" parent="Right/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+visible = false
+layout_mode = 2
+
+[node name="ArmyContainer3" parent="Right/ArmyPanel/BattleArmyContainerHandler" instance=ExtResource("3_jyh1w")]
+visible = false
+layout_mode = 2

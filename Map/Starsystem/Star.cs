@@ -4,16 +4,22 @@ using System;
 public partial class Star : Node3D
 {
     [Export]
-    int Size = 50;
+    int Radius = 10;
+
+    [Export]
+    int Height = 18;
 
     public Random Rand { get; set; } = new Random();
 
     public MeshInstance3D Mesh { get; set; } = null;  
     public override void _Ready()
     {
-        Size = Rand.Next(6,10);
-        Scale *= Size;
+        
         Mesh = GetNode<MeshInstance3D>("MeshInstance3D");
+        var sphere = (SphereMesh)Mesh.Mesh;
+        sphere.Radius = Radius;
+        sphere.Height = Height;
+        //Mesh.Mesh = sphere;
         SetProcess(false);
     }
 

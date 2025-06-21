@@ -11,39 +11,43 @@
 
 [node name="PlanetInterface" type="Control"]
 layout_mode = 3
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -960.0
-offset_top = -1079.0
-offset_right = 960.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 6
 size_flags_vertical = 10
 mouse_filter = 2
 script = ExtResource("2")
+metadata/_edit_use_anchors_ = true
 
 [node name="BuildMenuScroll" parent="." instance=ExtResource("2_4b3kr")]
-layout_mode = 2
-offset_top = 592.0
-offset_bottom = 804.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.430208
+anchor_top = 0.756944
+anchor_right = 0.569792
+anchor_bottom = 0.855093
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchor_left = 0.430208
+anchor_top = 0.862037
+anchor_right = 0.569792
 anchor_bottom = 1.0
-offset_left = -268.0
-offset_top = -298.0
-offset_right = 268.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="Header" parent="VBoxContainer" instance=ExtResource("1")]
 layout_mode = 2
@@ -85,9 +89,11 @@ layout_mode = 2
 visible = false
 layout_direction = 1
 layout_mode = 2
-offset_left = 1260.0
-offset_top = 614.0
-offset_right = 1544.0
-offset_bottom = 1074.0
+anchors_preset = 0
+anchor_left = 0.328125
+anchor_top = 0.284259
+anchor_right = 0.402083
+anchor_bottom = 0.497222
+offset_bottom = 0.0
 size_flags_horizontal = 4
 size_flags_vertical = 4

@@ -1,24 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://daxca4hnb7lj"]
+[gd_scene load_steps=4 format=3 uid="uid://daxca4hnb7lj"]
 
 [ext_resource type="Script" uid="uid://bsrhsarq63iqu" path="res://Units/Base/Unit.cs" id="1"]
 [ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="2"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_f2tmq"]
 
 [node name="Unit 2" type="Node"]
 script = ExtResource("1")
 BuildTime = 10
-BuildCost = {
-"Credits": 7000,
-"Resource 0": 300,
-"Resource 1": 200
-}
 
-[node name="Stats" type="Node" parent="."]
+[node name="StatManager" type="Node" parent="."]
+script = ExtResource("2_f2tmq")
 
-[node name="Attack" type="Node" parent="Stats"]
+[node name="Attack" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 20.0
 
-[node name="Defence" type="Node" parent="Stats"]
+[node name="Defence" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 10.0
 
-[node name="HitPoints" type="Node" parent="Stats"]
+[node name="HitPoints" type="Node" parent="StatManager"]
 script = ExtResource("2")
+_baseValue = 100.0

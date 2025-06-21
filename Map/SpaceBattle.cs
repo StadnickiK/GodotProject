@@ -1,25 +1,45 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+
+
 
 public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 {
 
     // public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
 
+    public event World.FreeShipEventHandler FreeShip;
+
+    public event Node2DPool.FreeNodeEventHandler FreeUnit;
+
+    public event Node2DPool.FreeNodeEventHandler FreeBattle;
+
+    public delegate void BattleEventHandler(SpaceBattle battle);
+
+    public event BattleEventHandler BattleFinished;
+
     public Node Participants = null;
 
+    GameLogger gameLogger = GameLogger.Instance;
     // public Ship Attacker { get; set; } = null;
+
+    [Export]
+    public bool Logging { get; set; } = true;
 
     public List<Ship> Attackers { get; set; } = new List<Ship>();
 
-    public int AttackPower { get; set; }
+    public float AttackPower { get; set; }
 
     // public Ship Defender { get; set; } = null;
 
+    public Random Rand { get; set; } = new Random();
+
     public List<Ship> Defenders { get; set; } = new List<Ship>();
 
-    public int DefPower { get; set; }
+    public float DefPower { get; set; }
 
     public bool IsLocal { get; set; } = false;
 
@@ -29,8 +49,9 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 
     public bool PowerChanged { get; set; } = false;
 
-    [Signal]
     public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
+
+    public event OpenBattlePanelEventHandler OpenBattlePanel;
 
     MeshInstance3D _placeholder = null;
 
@@ -40,63 +61,25 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 
     public int TimeStep { get; set; } = 1;
 
-    public new void SetPosition(Vector3 pos){
+    public new void SetPosition(Vector3 pos)
+    {
         var trans = Transform;
         trans.Origin = pos;
         Transform = trans;
     }
 
-    public void AddCombatants(params PhysicsBody3D[] body){
-        foreach(PhysicsBody3D b in body){
-            if(b is Ship ship){
-                if(ship.IsLocal)
-                    IsLocal = true;
-                if(!ZeroOne){
-                    Attackers.Add(ship);
-                    ZeroOne = true;
-                }else{
-                    Defenders.Add(ship);
-                    ZeroOne = false;
-                }
-            }
-        }
+    public void AddAttackers(List<Ship> attackers)
+    {
+        Attackers.AddRange(attackers);
     }
 
-    public void AddAttackers(params PhysicsBody3D[] body){
-        foreach(PhysicsBody3D b in body){
-            if(b is Ship ship){
-                Attackers.Add(ship);
-            }
-        }
+    public void AddDefenders(List<Ship> defenders)
+    {
+        Defenders.AddRange(defenders);
     }
 
-    public void AddADefenders(params PhysicsBody3D[] body){
-        foreach(PhysicsBody3D b in body){
-            if(b is Ship ship){
-                Defenders.Add(ship);
-            }
-        }
-    }
-
-    public void GenerateMesh(){
-        if(Attackers.Count > 0 && Defenders.Count > 0){
-                _placeholder.QueueFree();
-                MeshInstance3D mesh = (MeshInstance3D)Attackers[0].Mesh.Duplicate();
-                var transform = mesh.Transform;
-                transform.Origin = new Vector3(2,0,0);
-                mesh.Transform = transform;
-                _mesh.AddChild(mesh);
-                mesh = (MeshInstance3D)Defenders[0].Mesh.Duplicate();
-                transform = mesh.Transform;
-                transform.Origin = new Vector3(-2,0,0);
-                mesh.Transform = transform;
-                mesh.RotateY(135);
-                _mesh.AddChild(mesh);
-                _mesh.Scale = new Vector3(0.5f,0.5f,0.5f);
-        }
-    }
-
-    void GetNodes(){
+    void GetNodes()
+    {
         Participants = GetNode("Participants");
         _placeholder = GetNode<MeshInstance3D>("Placeholder");
         _mesh = GetNode<Node3D>("Node3D");
@@ -105,149 +88,152 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
     public override void _Ready()
     {
         GetNodes();
-        GenerateMesh();
-        InitAttackers();
-        InitDefenders();
+        //GenerateMesh();
+        //InitAttackers();
+        //InitDefenders();
     }
 
-    void InitAttackers(){
-        foreach(var attacker in Attackers){
+    void InitAttackers()
+    {
+        foreach (var attacker in Attackers)
+        {
             attacker.GetParent().RemoveChild(attacker);
             Participants.AddChild(attacker);
             AttackPower += attacker.Power;
         }
     }
 
-    void UpdateAttackPower(){
-        foreach(var attacker in Attackers){
+    void UpdateAttackPower()
+    {
+        foreach (var attacker in Attackers)
+        {
             AttackPower += attacker.Power;
         }
     }
 
-    void InitDefenders(){
-        foreach(var defender in Defenders){
+    void InitDefenders()
+    {
+        foreach (var defender in Defenders)
+        {
             defender.GetParent().RemoveChild(defender);
             Participants.AddChild(defender);
             DefPower += defender.Power;
         }
     }
 
-    void UpdateDefPower(){
-        foreach(var defender in Defenders){
+    void UpdateDefPower()
+    {
+        foreach (var defender in Defenders)
+        {
             DefPower += defender.Power;
         }
     }
 
-    void UpdatePower(){
+    void UpdatePower()
+    {
         UpdateAttackPower();
         UpdateDefPower();
     }
 
-    public void ConnectToOpenBattlePanel(Node node, string method){
-        Connect(nameof(OpenBattlePanel), new Callable(node, method));
+    List<Unit> GetUnits(List<Ship> ships)
+    {
+        var list = new List<Unit>();
+        foreach (var s in ships)
+            list.AddRange(s.Units.UnitsList);
+        return list;
     }
 
-    void Duel(Ship Attacker, Ship Defender){
-        var defenderCount = Defender.Units.GetChildren().Count - 1;
-        for(var i = Attacker.Units.GetChildren().Count-1;i>=0; i--){
-            var node = Attacker.Units.GetChildren()[i];
-            if(node is Unit unit){
-                if(defenderCount>=0){
-                    node = Defender.Units.GetChildren()[defenderCount];
-                    if(node is Unit defender){
-                        unit.CalculateDamage(defender);
-                        if(!defender.HasHitpoints){
-                            defender.QueueFree();
-                            // Defender.Units.RemoveChild(defender);
-                            defenderCount -= 1;
-                        }
-                    }
-                }
-                if(!unit.HasHitpoints){
-                    unit.QueueFree();
-                }
+    public void AutoFight()
+    {
+        if(Logging) gameLogger.LogInfo("Auto Fight start");
+
+        var attackers = GetUnits(Attackers);
+        var defenders = GetUnits(Defenders);
+        
+        int round = 1;
+        do
+        {
+            if (Logging)
+            {
+                gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
+                gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
+                gameLogger.LogInfo("Round =" + round + "");
+                gameLogger.LogInfo("Attackers vs Defenders, round " + round + "");
+            } 
+            Combat(attackers, defenders);
+            if (Logging) gameLogger.LogInfo("Defenders vs Attackers, round " + round + "");
+            Combat(defenders, attackers);
+            round++;
+        } while (attackers.Count > 0 && defenders.Count > 0);
+        if (Logging)
+        {
+            gameLogger.LogInfo("Auto Fight end");
+            gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
+            gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
+        } 
+        BattleFinished?.Invoke(this);
+    }
+
+    void Combat(List<Unit> attackers, List<Unit> defenders)
+    {
+        //var attackers = attackingGroups.Where(g => g.HasHitpoints);
+        //var defenders = defendingGroups.Where(g => g.HasHitpoints).ToList();
+        int attackerID = 0;
+        foreach (var attacker in attackers)
+        {
+            attackerID++;
+            if (defenders.Count == 0) break;
+            if(Logging) gameLogger.LogInfo("Attacker " + attackerID);
+            var target = defenders.OrderBy(e => Rand.Next()).LastOrDefault();
+            attacker.CalculateDamage(target);
+
+            // Optional: re-filter in case someone died
+            if (!target.HasHitpoints)
+            {
+                defenders.RemoveAt(defenders.Count - 1);
+                if(Logging) gameLogger.LogInfo("Remove target from combat, defenders left " + defenders.Count);
             }
+            //defenders = defendingGroups.Where(g => g.HasHitpoints).ToList();
         }
-        Attacker.UpdatePower();
-        if(Defender.Units.GetChildren().Count == 0){
-            Defender.QueueFree();
-            Defenders.Remove(Defender);
-        }else{
-            Defender.UpdatePower();
-        }
-        PowerChanged = true;
     }
 
-    void Combat(){
-        var defendersCount = Defenders.Count - 1;
-        for(int i = Attackers.Count-1; i>=0; i--){
-            Duel(Attackers[i], Defenders[defendersCount]);
-            if(Attackers[i].Units.GetChildren().Count == 0){
-                Attackers[i].QueueFree();
-                Attackers.RemoveAt(i);
+    public void AcceptResult()
+    {
+        CleaDeadUnits();
+    }
+
+    void CleaDeadUnits()
+    {
+        for (int i = Attackers.Count - 1; i >= 0; i--)
+        {
+            Attackers[i].Units.ClearUnits();
+            if (!Attackers[i].Units.HasUnits) Attackers.RemoveAt(i);
+        }
+        for (int i = Defenders.Count - 1; i >= 0; i--)
+        {
+            Defenders[i].Units.ClearUnits();
+            if (!Defenders[i].Units.HasUnits) Defenders.RemoveAt(i);
+        }
+    }
+
+    public void SelectMapObject()
+    {
+        EmitSignal(nameof(OpenBattlePanel), (PhysicsBody3D)this);
+    }
+
+    public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index)
+    {
+        if (input is InputEventMouseButton eventMouseButton)
+        {
+            switch (eventMouseButton.ButtonIndex)
+            {
+                case MouseButton.Left:
+                    SelectMapObject();
+                    break;
+                case MouseButton.Right:
+                    //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
+                    break;
             }
-            if(Attackers.Count == 0 || Defenders.Count == 0){
-                EndCombat();
-            }
-        }
-        UpdatePower();
-    }
-
-    void EndCombat(){
-        foreach(Node node in Participants.GetChildren()){
-            if(node is Ship ship){
-                if(ship.Units.GetChildren().Count == 0){
-                    if(ship.Controller != null){
-                        ship.Controller.MapObjects.Remove(ship);
-                        //ship.Controller.MapObjectsChanged = true;
-                    }
-                    ship.QueueFree();
-                }else{
-                    Participants.RemoveChild(ship);
-                    // if(GetParent().GetParent() is Planet planet){
-                    //     planet.EnterMapObject(ship, Vector3.Zero, null);
-                    //     if(ship.Task == CmdPanel.CmdPanelOption.Conquer)
-                    //         planet.ChangeController(ship.Controller);
-                    // }
-                    if(ship.IsLocal){
-                        ship.Visible = true;
-                    }
-                }
-            }
-        }
-        QueueFree();
-        _endCombat = true;
-    }
-
-    public void SelectMapObject(){
-        EmitSignal(nameof(OpenBattlePanelEventHandler), (PhysicsBody3D)this);
-    }
-
-    public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index){
-        if(input is InputEventMouseButton eventMouseButton){
-        switch(eventMouseButton.ButtonIndex){
-          case MouseButton.Left:
-            SelectMapObject();
-            break;
-          case MouseButton.Right:
-            //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
-            break;
-        }
-      }
-    }
-
-    public override void _Process(double delta){
-        if(!_endCombat){
-            if(Attackers.Count > 0 && Defenders.Count > 0){
-                if(_time >= TimeStep){  
-                    Combat();
-                    _time = 0;
-                }
-            }else{
-                // to do create debris
-                QueueFree();
-            }
-            _time += delta;
         }
     }
 }

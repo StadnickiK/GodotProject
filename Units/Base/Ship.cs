@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-	public struct ShipStruct
+	public struct ShipStruct : IMapObjectController
 	{
 		public Node Parent { get; set; }
 		public Vector3 Position { get; set; }
@@ -30,8 +30,9 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     [Signal]
     public delegate void SelectTargetEventHandler(RigidBody3D target);
 
-    [Signal]
-    public delegate void EnterCombatEventHandler(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent);
+    public delegate void EnterCombatEventHandler(Ship ship, Ship enemy, Node parent);
+
+    public event EnterCombatEventHandler EnterCombat;
 
     [Signal]
     public delegate void SignalExitMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state); 
@@ -77,7 +78,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public MeshInstance3D Mesh { get; set; } = null;  
 
-    public int Power { get; set; }
+    public float Power { get; set; }
 
     [Export]
     public int VisionRange { get; set; } = 4;
@@ -106,6 +107,11 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     }
 
     public ArmyStance Stance { get; set; } = ArmyStance.Idle;
+
+    void FreeThisShip()
+    {
+            FreeShip?.Invoke(this);
+    }
 
     public bool CanMove { get; set; } = true;
 
@@ -180,11 +186,21 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     void Merge(TargetManager<Node3D>.Target target){
         if(target.TargetNode is Ship ship && target.TargetNode != this){
-            if(Units.Count + ship.Units.Count < ship.Units.MaxUnits){
-                Units.TransferUnit(ship.Units);
-                FreeShip?.Invoke(this);
-            }else{
-                OpenTransferPanel?.Invoke(this, ship);
+            if (ship.Controller == this.Controller)
+            {
+                if (Units.Count + ship.Units.Count < ship.Units.MaxUnits)
+                {
+                    Units.TransferUnit(ship.Units);
+                    FreeShip?.Invoke(this);
+                }
+                else
+                {
+                    OpenTransferPanel?.Invoke(this, ship);
+                }
+            }
+            else
+            {
+                EnterCombat?.Invoke(this, ship, GetParent());
             }
         }
     }
@@ -403,12 +419,13 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += _on_UpdateRecruitment;
         //_velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
+        Units.NoUnits += FreeThisShip;
+
     }
 
     public void UpdatePower(){
         Power = 0;
-        foreach(Node node in Units.GetChildren()){
-            if(node is Unit unit)
+        foreach(var unit in Units.UnitsList){
                 Power += unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue;
         }
     }

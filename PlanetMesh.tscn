@@ -1,9 +1,37 @@
-[gd_scene load_steps=3 format=3 uid="uid://lnnpy38q0r1f"]
+[gd_scene load_steps=10 format=3 uid="uid://lnnpy38q0r1f"]
 
-[ext_resource type="Material" uid="uid://clw0mi1xby32h" path="res://Map/Planet/PlanetShader.tres" id="1_dhb76"]
+[ext_resource type="Shader" uid="uid://blm4xm1gxhfui" path="res://PlanetMesh.tres" id="1_gouli"]
+[ext_resource type="Shader" uid="uid://b1748aljf2in" path="res://Shaders/CloudsShader.tres" id="2_gouli"]
+[ext_resource type="Shader" uid="uid://bee6x8ym2pqfo" path="res://Shaders/AtmosphereShader.tres" id="3_ou637"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ou637"]
+render_priority = 0
+shader = ExtResource("1_gouli")
 
 [sub_resource type="SphereMesh" id="1"]
-material = ExtResource("1_dhb76")
+material = SubResource("ShaderMaterial_ou637")
 
-[node name="MeshInstance3D" type="MeshInstance3D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k62di"]
+render_priority = 0
+shader = ExtResource("2_gouli")
+
+[sub_resource type="SphereMesh" id="SphereMesh_2qupk"]
+material = SubResource("ShaderMaterial_k62di")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c7hin"]
+render_priority = 0
+shader = ExtResource("3_ou637")
+
+[sub_resource type="SphereMesh" id="SphereMesh_u0q7h"]
+material = SubResource("ShaderMaterial_c7hin")
+
+[node name="MeshPlanet" type="MeshInstance3D"]
 mesh = SubResource("1")
+
+[node name="Clouds" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.005, 0, 0, 0, 1.005, 0, 0, 0, 1.005, 0, 0, 0)
+mesh = SubResource("SphereMesh_2qupk")
+
+[node name="Atmosphere" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.00774, 0, 0, 0, 1.00774, 0, 0, 0, 1.00774, 0, 0, 0)
+mesh = SubResource("SphereMesh_u0q7h")

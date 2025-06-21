@@ -47,11 +47,13 @@ public partial class World : Node3D
 
 	PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
 
-	int Seed = 0;
+	[Export]
+	int Seed = -1991794247;
 	public Random Rand { get; set; }
 
 	void InitRand(){
-		Seed = -1991794247; //Guid.NewGuid().GetHashCode();
+		if(Seed == -1313)
+			Seed = Guid.NewGuid().GetHashCode();
 		Rand = new Random(Seed);
 ;   }
 
@@ -72,12 +74,32 @@ public partial class World : Node3D
 	[Export]
 	int PlayerNumber = 1;
 
-	void _on_ShowBattlePanel(SpaceBattle battle){
-		_UI.BattlePan.Visible = true;
+	void _on_ShowBattlePanel(SpaceBattle battle)
+	{
+		_UI.BattlePan.Show();
 		_UI.BattlePan.UpdatePanel(battle);
+		_UI.RPanel.Hide();
+		_on_Deselect();
 	}
 
-	public void ConnectTo_OpenPlanetInterface(Node node){
+	void _on_HideBattlePanel(Ship ship)
+	{
+		_map.Combat.ClearCombat();
+		if (ship.Controller.IsLocal)
+			_on_SelectUnit(ship);
+		_UI.BattlePan.Hide();
+		_UI.RPanel.Show();
+	}
+
+	void _on_EndBattle()
+	{
+		_map.Combat.ClearCombat();
+		_UI.BattlePan.Hide();
+		_UI.RPanel.Show();
+	}
+
+	public void ConnectTo_OpenPlanetInterface(Node node)
+	{
 		node.Connect("OpenPlanetInterface", new Callable(this, nameof(_on_OpenPlanetInterface)));
 	}
 
@@ -129,14 +151,15 @@ public partial class World : Node3D
 	void GetNodes(){
 		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
-		Camera3D = GetNode<CameraGimbal>("UI/CameraGimbal");
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
-		_UI = GetNode<UI>("UI");
+		_UI = GetNode<UI>("CanvasLayer/UI");
+		Camera3D = _UI.GetNode<CameraGimbal>("CameraGimbal");
 		MapArmyManager = GetNode<MapArmyManager>("MapArmyManager");
 	}
 
-	void ConnectSignals(){
+	void ConnectSignals()
+	{
 		//_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.RPanel.WorldCamera = Camera3D;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
@@ -147,9 +170,14 @@ public partial class World : Node3D
 		_UI.OrbitList.Connect("SelectObject", new Callable(this, nameof(_on_SelectUnit)));
 		_UI.CommandPanel.Connect("ShipCommand", new Callable(this, nameof(_on_ShipCommand)));
 		_UI.ArmyInterfce._data = _data;
-		_UI.ArmyInterfce.InitRecruitmentPanel();
+		_UI.ArmyInterfce.InitRecruitmentPanel(UInterface);
 		_UI.ArmyInterfce.Connect(ArmyInterface.SignalName.Deselect, new Callable(this, nameof(_on_Deselect)));
-		_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
+		//_map.Combat.SpaceBattle.OpenBattlePanel += _on_ShowBattlePanel;
+		_map.OpenBattlePanel += _on_ShowBattlePanel;
+		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_HideBattlePanel(_map.Combat.SpaceBattle.Attackers[0]);
+		_UI.BattlePan.Center.EndFight.ButtonUp += _on_EndBattle;
+		
+		//_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
 	void ConnectLocalPlayer(Player player){

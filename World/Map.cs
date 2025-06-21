@@ -7,16 +7,18 @@ public partial class Map : Node3D
     public Galaxy galaxy = null;
 
     MapObjects mapObj = null;
-    Combat combat;
+    public Combat Combat { get; set; }
 
-    [Signal]
-    public delegate void ShowBattlePanelEventHandler(SpaceBattle battle);
+
+    public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
+
+    public event OpenBattlePanelEventHandler OpenBattlePanel;
 
     PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
 
     void GetNodes(){
         mapObj = GetNode<MapObjects>("MapObjects");
-        combat = GetNode<Combat>("Combat");
+        Combat = GetNode<Combat>("Combat");
     }
 
     // Called when the node enters the scene tree for the first time.
@@ -29,26 +31,30 @@ public partial class Map : Node3D
          node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
     }
 
-    void _on_EnterCombat(PhysicsBody3D ship, PhysicsBody3D enemy, Node parent){
+    public void ConnectToEnterCombat(Ship node){
+        node.EnterCombat += _on_EnterCombat;
+    }
+
+    void _on_EnterCombat(Ship ship, Ship enemy, Node parent){
         if(ship != null && enemy != null){
             if(ship != enemy){
-                if(!combat.Combatants.Contains(ship) && !combat.Combatants.Contains(enemy)){
-                    combat.Combatants.Add(ship);
-                    combat.Combatants.Add(enemy);
-                    var battle = combat.CreateBattle(ship, enemy, parent);
-                    battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
+                if (!Combat.Combatants.Contains(ship) && !Combat.Combatants.Contains(enemy) && ship != enemy)
+                {
+                    var battle = Combat.CreateBattle(new System.Collections.Generic.List<Ship>() { ship }, new System.Collections.Generic.List<Ship>() { enemy }, parent);
+                    OpenBattlePanel?.Invoke(battle);
+                    //battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
                 }
             }
         }
     }
 
-    public void ConnectToShowBattlePanel(Node node, string method){
-        Connect(nameof(SignalName.ShowBattlePanel), new Callable(node, method));
-    }
+    // public void ConnectToShowBattlePanel(Node node, string method){
+    //     Connect(nameof(SignalName.ShowBattlePanel), new Callable(node, method));
+    // }
 
-    public void _on_OpenBattlePanel(SpaceBattle battle){
-        EmitSignal(nameof(SignalName.ShowBattlePanel), battle);
-    }
+    // public void _on_OpenBattlePanel(SpaceBattle battle){
+    //     EmitSignal(nameof(SignalName.ShowBattlePanel), battle);
+    // }
 
     public void ConnectToEnterMapObject(Node node){
         node.Connect("SignalEnterMapObject", new Callable(this, nameof(_on_Enter_MapObject)));

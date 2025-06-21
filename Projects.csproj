@@ -152,5 +152,14 @@
     <Compile Include="Units\StateMachine\RecruitmentState.cs" />
     <Compile Include="World\MapArmyManager.cs" />
     <Compile Include="UI\ArmyTransferPanel.cs" />
+    <Compile Include="CustomMesh3d.cs" />
+    <Compile Include="World\Node2DPool.cs" />
+    <Compile Include="UI\Battle\ArmyContainer.cs" />
+    <Compile Include="UI\NodeFactoryBase.cs" />
+    <Compile Include="UI\UnitCardFactory.cs" />
+    <Compile Include="UI\BattleArmyContainerHandler.cs" />
+    <Compile Include="UI\CenterBattlePanel.cs" />
+    <Compile Include="Units\Stats\StatModifier.cs" />
+    <Compile Include="GameLogger.cs" />
   </ItemGroup>
 </Project>

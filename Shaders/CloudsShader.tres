@@ -1,0 +1,126 @@
+[gd_resource type="VisualShader" load_steps=12 format=3 uid="uid://b1748aljf2in"]
+
+[sub_resource type="Gradient" id="Gradient_mskvh"]
+offsets = PackedFloat32Array(0.627193, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lmgww"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_n2kno"]
+seamless = true
+seamless_blend_skirt = 0.21
+color_ramp = SubResource("Gradient_mskvh")
+noise = SubResource("FastNoiseLite_lmgww")
+
+[sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_2unvj"]
+output_port_for_preview = 0
+texture = SubResource("NoiseTexture3D_n2kno")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_lmgww"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_n2kno"]
+output_port_for_preview = 0
+size = Vector2(546, 520)
+expression = "float theta = uv.y * 3.14159;
+float phi = uv.x * 3.14159 * 2.0;
+
+unit.x = sin(phi) * sin(theta);
+unit.y = cos(theta) * -1.0;
+unit.z = cos(phi) * sin(theta);
+unit = normalize(unit);
+"
+
+[sub_resource type="Gradient" id="Gradient_2unvj"]
+offsets = PackedFloat32Array(0.467742, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2unvj"]
+frequency = 0.0517
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_uvcy3"]
+seamless = true
+seamless_blend_skirt = 0.21
+color_ramp = SubResource("Gradient_2unvj")
+noise = SubResource("FastNoiseLite_2unvj")
+
+[sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_h7qdn"]
+texture = SubResource("NoiseTexture3D_uvcy3")
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_ysu3b"]
+output_port_for_preview = 0
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform sampler3D tex3d_frg_24;
+uniform sampler3D tex3d_frg_21;
+
+
+
+void fragment() {
+// Input:22
+	vec2 n_out22p0 = UV;
+
+
+	vec3 n_out23p0;
+// Expression:23
+	n_out23p0 = vec3(0.0, 0.0, 0.0);
+	{
+		float theta = n_out22p0.y * 3.14159;
+		float phi = n_out22p0.x * 3.14159 * 2.0;
+		
+		n_out23p0.x = sin(phi) * sin(theta);
+		n_out23p0.y = cos(theta) * -1.0;
+		n_out23p0.z = cos(phi) * sin(theta);
+		n_out23p0 = normalize(n_out23p0);
+		
+	}
+
+
+	vec4 n_out24p0;
+// Texture3D:24
+	n_out24p0 = texture(tex3d_frg_24, n_out23p0);
+
+
+	vec4 n_out21p0;
+// Texture3D:21
+	n_out21p0 = texture(tex3d_frg_21, n_out23p0);
+
+
+// VectorOp:25
+	vec3 n_out25p0 = vec3(n_out24p0.xyz) + vec3(n_out21p0.xyz);
+
+
+// Output:0
+	ALBEDO = n_out25p0;
+	ALPHA = n_out25p0.x;
+
+
+}
+"
+graph_offset = Vector2(703.146, -921.665)
+nodes/fragment/0/position = Vector2(1220, -820)
+nodes/fragment/21/node = SubResource("VisualShaderNodeTexture3D_2unvj")
+nodes/fragment/21/position = Vector2(80, -540)
+nodes/fragment/22/node = SubResource("VisualShaderNodeInput_lmgww")
+nodes/fragment/22/position = Vector2(-1040, -620)
+nodes/fragment/23/node = SubResource("VisualShaderNodeExpression_n2kno")
+nodes/fragment/23/position = Vector2(-560, -640)
+nodes/fragment/23/size = Vector2(546, 520)
+nodes/fragment/23/input_ports = "0,3,uv;"
+nodes/fragment/23/output_ports = "0,4,unit;"
+nodes/fragment/23/expression = "float theta = uv.y * 3.14159;
+float phi = uv.x * 3.14159 * 2.0;
+
+unit.x = sin(phi) * sin(theta);
+unit.y = cos(theta) * -1.0;
+unit.z = cos(phi) * sin(theta);
+unit = normalize(unit);
+"
+nodes/fragment/24/node = SubResource("VisualShaderNodeTexture3D_h7qdn")
+nodes/fragment/24/position = Vector2(80, -840)
+nodes/fragment/25/node = SubResource("VisualShaderNodeVectorOp_ysu3b")
+nodes/fragment/25/position = Vector2(440, -720)
+nodes/fragment/connections = PackedInt32Array(22, 0, 23, 0, 23, 0, 21, 0, 24, 0, 25, 0, 21, 0, 25, 1, 23, 0, 24, 0, 25, 0, 0, 0, 25, 0, 0, 1)

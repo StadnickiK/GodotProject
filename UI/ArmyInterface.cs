@@ -38,23 +38,23 @@ public partial class ArmyInterface : Control
 
 	BuildMenu _buildMenu;
 
-	BuildingInterface _buildingInterface = null;
+	//BuildingInterface _buildingInterface = null;
 
 	[Export]
 	public string Title { get; set; } = "Army Name";
 
 	public int LocalPlayerID { get; set; }
+    public ArmyPanel ArmyPanel { get => _armyPanel; }
+    // BuildingLabel _selectedBuilding = null;
 
-	// BuildingLabel _selectedBuilding = null;
-
-	[Signal]
+    [Signal]
 	public delegate void SelectObjectInOrbitEventHandler(Planet planet, Node node);
 
 	void GetNodes(){
 		_closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
 		_recruitButton = GetNode<Button>("VBoxContainer/HBoxContainer/BuildButton");
 		_header = GetNode<Header>("VBoxContainer/Header");
-		_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
+		//_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
 		_armyPanel = GetNode<ArmyPanel>("VBoxContainer/HBoxContainer/ArmyPanel");
 		_armyTransferPanel = GetNode<ArmyTransferPanel>("ArmyTransferPanel");
@@ -74,7 +74,7 @@ public partial class ArmyInterface : Control
 
 	void ConnectSignals(){
 		_closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
-		_armyPanel.ConnectUnitCards(this);
+		ArmyPanel.ConnectUnitCards(this);
 		_armyTransferPanel.ConfrimButton.ButtonUp += _on_TransferArmy;
 		//_buildings.ConnectBuildButtons(this);
 		// _buildMenu.ConnectBuildButtons(this);
@@ -98,10 +98,10 @@ public partial class ArmyInterface : Control
 			_mapArmy = ship;
 			SetTitle(ship.Name);
 			UpdateInfo(ship, _data.Resources);
-			_armyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
+			ArmyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
 			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
-			_armyPanel.UpdateUnitsToTransfer += ship._on_UpdateUnitsToTransfer;
+			ArmyPanel.UpdateUnitsToTransfer += ship._on_UpdateUnitsToTransfer;
 			// if(ship.Vision){
 
 			// }
@@ -118,10 +118,12 @@ public partial class ArmyInterface : Control
 		_armyRecruitment.UpdateRecruitment(recruitmentComponent, _data.Units, _mapArmy.Controller.PlayerID == LocalPlayerID);
 	}
 
-	public void DeselectArmy(){
+	public void DeselectArmy()
+	{
 		_mapArmy.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent -= UpdateRecruitment;
-		_armyPanel.ResetPanel();
-		_armyPanel.UpdateUnitsToTransfer -= _mapArmy._on_UpdateUnitsToTransfer;
+		ArmyPanel.ResetPanel();
+		ArmyPanel.UpdateUnitsToTransfer -= _mapArmy._on_UpdateUnitsToTransfer;
+		Hide();
 	}
 
 	void _on_TransferArmy(){
@@ -129,8 +131,8 @@ public partial class ArmyInterface : Control
 	}
 	
 
-	public void InitRecruitmentPanel(){
-		_buildMenu.InitAllUnits(_data.GetData("Units"), this);
+	public void InitRecruitmentPanel(UI uI){
+		_buildMenu.InitAllUnits(_data.GetData("Units"), this, uI);
 		int pos = _armyRecruitment.unitCards.Count;
 		foreach(UnitCard unit in _armyRecruitment.unitCards){
 			unit.button.ButtonUp += () => _on_StopUnitConstruction(pos);
@@ -150,7 +152,7 @@ public partial class ArmyInterface : Control
 	}
 
 	public void _on_ConfirmTransferButtonUp(){
-		TransferUnits?.Invoke(_armyPanel.UnitsToTransfer, _armyTransferPanel.TransferArmy.UnitsToTransfer);
+		TransferUnits?.Invoke(ArmyPanel.UnitsToTransfer, _armyTransferPanel.TransferArmy.UnitsToTransfer);
 		_armyTransferPanel.Hide();
 	}
 
@@ -166,18 +168,9 @@ public partial class ArmyInterface : Control
 		}
 	}
 
-	public void _on_BuildingLabelGuiInputEvent(Unit unit, bool tooExpensive){
-		_buildingInterface.Visible = true;
-		_buildingInterface.UpdateInterface(unit, tooExpensive);
-	}
-
-	public void _mouseLeftBuildingLabel(){
-		_buildingInterface.Visible = false;
-	}	
-
 	void _on_XButton_button_up(){
 		Visible = false;
-		_buildingInterface.Visible = false;
+		//_buildingInterface.Visible = false;
 		EmitSignal(nameof(SignalName.Deselect));
 	}
 
@@ -219,7 +212,6 @@ public partial class ArmyInterface : Control
 				_buildMenu.UpdateBuildMenu(rc.AvaialableUnitsMap.Keys.ElementAt(0));
 			} 
 		}
-			
 	}
 
 	public override void _Process(double delta){

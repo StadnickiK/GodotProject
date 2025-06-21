@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cd8trni2dvfhs"]
+[gd_scene load_steps=9 format=3 uid="uid://cd8trni2dvfhs"]
 
 [ext_resource type="Script" uid="uid://bx7dpobofd476" path="res://UI/ArmyInterface.cs" id="1_d84et"]
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="3_e5ywv"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="5_f5nni"]
 [ext_resource type="Script" uid="uid://bibq2sy8hsrc6" path="res://UI/InfoPanel.cs" id="5_rae23"]
 [ext_resource type="Script" uid="uid://c0p30ub3sq80t" path="res://UI/ArmyRecruitment.cs" id="7_10yej"]
-[ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="7_voeq7"]
 
 [node name="ArmyInterface" type="Control"]
 layout_mode = 3
@@ -17,47 +16,45 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -960.0
-offset_top = -1079.0
-offset_right = 960.0
+offset_left = -1920.0
+offset_top = -2160.0
+offset_right = 1920.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 6
-size_flags_vertical = 10
+size_flags_vertical = 6
 mouse_filter = 2
 script = ExtResource("1_d84et")
 
-[node name="UnitInterface" parent="." instance=ExtResource("7_voeq7")]
-visible = false
-layout_direction = 1
-layout_mode = 2
-offset_left = 19.0
-offset_top = 608.0
-offset_right = 303.0
-offset_bottom = 1068.0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
 [node name="BuildMenuScroll" parent="." instance=ExtResource("3_e85fu")]
 layout_mode = 0
-offset_left = 667.0
-offset_top = 757.0
-offset_right = 1203.0
-offset_bottom = 969.0
+anchor_left = 0.435417
+anchor_top = 0.741667
+anchor_right = 0.575
+anchor_bottom = 0.839815
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+metadata/_edit_use_anchors_ = true
 
 [node name="ArmyTransferPanel" type="VBoxContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(272, 104)
-layout_mode = 0
-offset_left = 786.0
-offset_top = 775.0
-offset_right = 1058.0
-offset_bottom = 891.0
+custom_minimum_size = Vector2(576, 208)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.409896
+anchor_top = 0.758796
+anchor_right = 0.590104
+anchor_bottom = 0.871296
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4_fpnqi")
+metadata/_edit_use_anchors_ = true
 
 [node name="TransferArmy" type="ScrollContainer" parent="ArmyTransferPanel"]
 clip_contents = false
-custom_minimum_size = Vector2(322, 104)
+custom_minimum_size = Vector2(576, 208)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_susb5")
@@ -68,27 +65,21 @@ layout_mode = 2
 size_flags_vertical = 8
 
 [node name="UnitCard" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard2" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard3" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard4" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard5" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard6" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
-visible = false
 layout_mode = 2
 
 [node name="UnitCard7" parent="ArmyTransferPanel/TransferArmy/Grid" instance=ExtResource("5_f5nni")]
@@ -154,18 +145,16 @@ text = "Confirm"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -174.0
-offset_top = -180.0
-offset_right = 148.0
+anchors_preset = -1
+anchor_left = 0.411458
+anchor_top = 0.849537
+anchor_right = 0.588542
+anchor_bottom = 0.981019
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="Header" parent="VBoxContainer" instance=ExtResource("3_e5ywv")]
 layout_mode = 2
@@ -177,22 +166,23 @@ script = ExtResource("5_rae23")
 
 [node name="Controller" type="Label" parent="VBoxContainer/InfoPanel"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 20
 text = "Owned by"
 
 [node name="Upkeep" type="Label" parent="VBoxContainer/InfoPanel"]
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 20
 text = "Upkeep:"
 horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="BuildButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 60)
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "+"
@@ -330,7 +320,8 @@ script = ExtResource("3_susb5")
 
 [node name="Grid" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ArmyPanel"]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="UnitCard" parent="VBoxContainer/HBoxContainer/ArmyPanel/Grid" instance=ExtResource("5_f5nni")]
 layout_mode = 2

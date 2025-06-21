@@ -2,50 +2,45 @@
 
 [ext_resource type="Script" uid="uid://ijnsw8dewly4" path="res://UI/UnitCard.cs" id="1_5oevl"]
 
-[node name="UnitCard" type="Control"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 56.0
-offset_bottom = 90.0
+[node name="UnitCard" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.0291667
+anchor_bottom = 0.0962963
 script = ExtResource("1_5oevl")
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-offset_right = 56.0
-offset_bottom = 104.0
+size_flags_vertical = 3
 theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_colors/icon_pressed_color = Color(0.5564, 0.861689, 0.964114, 1)
 theme_override_font_sizes/font_size = 64
 text = "U"
 
 [node name="Health" type="ProgressBar" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 4)
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 show_percentage = false
 
 [node name="Shield" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 show_percentage = false
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 visible = false
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 0
-offset_top = 76.0
-offset_right = 56.0
-offset_bottom = 103.0
+custom_minimum_size = Vector2(50, 10)
+layout_mode = 2
 show_percentage = false
 
 [node name="Label" type="Label" parent="."]
 visible = false
-layout_mode = 0
-offset_top = 76.0
-offset_right = 56.0
-offset_bottom = 99.0
+layout_mode = 2
 text = "x/x"
 horizontal_alignment = 1
