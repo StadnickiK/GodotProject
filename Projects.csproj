@@ -161,5 +161,12 @@
     <Compile Include="UI\CenterBattlePanel.cs" />
     <Compile Include="Units\Stats\StatModifier.cs" />
     <Compile Include="GameLogger.cs" />
+    <Compile Include="Map\Battle\ManualBattleScene.cs" />
+    <Compile Include="Map\Battle\BattleUi.cs" />
+    <Compile Include="Map\IMap\IEnterCombat.cs" />
+    <Compile Include="Map\Battle\Unit3d.cs" />
+    <Compile Include="Map\Battle\InputEventController.cs" />
+    <Compile Include="Map\Battle\UnitFactory.cs" />
+    <Compile Include="Data\ModelLoader.cs" />
   </ItemGroup>
 </Project>

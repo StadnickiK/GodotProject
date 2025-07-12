@@ -18,7 +18,7 @@ public partial class ArmyInterface : Control
 
 	Button _closeButton = null;
 
-	Button _recruitButton = null;
+	Button _buildButton = null;
 
 	Header _header = null;
 
@@ -38,21 +38,29 @@ public partial class ArmyInterface : Control
 
 	BuildMenu _buildMenu;
 
+	public ArmyPanel ArmyPanel { get => _armyPanel; }
+
 	//BuildingInterface _buildingInterface = null;
 
 	[Export]
-	public string Title { get; set; } = "Army Name";
+	public string Title
+	{
+		get { return _header.Title; }
+		set { _header.Title = value; }
+	}
+
 
 	public int LocalPlayerID { get; set; }
-    public ArmyPanel ArmyPanel { get => _armyPanel; }
+		
+
     // BuildingLabel _selectedBuilding = null;
 
-    [Signal]
+	[Signal]
 	public delegate void SelectObjectInOrbitEventHandler(Planet planet, Node node);
 
 	void GetNodes(){
 		_closeButton = GetNode<Button>("VBoxContainer/Header/XButton");
-		_recruitButton = GetNode<Button>("VBoxContainer/HBoxContainer/BuildButton");
+		_buildButton = GetNode<Button>("VBoxContainer/HBoxContainer/BuildButton");
 		_header = GetNode<Header>("VBoxContainer/Header");
 		//_buildingInterface = GetNode<BuildingInterface>("UnitInterface");
 		_buildMenu = GetNode<BuildMenu>("BuildMenuScroll");
@@ -65,7 +73,7 @@ public partial class ArmyInterface : Control
 	void UpdateInfo(Ship ship, System.Collections.Generic.List<Resource> resources){
 		info.Controller.Text = "Owned by " + ship.Controller.Name;
 		var upkeep = "\tUpkeep:";
-		foreach (var item in ship.Units.UpkeepComponent.Upkeep)
+		foreach (var item in ship.UnitController.UpkeepComponent.Upkeep)
 		{
 			upkeep += " " + item.Value+" " + resources[item.Key].IconPlaceholder;
 		}
@@ -92,26 +100,41 @@ public partial class ArmyInterface : Control
 
 	public void UpdateArmyPanel(Ship ship){
 		_armyTransferPanel.Hide();
-		if(ship != null){
+		if (ship != null)
+		{
 			var visibility = ship.VisibilityConroller.GetVisibility(LocalPlayerID);
 			Visible = true;
 			_mapArmy = ship;
 			SetTitle(ship.Name);
 			UpdateInfo(ship, _data.Resources);
-			ArmyPanel.UpdateArmyList(ship.Units.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
+			ArmyPanel.UpdateArmyList(ship.UnitController.UnitsList, ship.Controller.PlayerID == LocalPlayerID);
 			_armyRecruitment.UpdateRecruitment(ship.RecruitmentComponent, _data.Units, ship.Controller.PlayerID == LocalPlayerID);
 			ship.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += UpdateRecruitment;
 			ArmyPanel.UpdateUnitsToTransfer += ship._on_UpdateUnitsToTransfer;
+			UpdateBuildButton();
+			_mapArmy.RecruitmentComponent.UpdateAvaialableUnitsEvent += UpdateBuildButton;
+			_mapArmy.RecruitmentComponent.RemoveAvaialableUnitsEvent += UpdateBuildButton;
 			// if(ship.Vision){
 
 			// }
 		}
 	}
+	
+	public void UpdateArmyPanel(List<Unit> units){
+		_armyTransferPanel.Hide();
+		Show();
+		_header.Hide();
+		ArmyPanel.UpdateArmyList(units, true);
+		_armyRecruitment.Hide();
+		_buildButton.Hide();		
+	}
 
-	public void UpdateArmyPanel(Ship ship, Ship target){
+
+	public void UpdateArmyPanel(Ship ship, Ship target)
+	{
 		UpdateArmyPanel(ship);
 		transferArmy = target;
-		_armyTransferPanel.UpdateTransferPanel(target.Units.UnitsList);
+		_armyTransferPanel.UpdateTransferPanel(target.UnitController.UnitsList);
 	}
 
 	void UpdateRecruitment(RecruitmentComponent recruitmentComponent){
@@ -123,6 +146,8 @@ public partial class ArmyInterface : Control
 		_mapArmy.RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent -= UpdateRecruitment;
 		ArmyPanel.ResetPanel();
 		ArmyPanel.UpdateUnitsToTransfer -= _mapArmy._on_UpdateUnitsToTransfer;
+		_mapArmy.RecruitmentComponent.UpdateAvaialableUnitsEvent -= UpdateBuildButton;
+		_mapArmy.RecruitmentComponent.RemoveAvaialableUnitsEvent -= UpdateBuildButton;
 		Hide();
 	}
 
@@ -205,7 +230,7 @@ public partial class ArmyInterface : Control
 		var y = pos.Y-_buildMenu.Size.Y+20;
 		_buildMenu.Position = new Vector2(x, y);
 		_buildMenu.Show();
-		var rc = _mapArmy.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
+		var rc = _mapArmy.RecruitmentComponent;
 		if(rc != null){
 			if(rc.AvaialableUnitsMap.Count > 0 ){
 				rc.AvaialableUnitsMap.Keys.ElementAt(0).UpdateCanPayUnits(_mapArmy.Controller.ResManager, _data.Units);
@@ -214,7 +239,16 @@ public partial class ArmyInterface : Control
 		}
 	}
 
-	public override void _Process(double delta){
+	public void UpdateBuildButton()
+	{
+		var rc = _mapArmy.RecruitmentComponent;
+		if(rc != null){
+			_buildButton.Visible = rc.AvaialableUnitsMap.Count > 0;
+		}
+	}
+
+	public override void _Process(double delta)
+	{
 		// if(Visible){
 		// 	if(_planet != null && _data != null){
 		// 		if(_planet.BuildingsManager.ConstructionListChanged){

@@ -31,7 +31,7 @@ public partial class UnitCard : Control
 
 	public void UpdateCard(Unit unit){
 		Unit = unit;
-		var health = unit.GetStat("Health");
+		var health = unit.GetStat("HitPoints");
 		Modulate = new Color(1, 1, 1, 1);
 		Progress.Hide();
 		Label.Hide();
@@ -40,7 +40,6 @@ public partial class UnitCard : Control
 			Health.MinValue = health.MinValue;
 			Health.MaxValue = health.MaxValue;
 		}
-		
 	}
 
 	public void UpdateProgress(Unit unit){

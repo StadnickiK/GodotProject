@@ -25,6 +25,8 @@ public partial class UI : Control
 
     public UnitCardFactory UnitCardFactory { get; set; }
 
+    BattleUi battleUi;
+
     private Control _menu = null;
     public Control WorldMenu
     {
@@ -41,6 +43,7 @@ public partial class UI : Control
 
     void GetNodes()
     {
+        battleUi = GetNode<BattleUi>("BattleUI");
         ResPanel = GetNode<ResourcePanel>("ResourcePanel");
         PInterface = GetNode<PlanetInterface>("PlanetInterface");
         RPanel = GetNode<RightPanel>("RightPanel");
@@ -91,8 +94,17 @@ public partial class UI : Control
     {
         GetNodes();
         ArmyInterfce.ArmyPanel.UI = this;
+        battleUi.ArmyInterface.ArmyPanel.UI = this;
         UnitCardFactory.UI = this;
         BattlePan.ConnectContainers(this);
+    }
+
+    public void UpdateBattleUI(SpaceBattle spaceBattle)
+    {
+        TopLeft.Hide();
+        RPanel.Hide();
+        BattlePan.Hide();
+		battleUi.UpdateBattleUI(spaceBattle);
     }
 
     void _on_OrbitIconFocus(Node Orbit)
@@ -107,7 +119,7 @@ public partial class UI : Control
 		BuildingInterface.Visible = true;
         var pos = GetGlobalMousePosition();
 		var x = pos.X-(BuildingInterface.Size.X/2);
-		var y = pos.Y-BuildingInterface.Size.Y+20;
+		var y = pos.Y-BuildingInterface.Size.Y-20;
         BuildingInterface.Position = new Vector2(x, y);
 		BuildingInterface.UpdateInterface(unit, tooExpensive);
 	}

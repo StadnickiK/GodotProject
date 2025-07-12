@@ -1,10 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://by423fssuvao0"]
+[gd_scene load_steps=5 format=3 uid="uid://by423fssuvao0"]
 
 [ext_resource type="Script" uid="uid://d36qblqb5w6vd" path="res://Map/Starsystem/Star.cs" id="1"]
-[ext_resource type="Material" uid="uid://cqaavyu5u5ava" path="res://star_shader_material.tres" id="2_qlxvi"]
+[ext_resource type="Shader" uid="uid://dqaf213jlet0y" path="res://Shaders/star_visual_shader.tres" id="2_qlxvi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kjui4"]
+render_priority = 0
+shader = ExtResource("2_qlxvi")
+shader_parameter/ColorParameter2 = Color(0.945098, 0.2, 0.2, 1)
+shader_parameter/ColorParameter = Color(0.945098, 0.54902, 0.2, 1)
 
 [sub_resource type="SphereMesh" id="11"]
-material = ExtResource("2_qlxvi")
+material = SubResource("ShaderMaterial_kjui4")
 radius = 10.0
 height = 18.0
 radial_segments = 32

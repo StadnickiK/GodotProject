@@ -13,21 +13,26 @@ public partial class Unit : Construct, IUpkeep
 	[Export]
 	public bool Logging { get; set; } = true;
 
+	[Export]
+	public string ModelName { get; set; }
+
 	GameLogger gameLogger = GameLogger.Instance;
 
-	public bool HasHitpoints { get; set; } = true;  
+	public bool HasHitpoints { get; private set; } = true;  
 
 	public string UnitName { get; set; }
 
-    [Export]
-    public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
+	[Export]
+	public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
+	public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
 	[Export]
-    public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
+	public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public StatManager StatManager { get; set; }
+	public StatManager StatManager { get; set; }
+
+
 
 	//public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
@@ -35,8 +40,8 @@ public partial class Unit : Construct, IUpkeep
 
 	public System.Collections.Generic.List<BaseStat> StatsList { get; set; } = new List<BaseStat>();
 
-    // World - initStartFleets, InitResistance
-    public Unit(){  
+	// World - initStartFleets, InitResistance
+	public Unit(){  
 	}
 
 	public Unit(string name, Array<BaseStat> stats){
@@ -66,7 +71,7 @@ public partial class Unit : Construct, IUpkeep
 		if (unitHP.CurrentValue <= 0)
 		{
 			unit.HasHitpoints = false;
-			if (Logging) gameLogger.LogInfo("Target has no HP");
+			if (Logging) gameLogger.LogInfo("Target has no HP, hasHP "+unit.HasHitpoints);
 			//FreeUnit?.Invoke(this);
 		}
 	}

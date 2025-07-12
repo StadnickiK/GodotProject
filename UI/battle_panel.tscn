@@ -5,11 +5,18 @@
 [ext_resource type="PackedScene" uid="uid://duwyuyfndt28o" path="res://center_battle_panel.tscn" id="2_qk2qf"]
 [ext_resource type="PackedScene" uid="uid://bolot0f80jwmt" path="res://army_container.tscn" id="3_jyh1w"]
 
-[node name="BattlePanel" type="CanvasLayer"]
+[node name="BattlePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_qk2qf")
 metadata/_edit_use_anchors_ = true
 
 [node name="CenterBattlePanel" parent="." instance=ExtResource("2_qk2qf")]
+layout_mode = 1
 anchor_bottom = 1.0
 offset_left = 0.0
 offset_top = 0.0
@@ -19,6 +26,7 @@ scale = Vector2(1, 1)
 
 [node name="Left" type="Panel" parent="."]
 custom_minimum_size = Vector2(272, 0)
+layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.501389
 anchor_right = 0.153125
@@ -58,6 +66,7 @@ layout_mode = 2
 
 [node name="Right" type="Panel" parent="."]
 custom_minimum_size = Vector2(272, 0)
+layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.846875
 anchor_top = 0.501389

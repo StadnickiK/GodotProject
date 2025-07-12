@@ -1,14 +1,12 @@
 [gd_scene load_steps=10 format=3 uid="uid://bl1jmx0xuh3jm"]
 
-[ext_resource type="Shader" uid="uid://cpt8irt5lb3bw" path="res://Shaders/PlanetShader2.tres" id="1_6lek5"]
+[ext_resource type="Shader" uid="uid://blm4xm1gxhfui" path="res://PlanetMesh.tres" id="1_6lek5"]
 [ext_resource type="Shader" uid="uid://b1748aljf2in" path="res://Shaders/CloudsShader.tres" id="2_ef7jg"]
 [ext_resource type="Shader" uid="uid://bee6x8ym2pqfo" path="res://Shaders/AtmosphereShader.tres" id="3_klqwa"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ef7jg"]
 render_priority = 0
 shader = ExtResource("1_6lek5")
-shader_parameter/FloatParameter4 = 0.6
-shader_parameter/ColorParameter = Color(0.037522, 0.275378, 1, 1)
 
 [sub_resource type="SphereMesh" id="1"]
 lightmap_size_hint = Vector2i(17, 9)
@@ -16,12 +14,12 @@ material = SubResource("ShaderMaterial_ef7jg")
 radial_segments = 128
 rings = 64
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tfs4q"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0sucr"]
 render_priority = 0
 shader = ExtResource("2_ef7jg")
 
 [sub_resource type="SphereMesh" id="22"]
-material = SubResource("ShaderMaterial_tfs4q")
+material = SubResource("ShaderMaterial_0sucr")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5f1id"]
 render_priority = 0

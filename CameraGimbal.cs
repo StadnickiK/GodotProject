@@ -21,8 +21,7 @@ public partial class CameraGimbal : Node3D
 	public int Limit { get; set; } = -1;
 
 	[Export]
-	Vector3 PosToLookFrom = new Vector3(0,0,10);
-
+	Vector3 PosToLookFrom = new Vector3(0,0,30);
 
 
 	// Called when the node enters the scene tree for the first time.

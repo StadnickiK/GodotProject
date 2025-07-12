@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://b4uuv8wu0rx6l"]
+[gd_scene load_steps=20 format=4 uid="uid://b4uuv8wu0rx6l"]
 
 [ext_resource type="PackedScene" uid="uid://br3y8uchebph0" path="res://UI/TopLeftPanel/TopLeftPanel.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bb4lgwd2ifar2" path="res://UI/UI.cs" id="4"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://4j4dbkx335vc" path="res://UI/RightPanel.tscn" id="13"]
 [ext_resource type="Script" uid="uid://bckbnt17am1i4" path="res://UI/UnitCardFactory.cs" id="13_017wa"]
 [ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/Center/AlertBox.tscn" id="14"]
+[ext_resource type="PackedScene" uid="uid://bqfm6cf66f6b4" path="res://Map/Battle/battle_ui.tscn" id="15_6q2ik"]
 
 [sub_resource type="Image" id="Image_017wa"]
 data = {
@@ -326,21 +327,6 @@ theme_override_font_sizes/bold_font_size = 20
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
 Limit = 250
 
-[node name="Menu" parent="." instance=ExtResource("12")]
-visible = false
-layout_mode = 1
-
-[node name="BuildingInterface" parent="." instance=ExtResource("5_npmjx")]
-visible = false
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
-offset_top = -460.0
-offset_right = 284.0
-grow_vertical = 0
-
 [node name="RightPanel" parent="." instance=ExtResource("13")]
 layout_mode = 1
 offset_top = -240.5
@@ -356,6 +342,7 @@ layout_mode = 1
 
 [node name="BattlePanel" parent="." instance=ExtResource("9_npmjx")]
 visible = false
+layout_mode = 1
 
 [node name="AlertBox" parent="." instance=ExtResource("14")]
 visible = false
@@ -398,5 +385,24 @@ grow_vertical = 2
 layout_mode = 3
 anchors_preset = 0
 
+[node name="BuildingInterface" parent="." instance=ExtResource("5_npmjx")]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_top = -460.0
+offset_right = 284.0
+grow_vertical = 0
+
+[node name="Menu" parent="." instance=ExtResource("12")]
+visible = false
+layout_mode = 1
+
 [node name="UnitCardFactory" type="Node" parent="."]
 script = ExtResource("13_017wa")
+
+[node name="BattleUI" parent="." instance=ExtResource("15_6q2ik")]
+visible = false
+layout_mode = 1

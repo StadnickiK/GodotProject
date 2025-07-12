@@ -7,45 +7,17 @@ public partial class Map : Node3D
     public Galaxy galaxy = null;
 
     MapObjects mapObj = null;
-    public Combat Combat { get; set; }
-
-
-    public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
-
-    public event OpenBattlePanelEventHandler OpenBattlePanel;
 
     PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
 
     void GetNodes(){
         mapObj = GetNode<MapObjects>("MapObjects");
-        Combat = GetNode<Combat>("Combat");
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         GetNodes();
-    }
-
-    public void ConnectToEnterCombat(Node node){
-         node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
-    }
-
-    public void ConnectToEnterCombat(Ship node){
-        node.EnterCombat += _on_EnterCombat;
-    }
-
-    void _on_EnterCombat(Ship ship, Ship enemy, Node parent){
-        if(ship != null && enemy != null){
-            if(ship != enemy){
-                if (!Combat.Combatants.Contains(ship) && !Combat.Combatants.Contains(enemy) && ship != enemy)
-                {
-                    var battle = Combat.CreateBattle(new System.Collections.Generic.List<Ship>() { ship }, new System.Collections.Generic.List<Ship>() { enemy }, parent);
-                    OpenBattlePanel?.Invoke(battle);
-                    //battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
-                }
-            }
-        }
     }
 
     // public void ConnectToShowBattlePanel(Node node, string method){

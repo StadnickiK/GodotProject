@@ -477,14 +477,14 @@ public partial class AIPlayer : Player
                 int count = 0;
                 foreach(Node node in enemies){
                     if(node is Ship ship)
-                        count += ship.Units.GetChildren().Count;
+                        count += ship.UnitController.GetChildren().Count;
                 }
                 invasionsObject = blackBoard["InvasionPlans"];
                 var invasions = (Dictionary<Ship, Planet>)invasionsObject;
                 for(int i = 0; i < fleets.Count(); i++){
                     var ship = fleets.Keys.ElementAt(i);
                     if(!invasionsInProgress.ContainsKey(ship))
-                        if(ship.Units.GetChildren().Count > count){    
+                        if(ship.UnitController.GetChildren().Count > count){    
                             if(!invasions.ContainsKey(ship)){
                                 invasions.Add(ship, targets.Keys.ElementAt(0));
                                 targets.Remove(targets.Keys.ElementAt(0));

@@ -68,7 +68,7 @@ public partial class StatManager : Node
     {
         var str = new StringBuilder();
         foreach (var stat in Stats.Values)
-            str.Append(stat.Name+" "+stat.CurrentValue);
+            str.Append(stat.Name + " " + stat.CurrentValue + "\n");
         return str.ToString();
     }
 }

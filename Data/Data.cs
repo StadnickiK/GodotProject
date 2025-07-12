@@ -8,6 +8,8 @@ using System.Threading;
 public partial class Data : Node
 {
 
+    public ModelLoader ModelLoader { get; set; }
+
     public override void _Ready()
     {
         GetNodes();
@@ -15,10 +17,12 @@ public partial class Data : Node
         LoadUnitResources();
     }
 
-    void GetNodes(){
+    void GetNodes()
+    {
         GetResources();
         GetUnits();
         GetBuildings();
+        ModelLoader = GetNode<ModelLoader>("ModelLoader");
     }
 
     public List<Resource> Resources { get; set; } = new List<Resource>();

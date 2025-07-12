@@ -30,7 +30,6 @@ domain_warp_type = 2
 width = 512
 height = 512
 depth = 512
-seamless = true
 seamless_blend_skirt = 0.165
 color_ramp = SubResource("Gradient_ay8pf")
 noise = SubResource("FastNoiseLite_i5ynm")

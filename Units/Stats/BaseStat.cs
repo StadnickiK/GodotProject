@@ -86,16 +86,16 @@ public partial class BaseStat : Node{
     public bool HasMaxValue { get; set; } = false;
 
     [Export]
-    private int _maxValue;
-    public int MaxValue
+    private float _maxValue;
+    public float MaxValue
     {
         get { return _maxValue; }
     }
     [Export]
     public bool HasMinValue { get; set; } = false; 
     [Export]
-    private int _minValue;
-    public int MinValue
+    private float _minValue;
+    public float MinValue
     {
         get { return _minValue; }
         set { _minValue = value; }
@@ -104,5 +104,6 @@ public partial class BaseStat : Node{
     public override void _Ready()
     {
         CurrentValue = BaseValue;
+        _maxValue = BaseValue;
     }
 }

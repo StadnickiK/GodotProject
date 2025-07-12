@@ -10,7 +10,11 @@ public partial class GameLogger
 
     private GameLogger()
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+        if (logToFile)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+            File.WriteAllText(logFilePath, string.Empty); // This ensures the file is clean
+        }
     }
 
     public static GameLogger Instance { get; private set; } = new GameLogger();

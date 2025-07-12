@@ -147,8 +147,8 @@ public partial class Player : Node, IEquatable<Player>
             Ships.Add(ship);
             ship.Controller = this;
             //ship.Units.AddUpkeep -= UpdateUpkeep;
-            ship.Units.AddUpkeep += UpdateUpkeep;
-            ship.Units.RemoveUpkeep += RemoveUpkeep;
+            ship.UnitController.AddUpkeep += UpdateUpkeep;
+            ship.UnitController.RemoveUpkeep += RemoveUpkeep;
             UnitsChanged?.Invoke(ship);
             ArmiesChanged?.Invoke(this);
         }
@@ -164,8 +164,8 @@ public partial class Player : Node, IEquatable<Player>
         MapObjects.Remove(mapObject);
         if(mapObject is Ship ship){
             Ships.Remove(ship);
-            ship.Units.AddUpkeep -= UpdateUpkeep;
-            ship.Units.RemoveUpkeep -= RemoveUpkeep;
+            ship.UnitController.AddUpkeep -= UpdateUpkeep;
+            ship.UnitController.RemoveUpkeep -= RemoveUpkeep;
             ArmiesChanged?.Invoke(this);
         }
         if(mapObject is Planet planet){

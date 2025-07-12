@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 
 
-	public struct ShipStruct : IMapObjectController
+	public class ShipModel : Node3DModel, IMapObjectController
 	{
-		public Node Parent { get; set; }
-		public Vector3 Position { get; set; }
 
         public Player Controller { get; set; }
 
@@ -16,12 +14,10 @@ using System.Collections.Generic;
 
 		public TargetManager<Node3D>.Target Target { get; set; }
 
-		public string Name { get; set; }
-
-        public bool Visible { get; set; }
+		
 	}
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep, IEnterMapObject
+public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep, IEnterMapObject, IEnterCombat
 // IMapObject,
 {
     [Signal]
@@ -30,9 +26,9 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     [Signal]
     public delegate void SelectTargetEventHandler(RigidBody3D target);
 
-    public delegate void EnterCombatEventHandler(Ship ship, Ship enemy, Node parent);
+    public delegate void EnterCombatEventHandler(IEnterCombat attacker, IEnterCombat enemy, Node parent);
 
-    public event EnterCombatEventHandler EnterCombat;
+    public event IEnterCombat.EnterCombatEventHandler EnterCombat;
 
     [Signal]
     public delegate void SignalExitMapObjectEventHandler(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state); 
@@ -70,7 +66,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     //public IEnterMapObject MapObject { get; set; } = null;
 
-    public UnitController Units { get; set; }
+    public UnitController UnitController { get; set; }
 
     //public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
@@ -169,9 +165,9 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     } 
 
     void Split(TargetManager<Node3D>.Target target){
-        if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < Units.UnitsList.Count){
-                Units.RemoveUnits(UnitsToTransfer);
-                SplitShip?.Invoke(new ShipStruct(){
+        if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < UnitController.UnitsList.Count){
+                UnitController.RemoveUnits(UnitsToTransfer);
+                SplitShip?.Invoke(new ShipModel(){
                     Target = target,
                     Name = this.Name,
                     Parent = this.GetParent(),
@@ -188,9 +184,9 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         if(target.TargetNode is Ship ship && target.TargetNode != this){
             if (ship.Controller == this.Controller)
             {
-                if (Units.Count + ship.Units.Count < ship.Units.MaxUnits)
+                if (UnitController.Count + ship.UnitController.Count < ship.UnitController.MaxUnits)
                 {
-                    Units.TransferUnit(ship.Units);
+                    UnitController.TransferUnit(ship.UnitController);
                     FreeShip?.Invoke(this);
                 }
                 else
@@ -206,16 +202,16 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     }
 
     public void TransferUnits(Ship target, List<Unit> targetUnits){
-        Units.RemoveUnits(UnitsToTransfer);
-        target.Units.AddUnit(UnitsToTransfer);
-        target.Units.RemoveUnits(targetUnits);
-        Units.AddUnit(targetUnits);
+        UnitController.RemoveUnits(UnitsToTransfer);
+        target.UnitController.AddUnit(UnitsToTransfer);
+        target.UnitController.RemoveUnits(targetUnits);
+        UnitController.AddUnit(targetUnits);
     }
 
     public void Merge(Ship ship){
-        foreach(Unit unit in ship.Units.UnitsList){
+        foreach(Unit unit in ship.UnitController.UnitsList){
             unit.GetParent().RemoveChild(unit);
-            Units.AddUnit(unit);
+            UnitController.AddUnit(unit);
         }
         ship.Controller.RemoveMapObject(ship);
         ArmiesChanged?.Invoke();
@@ -364,7 +360,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     }
 
     public void GetTotalUpkeep(Dictionary<int, int> costs){
-        foreach(var node in Units.GetChildren()){
+        foreach(var node in UnitController.GetChildren()){
             if(node is IUpkeep upkeep){
                 foreach(var resource in upkeep.Upkeep.Keys){
                     if(costs.ContainsKey(resource)){
@@ -402,7 +398,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         _control = GetNode<SimpleFireControl>("FireControl");
         StateMach = GetNode<StateMachine>("StateMachine");
         //_velocityController = GetNode<VelocityController>("VelocityController");
-        Units = GetNode<UnitController>("UnitController");
+        UnitController = GetNode<UnitController>("UnitController");
         RecruitmentComponent = GetNode<RecruitmentComponent>("RecruitmentComponent");
         AddChild(targetManager);
     }
@@ -419,13 +415,13 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += _on_UpdateRecruitment;
         //_velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
-        Units.NoUnits += FreeThisShip;
+        UnitController.NoUnits += FreeThisShip;
 
     }
 
     public void UpdatePower(){
         Power = 0;
-        foreach(var unit in Units.UnitsList){
+        foreach(var unit in UnitController.UnitsList){
                 Power += unit.Stats.GetNode<BaseStat>("HitPoints").CurrentValue;
         }
     }

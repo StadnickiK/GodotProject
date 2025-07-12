@@ -19,7 +19,7 @@ public partial class GetIdleShip : TreeNode
             if(ship != null){
                 var fleets = (Dictionary<Ship, int>)idleFleetsObj;
                 if(!fleets.ContainsKey(ship)){
-                    fleets.Add(ship, ship.Units.GetChildCount());
+                    fleets.Add(ship, ship.UnitController.GetChildCount());
                     State = NodeState.Succes;
                     return NodeState.Succes;
                 }

@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://dnabucbyeoqmh"]
+
+[ext_resource type="Script" uid="uid://bucssk3ciqoo0" path="res://Map/Battle/ManualBattleScene.cs" id="1_swgib"]
+[ext_resource type="Script" uid="uid://bg4vk38mwp0io" path="res://Map/Battle/UnitFactory.cs" id="2_eornl"]
+[ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="2_ph0dr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_73bjj"]
+size = Vector3(500, 1, 500)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylu47"]
+size = Vector3(450, 0, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_swgib"]
+transparency = 1
+albedo_color = Color(0, 0.52549, 0, 0.12549)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ph0dr"]
+material = SubResource("StandardMaterial3D_swgib")
+size = Vector3(450, 1, 50)
+
+[node name="ManualBattleScene" type="Node3D"]
+script = ExtResource("1_swgib")
+
+[node name="BattleZone" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleZone"]
+shape = SubResource("BoxShape3D_73bjj")
+debug_color = Color(0.929418, 0.132021, 0.57205, 0.42)
+
+[node name="LeftDeployZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+
+[node name="LCollisionShape3D" type="CollisionShape3D" parent="LeftDeployZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 0)
+shape = SubResource("BoxShape3D_ylu47")
+debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
+
+[node name="RightDeployZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -200)
+
+[node name="RCollisionShape3D" type="CollisionShape3D" parent="RightDeployZone"]
+shape = SubResource("BoxShape3D_ylu47")
+debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
+
+[node name="LDeployMarker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+mesh = SubResource("BoxMesh_ph0dr")
+skeleton = NodePath("../BattleZone/CollisionShape3D")
+
+[node name="RDeployMarker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -200)
+visible = false
+mesh = SubResource("BoxMesh_ph0dr")
+skeleton = NodePath("../BattleZone/CollisionShape3D")
+
+[node name="ActiveObjects" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
+
+[node name="UnitFactory" type="Node" parent="."]
+script = ExtResource("2_eornl")
+
+[node name="UnitPool" type="Node" parent="UnitFactory"]
+script = ExtResource("2_ph0dr")
+MinAmount = 20
+Node3DPath = "res://Map/Battle/Unit3D.tscn"

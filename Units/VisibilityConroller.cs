@@ -49,7 +49,14 @@ public partial class VisibilityConroller : Node
             }
     }
 
-    public void UpdateVisible(VisibilityStruct visibilityStruct,int playerID, bool visible){
+    public void CopyVisibility(VisibilityConroller visibilityConroller)
+    {
+        PlayerVisibility = new Dictionary<int, VisibilityStruct>(visibilityConroller.PlayerVisibility);
+        VisibleParent = visibilityConroller.VisibleParent;
+    }
+
+    public void UpdateVisible(VisibilityStruct visibilityStruct, int playerID, bool visible)
+    {
         UpdateVisibility(visibilityStruct, playerID);
         VisibleParent.SetVisibility(visible);
     }

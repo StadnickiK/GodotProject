@@ -2,7 +2,7 @@ using Godot;
 using System;
 using Godot.Collections;
 
-public partial class BattlePanel : CanvasLayer
+public partial class BattlePanel : Control
 {
 
     [Export]
@@ -39,7 +39,6 @@ public partial class BattlePanel : CanvasLayer
         {
             _battle = battle;
             Center.AutoFight.ButtonUp += _battle.AutoFight;
-            Center.EndFight.ButtonUp += _battle.AcceptResult;
             _battle.BattleFinished += UpdatePanelPostBattle;
         }
         Center.Update(battle.Attackers[0], battle.Defenders[0]);

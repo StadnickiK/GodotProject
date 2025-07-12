@@ -60,7 +60,7 @@ void GetNodes(){
             var label = new Label(); 
             label.Text = "Name / HP / Attack / Defence \n";
             _overviewPanel.AddNodeToPanel("Details", label);
-            foreach(Node node in ship.Units.GetChildren()){
+            foreach(Node node in ship.UnitController.GetChildren()){
                 if(node is Unit unit){
                     label = new Label(); 
                     label.Text = unit.Name +" " + unit.GetStat("HitPoints").CurrentValue +" "+ unit.GetStat("Attack").CurrentValue + " " + unit.GetStat("Defence").CurrentValue;

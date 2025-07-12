@@ -6,23 +6,28 @@ using System.Linq;
 public partial class World : Node3D
 {
 
+	[Export]
+	public int UnitCount { get; private set; } = 4;
 
 	public enum GameAlert
 	{
 		NoResource
 	}
 
-	public delegate void SplitShipEventHandler(ShipStruct shipStruct);
+	public delegate void SplitShipEventHandler(ShipModel shipStruct);
 
 	public delegate void FreeShipEventHandler(Ship ship);
 
 	public delegate void TransferUnitsEventHandler(Ship host, Ship target);
 
 	private Map _map = null;
+
 	public Map GetMap
 	{
 		get { return _map; }
 	}
+
+	ManualBattleScene ManualBattleScene;
 
 	private WorldCursorControl _wcc = null;
 	public WorldCursorControl WCC
@@ -63,6 +68,8 @@ public partial class World : Node3D
 		get { return _Player; }
 	}
 
+
+
 	Node Players = null;
 
 	List<Player> PlayersList = new List<Player>();
@@ -84,7 +91,7 @@ public partial class World : Node3D
 
 	void _on_HideBattlePanel(Ship ship)
 	{
-		_map.Combat.ClearCombat();
+		ManualBattleScene.ClearCombat();
 		if (ship.Controller.IsLocal)
 			_on_SelectUnit(ship);
 		_UI.BattlePan.Hide();
@@ -93,9 +100,22 @@ public partial class World : Node3D
 
 	void _on_EndBattle()
 	{
-		_map.Combat.ClearCombat();
 		_UI.BattlePan.Hide();
 		_UI.RPanel.Show();
+		ManualBattleScene.ClearCombat();
+	}
+
+	void _on_ManualBattle(SpaceBattle spaceBattle)
+	{
+		_UI.UpdateBattleUI(spaceBattle);
+		_map.Hide();
+		ManualBattleScene.ShowBattle();
+	}
+	void _on_FinishManualBattle(SpaceBattle spaceBattle)
+	{
+		_UI.UpdateBattleUI(spaceBattle);
+		_map.Show();
+		ManualBattleScene.Hide();
 	}
 
 	public void ConnectTo_OpenPlanetInterface(Node node)
@@ -151,6 +171,7 @@ public partial class World : Node3D
 	void GetNodes(){
 		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
+		ManualBattleScene = GetNode<ManualBattleScene>("ManualBattleScene");
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		_UI = GetNode<UI>("CanvasLayer/UI");
@@ -173,10 +194,11 @@ public partial class World : Node3D
 		_UI.ArmyInterfce.InitRecruitmentPanel(UInterface);
 		_UI.ArmyInterfce.Connect(ArmyInterface.SignalName.Deselect, new Callable(this, nameof(_on_Deselect)));
 		//_map.Combat.SpaceBattle.OpenBattlePanel += _on_ShowBattlePanel;
-		_map.OpenBattlePanel += _on_ShowBattlePanel;
-		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_HideBattlePanel(_map.Combat.SpaceBattle.Attackers[0]);
+		ManualBattleScene.OpenBattlePanel += _on_ShowBattlePanel;
+		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_HideBattlePanel(ManualBattleScene.GetLocalAttakcerOrNull());
 		_UI.BattlePan.Center.EndFight.ButtonUp += _on_EndBattle;
-		
+		_UI.BattlePan.Center.Fight.ButtonUp += () => _on_ManualBattle(ManualBattleScene.SpaceBattle);
+		ManualBattleScene.CameraLookAt += Camera3D.LookAt;
 		//_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
@@ -312,14 +334,14 @@ public partial class World : Node3D
 					if(body is Planet planet && maxFleets>0){
 						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
 						ConnectShip(ship);
-						for(int i = 0;i<5;i++){
+						for(int i = 0;i< UnitCount;i++){
 							var unit = _data.GetUnit(0);
-							ship.Units.AddUnit(unit);
+							ship.UnitController.AddUnit(unit);
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 						}
-						if(_Player != player){
-							//ship.Visible = false;
-						}else{
+						ship.VisibilityConroller.UpdateVisible(new VisibilityConroller.VisibilityStruct() {Visibility = VisibilityConroller.VisibilityState.Unexplored, Visible = _Player == player }, player.PlayerID, _Player == player);
+						if (_Player == player)
+						{
 							ship.IsLocal = true;
 						}
 					}
@@ -328,7 +350,7 @@ public partial class World : Node3D
 		}
 	}
 
-	void CreateShip(ShipStruct shipStruct){
+	void CreateShip(ShipModel shipStruct){
 		var s = MapArmyManager.CreateShip(shipStruct);
 		ConnectShip(s);
 	}
@@ -341,7 +363,7 @@ public partial class World : Node3D
 		return ship;
 	}
 
-	void SplitShip(ShipStruct shipStruct){
+	void SplitShip(ShipModel shipStruct){
 		var s = MapArmyManager.CreateShip(shipStruct);
 		ConnectShip(s);
 		_on_Deselect();
@@ -354,10 +376,10 @@ public partial class World : Node3D
 
 	void ConnectShip(Ship ship){
 		ConnectToSelectUnit(ship);
-        WCC.ConnectToSelectTarget(ship);
-        _map.ConnectToEnterCombat(ship);
-        //_map.ConnectToEnterMapObject(ship);
-        _map.ConnectToExitMapObject(ship);
+		WCC.ConnectToSelectTarget(ship);
+		ManualBattleScene.ConnectToEnterCombat(ship);
+		//_map.ConnectToEnterMapObject(ship);
+		_map.ConnectToExitMapObject(ship);
 		if(ship.Controller == _Player){
 			ship.OpenTransferPanel += OpenTransferPanel;
 		}
@@ -504,10 +526,10 @@ public partial class World : Node3D
 	}
 
 	void _on_OpenPlanetCmdPanel(Planet planet){
-        if(_wcc.HasSelected()){
+		if(_wcc.HasSelected()){
 			_UI.CommandPanel.ShowPanel(planet);
 		}
-    }
+	}
 
 	void _on_ShipCommand(CmdPanel.CmdPanelOption option, Planet planet){
 		switch(option){
@@ -540,6 +562,7 @@ public partial class World : Node3D
 		ConnectSignals();
 		InitWorld();
 		MapArmyManager.Rand = Rand;
+		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader);
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;

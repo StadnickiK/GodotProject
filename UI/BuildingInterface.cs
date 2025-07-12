@@ -8,6 +8,9 @@ public partial class BuildingInterface : Panel
     RichTextLabel _desc = null;
 
     [Export]
+    Vector2 Position0 = Vector2.Zero;
+
+    [Export]
     public Color Negative { get; set; } = new Color("red");
     // [Signal]
     // public delegate void StartConstructionEventHandler(Node building);
@@ -20,9 +23,17 @@ public partial class BuildingInterface : Panel
     public override void _Ready()
     {
         GetNodes();
+        if(Position0 != Vector2.Zero)
+            Position0 = Position;
     }
 
-    public void UpdateInterface(Technology technology){
+    public void ResetPosition()
+    {
+        Position = Position0;
+    }
+
+    public void UpdateInterface(Technology technology)
+    {
         // _building = null;
         // _unit = null;
         // _technology = null;
@@ -84,11 +95,13 @@ public partial class BuildingInterface : Panel
             ConstructionTime(unit.BuildTime);
 
             _desc.AppendText("\n[b][font_size=20]Stats: [/font_size][/b]\n");
+            //_desc.AppendText("Has HP " + unit.HasHitpoints);
             foreach (var stat in unit.StatsList)
             {
                 _desc.AppendText(stat.Name + " " + stat.CurrentValue + "\n");
             }
             _desc.AppendText(unit.StatManager.PrintStats());
+            
         }
     }
 

@@ -297,7 +297,7 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
         if(Controller.ResManager.PayCost(unit.BuildCost)){
             var ship = GetLocalShip();
             if(ship != null){
-                ship.Units.AddChild(unit);
+                ship.UnitController.AddChild(unit);
             }else{
                 EmitSignal(nameof(CreateShipEventHandler), this, unit);
             }

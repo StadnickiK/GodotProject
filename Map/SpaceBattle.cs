@@ -9,231 +9,224 @@ using System.Linq;
 public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 {
 
-    // public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
+	// public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
 
-    public event World.FreeShipEventHandler FreeShip;
+	public event World.FreeShipEventHandler FreeShip;
 
-    public event Node2DPool.FreeNodeEventHandler FreeUnit;
+	public event Node2DPool.FreeNodeEventHandler FreeUnit;
 
-    public event Node2DPool.FreeNodeEventHandler FreeBattle;
+	public event Node2DPool.FreeNodeEventHandler FreeBattle;
 
-    public delegate void BattleEventHandler(SpaceBattle battle);
+	public delegate void BattleEventHandler(SpaceBattle battle);
 
-    public event BattleEventHandler BattleFinished;
+	public event BattleEventHandler BattleFinished;
 
-    public Node Participants = null;
+	GameLogger gameLogger = GameLogger.Instance;
+	// public Ship Attacker { get; set; } = null;
 
-    GameLogger gameLogger = GameLogger.Instance;
-    // public Ship Attacker { get; set; } = null;
+	[Export]
+	public bool Logging { get; set; } = true;
 
-    [Export]
-    public bool Logging { get; set; } = true;
+	public List<IEnterCombat> Attackers { get; set; } = new List<IEnterCombat>();
 
-    public List<Ship> Attackers { get; set; } = new List<Ship>();
+	public float AttackPower { get; set; }
 
-    public float AttackPower { get; set; }
+	// public Ship Defender { get; set; } = null;
 
-    // public Ship Defender { get; set; } = null;
+	public Random Rand { get; set; } = new Random();
 
-    public Random Rand { get; set; } = new Random();
+	public List<IEnterCombat> Defenders { get; set; } = new List<IEnterCombat>();
 
-    public List<Ship> Defenders { get; set; } = new List<Ship>();
+	public float DefPower { get; set; }
 
-    public float DefPower { get; set; }
+	public bool PowerChanged { get; set; } = false;
 
-    public bool IsLocal { get; set; } = false;
+	public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
 
-    bool ZeroOne = false;
+	public event OpenBattlePanelEventHandler OpenBattlePanel;
 
-    bool _endCombat = false;
+	public enum HasLocal
+	{
+		None,
+		Attacker,
+		Defender
+	}
+	public HasLocal Local { get; private set; } = SpaceBattle.HasLocal.None;
 
-    public bool PowerChanged { get; set; } = false;
+	MeshInstance3D _placeholder = null;
 
-    public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
+	Node3D _mesh = null;
 
-    public event OpenBattlePanelEventHandler OpenBattlePanel;
+	double _time = 0;
 
-    MeshInstance3D _placeholder = null;
+	public int TimeStep { get; set; } = 1;
 
-    Node3D _mesh = null;
+	public new void SetPosition(Vector3 pos)
+	{
+		var trans = Transform;
+		trans.Origin = pos;
+		Transform = trans;
+	}
 
-    double _time = 0;
+	public void AddAttackers(List<IEnterCombat> attackers)
+	{
+		if (attackers.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Attacker;
+		Attackers.AddRange(attackers);
+	}
 
-    public int TimeStep { get; set; } = 1;
+	public void AddDefenders(List<IEnterCombat> defenders)
+	{
+		if (defenders.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Defender;
+		Defenders.AddRange(defenders);
+	}
 
-    public new void SetPosition(Vector3 pos)
+	void GetNodes()
+	{
+		_placeholder = GetNode<MeshInstance3D>("Placeholder");
+		_mesh = GetNode<Node3D>("Node3D");
+	}
+
+	public override void _Ready()
+	{
+		GetNodes();
+		//GenerateMesh();
+		//InitAttackers();
+		//InitDefenders();
+	}
+
+	HashSet<Unit> GetUnits(List<IEnterCombat> ships)
+	{
+		var set = new HashSet<Unit>();
+		foreach (var s in ships)
+			set.UnionWith(s.UnitController.UnitsList);
+		return set;
+	}
+	
+	List<Unit> GetUnitsList(List<IEnterCombat> ships)
+	{
+		var set = new List<Unit>();
+		foreach (var s in ships)
+			set.AddRange(s.UnitController.UnitsList);
+		return set;
+	}
+
+	public List<Unit> GetLocalUnits()
+	{
+		switch (Local)
+		{
+			case HasLocal.Attacker:
+				return GetUnitsList(Attackers);
+			default:
+				return GetUnitsList(Defenders);
+		}
+	}
+
+	public List<Unit> GetAttackerUnits()
+	{
+		return GetUnitsList(Attackers);
+	}
+
+	public List<Unit> GetDefenderUnits()
+	{
+		return GetUnitsList(Defenders);
+	}
+
+
+	public void AutoFight()
+	{
+		if (Logging) gameLogger.LogInfo("Auto Fight start");
+
+		var attackers = GetUnits(Attackers);
+		var defenders = GetUnits(Defenders);
+
+		int round = 1;
+		while (attackers.Count > 0 && defenders.Count > 0)
+		{
+			if (Logging)
+			{
+				gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
+				gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
+				gameLogger.LogInfo("Round =" + round + "");
+				gameLogger.LogInfo("Attackers vs Defenders, round " + round + "");
+			}
+			Combat(attackers, defenders);
+			if (Logging) gameLogger.LogInfo("Defenders vs Attackers, round " + round + "");
+			Combat(defenders, attackers);
+			round++;
+		}
+		if (Logging)
+		{
+			gameLogger.LogInfo("Auto Fight end");
+			gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
+			gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
+		}
+		BattleFinished?.Invoke(this);
+	}
+
+	void Combat(HashSet<Unit> attackers, HashSet<Unit> defenders)
+	{
+		int attackerID = 0;
+		foreach (var attacker in attackers)
+		{
+			attackerID++;
+			if (defenders.Count == 0) break;
+			if(Logging) gameLogger.LogInfo("Attacker " + attackerID);
+			var target = defenders.OrderBy(e => Rand.Next()).LastOrDefault();
+			attacker.CalculateDamage(target);
+
+			// Optional: re-filter in case someone died
+			if (!target.HasHitpoints)
+			{
+				defenders.Remove(target);
+				if(Logging) gameLogger.LogInfo("Remove target from combat, defenders left " + defenders.Count);
+			}
+		}
+	}
+
+	public void AcceptResult()
+	{
+		CleanDeadUnits();
+		Local = HasLocal.None;
+	}
+
+	void CleanDeadUnits()
+	{
+        if (Logging) gameLogger.LogInfo("Cleaning dead units");
+        if (Logging) gameLogger.LogInfo("Attackers");
+        CleanDeadUnits(Attackers);
+        if (Logging) gameLogger.LogInfo("Defenders");
+        CleanDeadUnits(Defenders);
+	}
+
+    void CleanDeadUnits(List<IEnterCombat> ships)
     {
-        var trans = Transform;
-        trans.Origin = pos;
-        Transform = trans;
-    }
-
-    public void AddAttackers(List<Ship> attackers)
-    {
-        Attackers.AddRange(attackers);
-    }
-
-    public void AddDefenders(List<Ship> defenders)
-    {
-        Defenders.AddRange(defenders);
-    }
-
-    void GetNodes()
-    {
-        Participants = GetNode("Participants");
-        _placeholder = GetNode<MeshInstance3D>("Placeholder");
-        _mesh = GetNode<Node3D>("Node3D");
-    }
-
-    public override void _Ready()
-    {
-        GetNodes();
-        //GenerateMesh();
-        //InitAttackers();
-        //InitDefenders();
-    }
-
-    void InitAttackers()
-    {
-        foreach (var attacker in Attackers)
+        for (int i = ships.Count - 1; i >= 0; i--)
         {
-            attacker.GetParent().RemoveChild(attacker);
-            Participants.AddChild(attacker);
-            AttackPower += attacker.Power;
+            if (Logging) gameLogger.LogInfo("Ship " + i + " count " + Attackers[i].UnitController.Count);
+            ships[i].UnitController.ClearUnits();
+            if (Logging) gameLogger.LogInfo("Ship " + i + " clean count " + Attackers[i].UnitController.Count);
+            if (!ships[i].UnitController.HasUnits) ships.RemoveAt(i);
         }
     }
 
-    void UpdateAttackPower()
-    {
-        foreach (var attacker in Attackers)
-        {
-            AttackPower += attacker.Power;
-        }
-    }
-
-    void InitDefenders()
-    {
-        foreach (var defender in Defenders)
-        {
-            defender.GetParent().RemoveChild(defender);
-            Participants.AddChild(defender);
-            DefPower += defender.Power;
-        }
-    }
-
-    void UpdateDefPower()
-    {
-        foreach (var defender in Defenders)
-        {
-            DefPower += defender.Power;
-        }
-    }
-
-    void UpdatePower()
-    {
-        UpdateAttackPower();
-        UpdateDefPower();
-    }
-
-    List<Unit> GetUnits(List<Ship> ships)
-    {
-        var list = new List<Unit>();
-        foreach (var s in ships)
-            list.AddRange(s.Units.UnitsList);
-        return list;
-    }
-
-    public void AutoFight()
-    {
-        if(Logging) gameLogger.LogInfo("Auto Fight start");
-
-        var attackers = GetUnits(Attackers);
-        var defenders = GetUnits(Defenders);
-        
-        int round = 1;
-        do
-        {
-            if (Logging)
-            {
-                gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
-                gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
-                gameLogger.LogInfo("Round =" + round + "");
-                gameLogger.LogInfo("Attackers vs Defenders, round " + round + "");
-            } 
-            Combat(attackers, defenders);
-            if (Logging) gameLogger.LogInfo("Defenders vs Attackers, round " + round + "");
-            Combat(defenders, attackers);
-            round++;
-        } while (attackers.Count > 0 && defenders.Count > 0);
-        if (Logging)
-        {
-            gameLogger.LogInfo("Auto Fight end");
-            gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
-            gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
-        } 
-        BattleFinished?.Invoke(this);
-    }
-
-    void Combat(List<Unit> attackers, List<Unit> defenders)
-    {
-        //var attackers = attackingGroups.Where(g => g.HasHitpoints);
-        //var defenders = defendingGroups.Where(g => g.HasHitpoints).ToList();
-        int attackerID = 0;
-        foreach (var attacker in attackers)
-        {
-            attackerID++;
-            if (defenders.Count == 0) break;
-            if(Logging) gameLogger.LogInfo("Attacker " + attackerID);
-            var target = defenders.OrderBy(e => Rand.Next()).LastOrDefault();
-            attacker.CalculateDamage(target);
-
-            // Optional: re-filter in case someone died
-            if (!target.HasHitpoints)
-            {
-                defenders.RemoveAt(defenders.Count - 1);
-                if(Logging) gameLogger.LogInfo("Remove target from combat, defenders left " + defenders.Count);
-            }
-            //defenders = defendingGroups.Where(g => g.HasHitpoints).ToList();
-        }
-    }
-
-    public void AcceptResult()
-    {
-        CleaDeadUnits();
-    }
-
-    void CleaDeadUnits()
-    {
-        for (int i = Attackers.Count - 1; i >= 0; i--)
-        {
-            Attackers[i].Units.ClearUnits();
-            if (!Attackers[i].Units.HasUnits) Attackers.RemoveAt(i);
-        }
-        for (int i = Defenders.Count - 1; i >= 0; i--)
-        {
-            Defenders[i].Units.ClearUnits();
-            if (!Defenders[i].Units.HasUnits) Defenders.RemoveAt(i);
-        }
-    }
-
-    public void SelectMapObject()
+	public void SelectMapObject()
     {
         EmitSignal(nameof(OpenBattlePanel), (PhysicsBody3D)this);
     }
 
-    public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index)
-    {
-        if (input is InputEventMouseButton eventMouseButton)
-        {
-            switch (eventMouseButton.ButtonIndex)
-            {
-                case MouseButton.Left:
-                    SelectMapObject();
-                    break;
-                case MouseButton.Right:
-                    //EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
-                    break;
-            }
-        }
-    }
+	public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index)
+	{
+		if (input is InputEventMouseButton eventMouseButton)
+		{
+			switch (eventMouseButton.ButtonIndex)
+			{
+				case MouseButton.Left:
+					SelectMapObject();
+					break;
+				case MouseButton.Right:
+					//EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
+					break;
+			}
+		}
+	}
 }

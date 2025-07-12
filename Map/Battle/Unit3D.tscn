@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://bur84mij7kvjm"]
+
+[ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3d.cs" id="1_nnrop"]
+[ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
+[ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_onp1n"]
+[ext_resource type="Script" uid="uid://bkl0a7pl08jnr" path="res://Map/Battle/InputEventController.cs" id="4_onp1n"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_onp1n"]
+
+[node name="Unit3D" type="RigidBody3D"]
+gravity_scale = 0.0
+script = ExtResource("1_nnrop")
+
+[node name="VisibilityConroller" parent="." instance=ExtResource("3_onp1n")]
+
+[node name="Area3D" parent="." instance=ExtResource("3_a02ob")]
+VisionRange = 30
+
+[node name="InputEventController" type="Node" parent="."]
+script = ExtResource("4_onp1n")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_onp1n")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

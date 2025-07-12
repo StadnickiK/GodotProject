@@ -76,7 +76,7 @@ public partial class UnitController : Node
     {
         for (int i = UnitsList.Count - 1; i >= 0; i--)
         {
-            if (UnitsList[i].HasHitpoints)
+            if (!UnitsList[i].HasHitpoints)
             {
                 FreeUnit?.Invoke(UnitsList[i]);
                 RemoveUnit(UnitsList[i]);
@@ -133,8 +133,8 @@ public partial class UnitController : Node
     }
     
     void Merge(Ship ship){
-            if(Count + ship.Units.Count < ship.Units.MaxUnits){
-                TransferUnit(ship.Units);
+            if(Count + ship.UnitController.Count < ship.UnitController.MaxUnits){
+                TransferUnit(ship.UnitController);
                 FreeShip?.Invoke(ship);
             }
     }

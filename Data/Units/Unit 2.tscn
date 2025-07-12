@@ -21,4 +21,5 @@ _baseValue = 10.0
 
 [node name="HitPoints" type="Node" parent="StatManager"]
 script = ExtResource("2")
-_baseValue = 100.0
+_baseValue = 200.0
+_maxValue = 200

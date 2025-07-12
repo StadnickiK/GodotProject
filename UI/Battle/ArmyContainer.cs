@@ -51,12 +51,12 @@ public partial class ArmyContainer : VBoxContainer
 		}
 	}
 
-	public void UpdateArmyContainer(Ship army)
+	public void UpdateArmyContainer(IEnterCombat army)
 	{
 		Show();
 		ArmyName.Text = army.Name;
 		ControllerName.Text = army.Controller.PlayerName;
-		UpdateArmyList(army.Units.UnitsList);
+		UpdateArmyList(army.UnitController.UnitsList);
 	}
 
 	void UpdateArmyList(List<Unit> units)

@@ -22,16 +22,15 @@ public partial class MapArmyManager : Node
     public Ship CreateShip(Planet planet, Unit unit){
 		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin+ new Vector3(3,0,3), planet.Name +" "+Rand.Next(0,1000));
 		AddUnit(ship, unit);
-		ship.Units.AddChild(unit);
+		ship.UnitController.AddChild(unit);
 		//ConnectShip(ship);
         UpdateController(ship, planet.Controller);
 		//  planet.AddToOrbit(ship);
 		return ship;
 	}
 
-    public Ship CreateShip(ShipStruct shipStruct){
-		var ship = (Ship)ArmyPool.GetNode3D(shipStruct.Parent, shipStruct.Position, shipStruct.Name);
-        ship.Visible = shipStruct.Visible;
+    public Ship CreateShip(ShipModel shipStruct){
+		var ship = (Ship)ArmyPool.GetNode3D(shipStruct.Parent, shipStruct.Position, shipStruct.Name, shipStruct.Visible);
 		AddUnits(ship, shipStruct.Units);
         UpdateController(ship, shipStruct.Controller);
         UpdateVisibility(ship, shipStruct.PlayerVisibility, shipStruct.Visible);
@@ -55,7 +54,7 @@ public partial class MapArmyManager : Node
                 var parent = unit.GetParent();
                 if(parent != null)
                     parent.RemoveChild(unit);
-                ship.Units.AddUnit(unit);
+                ship.UnitController.AddUnit(unit);
             }
         }
     }
@@ -65,13 +64,13 @@ public partial class MapArmyManager : Node
                 var parent = unit.GetParent();
                 if(parent != null)
                     parent.RemoveChild(unit);
-                ship.Units.AddUnit(unit);
+                ship.UnitController.AddUnit(unit);
         }
     }
 
     void RemoveUnits(Ship ship){
-        if(ship.Units.Count > 0){
-            ship.Units.RemoveUnit();
+        if(ship.UnitController.Count > 0){
+            ship.UnitController.RemoveUnit();
         }
     }
 

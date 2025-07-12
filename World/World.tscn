@@ -9,8 +9,8 @@
 [ext_resource type="Script" uid="uid://bk0b4nk47ig03" path="res://World/MapArmyManager.cs" id="9_s53j1"]
 [ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="10"]
 [ext_resource type="Script" uid="uid://btur0gcjdfjq7" path="res://World/MapObjects.cs" id="12"]
+[ext_resource type="PackedScene" uid="uid://dnabucbyeoqmh" path="res://Map/Battle/manual_battle_scene.tscn" id="12_v0w7q"]
 [ext_resource type="Script" uid="uid://brb1sc5lbnqvf" path="res://World/Map.cs" id="13"]
-[ext_resource type="Script" uid="uid://k740yxatm8el" path="res://Map/Combat.cs" id="14"]
 
 [sub_resource type="Sky" id="1"]
 
@@ -46,11 +46,6 @@ script = ExtResource("13")
 [node name="MapObjects" type="Node" parent="Map"]
 script = ExtResource("12")
 
-[node name="Combat" type="Node" parent="Map"]
-script = ExtResource("14")
-
-[node name="SpaceBattle" parent="Map/Combat" instance=ExtResource("8_ecnql")]
-
 [node name="FOW" type="MeshInstance3D" parent="Map"]
 visible = false
 mesh = SubResource("6")
@@ -61,10 +56,15 @@ mesh = SubResource("6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
 [node name="MapArmyManager" type="Node" parent="."]
+process_mode = 4
 script = ExtResource("9_s53j1")
 
-[node name="ArmyPool" type="Node3D" parent="MapArmyManager"]
-visible = false
+[node name="ArmyPool" type="Node" parent="MapArmyManager"]
 script = ExtResource("9_4sj48")
+
+[node name="ManualBattleScene" parent="." instance=ExtResource("12_v0w7q")]
+visible = false
+
+[node name="SpaceBattle" parent="ManualBattleScene" instance=ExtResource("8_ecnql")]
 
 [connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

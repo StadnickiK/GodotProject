@@ -73,9 +73,9 @@ public partial class Orbit : Node3D
                 if(ship.IsLocal)
                     return true;
             }
-            if(node is SpaceBattle battle)
-                if(battle.IsLocal)
-                    return true;
+            // if(node is SpaceBattle battle)
+            //     if(battle.IsLocal)
+            //         return true;
         }
         return false;
     }

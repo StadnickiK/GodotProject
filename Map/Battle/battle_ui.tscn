@@ -1,0 +1,88 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqfm6cf66f6b4"]
+
+[ext_resource type="Script" uid="uid://ye6khi6qkk28" path="res://Map/Battle/BattleUi.cs" id="1_dukux"]
+[ext_resource type="PackedScene" uid="uid://cd8trni2dvfhs" path="res://UI/ArmyInterface.tscn" id="1_wqa4t"]
+[ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="2_rc8m1"]
+
+[node name="BattleUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_dukux")
+metadata/_edit_use_anchors_ = true
+
+[node name="ArmyInterface" parent="." instance=ExtResource("1_wqa4t")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ConfirmPanel" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.449349
+anchor_top = 0.134954
+anchor_right = 0.550651
+anchor_bottom = 0.216898
+offset_left = 113.998
+offset_top = 40.5005
+offset_right = -113.998
+offset_bottom = -40.5005
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="ConfirmPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Begin battle!"
+
+[node name="Fight" type="Button" parent="ConfirmPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 56
+text = "Fight
+"
+
+[node name="TopPanel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.449349
+anchor_right = 0.550651
+anchor_bottom = 0.0819444
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Time" type="Label" parent="TopPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "0:00"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="BuildingInterface" parent="." instance=ExtResource("2_rc8m1")]
+visible = false
+layout_mode = 1
+anchor_top = 0.787037
+anchor_bottom = 1.0
+grow_vertical = 0

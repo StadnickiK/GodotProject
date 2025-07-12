@@ -5,7 +5,7 @@ using System.Linq;
 
 public partial class RecruitmentComponent : Node, IMapObjectController
 {
-    public delegate void RecruitmentComponentEventHandler(RecruitmentManager recruitmentManager,List<int> Units);
+    public delegate void RecruitmentComponentEventHandler();
 
     public event RecruitmentComponentEventHandler UpdateAvaialableUnitsEvent;
 
@@ -41,7 +41,7 @@ public partial class RecruitmentComponent : Node, IMapObjectController
 
     public void AddAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){
         AvaialableUnitsMap[recruitmentManager].AddRange(Units);
-        UpdateAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
+        UpdateAvaialableUnitsEvent?.Invoke();
     }
 
     public void SetAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){
@@ -50,12 +50,12 @@ public partial class RecruitmentComponent : Node, IMapObjectController
         }else{
             AvaialableUnitsMap.Add(recruitmentManager, Units);
         }
-        UpdateAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
+        UpdateAvaialableUnitsEvent?.Invoke();
     }
 
     public void RemoveAvaialableUnits(RecruitmentManager recruitmentManager, List<int> Units){        
         AvaialableUnitsMap.Remove(recruitmentManager);        
-        RemoveAvaialableUnitsEvent?.Invoke(recruitmentManager, Units);
+        RemoveAvaialableUnitsEvent?.Invoke();
     }
 
     public void AddCurrentlyRecruitedUnits(List<int> Units){

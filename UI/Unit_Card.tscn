@@ -1,6 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://ceejx2dqj3b7h"]
+[gd_scene load_steps=6 format=3 uid="uid://ceejx2dqj3b7h"]
 
 [ext_resource type="Script" uid="uid://ijnsw8dewly4" path="res://UI/UnitCard.cs" id="1_5oevl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pm2rm"]
+bg_color = Color(0, 0.345098, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_ap3um"]
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_pm2rm")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ap3um"]
+bg_color = Color(0.111943, 0.34045, 0.964111, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="Theme" id="Theme_5wv7h"]
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_ap3um")
 
 [node name="UnitCard" type="VBoxContainer"]
 anchors_preset = -1
@@ -12,7 +32,7 @@ metadata/_edit_use_anchors_ = true
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="VBoxContainer"]
@@ -24,13 +44,18 @@ theme_override_font_sizes/font_size = 64
 text = "U"
 
 [node name="Health" type="ProgressBar" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 12)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+theme = SubResource("Theme_ap3um")
+value = 50.0
 show_percentage = false
 
 [node name="Shield" type="ProgressBar" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 12)
+visible = false
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+theme = SubResource("Theme_5wv7h")
+value = 50.0
 show_percentage = false
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
