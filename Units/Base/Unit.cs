@@ -16,6 +16,8 @@ public partial class Unit : Construct, IUpkeep
 	[Export]
 	public string ModelName { get; set; }
 
+	public int ModelVolume { get; set; } = 0;
+
 	GameLogger gameLogger = GameLogger.Instance;
 
 	public bool HasHitpoints { get; private set; } = true;  

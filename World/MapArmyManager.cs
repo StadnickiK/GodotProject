@@ -8,6 +8,8 @@ public partial class MapArmyManager : Node
 
     public Random Rand { get; set; }
 
+    public ModelLoader ModelLoader { get; set; }
+
     public override void _Ready()
     {
         ArmyPool = GetNode<Node3DPool>("ArmyPool");
@@ -15,12 +17,14 @@ public partial class MapArmyManager : Node
 
     public Ship CreateShip(Planet planet, Vector3 position, string name){
 		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, position, name);
+        ship.ModelLoader = ModelLoader;
 		UpdateController(ship, planet.Controller);
 		return ship;
 	}
 
     public Ship CreateShip(Planet planet, Unit unit){
 		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin+ new Vector3(3,0,3), planet.Name +" "+Rand.Next(0,1000));
+        ship.ModelLoader = ModelLoader;
 		AddUnit(ship, unit);
 		ship.UnitController.AddChild(unit);
 		//ConnectShip(ship);
@@ -31,6 +35,7 @@ public partial class MapArmyManager : Node
 
     public Ship CreateShip(ShipModel shipStruct){
 		var ship = (Ship)ArmyPool.GetNode3D(shipStruct.Parent, shipStruct.Position, shipStruct.Name, shipStruct.Visible);
+        ship.ModelLoader = ModelLoader;
 		AddUnits(ship, shipStruct.Units);
         UpdateController(ship, shipStruct.Controller);
         UpdateVisibility(ship, shipStruct.PlayerVisibility, shipStruct.Visible);

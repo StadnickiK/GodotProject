@@ -17,7 +17,7 @@ using System.Collections.Generic;
 		
 	}
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IGetTotalUpkeep, IEnterMapObject, IEnterCombat
+public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IEnterMapObject, IEnterCombat
 // IMapObject,
 {
     [Signal]
@@ -48,20 +48,21 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public VisibilityConroller VisibilityConroller { get; set; }
 
+    public ModelLoader ModelLoader { get; set; }
+
+    public int CurrentModelVoluume { get; set; } = 0;
+
     [Export]
     public int effectiveRange = 10;
 
     [Export]
-    public int ID_Owner { get; set; }
-
-    [Export]
     public bool IsLocal { get; set; } = false;
 
-    private Player myVar;
+    private Player _controller;
     public Player Controller
     {
-        get { return myVar; }
-        set { myVar = value; ControllerChanged?.Invoke(Controller);}
+        get { return _controller; }
+        set { _controller = value; ControllerChanged?.Invoke(Controller);}
     }
 
     //public IEnterMapObject MapObject { get; set; } = null;
@@ -359,19 +360,21 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         EmitSignal(nameof(SignalName.SelectUnit), (PhysicsBody3D)this);
     }
 
-    public void GetTotalUpkeep(Dictionary<int, int> costs){
-        foreach(var node in UnitController.GetChildren()){
-            if(node is IUpkeep upkeep){
-                foreach(var resource in upkeep.Upkeep.Keys){
-                    if(costs.ContainsKey(resource)){
-                        costs[resource] += upkeep.Upkeep[resource];
-                    }else{
-                        costs.Add(resource, upkeep.Upkeep[resource]);
-                    }
-                }
-            }
+    void UpdateMesh_onAddUnit(Unit unit) {
+        if (unit.ModelVolume > CurrentModelVoluume)
+        {
+            CurrentModelVoluume = unit.ModelVolume;
+            Mesh.Mesh = ModelLoader.GetMiniMeshInstance3D(unit.ModelName).Mesh;
         }
     }
+
+    void UpdateMesh_onRemoveUnit(List<Unit> units) {
+        foreach (var unit in units)
+        {
+            UpdateMesh_onAddUnit(unit);
+        }
+    }
+
 
     void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
       if(inputEvent is InputEventMouseButton eventMouseButton){
@@ -394,7 +397,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     void GetNodes(){
         _area = GetNode<VisionComponent>("Area3D");
         VisibilityConroller = GetNode<VisibilityConroller>("VisibilityConroller");
-        Mesh = GetNode<MeshInstance3D>("ship model/Cube");
+        Mesh = GetNode<MeshInstance3D>("MeshInstance3D");
         _control = GetNode<SimpleFireControl>("FireControl");
         StateMach = GetNode<StateMachine>("StateMachine");
         //_velocityController = GetNode<VelocityController>("VelocityController");
@@ -416,7 +419,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         //_velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
         UnitController.NoUnits += FreeThisShip;
-
+        UnitController.UnitAdded += UpdateMesh_onAddUnit;
+        UnitController.UnitsRemoved += UpdateMesh_onRemoveUnit;
     }
 
     public void UpdatePower(){

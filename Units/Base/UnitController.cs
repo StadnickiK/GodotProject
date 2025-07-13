@@ -24,6 +24,14 @@ public partial class UnitController : Node
 
     public event NoUnitsEventHandler NoUnits;
 
+    public delegate void UnitAddedEventHandler(Unit unit);
+
+    public event UnitAddedEventHandler UnitAdded;
+
+    public delegate void UnitRemovedEventHandler(List<Unit> units);
+
+    public event UnitRemovedEventHandler UnitsRemoved;
+
     [Export]
     public int MaxUnits { get; set; } = 20;
 
@@ -36,11 +44,13 @@ public partial class UnitController : Node
         UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
     }
 
-    public void AddUnit(Unit unit){
+    public void AddUnit(Unit unit)
+    {
         AddChild(unit);
         UnitsList.Add(unit);
         UpkeepComponent?.UpdateUpkeep(unit);
         AddUpkeep?.Invoke(unit.Upkeep);
+        UnitAdded?.Invoke(unit);
     }
 
     public void AddUnit(List<Unit> units){
@@ -48,18 +58,22 @@ public partial class UnitController : Node
             AddUnit(unit);
     }
 
-    public void RemoveUnit(int unitID){
+    public void RemoveUnit(int unitID)
+    {
         UpkeepComponent?.RemoveUpkeep(UnitsList[unitID]);
         RemoveUpkeep?.Invoke(UnitsList[unitID].Upkeep);
         RemoveChild(UnitsList[unitID]);
         UnitsList.RemoveAt(unitID);
+        UnitsRemoved?.Invoke(UnitsList);
     }
 
-    public void RemoveUnit(Unit unit){
+    public void RemoveUnit(Unit unit)
+    {
         UpkeepComponent?.RemoveUpkeep(unit);
         RemoveUpkeep?.Invoke(unit.Upkeep);
         RemoveChild(unit);
         UnitsList.Remove(unit);
+        UnitsRemoved?.Invoke(UnitsList);
     }
 
     public void RemoveUnit(){

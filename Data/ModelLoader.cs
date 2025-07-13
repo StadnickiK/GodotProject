@@ -13,7 +13,7 @@ public partial class ModelLoader : Node
     string ModelName { get; set; } = "model";
 
     [Export]
-    string MiniModelName { get; set; } = "miniature";
+    string MiniModelName { get; set; } = "mini";
 
     [Export]
     string ColliderName { get; set; } = "collision";
@@ -56,6 +56,7 @@ public partial class ModelLoader : Node
         {
             var gltfSceneRootNode = gltfDocumentLoad.GenerateScene(gltfStateLoad);
             //gltfSceneRootNode.Name = Path.GetFileNameWithoutExtension(path);
+            var nodes = gltfSceneRootNode.GetChildren();
             AddChild(gltfSceneRootNode);
             Models.Add(gltfSceneRootNode.Name, gltfSceneRootNode);
         }

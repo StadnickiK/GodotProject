@@ -1,7 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
-[ext_resource type="PackedScene" uid="uid://b1hr47d4opkbc" path="res://Models/ship model.glb" id="2"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_dgjf5"]
 [ext_resource type="PackedScene" uid="uid://ets0luse0ggc" path="res://Effects/Fire.tscn" id="4"]
@@ -14,6 +13,9 @@
 [ext_resource type="Script" uid="uid://cewkksffwnsls" path="res://Units/Base/RecruitmentComponent.cs" id="11_dgjf5"]
 
 [sub_resource type="BoxShape3D" id="1"]
+size = Vector3(3, 3, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dgjf5"]
 size = Vector3(3, 3, 3)
 
 [node name="Ship" type="CharacterBody3D" groups=["Selectable", "Targetable"]]
@@ -32,9 +34,6 @@ shape = SubResource("1")
 
 [node name="Area3D" parent="." instance=ExtResource("3")]
 VisionRange = 30
-
-[node name="ship model" parent="." instance=ExtResource("2")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="FireControl" type="Node3D" parent="."]
 script = ExtResource("5")
@@ -62,5 +61,8 @@ script = ExtResource("8_bc3ov")
 
 [node name="RecruitmentComponent" type="Node" parent="."]
 script = ExtResource("11_dgjf5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_dgjf5")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

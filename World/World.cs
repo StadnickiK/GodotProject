@@ -556,12 +556,14 @@ public partial class World : Node3D
 	public override void _Ready()
 	{
 		GetNodes();
+
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
 		_wcc.Connect("Deselect", new Callable(this, nameof(_on_HideArmyInterface)));
 		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
-		InitWorld();
+		MapArmyManager.ModelLoader = _data.ModelLoader;
 		MapArmyManager.Rand = Rand;
+		InitWorld();
 		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader);
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){

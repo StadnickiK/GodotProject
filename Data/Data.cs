@@ -19,10 +19,10 @@ public partial class Data : Node
 
     void GetNodes()
     {
+        ModelLoader = GetNode<ModelLoader>("ModelLoader");
         GetResources();
         GetUnits();
-        GetBuildings();
-        ModelLoader = GetNode<ModelLoader>("ModelLoader");
+        GetBuildings(); 
     }
 
     public List<Resource> Resources { get; set; } = new List<Resource>();
@@ -91,7 +91,7 @@ public partial class Data : Node
         unit.UnitName = Units[id].UnitName;
         unit.BuildCost = Units[id].BuildCost;
         unit.Upkeep = Units[id].Upkeep;
-
+        unit.ModelVolume = Units[id].ModelVolume;
         return unit;
     }
 
@@ -130,6 +130,8 @@ public partial class Data : Node
         var arr = GetData("Units");
         foreach(Unit unit in arr){
             unit.UnitName = unit.ConstructName = unit.Name;
+            if(unit.ModelName != null)
+                unit.ModelVolume = (int)ModelLoader.GetMeshInstance3D(unit.ModelName).GetAabb().Volume;
             Units.Add(unit);
             unit.Index = Units.Count - 1;
         }
