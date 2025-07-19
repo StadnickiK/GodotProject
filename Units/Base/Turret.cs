@@ -47,7 +47,7 @@ using System;
     }
 
     void _Timer_timeout(){
-        if(targetManager.HasTarget){
+        if(OrderQueue.HasTarget){
             Shoot();
         }
     }
@@ -57,7 +57,7 @@ using System;
         timer.WaitTime = 60/(float)FireRate;
     }
 
-    new protected void ResetVelocity(){
+    protected void ResetVelocity(){
         _velocityController.ResetSpeed();
         // LinearVelocity = Vector3.Zero;
         // AngularVelocity = Vector3.Zero;
@@ -65,7 +65,7 @@ using System;
     }
 
     protected Vector3 DirToTarget(){
-        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.Point);
+        return GlobalTransform.Origin.DirectionTo(OrderQueue.currentTarget.Point);
     }
 
     protected void Shoot(){
@@ -81,8 +81,8 @@ using System;
 
     // public void _IntegrateForces(PhysicsDirectBodyState3D state){
 
-    //     if(targetManager.HasTarget){
-    //         Vector3 targetPos = targetManager.currentTarget.GlobalTransform.Origin;
+    //     if(OrderQueue.HasTarget){
+    //         Vector3 targetPos = OrderQueue.currentTarget.GlobalTransform.Origin;
     //         if(targetPos != Vector3.Zero){
     //             UpdateYrotation(state, targetPos);
     //             UpdateMuzzle(targetPos);
@@ -105,7 +105,7 @@ using System;
     {
         _velocityController = new VelocityController();
         _velocityController.RotationSpeed = RotationSpeed;
-        targetManager = new TargetManager<Node3D>();
+        OrderQueue = new OrderQueue();
         _velocityController.Mass = 10;
         //_ConnectSignal();
         muzzle = GetNode<Node3D>("Muzzle");
@@ -121,12 +121,12 @@ using System;
                     state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
                     StopTimer();
                     if(barrel != null){
-                        barrel.targetManager.ClearTargets();
+                        barrel.OrderQueue.ClearTargets();
                     }
                 }else{
-                    if(targetManager.HasTarget){
+                    if(OrderQueue.HasTarget){
                         if(barrel != null){
-                            barrel.targetManager.AddTarget(targetManager.currentTarget);
+                            barrel.OrderQueue.AddTarget(OrderQueue.currentTarget);
                         }else{
                             if(!timerStarted){
                                 StartTimer();

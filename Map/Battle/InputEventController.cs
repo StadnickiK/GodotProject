@@ -8,7 +8,7 @@ public partial class InputEventController : Node
 
     public event SelectCollisionObject3DEventHandler SelectMapObject;
 
-    public event SelectCollisionObject3DEventHandler SelectTarger;
+    public event SelectCollisionObject3DEventHandler SelectTarget;
 
     RigidBody3D CollisionObject3D;
 
@@ -29,7 +29,7 @@ public partial class InputEventController : Node
             SelectMapObject?.Invoke(CollisionObject3D);
             break;
           case MouseButton.Right:
-            SelectTarger?.Invoke(CollisionObject3D);
+            SelectTarget?.Invoke(CollisionObject3D);
             break;
         }
       } 

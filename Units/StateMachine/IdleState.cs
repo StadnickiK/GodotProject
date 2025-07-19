@@ -3,7 +3,14 @@ using System;
 
 public partial class IdleState : State
 {
-    public override void Enter(Ship body)
+    //public IdleState(){}
+
+    public IdleState(IMovable body)
+    {
+        Body = body;
+    }
+    
+    public override void Enter(IMovable body)
     {
         base.Enter(body);
         // Optionally: play an idle animation.

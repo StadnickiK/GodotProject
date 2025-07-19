@@ -17,7 +17,7 @@ public partial class ManualBattleScene : Node3D
 
     CollisionShape3D RCollisionShape3D;
 
-    UnitFactory UnitFactory;
+    UnitFactory UnitFactory { get; set; }
 
     public SpaceBattle SpaceBattle { get; set; }
 
@@ -39,10 +39,11 @@ public partial class ManualBattleScene : Node3D
         SpaceBattle.Defenders.Clear();
     }
 
-    public void InitializeBattle(Random random, ModelLoader modelLoader)
+    public void InitializeBattle(Random random, ModelLoader modelLoader, WorldCursorControl worldCursorControl)
     {
         SpaceBattle.Rand = random;
         UnitFactory.ModelLoader = modelLoader;
+        UnitFactory.WorldCursorControl = worldCursorControl;
     }
 
     public void ShowBattle()
@@ -62,9 +63,9 @@ public partial class ManualBattleScene : Node3D
         PlaceUnits(defender, RDeployMarker.Position);
     }
 
-    private List<Unit3d> LoadUnits(List<IEnterCombat> armies, Player controller)
+    private List<Unit3D> LoadUnits(List<IEnterCombat> armies, Player controller)
     { 
-        var units = new List<Unit3d>();
+        var units = new List<Unit3D>();
         foreach (var army in armies)
         {
             foreach (var unit in army.UnitController.UnitsList)
@@ -76,7 +77,7 @@ public partial class ManualBattleScene : Node3D
     }
 
 
-    void PlaceUnits(List<Unit3d> units, Vector3 center)
+    void PlaceUnits(List<Unit3D> units, Vector3 center)
     {
         int rows = (int)Mathf.Ceil(Mathf.Sqrt(units.Count));
         int cols = rows;

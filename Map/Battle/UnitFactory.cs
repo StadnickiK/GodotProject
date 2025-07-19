@@ -1,9 +1,11 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class UnitFactory : NodeFactoryBase<Unit3d>
+public partial class UnitFactory : NodeFactoryBase<Unit3D>
 {
     Node3DPool ArmyPool { get; set; }
+
+    public WorldCursorControl WorldCursorControl { get; set; }
 
     public ModelLoader ModelLoader { get; set; }
 
@@ -13,37 +15,47 @@ public partial class UnitFactory : NodeFactoryBase<Unit3d>
         ArmyPool = GetNode<Node3DPool>("UnitPool");
     }
 
-    public Unit3d CreateUnit(Node parent, Vector3 position, Player controller, Unit unit)
+    public Unit3D CreateUnit(Node parent, Vector3 position, Player controller, Unit unit)
     {
-        var unit3d = CreateUnit(parent, position, controller);
-        unit3d.MeshInstance3D.Mesh = ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh;
-        return unit3d;
+        var Unit3D = CreateUnit(parent, position, controller);
+        ConnectSignals(Unit3D);
+        Unit3D.MeshInstance3D.Mesh = ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh;
+        return Unit3D;
     }
 
-    public Unit3d CreateUnit(Node parent, Vector3 position, string name)
+    public Unit3D CreateUnit(Node parent, Vector3 position, string name)
     {
-        var ship = (Unit3d)ArmyPool.GetNode3D(parent, position, name);
-        return ship;
+        var Unit3D = (Unit3D)ArmyPool.GetNode3D(parent, position, name);
+        ConnectSignals(Unit3D);
+        return Unit3D;
     }
 
-    public Unit3d CreateUnit(Node parent, Vector3 position, Player controller)
+    public Unit3D CreateUnit(Node parent, Vector3 position, Player controller)
     {
-        var unit = (Unit3d)ArmyPool.GetNode3D(parent, position);
+        var Unit3D = (Unit3D)ArmyPool.GetNode3D(parent, position);
+        ConnectSignals(Unit3D);
         UpdateVisibility(
-            unit,
+            Unit3D,
             new VisibilityConroller.VisibilityStruct()
-            { 
+            {
                 Visibility = VisibilityConroller.VisibilityState.Unexplored,
                 Visible = controller.IsLocal
             },
             controller.PlayerID,
             controller.IsLocal
             );
-        unit.Controller = controller;
-        return unit;
+        Unit3D.Controller = controller;
+        return Unit3D;
     }
-    
-    void UpdateVisibility(Unit3d unit, VisibilityConroller.VisibilityStruct visibilityStruct,int PlayerID, bool visible) {
+
+    void UpdateVisibility(Unit3D unit, VisibilityConroller.VisibilityStruct visibilityStruct, int PlayerID, bool visible)
+    {
         unit.VisibilityConroller.UpdateVisible(visibilityStruct, PlayerID, visible);
+    }
+
+    void ConnectSignals(Unit3D Unit3D)
+    {
+        WorldCursorControl.ConnectToSelectTarget(Unit3D.InputController);
+        WorldCursorControl.ConnectToSelectUnit(Unit3D.InputController);
     }
 }

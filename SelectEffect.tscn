@@ -5,6 +5,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2daq4"]
 render_priority = 0
 shader = ExtResource("1_uew7a")
+shader_parameter/ColorParameter = Color(0.254902, 0.831373, 0.047059, 1)
 
 [sub_resource type="SphereMesh" id="1"]
 material = SubResource("ShaderMaterial_2daq4")

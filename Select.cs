@@ -6,7 +6,7 @@ public partial class Select : Node
 {
 
     SelectManager<CollisionObject3D> selectManager;
-    PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect3.tscn");
+    PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect.tscn");
 
     Vector3 _destination;
 
@@ -14,7 +14,7 @@ public partial class Select : Node
 
     public event MoveToPosEventHandler OnMove;
 
-    public delegate void MoveToTargetEventHandler(TargetManager<Node3D>.Target target);
+    public delegate void MoveToTargetEventHandler(OrderQueue.Target target);
 
     public event MoveToTargetEventHandler OnTarget;
 
@@ -29,22 +29,34 @@ public partial class Select : Node
         }
     }
 
-    public void MoveToTarget(TargetManager<Node3D>.Target target){
+    public void MoveToTarget(OrderQueue.Target target){
         if(selectManager.SelectedUnits.Count != 0){
             OnTarget?.Invoke(target);
         }
     }
 
     void AddSelectEffect(CollisionObject3D unit){
-            var selectEffectNode = (MeshInstance3D)SelectEffect.Instantiate();
-            selectEffectNode.Scale = (unit.Scale*2);
-            unit.AddChild(selectEffectNode);
+        var shape = unit.GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
+        if(shape != null)
+            unit.AddChild(GetSelectEfect(shape.GetAabb().Size));
+    }
+
+    Node GetSelectEfect(Vector3 vector3)
+    {
+        var selectEffectNode = (MeshInstance3D)SelectEffect.Instantiate();
+        var mesh = (SphereMesh)selectEffectNode.Mesh;
+        var size = vector3.Z > vector3.X ? vector3.Z : vector3.X;
+        mesh.Height = size;
+        mesh.Radius = size / 2;
+        return selectEffectNode;
     }
 
     void RemoveSelectEffect(){
         foreach(CollisionObject3D c in selectManager.SelectedUnits){
             if(c != null){
-                c.RemoveChild(c.GetNode("SelectEffect"));
+                var s = c.GetNode("SelectEffect");
+                c.RemoveChild(s);
+                s.QueueFree();
             }else{
                 selectManager.SelectedUnits.Remove(c);
             }
@@ -55,22 +67,22 @@ public partial class Select : Node
         if(!selectManager.SelectedUnits.Contains(unit)){
             RemoveSelectEffect();
             selectManager.SelectUnit(unit);
-            if(unit is Ship ship) 
+            if(unit is IMovable ship) 
                 SubscribeShip(ship);
             AddSelectEffect(unit);
         }
     }
 
-    void SubscribeShip(Ship ship){
-        OnMove += ship.MoveToPos;
+    void SubscribeShip(IMovable ship){
+        OnMove += ship.MoveToPosition;
         OnTarget += ship.MoveToTarget;
-        OnClear += ship.targetManager.ClearTargets;
+        OnClear += ship.ClearTargets;
     }
 
-    void UnsubscribeShip(Ship ship){
-        OnMove -= ship.MoveToPos;
+    void UnsubscribeShip(IMovable ship){
+        OnMove -= ship.MoveToPosition;
         OnTarget -= ship.MoveToTarget;
-        OnClear -= ship.targetManager.ClearTargets;
+        OnClear -= ship.ClearTargets;
     }
 
     public void AddSelectedUnit(CollisionObject3D unit){
@@ -85,7 +97,7 @@ public partial class Select : Node
     }
 
     public void AddTarget(CollisionObject3D target){
-        var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
+        var t = new OrderQueue.Target(target.GlobalPosition,target);
         OnTarget?.Invoke(t);
     }
 
@@ -93,12 +105,12 @@ public partial class Select : Node
         foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
-                var t = new TargetManager<Node3D>.Target(target.GlobalPosition,target);
-                if(ship.targetManager.HasTarget){
-                    ship.targetManager.AddTarget(t);
+                var t = new OrderQueue.Target(target.GlobalPosition,target);
+                if(ship.OrderQueue.HasTarget){
+                    ship.OrderQueue.AddTarget(t);
                     // ship.Task = task;
                 }else{
-                    ship.targetManager.SetTarget(t);
+                    ship.OrderQueue.SetTarget(t);
                     // ship.Task = task;
                     ship.MoveToTarget(t);
                 }

@@ -30,14 +30,14 @@ public partial class Barrel : Turret
     // Called when the node enters the scene tree for the first time.
 
     void _on_Timer_timeout(){
-        if(targetManager.HasTarget){
+        if(OrderQueue.HasTarget){
             GD.Print("s");
             Shoot();
         }
     }
 
     new protected Vector3 DirToTarget(){
-        return GlobalTransform.Origin.DirectionTo(targetManager.currentTarget.Point);
+        return GlobalTransform.Origin.DirectionTo(OrderQueue.currentTarget.Point);
     }
 
     public override void _Ready()
@@ -45,7 +45,7 @@ public partial class Barrel : Turret
             ray = GetNode<RayCast3D>("RayCast3D");
             ray.TargetPosition = ray.Transform.Origin+new Vector3(0,0,EffectiveRange);
             projectiles = GetNode("/root/World/Projectiles");
-            targetManager = new TargetManager<Node3D>();
+            OrderQueue = new OrderQueue();
             _velocityController.RotationSpeed = RotationSpeed;
             SetTimer();
     }
@@ -65,14 +65,14 @@ public partial class Barrel : Turret
     }
 
     void Update(PhysicsDirectBodyState3D state){
-        if(targetManager.HasTarget){
-            Vector3 targetPos = targetManager.currentTarget.Point;
+        if(OrderQueue.HasTarget){
+            Vector3 targetPos = OrderQueue.currentTarget.Point;
             if(targetPos != Vector3.Zero){
                 float angle = _velocityController.GetAngleToTargetOnXAxis(GlobalTransform, targetPos); 
                 if(angle > 0.05f || angle < -0.05f ){
                     StopTimer();
                 }else{
-                    if(targetManager.HasTarget){
+                    if(OrderQueue.HasTarget){
                         StartTimer();
                     }
                 }

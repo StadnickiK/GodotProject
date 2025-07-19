@@ -1,11 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://bur84mij7kvjm"]
+[gd_scene load_steps=11 format=3 uid="uid://bur84mij7kvjm"]
 
-[ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3d.cs" id="1_nnrop"]
+[ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3D.cs" id="1_nnrop"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_onp1n"]
 [ext_resource type="Script" uid="uid://bkl0a7pl08jnr" path="res://Map/Battle/InputEventController.cs" id="4_onp1n"]
+[ext_resource type="Script" uid="uid://cmgvvqr16vbqx" path="res://Map/Battle/InputController.cs" id="5_vl4dh"]
+[ext_resource type="Script" uid="uid://dwxbs0oqd1ac3" path="res://Map/Battle/OrderQueue.cs" id="6_72exn"]
+[ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_mju74"]
+[ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_rapbe"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_onp1n"]
+size = Vector3(5, 5, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vl4dh"]
+size = Vector3(5, 5, 5)
 
 [node name="Unit3D" type="RigidBody3D"]
 gravity_scale = 0.0
@@ -23,3 +31,13 @@ script = ExtResource("4_onp1n")
 shape = SubResource("BoxShape3D_onp1n")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_vl4dh")
+
+[node name="InputController" type="Node" parent="."]
+script = ExtResource("5_vl4dh")
+
+[node name="OrderQueue" type="Node" parent="."]
+script = ExtResource("6_72exn")
+
+[node name="StateMachine" parent="." instance=ExtResource("7_mju74")]
+script = ExtResource("8_rapbe")

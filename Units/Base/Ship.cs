@@ -12,12 +12,12 @@ using System.Collections.Generic;
 
         public List<Unit> Units { get; set; }
 
-		public TargetManager<Node3D>.Target Target { get; set; }
+		public OrderQueue.Target Target { get; set; }
 
 		
 	}
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IEnterMapObject, IEnterCombat
+public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IEnterMapObject, IEnterCombat, IMovable
 // IMapObject,
 {
     [Signal]
@@ -86,7 +86,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public StateMachine StateMach { get; set; }
 
-    public TargetManager<Node3D> targetManager { get; set; } = new TargetManager<Node3D>();
+    public OrderQueue OrderQueue { get; set; } = new OrderQueue();
 
     //public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
 
@@ -107,14 +107,15 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     void FreeThisShip()
     {
-            FreeShip?.Invoke(this);
+        FreeShip?.Invoke(this);
     }
 
     public bool CanMove { get; set; } = true;
+    public Vector3 AngularVelocity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     // protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
     //     // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)
-    //         state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.Basis * (new Vector3(0, 0, 1)),GlobalTransform.Origin,targetManager.currentTarget.Point);
+    //         state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.Basis * (new Vector3(0, 0, 1)),GlobalTransform.Origin,OrderQueue.currentTarget.Point);
     // }
 
     // protected void ResetVelocity(){
@@ -137,8 +138,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     // }
 
     // protected Vector3 DirToCurrentTarget(){
-    //     if(targetManager.HasTarget){
-    //         return (targetManager.currentTarget.Point-Transform.Origin).Normalized();
+    //     if(OrderQueue.HasTarget){
+    //         return (OrderQueue.currentTarget.Point-Transform.Origin).Normalized();
     //     }
     //     return Vector3.Zero;
     // }
@@ -152,20 +153,22 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //     return tempTarget;
     // }
 
-    void _on_UpdateRecruitment(RecruitmentComponent recruitmentComponent){
+    void _on_UpdateRecruitment(RecruitmentComponent recruitmentComponent)
+    {
         CanMove = recruitmentComponent.CurrentlyRecruitedUnits.Count == 0;
-        StateMach.Enter(new IdleState());
+        StateMach.Enter(new IdleState(this));
         Stance = ArmyStance.Rectruiting;
+        LookAt(AngularVelocity);
     }
 
     public void _on_UpdateUnitsToTransfer(List<Unit> unitsToTransfer){
         CanMove = unitsToTransfer.Count == 0;
         UnitsToTransfer = unitsToTransfer;
-        StateMach.Enter(new IdleState());
+        StateMach.Enter(new IdleState(this));
         Stance = ArmyStance.Idle;
     } 
 
-    void Split(TargetManager<Node3D>.Target target){
+    void Split(OrderQueue.Target target){
         if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < UnitController.UnitsList.Count){
                 UnitController.RemoveUnits(UnitsToTransfer);
                 SplitShip?.Invoke(new ShipModel(){
@@ -181,7 +184,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
             }
     }
 
-    void Merge(TargetManager<Node3D>.Target target){
+    void Merge(OrderQueue.Target target){
         if(target.TargetNode is Ship ship && target.TargetNode != this){
             if (ship.Controller == this.Controller)
             {
@@ -220,16 +223,25 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         //ship.QueueFree();
     }
 
-    public void MoveToTarget(TargetManager<Node3D>.Target target){
+    public void ClearTargets()
+    {
+        OrderQueue.ClearTargets();
+    }
+
+    public void MoveToTarget(OrderQueue.Target target)
+    {
         // Sleeping = false;
-        if(target.TargetNode != this)
-            if(CanMove){
-                targetManager.SetTarget(target); 
+        if (target.TargetNode != this)
+            if (CanMove)
+            {
+                OrderQueue.SetTarget(target);
                 var moveState = new MoveState(target);
                 StateMach.Enter(moveState);
                 moveState.MoveStateExited += Merge;
                 Stance = ArmyStance.Moving;
-            }else{
+            }
+            else
+            {
                 Split(target);
             }
         // Node starSysObj = null;
@@ -240,55 +252,55 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         // }
         // if(target == starSysObj.GetParent() && GetParent().GetParent() is Planet planet){
         //     //var tempTarget = GetTempWaypoint(planet.Transform.Origin);
-        //     targetManager.SetTarget(new TargetManager<Node3D>.Target(planet.Transform.Origin, planet));    // set temp target to leave orbit
-        //     targetManager.AddTarget(new TargetManager<Node3D>.Target(planet.Transform.Origin, planet));
+        //     OrderQueue.SetTarget(new OrderQueue.Target(planet.Transform.Origin, planet));    // set temp target to leave orbit
+        //     OrderQueue.AddTarget(new OrderQueue.Target(planet.Transform.Origin, planet));
         //     return;
         // }
         // if(target.GetParent() != starSysObj){   // check if target is in the same map object (f.e. star system)
         //     if(starSysObj.GetParent() is StarSystem system){
-                
+
         //         // leak
         //         var tempTarget = GetTempWaypoint((target.Transform.Origin-system.Transform.Origin).Normalized()*(((float)system.Radius)*1.2f));
-        //         targetManager.SetTarget(tempTarget);    // set temp target to leave star system
+        //         OrderQueue.SetTarget(tempTarget);    // set temp target to leave star system
         //         // if(target.GetParent().GetParent() is StarSystem targetSystem){
-        //         //     targetManager.AddTarget(targetSystem);
+        //         //     OrderQueue.AddTarget(targetSystem);
         //         // }
-        //         targetManager.AddTarget(target);
+        //         OrderQueue.AddTarget(target);
         //         return;
         //     }else{
         //         if(target.GetParent().GetParent() is StarSystem targetSystem){
-        //             targetManager.SetTarget(targetSystem);
+        //             OrderQueue.SetTarget(targetSystem);
         //         }
-        //         targetManager.AddTarget(target);
+        //         OrderQueue.AddTarget(target);
         //         return;
         //     }
         // }
-        //targetManager.SetTarget(target); // if target is in the same map object (f.e. star system) set as target
+        //OrderQueue.SetTarget(target); // if target is in the same map object (f.e. star system) set as target
     }
 
-    public void MoveToPos(Vector3 destination){
+    public void MoveToPosition(Vector3 destination){
         // Sleeping = false;
         if(CanMove){
-            targetManager.SetTarget(new TargetManager<Node3D>.Target(destination)); 
+            OrderQueue.SetTarget(new OrderQueue.Target(destination)); 
             StateMach.Enter(new MoveState(destination));
         }else{
-            Split(new TargetManager<Node3D>.Target(destination));
+            Split(new OrderQueue.Target(destination));
         }
     }
 
     // public void NextTarget(){
-    //     if(targetManager.currentTarget.TargetNode is StaticBody3D body){
+    //     if(OrderQueue.currentTarget.TargetNode is StaticBody3D body){
     //         if(body.Name == "tempTarget"){
     //             body.QueueFree();
-    //             targetManager.NextTarget();
+    //             OrderQueue.NextTarget();
     //             return;
     //         }
     //     }
-    //     targetManager.NextTarget();
+    //     OrderQueue.NextTarget();
     // }
 
     // void UpdateShipVelocities(PhysicsDirectBodyState3D state , Vector3 targetPos){
-    //     if(targetManager.HasTarget){
+    //     if(OrderQueue.HasTarget){
     //         float angle = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
     //         if(angle > 0.01f || angle < -0.01f ){
     //             state.AngularVelocity = _velocityController.GetAngularVelocity(GlobalTransform,targetPos);
@@ -311,16 +323,16 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
 
     // public void _IntegrateForces(PhysicsDirectBodyState3D state){
-    //     if(targetManager.HasTarget){
+    //     if(OrderQueue.HasTarget){
     //         Vector3 targetPos = Vector3.Zero;
-    //         if(targetManager.currentTarget.TargetNode is PhysicsBody3D){
-    //             targetPos = targetManager.currentTarget.Point;
+    //         if(OrderQueue.currentTarget.TargetNode is PhysicsBody3D){
+    //             targetPos = OrderQueue.currentTarget.Point;
     //         }else{
-    //             targetPos = targetManager.currentTarget.Point;
+    //             targetPos = OrderQueue.currentTarget.Point;
     //         }
 
 
-    //         if(targetManager.currentTarget.TargetNode is IEnterMapObject targetObject && (targetPos - GlobalTransform.Origin).Length()<2){
+    //         if(OrderQueue.currentTarget.TargetNode is IEnterMapObject targetObject && (targetPos - GlobalTransform.Origin).Length()<2){
     //             if(MapObject != targetObject){
     //                 if(targetObject is Node someNode)
     //                     EmitSignal(nameof(SignalEnterMapObjectEventHandler), this, someNode, DirToCurrentTarget(), state);
@@ -329,18 +341,18 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //             NextTarget();
     //         }
     //         if(MapObject != null){
-    //             if(MapObject != targetManager.currentTarget.TargetNode){
+    //             if(MapObject != OrderQueue.currentTarget.TargetNode){
     //                 if(MapObject is Node someNode)
     //                     EmitSignal(nameof(SignalExitMapObjectEventHandler), this, someNode, DirToCurrentTarget(), state);
     //             }
     //         }
-    //         if(targetManager.currentTarget.TargetNode is Ship ship && (targetPos - GlobalTransform.Origin).Length()<2){
+    //         if(OrderQueue.currentTarget.TargetNode is Ship ship && (targetPos - GlobalTransform.Origin).Length()<2){
     //             if(ship.Controller != Controller){
     //                 EmitSignal(nameof(EnterCombatEventHandler), (PhysicsBody3D)this, (PhysicsBody3D)ship, GetParent());
     //             }else{
     //                 EmitSignal(nameof(OpenUnitTransferPanelEventHandler), this, ship);
     //             }
-    //             targetManager.ClearTargets();
+    //             OrderQueue.ClearTargets();
     //             ResetVelocity(state);
     //         }
 
@@ -357,7 +369,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     // }
 
     public void SelectMapObject(){
-        EmitSignal(nameof(SignalName.SelectUnit), (PhysicsBody3D)this);
+        EmitSignal(nameof(SignalName.SelectUnit), this);
     }
 
     void UpdateMesh_onAddUnit(Unit unit) {
@@ -383,7 +395,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
             SelectMapObject();
             break;
           case MouseButton.Right:
-            EmitSignal(SignalName.SelectTarget, (PhysicsBody3D)this);
+            EmitSignal(SignalName.SelectTarget, this);
             break;
         }
       } 
@@ -403,7 +415,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         //_velocityController = GetNode<VelocityController>("VelocityController");
         UnitController = GetNode<UnitController>("UnitController");
         RecruitmentComponent = GetNode<RecruitmentComponent>("RecruitmentComponent");
-        AddChild(targetManager);
+        AddChild(OrderQueue);
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){
@@ -414,7 +426,7 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     {
         GetNodes();
         StateMach.Body = this;
-        StateMach.Enter(new IdleState());
+        StateMach.Enter(new IdleState(this));
         RecruitmentComponent.UpdateCurrentlyRecruitedUnitsEvent += _on_UpdateRecruitment;
         //_velocityController.Mass = 10;
         _area.UpdateVisionRange(VisionRange);
@@ -460,10 +472,13 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     // }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
+     public override void _Process(double delta)
+     {
+        MoveAndSlide();
+     }
 
-    //  }
-
-
+    public void UpdateVelocity(Vector3 linearVelocity, Vector3 angularVelocity)
+    {
+        Velocity = linearVelocity;
+    }
 }

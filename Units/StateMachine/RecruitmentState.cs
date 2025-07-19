@@ -3,7 +3,7 @@ using System;
 
 public partial class RecruitmentState : State
 {
-    public override void Enter(Ship body)
+    public override void Enter(IMovable body)
     {
         base.Enter(body);
         // Optionally: play an idle animation.

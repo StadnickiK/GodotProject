@@ -507,8 +507,8 @@ public partial class AIPlayer : Player
             for(int i = 0; i < plans.Count; i++){
                 var plan = plans.ElementAt(i);
                 if(!invasions.ContainsKey(plan.Key)){
-                    var t = new TargetManager<Node3D>.Target(plan.Value.GlobalPosition,plan.Value);
-                    plan.Key.targetManager.AddTarget(t);
+                    var t = new OrderQueue.Target(plan.Value.GlobalPosition,plan.Value);
+                    plan.Key.OrderQueue.AddTarget(t);
                     // plan.Key.Task = CmdPanel.CmdPanelOption.Conquer;
                     plan.Key.MoveToTarget(t);
                     plans.Remove(plan.Key);

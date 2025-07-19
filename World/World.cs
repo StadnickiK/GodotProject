@@ -136,20 +136,6 @@ public partial class World : Node3D
 		Camera3D.LookAt(position);
 	}
 
-	void _on_LookAtObject(Node node){
-		var obj = _Player.GetMapObjectByName(node.Name);
-		Galaxy.ViewGalaxy();
-		// if(obj.GetParent().GetParent() is StarSystem system){
-		// 	system.OpenStarSystem();
-		// }
-		// if(obj.GetParent().GetParent() is Planet planet){
-		// 	planet.System.OpenStarSystem();
-		// }
-		if(obj is Node3D spatial){
-			Camera3D.LookAt(spatial.GlobalTransform.Origin);
-		}
-	}
-
 	void _on_LookAtStarSystem(StarSystem system){
 		if(system != null)
 			Camera3D.LookAt(system.GlobalTransform.Origin);
@@ -564,7 +550,7 @@ public partial class World : Node3D
 		MapArmyManager.ModelLoader = _data.ModelLoader;
 		MapArmyManager.Rand = Rand;
 		InitWorld();
-		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader);
+		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader, _wcc);
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;

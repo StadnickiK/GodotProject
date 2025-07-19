@@ -6,10 +6,10 @@ using System.Collections.Generic;
 public partial class StateMachine : Node
 {
     private State _currentState;
-    public Ship Body { get; set; }
+    public IMovable Body { get; set; }
 
     public StateMachine(){}
-    public StateMachine(Ship ship, State state){
+    public StateMachine(IMovable ship, State state){
         Body = ship;
         _currentState = state;
         _currentState.Enter(ship);
@@ -47,12 +47,12 @@ public partial class StateMachine : Node
 
 public partial class State
 {
-    protected Ship Body;
+    protected IMovable Body;
 
     /// <summary>
     /// Called when the state is entered.
     /// </summary>
-    public virtual void Enter(Ship body)
+    public virtual void Enter(IMovable body)
     {
         Body = body;
     }
@@ -66,5 +66,18 @@ public partial class State
     /// Processes the state logic.
     /// Return a new state (or the same state) to indicate if a state change is required.
     /// </summary>
-    public virtual State ProcessState(double delta){ return this; }
+    public virtual State ProcessState(double delta) { return this; }
 }
+
+// public partial class MovableState : State
+// {
+//     //new protected IMovable Body;
+
+//     /// <summary>
+//     /// Called when the state is entered.
+//     /// </summary>
+//     // public virtual void Enter(IMovable body)
+//     // {
+//     //     Body = body;
+//     // }
+// }

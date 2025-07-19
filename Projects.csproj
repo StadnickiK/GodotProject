@@ -164,9 +164,13 @@
     <Compile Include="Map\Battle\ManualBattleScene.cs" />
     <Compile Include="Map\Battle\BattleUi.cs" />
     <Compile Include="Map\IMap\IEnterCombat.cs" />
-    <Compile Include="Map\Battle\Unit3d.cs" />
+    <Compile Include="Map\Battle\Unit3D.cs" />
     <Compile Include="Map\Battle\InputEventController.cs" />
     <Compile Include="Map\Battle\UnitFactory.cs" />
     <Compile Include="Data\ModelLoader.cs" />
+    <Compile Include="Map\Battle\InputController.cs" />
+    <Compile Include="Map\Battle\OrderQueue.cs" />
+    <Compile Include="Map\IMap\IMovable.cs" />
+    <Compile Include="Units\StateMachine\PhysicsMoveState.cs" />
   </ItemGroup>
 </Project>

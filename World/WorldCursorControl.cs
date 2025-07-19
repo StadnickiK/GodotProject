@@ -4,6 +4,12 @@ using System;
 public partial class WorldCursorControl : Node3D
 {
 
+    GameLogger gameLogger = GameLogger.Instance;
+	// public Ship Attacker { get; set; } = null;
+
+	[Export]
+	public bool Logging { get; set; } = true;
+
     Select select = null;
 
     public int LocalPlayerID { get; set; }
@@ -13,11 +19,13 @@ public partial class WorldCursorControl : Node3D
     public delegate void DeselectEventHandler();
 
     public void ConnectToSelectUnit(Node node){
-        node.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
+        if(!node.IsConnected("SelectUnit", new Callable(this, nameof(_SelectUnit))))
+            node.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
     }
 
     public void ConnectToSelectTarget(Node node){
-        node.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
+        if(!node.IsConnected("SelectTarget", new Callable(this, nameof(_SelectTarget))))
+            node.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
     }
 
     void GetNodes(){
@@ -38,8 +46,11 @@ public partial class WorldCursorControl : Node3D
         //*/
     }
 
-    public void _SelectUnit(CollisionObject3D unit){
+    public void _SelectUnit(CollisionObject3D unit)
+    {
         select.SelectUnit(unit);
+        if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
+        GD.Print("Selected node " + unit.Name);
     }
 
     public void _AddUnit(CollisionObject3D unit){

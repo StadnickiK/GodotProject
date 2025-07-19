@@ -1,51 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://deh8eo73lk4q1"]
+[gd_scene load_steps=3 format=3 uid="uid://deh8eo73lk4q1"]
 
 [ext_resource type="PackedScene" uid="uid://dyo62cpetk583" path="res://SelectEffect3.tscn" id="1"]
 
 [sub_resource type="SphereMesh" id="1"]
 
-[sub_resource type="VisualShaderNodeFloatConstant" id="2"]
-constant = 0.7
-
-[sub_resource type="VisualShaderNodeColorConstant" id="3"]
-constant = Color(0.200809, 0.708008, 0.181262, 1)
-
-[sub_resource type="VisualShader" id="4"]
-code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
-
-
-
-
-void fragment() {
-// ColorConstant:4
-	vec4 n_out4p0 = vec4(0.200809, 0.708008, 0.181262, 1.000000);
-
-
-// FloatConstant:3
-	float n_out3p0 = 0.700000;
-
-
-// Output:0
-	ALBEDO = vec3(n_out4p0.xyz);
-	ALPHA = n_out3p0;
-
-
-}
-"
-graph_offset = Vector2(-436.54, 114.75)
-nodes/fragment/3/node = SubResource("2")
-nodes/fragment/3/position = Vector2(20, 260)
-nodes/fragment/4/node = SubResource("3")
-nodes/fragment/4/position = Vector2(40, 140)
-nodes/fragment/connections = PackedInt32Array(3, 0, 0, 1, 4, 0, 0, 0)
-
-[sub_resource type="ShaderMaterial" id="5"]
-render_priority = 0
-shader = SubResource("4")
-
 [node name="MeshInstance3D" type="MeshInstance3D"]
 mesh = SubResource("1")
-material/0 = SubResource("5")
 
 [node name="MeshInstance3D" parent="." instance=ExtResource("1")]
