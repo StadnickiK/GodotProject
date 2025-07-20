@@ -172,5 +172,7 @@
     <Compile Include="Map\Battle\OrderQueue.cs" />
     <Compile Include="Map\IMap\IMovable.cs" />
     <Compile Include="Units\StateMachine\PhysicsMoveState.cs" />
+    <Compile Include="Units\StateMachine\PhysicsPlacementState.cs" />
+    <Compile Include="Units\StateMachine\GenericStateMachine.cs" />
   </ItemGroup>
 </Project>

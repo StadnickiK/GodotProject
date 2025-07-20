@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Diagnostics;
 
-public partial class MoveState : State
+public partial class MoveState : State<IMovable>
 {
     private OrderQueue.Target _target;
 
@@ -34,7 +34,7 @@ public partial class MoveState : State
         // Optionally: play a walking or moving animation.
     }
 
-    public override State ProcessState(double delta)
+    public override State<IMovable> ProcessState(double delta)
     {
         // Calculate the direction toward the target.
         Vector3 currentPosition = Body.GlobalPosition;

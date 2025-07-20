@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class IdleState : State
+public partial class IdleState : State<IMovable>
 {
     //public IdleState(){}
 
@@ -16,7 +16,7 @@ public partial class IdleState : State
         // Optionally: play an idle animation.
     }
 
-    public override State ProcessState(double delta)
+    public override State<IMovable> ProcessState(double delta)
     {
         // Stop horizontal movement (preserving the Y velocity).
         Body.Velocity = new Vector3(0, Body.Velocity.Y, 0);

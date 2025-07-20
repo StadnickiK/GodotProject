@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Diagnostics;
 
-public partial class PhysicsMoveState : State<IMovable>
+public partial class PhysicsPlacementState : State<IMovable>
 {
     private OrderQueue.Target _target;
 
@@ -12,20 +12,23 @@ public partial class PhysicsMoveState : State<IMovable>
 
     [Export]
     private float _tolerance = 0.2f;
-     [Export]
+    [Export]
     public float MoveSpeed = 5f;         // Units per second
+    [Export]
+    public float PlacementSpeed = 1000f;   
     [Export]
     public float TimeToRotate = 0.5f;    // Seconds to complete rotation
 
     /// <summary>
     /// Creates a new state instance with the given target position.
     /// </summary>
-    public PhysicsMoveState(OrderQueue.Target target)
+    public PhysicsPlacementState(OrderQueue.Target target)
     {
         _target = target;
+        PlacementSpeed *= MoveSpeed;
     }
 
-    public PhysicsMoveState(Vector3 target)
+    public PhysicsPlacementState(Vector3 target)
     {
         _target = new OrderQueue.Target(target);
     }
@@ -55,7 +58,7 @@ public partial class PhysicsMoveState : State<IMovable>
             return;
         }
 
-        Body.Velocity = toTarget.Normalized() * MoveSpeed;
+        Body.Velocity = toTarget.Normalized() * PlacementSpeed;
     }
 
     private void CalculateAngularVelocity()
