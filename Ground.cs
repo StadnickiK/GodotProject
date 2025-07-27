@@ -21,8 +21,15 @@ public partial class Ground : Area3D
 
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
+	public void ConnectToInputEvent(Callable callable)
+    {
+        if (!IsConnected(SignalName.InputEvent, callable))
+            Connect(SignalName.InputEvent, callable);
+    }
+
+    public void DisconnectInputEvent(Callable callable)
+    {
+        if (IsConnected(SignalName.InputEvent, callable))
+            Disconnect(SignalName.InputEvent, callable);
+    }
 }

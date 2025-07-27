@@ -20,6 +20,7 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>
         var Unit3D = CreateUnit(parent, position, controller);
         ConnectSignals(Unit3D);
         Unit3D.MeshInstance3D.Mesh = ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh;
+        Unit3D.CollisionShape3D.Shape = ModelLoader.GetCollisionShape3D(unit.ModelName).Shape;
         return Unit3D;
     }
 

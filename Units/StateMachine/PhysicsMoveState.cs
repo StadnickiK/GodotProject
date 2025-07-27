@@ -17,17 +17,22 @@ public partial class PhysicsMoveState : State<IMovable>
     [Export]
     public float TimeToRotate = 0.5f;    // Seconds to complete rotation
 
+    public OrderQueue.Target Target { get => _target; set => _target = value; }
+
     /// <summary>
     /// Creates a new state instance with the given target position.
     /// </summary>
+
+    public PhysicsMoveState(){}
+
     public PhysicsMoveState(OrderQueue.Target target)
     {
-        _target = target;
+        Target = target;
     }
 
     public PhysicsMoveState(Vector3 target)
     {
-        _target = new OrderQueue.Target(target);
+        Target = new OrderQueue.Target(target);
     }
 
     public override void Enter(IMovable body)
@@ -46,7 +51,7 @@ public partial class PhysicsMoveState : State<IMovable>
 
     private void CalculateLinearVelocity()
     {
-        Vector3 toTarget = _target.Point - Body.GlobalPosition;
+        Vector3 toTarget = Target.Point - Body.GlobalPosition;
 
         // Prevent tiny jitter if already at target
         if (toTarget.Length() < _tolerance)
@@ -64,7 +69,7 @@ public partial class PhysicsMoveState : State<IMovable>
         Vector3 forward = -Body.GlobalBasis.Z.Normalized();
 
         // 2. Desired direction toward target
-        Vector3 toTarget = (_target.Point - Body.GlobalPosition).Normalized();
+        Vector3 toTarget = (Target.Point - Body.GlobalPosition).Normalized();
 
         // 3. If vectors are nearly aligned, don't rotate
         float dot = forward.Dot(toTarget);

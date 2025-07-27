@@ -66,5 +66,3 @@ script = ExtResource("9_4sj48")
 visible = false
 
 [node name="SpaceBattle" parent="ManualBattleScene" instance=ExtResource("8_ecnql")]
-
-[connection signal="input_event" from="Ground" to="WorldCursorControl" method="_on_Ground_input_event"]

@@ -40,10 +40,11 @@ public partial class UI : Control
     }
 
     public AlertBox ABox { get; set; } = null;
+    public BattleUi BattleUi { get => battleUi; set => battleUi = value; }
 
     void GetNodes()
     {
-        battleUi = GetNode<BattleUi>("BattleUI");
+        BattleUi = GetNode<BattleUi>("BattleUI");
         ResPanel = GetNode<ResourcePanel>("ResourcePanel");
         PInterface = GetNode<PlanetInterface>("PlanetInterface");
         RPanel = GetNode<RightPanel>("RightPanel");
@@ -94,7 +95,7 @@ public partial class UI : Control
     {
         GetNodes();
         ArmyInterfce.ArmyPanel.UI = this;
-        battleUi.ArmyInterface.ArmyPanel.UI = this;
+        BattleUi.ArmyInterface.ArmyPanel.UI = this;
         UnitCardFactory.UI = this;
         BattlePan.ConnectContainers(this);
     }
@@ -104,7 +105,7 @@ public partial class UI : Control
         TopLeft.Hide();
         RPanel.Hide();
         BattlePan.Hide();
-		battleUi.UpdateBattleUI(spaceBattle);
+		BattleUi.UpdateBattleUI(spaceBattle);
     }
 
     void _on_OrbitIconFocus(Node Orbit)

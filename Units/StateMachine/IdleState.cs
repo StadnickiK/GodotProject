@@ -19,7 +19,7 @@ public partial class IdleState : State<IMovable>
     public override State<IMovable> ProcessState(double delta)
     {
         // Stop horizontal movement (preserving the Y velocity).
-        Body.Velocity = new Vector3(0, Body.Velocity.Y, 0);
+        Body.Velocity = new Vector3(0, 0, 0);
         return this;
     }
 }

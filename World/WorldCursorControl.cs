@@ -18,14 +18,22 @@ public partial class WorldCursorControl : Node3D
     [Signal]
     public delegate void DeselectEventHandler();
 
-    public void ConnectToSelectUnit(Node node){
-        if(!node.IsConnected("SelectUnit", new Callable(this, nameof(_SelectUnit))))
-            node.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
+    Callable _SelectUnitCallable;
+
+    Callable _SelectTargetCallable;
+
+    public Callable OnGroundInputCallable { get; private set; }
+
+    public void ConnectToSelectUnit(Node node)
+    {
+        if (!node.IsConnected("SelectUnit", _SelectUnitCallable))
+            node.Connect("SelectUnit", _SelectUnitCallable);
     }
 
-    public void ConnectToSelectTarget(Node node){
-        if(!node.IsConnected("SelectTarget", new Callable(this, nameof(_SelectTarget))))
-            node.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
+    public void ConnectToSelectTarget(Node node)
+    {
+        if (!node.IsConnected("SelectTarget", _SelectTargetCallable))
+            node.Connect("SelectTarget", _SelectTargetCallable);
     }
 
     void GetNodes(){
@@ -35,6 +43,9 @@ public partial class WorldCursorControl : Node3D
     public override void _Ready()
     {
         GetNodes();
+        _SelectUnitCallable = new Callable(this, nameof(_SelectUnit));
+        _SelectTargetCallable = new Callable(this, nameof(_SelectTarget));
+        OnGroundInputCallable = new Callable(this, nameof(_on_Ground_input_event));
         /*
         foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
             n.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
@@ -65,40 +76,37 @@ public partial class WorldCursorControl : Node3D
         select.AddTarget(target, task);
     }
 
-    Vector3 GetMouseWorldPosition(){
+    public Vector3 GetMouseWorldPosition(){
         var ray_length = 1000;
         var mousePos = GetViewport().GetMousePosition();
         var from = camera.ProjectRayOrigin(mousePos);
         var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
         Vector3 p = Vector3.Zero;
-        // var space_state = GetWorld3d().DirectSpaceState;
-        // var state = space_state.IntersectRay(from, to);
-        // if(state.Contains("position")){
-        //     p = (Vector3)state["position"];
-        // }
+        var space_state = GetWorld3D().DirectSpaceState;
+        var state = space_state.IntersectRay(new PhysicsRayQueryParameters3D()
+        {
+            From = from,
+            To = to
+        });
+        if(state.ContainsKey("position")){
+            p = (Vector3)state["position"];
+        }
         return p;
     }
 
     void _on_Ground_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
-        if(inputEvent is InputEventMouseButton button){
-            if(HasSelected()){ // mouse
-                if(button.ButtonIndex == MouseButton.Right){   // right click
+        if (inputEvent is InputEventMouseButton button)
+        {
+            if (HasSelected())
+            { // mouse
+                if (button.ButtonIndex == MouseButton.Right)
+                {   // right click
                     select.MoveToPosition(click_position);
                 }
-                if(button.ButtonIndex == MouseButton.Left && select != null){    // left click
+                if (button.ButtonIndex == MouseButton.Left && select != null)
+                {    // left click
                     select.ClearSelection();
                     EmitSignal(nameof(SignalName.Deselect));
-                }
-            }
-        }
-    }
-
-     public override void _Input(InputEvent inputEvent){
-        if(HasSelected()){
-            if(inputEvent is InputEventMouseButton button){ // mouse
-                if(button.ButtonIndex == MouseButton.Left && select != null){    // left click
-                    //select.ClearSelection();
-                    //EmitSignal(nameof(DeselectEventHandler));
                 }
             }
         }

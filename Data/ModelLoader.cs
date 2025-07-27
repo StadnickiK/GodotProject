@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 
 public partial class ModelLoader : Node
@@ -16,7 +17,7 @@ public partial class ModelLoader : Node
     string MiniModelName { get; set; } = "mini";
 
     [Export]
-    string ColliderName { get; set; } = "collision";
+    string ColliderName { get; set; } = "collision-colonly";
 
     [Export]
     bool Log { get; set; } = false;
@@ -56,7 +57,10 @@ public partial class ModelLoader : Node
         {
             var gltfSceneRootNode = gltfDocumentLoad.GenerateScene(gltfStateLoad);
             //gltfSceneRootNode.Name = Path.GetFileNameWithoutExtension(path);
-            var nodes = gltfSceneRootNode.GetChildren();
+            var collMesh = gltfSceneRootNode.GetChildren().FirstOrDefault(x => x.Name.ToString().Contains("-col"));
+            if (collMesh != null)
+                ((MeshInstance3D)collMesh).CreateConvexCollision(true, true);
+            
             AddChild(gltfSceneRootNode);
             Models.Add(gltfSceneRootNode.Name, gltfSceneRootNode);
         }
@@ -100,6 +104,11 @@ public partial class ModelLoader : Node
 
     public CollisionShape3D GetCollisionShape3D(string name)
     {
-        return Models[name].GetNodeOrNull<CollisionShape3D>(ColliderName);
+        // var children = Models[name].GetNodeOrNull(ColliderName);
+        // var c2 = Models[name].GetNodeOrNull(ColliderName).GetChildren();
+        // var coll = Models[name].GetNodeOrNull(ColliderName);
+        // GD.Print("Colltype " + coll.GetType());
+        // var collType = coll.GetType();
+        return Models[name].GetNodeOrNull(ColliderName).GetChildren()[0].GetNode<CollisionShape3D>("CollisionShape3D");
     }
 }

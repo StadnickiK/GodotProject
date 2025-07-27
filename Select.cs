@@ -38,10 +38,10 @@ public partial class Select : Node
     void AddSelectEffect(CollisionObject3D unit){
         var shape = unit.GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
         if(shape != null)
-            unit.AddChild(GetSelectEfect(shape.GetAabb().Size));
+            unit.AddChild(GetSelectEffect(shape.GetAabb().Size));
     }
 
-    Node GetSelectEfect(Vector3 vector3)
+    Node GetSelectEffect(Vector3 vector3)
     {
         var selectEffectNode = (MeshInstance3D)SelectEffect.Instantiate();
         var mesh = (SphereMesh)selectEffectNode.Mesh;
@@ -126,7 +126,7 @@ public partial class Select : Node
     public void ClearSelection(){
         RemoveSelectEffect();
         foreach(var unit in selectManager.SelectedUnits)
-            if(unit is Ship ship)
+            if(unit is IMovable ship)
                 UnsubscribeShip(ship);
         selectManager.ClearSelection();
     }

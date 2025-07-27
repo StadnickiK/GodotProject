@@ -46,6 +46,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public event World.TransferUnitsEventHandler OpenTransferPanel;
 
+    public IMovableState MovableState { get; set; } = IMovableState.Movement;
+
     public VisibilityConroller VisibilityConroller { get; set; }
 
     public ModelLoader ModelLoader { get; set; }

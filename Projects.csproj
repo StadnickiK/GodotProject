@@ -174,5 +174,6 @@
     <Compile Include="Units\StateMachine\PhysicsMoveState.cs" />
     <Compile Include="Units\StateMachine\PhysicsPlacementState.cs" />
     <Compile Include="Units\StateMachine\GenericStateMachine.cs" />
+    <Compile Include="Map\Battle\BoxSelectController.cs" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://dnabucbyeoqmh"]
+[gd_scene load_steps=12 format=3 uid="uid://dnabucbyeoqmh"]
 
 [ext_resource type="Script" uid="uid://bucssk3ciqoo0" path="res://Map/Battle/ManualBattleScene.cs" id="1_swgib"]
 [ext_resource type="Script" uid="uid://bg4vk38mwp0io" path="res://Map/Battle/UnitFactory.cs" id="2_eornl"]
 [ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="2_ph0dr"]
+[ext_resource type="Script" uid="uid://dtcc58ngnqq32" path="res://Map/Battle/BoxSelectController.cs" id="4_8b6k4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eornl"]
 sky_top_color = Color(0.197937, 0.197937, 0.197937, 1)
@@ -41,21 +42,24 @@ script = ExtResource("1_swgib")
 environment = SubResource("Environment_fgmcw")
 
 [node name="BattleZone" type="Area3D" parent="."]
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BattleZone"]
 shape = SubResource("BoxShape3D_73bjj")
 debug_color = Color(0.929418, 0.132021, 0.57205, 0.42)
 
 [node name="LeftDeployZone" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 200)
+monitorable = false
 
-[node name="LCollisionShape3D" type="CollisionShape3D" parent="LeftDeployZone"]
+[node name="AttackerDeployZone" type="CollisionShape3D" parent="LeftDeployZone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 0)
 shape = SubResource("BoxShape3D_ylu47")
 debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
 
 [node name="RightDeployZone" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -200)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -200)
+monitorable = false
 
 [node name="RCollisionShape3D" type="CollisionShape3D" parent="RightDeployZone"]
 shape = SubResource("BoxShape3D_ylu47")
@@ -89,3 +93,6 @@ light_energy = 8.0
 light_indirect_energy = 4.0
 shadow_enabled = true
 sky_mode = 1
+
+[node name="BoxSelectController" type="Node2D" parent="."]
+script = ExtResource("4_8b6k4")

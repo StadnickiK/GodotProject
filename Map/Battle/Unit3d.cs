@@ -19,6 +19,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, IVisible, IMova
 
     public InputController InputController { get; set; }
 
+    public IMovableState MovableState { get; set; } = IMovableState.Movement;
 
     StateMachine StateMachine { get; set; }
     public OrderQueue OrderQueue { get; set; }
@@ -27,6 +28,8 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, IVisible, IMova
     public override void _Ready()
     {
         GetNodes();
+        StateMachine.Body = this;
+        StateMachine.Enter(new IdleState(this));
     }
 
     private void GetNodes()
@@ -66,7 +69,8 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, IVisible, IMova
 
     public void MoveToTarget(OrderQueue.Target target)
     {
-        throw new NotImplementedException();
+        OrderQueue.SetTarget(target);
+        EnterState(target);
     }
 
     public void ClearTargets()
@@ -77,17 +81,37 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, IVisible, IMova
     public void MoveToPosition(Vector3 destination)
     {
         OrderQueue.SetTarget(new OrderQueue.Target(destination));
-        StateMachine.Enter(new PhysicsMoveState(destination));
+        EnterState(new OrderQueue.Target(destination));
+    }
+
+    void EnterState(OrderQueue.Target target)
+    {
+        switch (MovableState)
+        {
+            case IMovableState.Placement:
+                SetPosition(target.Point);
+                break;
+            default:
+                StateMachine.Enter(new PhysicsMoveState(target));
+                break;
+        }
     }
 
     public override void _PhysicsProcess(double delta)
     {
         MoveAndCollide(LinearVelocity * (float)delta);
     }
+    
 
     public void UpdateVelocity(Vector3 linearVelocity, Vector3 angularVelocity)
     {
         throw new NotImplementedException();
     }
 
+    new public void SetPosition(Vector3 Vector3)
+    {
+        var g = GlobalTransform;
+        g.Origin = Vector3;
+        GlobalTransform = g;
+    }
 }

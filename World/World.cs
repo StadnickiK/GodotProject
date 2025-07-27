@@ -35,6 +35,8 @@ public partial class World : Node3D
 		get { return _wcc; }
 	}
 
+	Ground Ground;
+
 	public MapArmyManager MapArmyManager { get; set; }
 
 	private Data _data = null;
@@ -100,6 +102,7 @@ public partial class World : Node3D
 
 	void _on_EndBattle()
 	{
+		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		_UI.BattlePan.Hide();
 		_UI.RPanel.Show();
 		ManualBattleScene.ClearCombat();
@@ -107,9 +110,11 @@ public partial class World : Node3D
 
 	void _on_ManualBattle(SpaceBattle spaceBattle)
 	{
+		Ground.DisconnectInputEvent(WCC.OnGroundInputCallable);
+		Ground.Hide();
 		_UI.UpdateBattleUI(spaceBattle);
 		_map.Hide();
-		ManualBattleScene.ShowBattle();
+		ManualBattleScene.UpdateBattle();
 	}
 	void _on_FinishManualBattle(SpaceBattle spaceBattle)
 	{
@@ -161,6 +166,7 @@ public partial class World : Node3D
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		_UI = GetNode<UI>("CanvasLayer/UI");
+		Ground = GetNode<Ground>("Ground");
 		Camera3D = _UI.GetNode<CameraGimbal>("CameraGimbal");
 		MapArmyManager = GetNode<MapArmyManager>("MapArmyManager");
 	}
@@ -278,8 +284,7 @@ public partial class World : Node3D
 	}
 
 	void UpdateGround(){
-		var ground = GetNode<Area3D>("Ground");
-		ground.Scale = new Vector3(2*Galaxy.Radius,1,2*Galaxy.Radius);
+		Ground.Scale = new Vector3(2*Galaxy.Radius,1,2*Galaxy.Radius);
 	}
 
 	void InitStartPlanets(){
@@ -542,15 +547,16 @@ public partial class World : Node3D
 	public override void _Ready()
 	{
 		GetNodes();
-
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
 		_wcc.Connect("Deselect", new Callable(this, nameof(_on_HideArmyInterface)));
+		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
 		MapArmyManager.ModelLoader = _data.ModelLoader;
 		MapArmyManager.Rand = Rand;
 		InitWorld();
 		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader, _wcc);
+		_UI.BattleUi.Fight.ButtonUp += ManualBattleScene._on_Fight;
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;
