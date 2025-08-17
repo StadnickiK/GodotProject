@@ -1,7 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public partial class UnitCard : Control
+public partial class UnitCard : Control, IUpdateStat
 {
 
 	public Unit Unit { get; set; }
@@ -17,9 +18,10 @@ public partial class UnitCard : Control
 	public Label Label { get; set; }
 
 	public Button button { get; set; }
+	public HashSet<string> StatNames { get; set; } = new HashSet<string>();
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
 		var c = GetChildren()[0];
 		Health = c.GetNode<ProgressBar>("Health");
@@ -30,7 +32,9 @@ public partial class UnitCard : Control
 	}
 
 	public void UpdateCard(Unit unit){
+		if(Unit != null) Unit.StatManager.StatChanged -= UpdateStat;
 		Unit = unit;
+		unit.StatManager.StatChanged += UpdateStat;
 		var health = unit.GetStat("HitPoints");
 		Modulate = new Color(1, 1, 1, 1);
 		Progress.Hide();
@@ -55,4 +59,17 @@ public partial class UnitCard : Control
 	public override void _Process(double delta)
 	{
 	}
+
+    public void UpdateStat(float value, string name = "")
+    {
+		switch (name)
+		{
+			case "Shield":
+				Shield.Value = value;
+				break;
+			default:
+				Health.Value = value;
+					break;
+		}
+    }
 }

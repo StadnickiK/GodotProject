@@ -26,6 +26,7 @@ public partial class VisibilityConroller : Node
     [Export]
     public bool DefaultVisible { get; set; } = false;
 
+
     public override void _Ready(){
             var parent = GetParent();
             if (parent is IVisible iv)
@@ -65,4 +66,6 @@ public partial class VisibilityConroller : Node
     {
         return PlayerVisibility.ContainsKey(playerId) ? PlayerVisibility[playerId] : new VisibilityStruct() {Visibility = VisibilityState.Unexplored, Visible = DefaultVisible};
     }
+
+
 }

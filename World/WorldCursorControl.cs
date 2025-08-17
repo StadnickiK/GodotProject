@@ -20,21 +20,39 @@ public partial class WorldCursorControl : Node3D
 
     Callable _SelectUnitCallable;
 
+    Callable _AddUnitCallable;
+
     Callable _SelectTargetCallable;
+
+    Callable _AddTargetCallable;
 
     public Callable OnGroundInputCallable { get; private set; }
 
-    public void ConnectToSelectUnit(Node node)
+    public void ConnectToSelectUnit(IInputController controller)
     {
-        if (!node.IsConnected("SelectUnit", _SelectUnitCallable))
-            node.Connect("SelectUnit", _SelectUnitCallable);
+        controller.InputController.SelectUnit += _SelectUnit;
     }
 
-    public void ConnectToSelectTarget(Node node)
+    public void ConnectToDeselectUnit(IInputController controller)
     {
-        if (!node.IsConnected("SelectTarget", _SelectTargetCallable))
-            node.Connect("SelectTarget", _SelectTargetCallable);
+        controller.InputController.DeselectUnit += _DeselectUnit;
     }
+
+    public void ConnectToAddUnit(IInputController controller)
+    {
+        controller.InputController.AddUnit += _AddUnit;
+    }
+
+    public void ConnectToSelectTarget(IInputController controller)
+    {
+        controller.InputController.SelectTarget += _SelectTarget;
+    }
+
+    // public void ConnectToAddTarget(Node node)
+    // {
+    //     if (!node.IsConnected(InputController.SignalName.AddTarget, _AddTargetCallable))
+    //         node.Connect(InputController.SignalName.AddTarget, _AddTargetCallable);
+    // }
 
     void GetNodes(){
         select = GetNode<Select>("Select");
@@ -44,7 +62,9 @@ public partial class WorldCursorControl : Node3D
     {
         GetNodes();
         _SelectUnitCallable = new Callable(this, nameof(_SelectUnit));
+        _AddUnitCallable = new Callable(this, nameof(_AddUnit));
         _SelectTargetCallable = new Callable(this, nameof(_SelectTarget));
+        //_SelectTargetCallable = new Callable(this, nameof(_AddTarget));
         OnGroundInputCallable = new Callable(this, nameof(_on_Ground_input_event));
         /*
         foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
@@ -57,14 +77,22 @@ public partial class WorldCursorControl : Node3D
         //*/
     }
 
-    public void _SelectUnit(CollisionObject3D unit)
+    public void _SelectUnit(IMovable unit)
     {
         select.SelectUnit(unit);
-        if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
-        GD.Print("Selected node " + unit.Name);
+        //if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
+        //GD.Print("Selected node " + unit.Name);
+    }
+    
+    public void _DeselectUnit(IMovable unit)
+    {
+        select.DeselectUnit(unit);
+        //if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
+        //GD.Print("Selected node " + unit.Name);
     }
 
-    public void _AddUnit(CollisionObject3D unit){
+    public void _AddUnit(IMovable unit)
+    {
         select.AddSelectedUnit(unit);
     }
 
@@ -103,7 +131,7 @@ public partial class WorldCursorControl : Node3D
                 {   // right click
                     select.MoveToPosition(click_position);
                 }
-                if (button.ButtonIndex == MouseButton.Left && select != null)
+                if (button.ButtonIndex == MouseButton.Left && select != null && inputEvent.IsPressed())
                 {    // left click
                     select.ClearSelection();
                     EmitSignal(nameof(SignalName.Deselect));

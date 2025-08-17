@@ -175,5 +175,18 @@
     <Compile Include="Units\StateMachine\PhysicsPlacementState.cs" />
     <Compile Include="Units\StateMachine\GenericStateMachine.cs" />
     <Compile Include="Map\Battle\BoxSelectController.cs" />
+    <Compile Include="ColorProviderSingleton.cs" />
+    <Compile Include="Map\Battle\SelectionCircleControler.cs" />
+    <Compile Include="Map\IMap\ISelectCircle.cs" />
+    <Compile Include="Map\IMap\IInputController.cs" />
+    <Compile Include="Map\Battle\Laser.cs" />
+    <Compile Include="Units\Stats\IUpdateStat.cs" />
+    <Compile Include="Map\IMap\IStatManager.cs" />
+    <Compile Include="Map\IMap\ITargetable.cs" />
+    <Compile Include="Map\IMap\ITargetSpottedListener.cs" />
+    <Compile Include="Map\Battle\SimpleAttackBattery.cs" />
+    <Compile Include="Map\IMap\IProjectile.cs" />
+    <Compile Include="Map\Battle\ProjectileFactory.cs" />
+    <Compile Include="Map\IMap\IProjectileFactory.cs" />
   </ItemGroup>
 </Project>

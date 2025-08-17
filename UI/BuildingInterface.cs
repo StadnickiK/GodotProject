@@ -104,9 +104,20 @@ public partial class BuildingInterface : Panel
             
         }
     }
+    
+    public void UpdateInterface(string UnitName, IStatManager manager){
 
-    public void TooExpensive(bool TooExpensive){
-        if(TooExpensive) _desc.AppendText("[b][color="+Negative.ToHtml()+"][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
+        _title.Text = UnitName;
+        _desc.Text = "";
+        _desc.AppendText("\n[b][font_size=20]Stats: [/font_size][/b]\n");
+        //_desc.AppendText("Has HP " + unit.HasHitpoints);
+        _desc.AppendText(manager.StatManager.PrintStats());
+
+    }
+
+    public void TooExpensive(bool TooExpensive)
+    {
+        if (TooExpensive) _desc.AppendText("[b][color=" + Negative.ToHtml() + "][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
     }
 
     public void ConstructionTime(int time){

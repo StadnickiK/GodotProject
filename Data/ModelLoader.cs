@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 
-public partial class ModelLoader : Node
+public partial class ModelLoader : Node3D
 {
     [Export]
     string ModelPath { get; set; } = "res://Models/";

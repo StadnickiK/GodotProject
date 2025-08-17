@@ -17,15 +17,9 @@ using System.Collections.Generic;
 		
 	}
 
-public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjectController, IVision, IEnterMapObject, IEnterCombat, IMovable
+public partial class Ship : CharacterBody3D, IExtendedMapObjectController, IVision, IEnterMapObject, IEnterCombat, IMovable
 // IMapObject,
 {
-    [Signal]
-    public delegate void SelectUnitEventHandler(RigidBody3D unit);
-
-    [Signal]
-    public delegate void SelectTargetEventHandler(RigidBody3D target);
-
     public delegate void EnterCombatEventHandler(IEnterCombat attacker, IEnterCombat enemy, Node parent);
 
     public event IEnterCombat.EnterCombatEventHandler EnterCombat;
@@ -46,6 +40,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     public event World.TransferUnitsEventHandler OpenTransferPanel;
 
+    public InputController InputController { get; set; }
+
     public IMovableState MovableState { get; set; } = IMovableState.Movement;
 
     public VisibilityConroller VisibilityConroller { get; set; }
@@ -59,6 +55,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     [Export]
     public bool IsLocal { get; set; } = false;
+
+    public SelectionCircleControler Selection { get; set; }
 
     private Player _controller;
     public Player Controller
@@ -188,11 +186,12 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
 
     void Merge(OrderQueue.Target target){
         if(target.TargetNode is Ship ship && target.TargetNode != this){
-            if (ship.Controller == this.Controller)
+            if (ship.Controller.PlayerID == Controller.PlayerID)
             {
                 if (UnitController.Count + ship.UnitController.Count < ship.UnitController.MaxUnits)
                 {
                     UnitController.TransferUnit(ship.UnitController);
+                    ship.InputController.SelectUnitInvoke();
                     FreeShip?.Invoke(this);
                 }
                 else
@@ -370,10 +369,6 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
     //     }
     // }
 
-    public void SelectMapObject(){
-        EmitSignal(nameof(SignalName.SelectUnit), this);
-    }
-
     void UpdateMesh_onAddUnit(Unit unit) {
         if (unit.ModelVolume > CurrentModelVoluume)
         {
@@ -387,20 +382,6 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         {
             UpdateMesh_onAddUnit(unit);
         }
-    }
-
-
-    void _on_input_event(Node camera, InputEvent inputEvent,Vector3 click_position,Vector3 click_normal, int shape_idx){
-      if(inputEvent is InputEventMouseButton eventMouseButton){
-        switch(eventMouseButton.ButtonIndex){
-          case MouseButton.Left:
-            SelectMapObject();
-            break;
-          case MouseButton.Right:
-            EmitSignal(SignalName.SelectTarget, this);
-            break;
-        }
-      } 
     }
 
     public void ChangeVision(VisibilityConroller.VisibilityStruct visibilityStruct, int playerID){
@@ -417,6 +398,8 @@ public partial class Ship : CharacterBody3D, ISelectMapObject, IExtendedMapObjec
         //_velocityController = GetNode<VelocityController>("VelocityController");
         UnitController = GetNode<UnitController>("UnitController");
         RecruitmentComponent = GetNode<RecruitmentComponent>("RecruitmentComponent");
+        Selection = GetNode<SelectionCircleControler>("Selection");
+        InputController = GetNode<InputController>("InputController");
         AddChild(OrderQueue);
     }
 

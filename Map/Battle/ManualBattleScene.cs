@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class ManualBattleScene : Node3D
+public partial class ManualBattleScene : Node3D, IProjectileFactory
 {
 
     [Export]
     public float FormationSpacing { get; set; } = 5;
 
-    MeshInstance3D AttackeDefenderDeployMarker;
+    MeshInstance3D AttackerDeployMarker;
 
     MeshInstance3D DefenderDeployMarker;
 
@@ -17,7 +17,11 @@ public partial class ManualBattleScene : Node3D
 
     Area3D DefenderDeployZone;
 
+    Area3D BattleZone;
+
     UnitFactory UnitFactory { get; set; }
+
+    BattleUi battleUi;
 
     public SpaceBattle SpaceBattle { get; set; }
 
@@ -39,13 +43,22 @@ public partial class ManualBattleScene : Node3D
 
     public BoxSelectController BoxSelectController { get; set; }
 
+    public List<Unit3D> LocalUnitModels { get; set; } = new List<Unit3D>();
+    public ProjectileFactory ProjectileFactory { get; set; }
+
+
+    ArmyInterface armyInterface;
+
     public void ClearCombat()
     {
-        BoxSelectController.SetProcessInput(false);
+        BoxSelectController?.SetProcessInput(false);
         SpaceBattle.AcceptResult();
         Combatants.Clear();
         SpaceBattle.Attackers.Clear();
         SpaceBattle.Defenders.Clear();
+        LocalUnitModels.Clear();
+        battleUi.Hide();
+        DisconnectUnitCardsToSelect();
     }
 
     public void InitializeBattle(Random random, ModelLoader modelLoader, WorldCursorControl worldCursorControl)
@@ -72,13 +85,36 @@ public partial class ManualBattleScene : Node3D
     {
 
         Show();
-        CameraLookAt?.Invoke(AttackeDefenderDeployMarker.Position);
+        CameraLookAt?.Invoke(AttackerDeployMarker.GlobalPosition);
         LoadUnits();
         ConnectDeployZone();
+        battleUi.Show();
+        battleUi.UpdateBattleUI(SpaceBattle);
+        ConnectUnitCardsToSelect();
     }
+
+    private void ConnectUnitCardsToSelect()
+    {
+        foreach (var card in armyInterface.ArmyPanel.UnitCards)
+        {
+            if(card.Visible)
+                card.button.ButtonUp += () => WCC._SelectUnit(LocalUnitModels[card.Index]);
+        }
+    }
+
+    void DisconnectUnitCardsToSelect()
+    {
+        foreach (var card in armyInterface.ArmyPanel.UnitCards)
+        {
+            if(card.Visible)
+                card.button.ButtonUp -= () => WCC._SelectUnit(LocalUnitModels[card.Index]);
+        }
+    }
+
 
     void ConnectDeployZone()
     {
+        DisconnectInputEvent(BattleZone);
         switch (SpaceBattle.Local)
         {
             case SpaceBattle.HasLocal.Attacker:
@@ -95,7 +131,7 @@ public partial class ManualBattleScene : Node3D
         var attacker = LoadUnits(SpaceBattle.Attackers, SpaceBattle.Attackers[0].Controller);
         var defender = LoadUnits(SpaceBattle.Defenders, SpaceBattle.Defenders[0].Controller);
 
-        PlaceUnits(attacker, AttackeDefenderDeployMarker.Position);
+        PlaceUnits(attacker, AttackerDeployMarker.Position);
         PlaceUnits(defender, DefenderDeployMarker.Position);
     }
 
@@ -110,6 +146,8 @@ public partial class ManualBattleScene : Node3D
                 if (controller.IsLocal)
                 {
                     unit3D.MovableState = IMovableState.Placement;
+                    ChangeMovableState += unit3D.ChangeMovableState;
+                    LocalUnitModels.Add(unit3D);
                 }
                 units.Add(unit3D);
             }
@@ -133,7 +171,7 @@ public partial class ManualBattleScene : Node3D
 
                 var unit = units[unitIndex];
                 var size = unit.GetUnitSize();
-                Vector3 offset = new Vector3(x * (FormationSpacing + size.X), 0, z * (FormationSpacing + size.Z));
+                Vector3 offset = new Vector3(x * (FormationSpacing + size.X), GlobalPosition.Y, z * (FormationSpacing + size.Z));
                 Vector3 position = center + offset;
 
                 unit.GlobalTransform = new Transform3D(Basis.Identity, position);
@@ -146,18 +184,32 @@ public partial class ManualBattleScene : Node3D
     public override void _Ready()
     {
         GetNodes();
+        BoxSelectController.LocalUnits = LocalUnitModels;
+        BoxSelectController?.SetProcessInput(false);
+        battleUi.Fight.ButtonUp += _on_Fight;
+        UnitFactory.ProjectileFactory = ProjectileFactory;
+        ProjectileFactory.ProjectileParent = this;
     }
 
     private void GetNodes()
     {
-        AttackeDefenderDeployMarker = GetNode<MeshInstance3D>("LDeployMarker");
+        AttackerDeployMarker = GetNode<MeshInstance3D>("LDeployMarker");
         DefenderDeployMarker = GetNode<MeshInstance3D>("RDeployMarker");
         AttackerDeployZone = GetNode<Area3D>("LeftDeployZone");
         DefenderDeployZone = GetNode<Area3D>("RightDeployZone");
+        BattleZone = GetNode<Area3D>("BattleZone");
         UnitFactory = GetNode<UnitFactory>("UnitFactory");
         SpaceBattle = GetNode<SpaceBattle>("SpaceBattle");
-        BoxSelectController = GetNode<BoxSelectController>("BoxSelectController");
+        BoxSelectController = GetNodeOrNull<BoxSelectController>("BoxSelectController");
+        battleUi = GetNode<BattleUi>("BattleUI");
+        armyInterface = GetNode<ArmyInterface>("BattleUI/ArmyInterface");
+        ProjectileFactory = GetNode<ProjectileFactory>("ProjectileFactory");
         // LeftDeployZone/AttackerDeployZone
+    }
+
+    public void LoadUI(UI uI)
+    {
+        battleUi.ArmyInterface.ArmyPanel.UI = uI;
     }
 
     public Ship GetLocalAttakcerOrNull(int index = 0)
@@ -170,7 +222,8 @@ public partial class ManualBattleScene : Node3D
 
     public void ConnectToEnterCombat(Node node)
     {
-        node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
+        if(!node.IsConnected("EnterCombat", new Callable(this, nameof(_on_EnterCombat))))
+            node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
     }
 
     public void ConnectToEnterCombat(Ship node)
@@ -180,8 +233,8 @@ public partial class ManualBattleScene : Node3D
 
     public void CreateBattle(List<IEnterCombat> attackers, List<IEnterCombat> defenders, Node parent)
     {
-        BoxSelectController.SetProcessInput(true);
-        AttackeDefenderDeployMarker.Show();
+        BoxSelectController?.SetProcessInput(true);
+        AttackerDeployMarker.Show();
         DefenderDeployMarker.Show();
         AttackerDeployZone.Show();
         DefenderDeployZone.Show();
@@ -212,10 +265,13 @@ public partial class ManualBattleScene : Node3D
 
     public void _on_Fight()
     {
-        AttackeDefenderDeployMarker.Hide();
+        AttackerDeployMarker.Hide();
         DefenderDeployMarker.Hide();
         AttackerDeployZone.Hide();
         DefenderDeployZone.Hide();
+        DisconnectInputEvent(AttackerDeployZone);
+        DisconnectInputEvent(DefenderDeployZone);
+        ConnectInputEvent(BattleZone);
         ChangeMovableState?.Invoke(IMovableState.Movement);
     }
 }

@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://c70akagmjohcx"]
+[gd_scene load_steps=17 format=3 uid="uid://c70akagmjohcx"]
 
 [ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://cw326ra810s2" path="res://Backgrounds/light.jpg" id="3_v0w7q"]
 [ext_resource type="PackedScene" uid="uid://5vkwnunfc0kc" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" uid="uid://cotigyio4cdaf" path="res://World/World.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
@@ -12,7 +13,11 @@
 [ext_resource type="PackedScene" uid="uid://dnabucbyeoqmh" path="res://Map/Battle/manual_battle_scene.tscn" id="12_v0w7q"]
 [ext_resource type="Script" uid="uid://brb1sc5lbnqvf" path="res://World/Map.cs" id="13"]
 
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_l2bp3"]
+panorama = ExtResource("3_v0w7q")
+
 [sub_resource type="Sky" id="1"]
+sky_material = SubResource("PanoramaSkyMaterial_l2bp3")
 
 [sub_resource type="Environment" id="2"]
 background_mode = 2
@@ -36,9 +41,15 @@ environment = SubResource("2")
 
 [node name="WorldCursorControl" parent="." instance=ExtResource("4")]
 
+[node name="ManualBattleScene" parent="." instance=ExtResource("12_v0w7q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+
+[node name="SpaceBattle" parent="ManualBattleScene" instance=ExtResource("8_ecnql")]
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="UI" parent="CanvasLayer" instance=ExtResource("1")]
+mouse_filter = 2
 
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("13")
@@ -55,14 +66,10 @@ mesh = SubResource("6")
 [node name="Ground" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
-[node name="MapArmyManager" type="Node" parent="."]
+[node name="MapArmyManager" type="Node3D" parent="."]
 process_mode = 4
+visible = false
 script = ExtResource("9_s53j1")
 
 [node name="ArmyPool" type="Node" parent="MapArmyManager"]
 script = ExtResource("9_4sj48")
-
-[node name="ManualBattleScene" parent="." instance=ExtResource("12_v0w7q")]
-visible = false
-
-[node name="SpaceBattle" parent="ManualBattleScene" instance=ExtResource("8_ecnql")]

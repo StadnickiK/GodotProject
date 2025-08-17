@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Unit : Construct, IUpkeep
+public partial class Unit : Construct, IUpkeep, IStatManager
 {
 
 	public event Node2DPool.FreeNodeEventHandler FreeUnit;

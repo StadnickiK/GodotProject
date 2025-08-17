@@ -23,5 +23,6 @@ DirPath = "res://Data/Buildings/"
 script = ExtResource("5")
 DirPath = "res://Data/Resources/"
 
-[node name="ModelLoader" type="Node" parent="."]
+[node name="ModelLoader" type="Node3D" parent="."]
+visible = false
 script = ExtResource("3_qa8oa")

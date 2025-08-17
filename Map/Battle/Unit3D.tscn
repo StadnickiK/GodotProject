@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bur84mij7kvjm"]
+[gd_scene load_steps=13 format=3 uid="uid://bur84mij7kvjm"]
 
 [ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3D.cs" id="1_nnrop"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://dwxbs0oqd1ac3" path="res://Map/Battle/OrderQueue.cs" id="6_72exn"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_mju74"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_rapbe"]
+[ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="9_rapbe"]
+[ext_resource type="Script" uid="uid://6n301pbmkkmx" path="res://Map/Battle/SimpleAttackBattery.cs" id="10_7kbm6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_onp1n"]
 size = Vector3(5, 5, 5)
@@ -22,7 +24,6 @@ script = ExtResource("1_nnrop")
 [node name="VisibilityConroller" parent="." instance=ExtResource("3_onp1n")]
 
 [node name="Area3D" parent="." instance=ExtResource("3_a02ob")]
-VisionRange = 30
 
 [node name="InputEventController" type="Node" parent="."]
 script = ExtResource("4_onp1n")
@@ -41,3 +42,12 @@ script = ExtResource("6_72exn")
 
 [node name="StateMachine" parent="." instance=ExtResource("7_mju74")]
 script = ExtResource("8_rapbe")
+
+[node name="Selection" parent="." instance=ExtResource("9_rapbe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.41518, 0)
+
+[node name="SimpleAttackBattery" type="Node3D" parent="."]
+script = ExtResource("10_7kbm6")
+
+[node name="OrderQueque" type="Node" parent="SimpleAttackBattery"]
+script = ExtResource("6_72exn")

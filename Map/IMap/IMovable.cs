@@ -8,7 +8,7 @@ public enum IMovableState
     Drag
 }
 
-public interface IMovable
+public interface IMovable : ISelectCircle, IInputController
 {
     public IMovableState MovableState { get; set; }
     public OrderQueue OrderQueue { get; set; }

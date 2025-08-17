@@ -4,7 +4,11 @@ using System.Collections.Generic;
 
 public partial class BaseStat : Node{
 
-    public BaseStat(){}
+    public delegate void StatChangedEventHandler(float value, string statName = null);
+
+    public event StatChangedEventHandler StatChanged;
+
+    public BaseStat() { }
     
     private List<StatModifier> Modifiers = new List<StatModifier>();
 
@@ -43,6 +47,17 @@ public partial class BaseStat : Node{
         HasMinValue = true;
     }
 
+    public void CloneStat(BaseStat stat)
+    {
+        Name = stat.Name;
+        _baseValue = stat.BaseValue;
+        _currentValue = stat.CurrentValue;
+        _maxValue = stat.MaxValue;
+        HasMaxValue = stat.HasMaxValue;
+        _minValue = stat.MinValue;
+        HasMinValue = stat.HasMinValue;
+    }
+
     public void AddModifier(StatModifier statModifier)
     {
         Modifiers.Add(statModifier);
@@ -57,7 +72,7 @@ public partial class BaseStat : Node{
                 break;
             default:
                 break;
-        }        
+        }
         _currentValue += statModifier.ValueChange;
     }
 
@@ -80,7 +95,7 @@ public partial class BaseStat : Node{
     public float CurrentValue
     {
         get { return _currentValue; }
-        set { _currentValue = value; }
+        set { _currentValue = value; StatChanged?.Invoke(value, Name); }
     }
     [Export]
     public bool HasMaxValue { get; set; } = false;

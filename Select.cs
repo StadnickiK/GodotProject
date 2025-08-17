@@ -5,8 +5,7 @@ using System.Collections.Generic;
 public partial class Select : Node
 {
 
-    SelectManager<CollisionObject3D> selectManager;
-    PackedScene SelectEffect = (PackedScene)ResourceLoader.Load("res://SelectEffect.tscn");
+    SelectManager<IMovable> selectManager;
 
     Vector3 _destination;
 
@@ -21,11 +20,33 @@ public partial class Select : Node
     public delegate void ClearTargetEventHandler();
 
     public event ClearTargetEventHandler OnClear;
+    
+    public bool HasMany { get => selectManager.SelectedUnits.Count > 1; }
 
-    public void MoveToPosition(Vector3 destination){
-        if(selectManager.SelectedUnits.Count != 0){
+    Vector3 CalculateFormationCenter()
+    {
+        Vector3 center = new Vector3();
+        foreach (var unit in selectManager.SelectedUnits)
+        {
+            center += unit.GlobalPosition;
+        }
+        return center / selectManager.SelectedUnits.Count;
+    }
+
+    public void MoveToPosition(Vector3 destination)
+    {
+        if (!HasMany)
+        {
             _destination = destination;
             OnMove?.Invoke(destination);
+        }
+        else
+        {
+            var formationCenter = CalculateFormationCenter();
+            foreach (var unit in selectManager.SelectedUnits)
+            {
+                unit.MoveToPosition(destination + (unit.GlobalPosition - formationCenter));
+            }
         }
     }
 
@@ -35,42 +56,22 @@ public partial class Select : Node
         }
     }
 
-    void AddSelectEffect(CollisionObject3D unit){
-        var shape = unit.GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
-        if(shape != null)
-            unit.AddChild(GetSelectEffect(shape.GetAabb().Size));
+    void AddSelectEffect(){
+        foreach(var c in selectManager.SelectedUnits)
+                c.Selection.Show();
     }
 
-    Node GetSelectEffect(Vector3 vector3)
-    {
-        var selectEffectNode = (MeshInstance3D)SelectEffect.Instantiate();
-        var mesh = (SphereMesh)selectEffectNode.Mesh;
-        var size = vector3.Z > vector3.X ? vector3.Z : vector3.X;
-        mesh.Height = size;
-        mesh.Radius = size / 2;
-        return selectEffectNode;
+    void AddSelectEffect(IMovable c){
+        c.Selection.Show();
     }
 
     void RemoveSelectEffect(){
-        foreach(CollisionObject3D c in selectManager.SelectedUnits){
-            if(c != null){
-                var s = c.GetNode("SelectEffect");
-                c.RemoveChild(s);
-                s.QueueFree();
-            }else{
-                selectManager.SelectedUnits.Remove(c);
-            }
-        }
+        foreach(var c in selectManager.SelectedUnits)
+                c.Selection.Hide();
     }
 
-    public void SelectUnit(CollisionObject3D unit){
-        if(!selectManager.SelectedUnits.Contains(unit)){
-            RemoveSelectEffect();
-            selectManager.SelectUnit(unit);
-            if(unit is IMovable ship) 
-                SubscribeShip(ship);
-            AddSelectEffect(unit);
-        }
+    void RemoveSelectEffect(IMovable unit){
+        unit.Selection.Hide();
     }
 
     void SubscribeShip(IMovable ship){
@@ -85,15 +86,36 @@ public partial class Select : Node
         OnClear -= ship.ClearTargets;
     }
 
-    public void AddSelectedUnit(CollisionObject3D unit){
-        if(unit.GetNodeOrNull("SelectEffect") == null){
-            selectManager.AddSelectedUnit(unit);
-            AddSelectEffect(unit);
+    public void SelectUnit(IMovable unit){
+        if(!selectManager.SelectedUnits.Contains(unit)){
+            ClearSelection();
+            selectManager.SelectUnit(unit);
+            UpdateSelection(unit);
         }
     }
 
-    public void AddSelectedUnits(List<CollisionObject3D> units){
-        selectManager.AddSelectedUnits(units);
+    public void DeselectUnit(IMovable unit){
+        if(selectManager.SelectedUnits.Contains(unit)){
+            UnsubscribeShip(unit);
+            selectManager.DeselectUnit(unit);
+            RemoveSelectEffect(unit);
+        }
+    }
+
+    public void AddSelectedUnit(IMovable unit)
+    {
+        if (!selectManager.SelectedUnits.Contains(unit))
+        {
+            selectManager.AddSelectedUnit(unit);
+            UpdateSelection(unit);
+        }
+    }
+
+    void UpdateSelection(IMovable unit)
+    {
+        RemoveSelectEffect();
+        SubscribeShip(unit);
+        AddSelectEffect();
     }
 
     public void AddTarget(CollisionObject3D target){
@@ -125,9 +147,11 @@ public partial class Select : Node
 
     public void ClearSelection(){
         RemoveSelectEffect();
-        foreach(var unit in selectManager.SelectedUnits)
-            if(unit is IMovable ship)
-                UnsubscribeShip(ship);
+        foreach (var unit in selectManager.SelectedUnits)
+        {
+            UnsubscribeShip(unit);
+            unit.Selection.Hide();
+        }
         selectManager.ClearSelection();
     }
 
@@ -139,7 +163,8 @@ public partial class Select : Node
     public override void _Ready()
     {
         // SetProcess(false);   
-        selectManager = new SelectManager<CollisionObject3D>();
+        selectManager = new SelectManager<IMovable>();
+        AddChild(selectManager);
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

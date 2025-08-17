@@ -132,7 +132,7 @@ public partial class StarSystem : Area3D //, IEnterMapObject, IExitMapObject
 
 	protected void _ConnectSignal(){
 		WorldCursorControl WCC = GetNode<WorldCursorControl>("/root/Game/World/WorldCursorControl");
-		WCC.ConnectToSelectTarget(this);
+		//WCC.ConnectToSelectTarget(this);
 	}
 
 	// public void EnterMapObject(Node node, Vector3 aproachVec, PhysicsDirectBodyState3D state){

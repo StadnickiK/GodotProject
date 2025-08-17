@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://b4uuv8wu0rx6l"]
+[gd_scene load_steps=19 format=4 uid="uid://b4uuv8wu0rx6l"]
 
 [ext_resource type="PackedScene" uid="uid://br3y8uchebph0" path="res://UI/TopLeftPanel/TopLeftPanel.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bb4lgwd2ifar2" path="res://UI/UI.cs" id="4"]
@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://4j4dbkx335vc" path="res://UI/RightPanel.tscn" id="13"]
 [ext_resource type="Script" uid="uid://bckbnt17am1i4" path="res://UI/UnitCardFactory.cs" id="13_017wa"]
 [ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/Center/AlertBox.tscn" id="14"]
-[ext_resource type="PackedScene" uid="uid://bqfm6cf66f6b4" path="res://Map/Battle/battle_ui.tscn" id="15_6q2ik"]
 
 [sub_resource type="Image" id="Image_017wa"]
 data = {
@@ -317,6 +316,7 @@ offset_left = 811.0
 offset_top = 54.0
 offset_right = 1053.0
 offset_bottom = 329.0
+mouse_filter = 2
 theme_override_font_sizes/bold_italics_font_size = 20
 theme_override_font_sizes/italics_font_size = 20
 theme_override_font_sizes/mono_font_size = 20
@@ -335,6 +335,7 @@ offset_bottom = 240.5
 [node name="ArmyInterface" parent="." instance=ExtResource("6_p8g4q")]
 visible = false
 layout_mode = 1
+mouse_filter = 2
 
 [node name="PlanetInterface" parent="." instance=ExtResource("6")]
 visible = false
@@ -343,6 +344,7 @@ layout_mode = 1
 [node name="BattlePanel" parent="." instance=ExtResource("9_npmjx")]
 visible = false
 layout_mode = 1
+mouse_filter = 2
 
 [node name="AlertBox" parent="." instance=ExtResource("14")]
 visible = false
@@ -395,14 +397,12 @@ anchor_bottom = 1.0
 offset_top = -460.0
 offset_right = 284.0
 grow_vertical = 0
+mouse_filter = 2
 
 [node name="Menu" parent="." instance=ExtResource("12")]
 visible = false
 layout_mode = 1
+mouse_filter = 2
 
-[node name="UnitCardFactory" type="Node" parent="."]
+[node name="UnitCardFactory" type="Node3D" parent="."]
 script = ExtResource("13_017wa")
-
-[node name="BattleUI" parent="." instance=ExtResource("15_6q2ik")]
-visible = false
-layout_mode = 1

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class NodeFactoryBase<T> : Node where T : Node
+public partial class NodeFactoryBase<T> : Node3D where T : Node
 {
     [Export]
     public string ItemScenePath { get; set; } = "res://UI/Unit_Card.tscn";

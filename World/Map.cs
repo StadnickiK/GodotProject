@@ -47,7 +47,8 @@ public partial class Map : Node3D
     }
 
     public void ConnectToExitMapObject(Node node){
-        node.Connect("SignalExitMapObject", new Callable(this, nameof(_on_Exit_MapObject)));
+        if(!node.IsConnected("SignalExitMapObject", new Callable(this, nameof(_on_Exit_MapObject))))
+            node.Connect("SignalExitMapObject", new Callable(this, nameof(_on_Exit_MapObject)));
     }
 
     void _on_Exit_MapObject(Node mapObject, Node parentMapObject, Vector3 exitVec = default(Vector3), PhysicsDirectBodyState3D state = null){

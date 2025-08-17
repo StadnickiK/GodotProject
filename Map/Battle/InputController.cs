@@ -4,11 +4,20 @@ using System.Diagnostics;
 
 public partial class InputController : Node
 {
-  [Signal]
-  public delegate void SelectUnitEventHandler(RigidBody3D unit);
+  public delegate void MoveEventHandler(IMovable movable);
 
-  [Signal]
-  public delegate void SelectTargetEventHandler(RigidBody3D target);
+  public delegate void TargetEventHandler(CollisionObject3D movable);
+
+  public event MoveEventHandler SelectUnit;
+
+  public event MoveEventHandler DeselectUnit;
+
+  public event TargetEventHandler SelectTarget;
+
+  public event MoveEventHandler AddUnit;
+
+  public event TargetEventHandler AddTarget;
+
 
   [Export]
   public InputMode Mode { get; set; } = InputMode.Select;
@@ -18,7 +27,9 @@ public partial class InputController : Node
 
   bool DoDrag = false;
 
-  RigidBody3D rigidBody3DParent;
+  bool MultiSelect = false;
+
+  CollisionObject3D rigidBody3DParent;
 
   public enum InputMode
   {
@@ -36,8 +47,8 @@ public partial class InputController : Node
   {
     try
     {
-      rigidBody3DParent = (RigidBody3D)GetParent();
-      rigidBody3DParent.Connect(RigidBody3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
+      rigidBody3DParent = (CollisionObject3D)GetParent();
+      rigidBody3DParent.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
     }
     catch (System.Exception ex)
     {
@@ -45,21 +56,65 @@ public partial class InputController : Node
     }
   }
 
+  public override void _Input(InputEvent inputEvent)
+  {
+    if (inputEvent is InputEventKey key && inputEvent.IsPressed())
+    {
+      switch (key.Keycode)
+      {
+        case Key.Shift:
+          MultiSelect = true;
+          break;
+      }
+    }
+    else
+    {
+      MultiSelect = false;
+    }
+  }
+
+
   void _on_input_event(Node camera, InputEvent inputEvent, Vector3 click_position, Vector3 click_normal, int shape_idx)
   {
+    if (inputEvent.IsActionPressed("Select_multiple"))
+      AddUnitInvoke();
     if (inputEvent is InputEventMouseButton eventMouseButton)
     {
       switch (eventMouseButton.ButtonIndex)
       {
         case MouseButton.Left:
-          EmitSignal(SignalName.SelectUnit, rigidBody3DParent);
-          DoDrag = inputEvent.IsPressed();
+          SelectUnitInvoke();
+          DoDrag = inputEvent.IsPressed() && Mode == InputMode.Drag;
           break;
         case MouseButton.Right:
-          EmitSignal(SignalName.SelectTarget, rigidBody3DParent);
+          SelectTargetInvoke();
           break;
       }
     }
+  }
+
+  public void SelectUnitInvoke()
+  {
+    SelectUnit?.Invoke((IMovable)rigidBody3DParent);
+  }
+
+    public void DeselectUnitInvoke()
+  {
+    DeselectUnit?.Invoke((IMovable)rigidBody3DParent);
+  }
+
+  public void AddUnitInvoke()
+  {
+    AddUnit?.Invoke((IMovable)rigidBody3DParent);
+  }
+
+  public void SelectTargetInvoke()
+  {
+    SelectTarget?.Invoke(rigidBody3DParent);
+  }
+  public void AddTargetInvoke()
+  {
+    AddTarget?.Invoke(rigidBody3DParent);
   }
 
   void Drag()

@@ -23,6 +23,18 @@ _baseValue = 10.0
 script = ExtResource("2")
 _baseValue = 5.0
 
-[node name="HitPoints" type="Node" parent="StatManager"]
+[node name="Health" type="Node" parent="StatManager"]
 script = ExtResource("2")
 _baseValue = 100.0
+
+[node name="Speed" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Range" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 50.0

@@ -132,7 +132,7 @@ public partial class Generator : Node
         var arr2 = new Godot.Collections.Array();
         arr2.Add(planet);
         planet.Connect("OpenCmdPanel", new Callable(_world, "_on_OpenPlanetCmdPanel"));
-        _world.WCC.ConnectToSelectTarget(planet);  
+        //_world.WCC.ConnectToSelectTarget(planet);  
     }
 
 

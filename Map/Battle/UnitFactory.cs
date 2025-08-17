@@ -1,13 +1,14 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class UnitFactory : NodeFactoryBase<Unit3D>
+public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
 {
     Node3DPool ArmyPool { get; set; }
 
     public WorldCursorControl WorldCursorControl { get; set; }
 
     public ModelLoader ModelLoader { get; set; }
+    public ProjectileFactory ProjectileFactory { get; set; }
 
     public override void _Ready()
     {
@@ -19,8 +20,9 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>
     {
         var Unit3D = CreateUnit(parent, position, controller);
         ConnectSignals(Unit3D);
-        Unit3D.MeshInstance3D.Mesh = ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh;
-        Unit3D.CollisionShape3D.Shape = ModelLoader.GetCollisionShape3D(unit.ModelName).Shape;
+        Unit3D.LoadUnit(unit);
+        Unit3D.ProjectileFactory = ProjectileFactory;
+        Unit3D.UpdateModel(ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh, ModelLoader.GetCollisionShape3D(unit.ModelName).Shape);
         return Unit3D;
     }
 
@@ -56,7 +58,10 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>
 
     void ConnectSignals(Unit3D Unit3D)
     {
-        WorldCursorControl.ConnectToSelectTarget(Unit3D.InputController);
-        WorldCursorControl.ConnectToSelectUnit(Unit3D.InputController);
+        WorldCursorControl.ConnectToSelectTarget(Unit3D);
+        //WorldCursorControl.ConnectToAddTarget(Unit3D.InputController);
+        WorldCursorControl.ConnectToSelectUnit(Unit3D);
+        WorldCursorControl.ConnectToDeselectUnit(Unit3D);
+        WorldCursorControl.ConnectToAddUnit(Unit3D);
     }
 }

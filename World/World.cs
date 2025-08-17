@@ -62,7 +62,7 @@ public partial class World : Node3D
 		if(Seed == -1313)
 			Seed = Guid.NewGuid().GetHashCode();
 		Rand = new Random(Seed);
-;   }
+   	}
 
 	private Player _Player = null;
 	public Player Host
@@ -87,7 +87,7 @@ public partial class World : Node3D
 	{
 		_UI.BattlePan.Show();
 		_UI.BattlePan.UpdatePanel(battle);
-		_UI.RPanel.Hide();
+		_UI.RightPanel.Hide();
 		_on_Deselect();
 	}
 
@@ -97,28 +97,28 @@ public partial class World : Node3D
 		if (ship.Controller.IsLocal)
 			_on_SelectUnit(ship);
 		_UI.BattlePan.Hide();
-		_UI.RPanel.Show();
+		_UI.RightPanel.Show();
 	}
 
 	void _on_EndBattle()
 	{
 		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		_UI.BattlePan.Hide();
-		_UI.RPanel.Show();
+		_UI.RightPanel.Show();
 		ManualBattleScene.ClearCombat();
 	}
 
-	void _on_ManualBattle(SpaceBattle spaceBattle)
+	void _on_ManualBattle()
 	{
 		Ground.DisconnectInputEvent(WCC.OnGroundInputCallable);
 		Ground.Hide();
-		_UI.UpdateBattleUI(spaceBattle);
+		_UI.UpdateBattleUI();
 		_map.Hide();
 		ManualBattleScene.UpdateBattle();
 	}
-	void _on_FinishManualBattle(SpaceBattle spaceBattle)
+	void _on_FinishManualBattle()
 	{
-		_UI.UpdateBattleUI(spaceBattle);
+		_UI.UpdateBattleUI();
 		_map.Show();
 		ManualBattleScene.Hide();
 	}
@@ -129,6 +129,7 @@ public partial class World : Node3D
 	}
 
 	void _on_OpenPlanetInterface(Planet planet){
+		_on_Deselect();
 		_UI.PInterface.Visible = true;
 		_UI.PInterface.UpdatePlanetInterface(planet);
 	}
@@ -173,10 +174,10 @@ public partial class World : Node3D
 
 	void ConnectSignals()
 	{
-		//_UI.RPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
-		_UI.RPanel.WorldCamera = Camera3D;
+		//_UI.RightPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
+		_UI.RightPanel.WorldCamera = Camera3D;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
-		_UI.ResPanel.InitResourcePanel(_data.Resources);
+		_UI.ResourcePanel.InitResourcePanel(_data.Resources);
 		_UI.PInterface._data = _data;
 		_UI.PInterface.InitBuildingsPanel();
 		//_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
@@ -189,31 +190,27 @@ public partial class World : Node3D
 		ManualBattleScene.OpenBattlePanel += _on_ShowBattlePanel;
 		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_HideBattlePanel(ManualBattleScene.GetLocalAttakcerOrNull());
 		_UI.BattlePan.Center.EndFight.ButtonUp += _on_EndBattle;
-		_UI.BattlePan.Center.Fight.ButtonUp += () => _on_ManualBattle(ManualBattleScene.SpaceBattle);
+		_UI.BattlePan.Center.Fight.ButtonUp += _on_ManualBattle;
 		ManualBattleScene.CameraLookAt += Camera3D.LookAt;
 		//_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
 	void ConnectLocalPlayer(Player player){
-		player.ArmiesChanged += _UI.RPanel.UpdateRightPanel;
-		player.ProdChanged += _UI.ResPanel.UpdatePanel;
-		player.UpkeepChanged += _UI.ResPanel.UpdatePanel;
-		player.ProdCostChanged += _UI.ResPanel.UpdatePanel;
-		player.PlayerResourcesChanged += _UI.ResPanel.UpdatePanel;
+		player.ArmiesChanged += _UI.RightPanel.UpdateRightPanel;
+		player.ProdChanged += _UI.ResourcePanel.UpdatePanel;
+		player.UpkeepChanged += _UI.ResourcePanel.UpdatePanel;
+		player.ProdCostChanged += _UI.ResourcePanel.UpdatePanel;
+		player.PlayerResourcesChanged += _UI.ResourcePanel.UpdatePanel;
 	}
 
-	public void ConnectToSelectUnit(Node node){
-		node.Connect("SelectUnit", new Callable(this, nameof(_on_SelectUnit)));
+	public void ConnectToSelectUnit(IInputController controller){
+		controller.InputController.SelectUnit += _on_SelectUnit;
 	}
 
-	void _on_SelectUnit(PhysicsBody3D body){
-		_wcc._SelectUnit(body);
+	void _on_SelectUnit(IMovable body){
 		
+		_wcc._SelectUnit(body);
 		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
-	}
-
-	void _on_HideArmyInterface(){
-		_UI.ArmyInterfce.Visible = false;
 	}
 
 	void _on_Deselect(){
@@ -372,13 +369,13 @@ public partial class World : Node3D
 		//_map.ConnectToEnterMapObject(ship);
 		_map.ConnectToExitMapObject(ship);
 		if(ship.Controller == _Player){
-			ship.OpenTransferPanel += OpenTransferPanel;
+			ship.OpenTransferPanel += OpenTransfeRightPanel;
 		}
 		ship.SplitShip += SplitShip;
 		ship.FreeShip += FreeShip;
 	}
 
-	void OpenTransferPanel(Ship host, Ship target){
+	void OpenTransfeRightPanel(Ship host, Ship target){
 		_UI.ArmyInterfce.UpdateArmyPanel(host, target);
 	}
 
@@ -547,8 +544,9 @@ public partial class World : Node3D
 	public override void _Ready()
 	{
 		GetNodes();
+		ManualBattleScene.LoadUI(UInterface);
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
-		_wcc.Connect("Deselect", new Callable(this, nameof(_on_HideArmyInterface)));
+		_wcc.Connect("Deselect", new Callable(this, nameof(_on_Deselect)));
 		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		GD.Print("World: "+GetInstanceId());
 		ConnectSignals();
@@ -556,14 +554,13 @@ public partial class World : Node3D
 		MapArmyManager.Rand = Rand;
 		InitWorld();
 		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader, _wcc);
-		_UI.BattleUi.Fight.ButtonUp += ManualBattleScene._on_Fight;
 		GD.Print("World: "+GetInstanceId());
 		if(_Player != null){
 			_wcc.LocalPlayerID = _Player.PlayerID;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
-			_UI.ResPanel.UpdatePanel(_Player);
+			_UI.ResourcePanel.UpdatePanel(_Player);
 			ConnectLocalPlayer(_Player);
 
 		}

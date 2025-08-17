@@ -5,13 +5,13 @@ public partial class UI : Control
 {
 
 
-    public ResourcePanel ResPanel { get; set; } = null;
+    public ResourcePanel ResourcePanel { get; set; } = null;
 
     public PlanetInterface PInterface { get; set; } = null;
 
     public BuildingInterface BuildingInterface { get; set; }
 
-    public RightPanel RPanel { get; set; } = null;
+    public RightPanel RightPanel { get; set; } = null;
 
     public ArmyInterface ArmyInterfce { get; set; } = null;
 
@@ -24,8 +24,6 @@ public partial class UI : Control
     public RichTextLabel ResLabelTooltip { get; set; }
 
     public UnitCardFactory UnitCardFactory { get; set; }
-
-    BattleUi battleUi;
 
     private Control _menu = null;
     public Control WorldMenu
@@ -40,14 +38,12 @@ public partial class UI : Control
     }
 
     public AlertBox ABox { get; set; } = null;
-    public BattleUi BattleUi { get => battleUi; set => battleUi = value; }
 
     void GetNodes()
     {
-        BattleUi = GetNode<BattleUi>("BattleUI");
-        ResPanel = GetNode<ResourcePanel>("ResourcePanel");
+        ResourcePanel = GetNode<ResourcePanel>("ResourcePanel");
         PInterface = GetNode<PlanetInterface>("PlanetInterface");
-        RPanel = GetNode<RightPanel>("RightPanel");
+        RightPanel = GetNode<RightPanel>("RightPanel");
         _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
         ArmyInterfce = GetNode<ArmyInterface>("ArmyInterface");
@@ -59,21 +55,21 @@ public partial class UI : Control
         UnitCardFactory = GetNode<UnitCardFactory>("UnitCardFactory");
     }
 
-    public void UpdateResPanel(Player player)
+    public void UpdateResourcePanel(Player player)
     {
-        ResPanel.UpdatePanel(player);
+        ResourcePanel.UpdatePanel(player);
     }
 
     public void UpdateUI(Player player)
     {
-        RPanel.UpdateRightPanel(player);
+        RightPanel.UpdateRightPanel(player);
         // GD.Print("update r panel");
 
         if (player.ResourcesChanged)
         {
             if (player.ResManager != null)
             {
-                UpdateResPanel(player);
+                UpdateResourcePanel(player);
                 player.ResourcesChanged = false;
             }
         }
@@ -95,17 +91,16 @@ public partial class UI : Control
     {
         GetNodes();
         ArmyInterfce.ArmyPanel.UI = this;
-        BattleUi.ArmyInterface.ArmyPanel.UI = this;
         UnitCardFactory.UI = this;
         BattlePan.ConnectContainers(this);
     }
 
-    public void UpdateBattleUI(SpaceBattle spaceBattle)
+    public void UpdateBattleUI()
     {
         TopLeft.Hide();
-        RPanel.Hide();
+        RightPanel.Hide();
         BattlePan.Hide();
-		BattleUi.UpdateBattleUI(spaceBattle);
+        ResourcePanel.Hide();
     }
 
     void _on_OrbitIconFocus(Node Orbit)
@@ -118,18 +113,30 @@ public partial class UI : Control
 
 	public void _on_BuildingLabelGuiInputEvent(Unit unit, bool tooExpensive){
 		BuildingInterface.Visible = true;
-        var pos = GetGlobalMousePosition();
-		var x = pos.X-(BuildingInterface.Size.X/2);
-		var y = pos.Y-BuildingInterface.Size.Y-20;
-        BuildingInterface.Position = new Vector2(x, y);
+        MoveControlToMousePosition(BuildingInterface);
 		BuildingInterface.UpdateInterface(unit, tooExpensive);
 	}
+    
+    public void _on_BuildingLabelGuiInputEvent(Unit unit){
+		BuildingInterface.Visible = true;
+        MoveControlToMousePosition(BuildingInterface);
+		BuildingInterface.UpdateInterface(unit.UnitName, unit);
+	}
 
-	public void _mouseLeftBuildingLabel(){
-		BuildingInterface.Visible = false;
-	}	
+    void MoveControlToMousePosition(Control control)
+    {
+        var pos = GetGlobalMousePosition();
+		var x = pos.X-(control.Size.X/2);
+		var y = pos.Y-control.Size.Y-20;
+        control.Position = new Vector2(x, y);
+    }
+
+	public void _mouseLeftBuildingLabel()
+    {
+        BuildingInterface.Visible = false;
+    }	
 
     //public void ConnectToLookAtObject(Node node, string methodName){
-    // to do if RPanel goes private
+    // to do if RightPanel goes private
     //}
 }

@@ -1,25 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dnabucbyeoqmh"]
+[gd_scene load_steps=11 format=3 uid="uid://dnabucbyeoqmh"]
 
 [ext_resource type="Script" uid="uid://bucssk3ciqoo0" path="res://Map/Battle/ManualBattleScene.cs" id="1_swgib"]
 [ext_resource type="Script" uid="uid://bg4vk38mwp0io" path="res://Map/Battle/UnitFactory.cs" id="2_eornl"]
 [ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="2_ph0dr"]
 [ext_resource type="Script" uid="uid://dtcc58ngnqq32" path="res://Map/Battle/BoxSelectController.cs" id="4_8b6k4"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eornl"]
-sky_top_color = Color(0.197937, 0.197937, 0.197937, 1)
-sky_horizon_color = Color(0.196078, 0.196078, 0.196078, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-
-[sub_resource type="Sky" id="Sky_8b6k4"]
-sky_material = SubResource("ProceduralSkyMaterial_eornl")
-
-[sub_resource type="Environment" id="Environment_fgmcw"]
-background_mode = 2
-sky = SubResource("Sky_8b6k4")
-tonemap_mode = 2
-ssr_enabled = true
-ssao_enabled = true
-glow_enabled = true
+[ext_resource type="PackedScene" uid="uid://bqfm6cf66f6b4" path="res://Map/Battle/battle_ui.tscn" id="5_fgmcw"]
+[ext_resource type="Script" uid="uid://cjwa3f8iuh44c" path="res://Map/Battle/ProjectileFactory.cs" id="5_omgxu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_73bjj"]
 size = Vector3(500, 1, 500)
@@ -36,10 +22,12 @@ material = SubResource("StandardMaterial3D_swgib")
 size = Vector3(450, 1, 50)
 
 [node name="ManualBattleScene" type="Node3D"]
+visible = false
 script = ExtResource("1_swgib")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_fgmcw")
+[node name="BattleUI" parent="." instance=ExtResource("5_fgmcw")]
+visible = false
+mouse_filter = 2
 
 [node name="BattleZone" type="Area3D" parent="."]
 monitorable = false
@@ -79,13 +67,23 @@ skeleton = NodePath("../BattleZone/CollisionShape3D")
 [node name="ActiveObjects" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
 
-[node name="UnitFactory" type="Node" parent="."]
+[node name="UnitFactory" type="Node3D" parent="."]
+visible = false
 script = ExtResource("2_eornl")
 
 [node name="UnitPool" type="Node" parent="UnitFactory"]
 script = ExtResource("2_ph0dr")
 MinAmount = 20
 Node3DPath = "res://Map/Battle/Unit3D.tscn"
+
+[node name="ProjectileFactory" type="Node3D" parent="."]
+visible = false
+script = ExtResource("5_omgxu")
+
+[node name="LaserPool" type="Node" parent="ProjectileFactory"]
+script = ExtResource("2_ph0dr")
+MinAmount = 100
+Node3DPath = "res://Map/Battle/Laser.tscn"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 100, 0)

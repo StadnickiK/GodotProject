@@ -46,7 +46,7 @@ public partial class ArmyContainer : VBoxContainer
 	public void ConnectUnitCards(UI ui){
 		foreach(var node in unitCards){
 			var b = node.GetChild(0).GetNode<Button>("Button");
-			b.MouseEntered += () => ui._on_BuildingLabelGuiInputEvent(node.Unit, b.Disabled);
+			b.MouseEntered += () => ui._on_BuildingLabelGuiInputEvent(node.Unit);
 			b.MouseExited += () => ui._mouseLeftBuildingLabel();
 		}
 	}

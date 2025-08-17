@@ -6,11 +6,17 @@ using System.Collections.Generic;
 public class Node3DModel
 {
     public Node Parent { get; set; }
-	public Vector3 Position { get; set; }
+    public Vector3 Position { get; set; }
 
     public StringName Name { get; set; }
 
-    public bool Visible { get; set; }    
+    public bool Visible { get; set; }
+}
+
+
+public interface ISavingNode
+{
+    event Node3DPool.SaveNodeEventHandler SaveNode;
 }
 
 public partial class Node3DPool : Node
@@ -28,14 +34,17 @@ public partial class Node3DPool : Node
     PackedScene _Node3DScene;
     public List<Node3D> AvaiableNode3Ds { get; set; } = new List<Node3D>();
 
+    public delegate void SaveNodeEventHandler(Node3D node);
+
     public override void _Ready()
     {
         _Node3DScene = (PackedScene)ResourceLoader.Load(Node3DPath);
-        foreach (var node in GetChildren())
+        foreach (var item in GetChildren())
         {
-            if (node is Node3D Node3D)
+            if (item is Node3D Node3D)
             {
                 Node3D.Hide();
+                if (Node3D is ISavingNode node) node.SaveNode += SaveNode3D;
                 AvaiableNode3Ds.Add(Node3D);
             }
         }
@@ -92,7 +101,7 @@ public partial class Node3DPool : Node
         }
         var Node3D = AvaiableNode3Ds[AvaiableNode3Ds.Count - 1];
         Node3D.Visible = visible;
-        RemoveChild(Node3D);
+        Node3D.GetParent().RemoveChild(Node3D);
         parent.AddChild(Node3D);
         Node3D.ProcessMode = ProcessModeEnum.Inherit;
         AvaiableNode3Ds.RemoveAt(AvaiableNode3Ds.Count - 1);
@@ -111,7 +120,9 @@ public partial class Node3DPool : Node
 
     Node3D GetNewNode3D()
     {
-        return (Node3D)_Node3DScene.Instantiate();
+        var Node3D = (Node3D)_Node3DScene.Instantiate();
+        if (Node3D is ISavingNode node) node.SaveNode += SaveNode3D;
+        return Node3D;
     }
 
     public void InitAmount(int amount = 1)

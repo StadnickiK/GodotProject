@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class MapArmyManager : Node
+public partial class MapArmyManager : Node3D
 {
     public Node3DPool ArmyPool { get; set; }
 

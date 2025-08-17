@@ -31,4 +31,9 @@ public partial class BattleUi : Control
         Show();
         ArmyInterface.UpdateArmyPanel(SpaceBattle.GetLocalUnits());
     }
+
+    public void _on_fight_button_up()
+    {
+        ConfirmPanel.Hide();
+    }
 }

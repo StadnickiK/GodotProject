@@ -301,10 +301,15 @@ public partial class Player : Node, IEquatable<Player>
     //     return player1.PlayerID != player2.PlayerID;
     // }
 
-    public bool  Equals(Player other)
+/// <summary>
+/// Same as ControllerA.PlayerID == ControllerB.PlayerID;
+/// </summary>
+/// <param name="other"></param>
+/// <returns></returns>
+    public bool Equals(Player other)
     {
-        if(other == null)
-            return false;      
+        if (other == null)
+            return false;
         return PlayerID == other.PlayerID;
     }
 
