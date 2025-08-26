@@ -17,9 +17,11 @@ public class Node3DModel
 public interface ISavingNode
 {
     event Node3DPool.SaveNodeEventHandler SaveNode;
+
+    void InvokeSaveNode();
 }
 
-public partial class Node3DPool : Node
+public partial class Node3DPool : Node3D
 {
 
     [Export]

@@ -27,6 +27,10 @@ _baseValue = 5.0
 script = ExtResource("2")
 _baseValue = 100.0
 
+[node name="Shield" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 10.0
+
 [node name="Speed" type="Node" parent="StatManager"]
 script = ExtResource("2")
 _baseValue = 10.0

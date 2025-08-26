@@ -46,6 +46,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
     public List<Unit3D> LocalUnitModels { get; set; } = new List<Unit3D>();
     public ProjectileFactory ProjectileFactory { get; set; }
 
+    IDamageCalculator DamageCalculator;
+
 
     ArmyInterface armyInterface;
 
@@ -189,6 +191,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
         battleUi.Fight.ButtonUp += _on_Fight;
         UnitFactory.ProjectileFactory = ProjectileFactory;
         ProjectileFactory.ProjectileParent = this;
+        ProjectileFactory.DamageCalculator = DamageCalculator;
+        SpaceBattle.DamageCalculator = DamageCalculator;
     }
 
     private void GetNodes()
@@ -204,6 +208,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
         battleUi = GetNode<BattleUi>("BattleUI");
         armyInterface = GetNode<ArmyInterface>("BattleUI/ArmyInterface");
         ProjectileFactory = GetNode<ProjectileFactory>("ProjectileFactory");
+        DamageCalculator = GetNode<DamageCalculator>("DamageCalculator");
         // LeftDeployZone/AttackerDeployZone
     }
 

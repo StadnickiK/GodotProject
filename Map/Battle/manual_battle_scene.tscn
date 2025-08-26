@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dnabucbyeoqmh"]
+[gd_scene load_steps=12 format=3 uid="uid://dnabucbyeoqmh"]
 
 [ext_resource type="Script" uid="uid://bucssk3ciqoo0" path="res://Map/Battle/ManualBattleScene.cs" id="1_swgib"]
 [ext_resource type="Script" uid="uid://bg4vk38mwp0io" path="res://Map/Battle/UnitFactory.cs" id="2_eornl"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dtcc58ngnqq32" path="res://Map/Battle/BoxSelectController.cs" id="4_8b6k4"]
 [ext_resource type="PackedScene" uid="uid://bqfm6cf66f6b4" path="res://Map/Battle/battle_ui.tscn" id="5_fgmcw"]
 [ext_resource type="Script" uid="uid://cjwa3f8iuh44c" path="res://Map/Battle/ProjectileFactory.cs" id="5_omgxu"]
+[ext_resource type="Script" uid="uid://b7en5rnmtqbi2" path="res://Map/Battle/DamageCalculator.cs" id="7_fuhv8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_73bjj"]
 size = Vector3(500, 1, 500)
@@ -71,7 +72,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
 visible = false
 script = ExtResource("2_eornl")
 
-[node name="UnitPool" type="Node" parent="UnitFactory"]
+[node name="UnitPool" type="Node3D" parent="UnitFactory"]
+visible = false
 script = ExtResource("2_ph0dr")
 MinAmount = 20
 Node3DPath = "res://Map/Battle/Unit3D.tscn"
@@ -80,7 +82,8 @@ Node3DPath = "res://Map/Battle/Unit3D.tscn"
 visible = false
 script = ExtResource("5_omgxu")
 
-[node name="LaserPool" type="Node" parent="ProjectileFactory"]
+[node name="LaserPool" type="Node3D" parent="ProjectileFactory"]
+visible = false
 script = ExtResource("2_ph0dr")
 MinAmount = 100
 Node3DPath = "res://Map/Battle/Laser.tscn"
@@ -94,3 +97,6 @@ sky_mode = 1
 
 [node name="BoxSelectController" type="Node2D" parent="."]
 script = ExtResource("4_8b6k4")
+
+[node name="DamageCalculator" type="Node" parent="."]
+script = ExtResource("7_fuhv8")

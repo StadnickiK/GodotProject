@@ -188,5 +188,12 @@
     <Compile Include="Map\IMap\IProjectile.cs" />
     <Compile Include="Map\Battle\ProjectileFactory.cs" />
     <Compile Include="Map\IMap\IProjectileFactory.cs" />
+    <Compile Include="Map\IMap\IStatChangedNotifier.cs" />
+    <Compile Include="Map\IMap\IDamagable.cs" />
+    <Compile Include="Map\Battle\DamageCalculator.cs" />
+    <Compile Include="Units\HealthBar.cs" />
+    <Compile Include="Map\Battle\DeathController.cs" />
+    <Compile Include="Units\Stats\GlobalStatNames.cs" />
+    <Compile Include="Map\Battle\Shield.cs" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ public class Unit3dModel : Node3DModel, IMapObjectController
 
 }
 
-public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory
+public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory, IDamagable, ISavingNode
 {
     private Player controller;
     private ProjectileFactory projectileFactory;
@@ -30,8 +30,17 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
 
     public SelectionCircleControler Selection { get; set; }
 
+    public HealthBar HealthBar { get; set; }
+
     public StatManager StatManager { get; set; }
+
     public ProjectileFactory ProjectileFactory { get => projectileFactory; set { projectileFactory = value; UpdateProjectileFactory(); } }
+
+    public Shield Shield { get; set; }
+
+    ISimpleAttackBattery SimpleAttackBattery;
+
+    public event Node3DPool.SaveNodeEventHandler SaveNode;
 
 
     public override void _Ready()
@@ -40,6 +49,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         UpdateController();
         StateMachine.Body = this;
         StateMachine.Enter(new IdleState(this));
+        SimpleAttackBattery.Source = this;
     }
 
     void UpdateController()
@@ -65,6 +75,9 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         OrderQueue = GetNode<OrderQueue>("TargetManager");
         StateMachine = GetNode<StateMachine>("StateMachine");
         Selection = GetNode<SelectionCircleControler>("Selection");
+        HealthBar = GetNode<HealthBar>("HealthBar");
+        SimpleAttackBattery = GetNode<SimpleAttackBattery>("SimpleAttackBattery");
+        Shield = GetNode<Shield>("Shield");
     }
 
     public void LoadUnit(IStatManager unit)
@@ -72,6 +85,8 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         StatManager = unit.StatManager;
         StatManager.ConnectStatListeners(this);
         StatManager.UpdateListeners();
+        if (Shield != null)
+            Shield.StatManager = StatManager;
     }
 
     public void ChangeMovableState(IMovableState movableState)
@@ -137,9 +152,9 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
                         {
                             state.Tolerance = StatManager.GetStat("Range").CurrentValue;
                         }
-                    StatManager.Stats[state.StatNames.FirstOrDefault()].StatChanged += state.UpdateStat;
-                    StateMachine.Enter(state);
-                
+                StatManager.Stats[state.StatNames.FirstOrDefault()].StatChanged += state.UpdateStat;
+                StateMachine.Enter(state);
+
                 break;
         }
     }
@@ -169,5 +184,18 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         var meshSize = MeshInstance3D.Mesh.GetAabb().Size;
         var size = meshSize.Z > meshSize.X ? meshSize.Z : meshSize.X;
         Selection.Size = new Vector2(size, size);
+        HealthBar.UpdatePosition(meshSize);
+        Shield.UpdateRadius(size);
     }
+    
+    public void Damage()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void InvokeSaveNode()
+    {
+        SaveNode?.Invoke(this);
+    }
+
 }

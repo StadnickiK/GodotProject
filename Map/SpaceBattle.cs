@@ -45,6 +45,8 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 
 	public event OpenBattlePanelEventHandler OpenBattlePanel;
 
+	public IDamageCalculator DamageCalculator { get; set; }
+
 	public enum HasLocal
 	{
 		None,
@@ -172,7 +174,7 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 			if (defenders.Count == 0) break;
 			if(Logging) gameLogger.LogInfo("Attacker " + attackerID);
 			var target = defenders.OrderBy(e => Rand.Next()).LastOrDefault();
-			attacker.CalculateDamage(target);
+			DamageCalculator.CalculateDamage(attacker, target);
 
 			// Optional: re-filter in case someone died
 			if (!target.HasHitpoints)

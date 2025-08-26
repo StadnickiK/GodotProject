@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Unit : Construct, IUpkeep, IStatManager
+public partial class Unit : Construct, IUpkeep, IStatManager, IDamagable
 {
 
 	public event Node2DPool.FreeNodeEventHandler FreeUnit;
@@ -11,14 +11,9 @@ public partial class Unit : Construct, IUpkeep, IStatManager
 	public int ID_Owner { get; set; }
 
 	[Export]
-	public bool Logging { get; set; } = true;
-
-	[Export]
 	public string ModelName { get; set; }
 
 	public int ModelVolume { get; set; } = 0;
-
-	GameLogger gameLogger = GameLogger.Instance;
 
 	public bool HasHitpoints { get; private set; } = true;  
 
@@ -34,8 +29,6 @@ public partial class Unit : Construct, IUpkeep, IStatManager
 
 	public StatManager StatManager { get; set; }
 
-
-
 	//public Dictionary<string, BaseStat> Stats { get; set; } = new Dictionary<string, BaseStat>();
 
 	public Node Stats { get; set; }
@@ -50,31 +43,6 @@ public partial class Unit : Construct, IUpkeep, IStatManager
 		Name = name;
 		foreach(BaseStat stat in stats){
 			Stats.AddChild(stat);
-		}
-	}
-
-	public void CalculateDamage(Unit unit){
-		var attack = GetStat("Attack");
-		var unitDefence = unit.GetStat("Defence");
-		var unitHP = unit.GetStat("HitPoints");
-		if(Logging) gameLogger.LogInfo("Attack " + attack.CurrentValue + "");
-		if(Logging) gameLogger.LogInfo("Target Defence " + unitDefence.CurrentValue + " Target HP " + unitHP.CurrentValue);
-		if (attack.CurrentValue > unitDefence.CurrentValue)
-		{
-			var EffectiveAttack = attack.CurrentValue - unitDefence.CurrentValue;
-			unitHP.CurrentValue -= EffectiveAttack;
-			if (Logging) gameLogger.LogInfo("Damage dealt " + EffectiveAttack + " Target HP " + unitHP.CurrentValue);
-		}
-		else
-		{
-			unitHP.CurrentValue -= 1; // if defence is higher than attack deal minimal dmg
-			if (Logging) gameLogger.LogInfo("Damage dealt " + 1 + " Target HP " + unitHP.CurrentValue);
-		}
-		if (unitHP.CurrentValue <= 0)
-		{
-			unit.HasHitpoints = false;
-			if (Logging) gameLogger.LogInfo("Target has no HP, hasHP "+unit.HasHitpoints);
-			//FreeUnit?.Invoke(this);
 		}
 	}
 
@@ -96,4 +64,8 @@ public partial class Unit : Construct, IUpkeep, IStatManager
 		return StatManager.GetNodeOrNull<BaseStat>(name);
 	}
 
+    public void Damage()
+    {
+        throw new System.NotImplementedException();
+    }
 }

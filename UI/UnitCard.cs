@@ -35,7 +35,7 @@ public partial class UnitCard : Control, IUpdateStat
 		if(Unit != null) Unit.StatManager.StatChanged -= UpdateStat;
 		Unit = unit;
 		unit.StatManager.StatChanged += UpdateStat;
-		var health = unit.GetStat("HitPoints");
+		var health = unit.GetStat(GlobalStatNames.Health);
 		Modulate = new Color(1, 1, 1, 1);
 		Progress.Hide();
 		Label.Hide();
@@ -60,15 +60,15 @@ public partial class UnitCard : Control, IUpdateStat
 	{
 	}
 
-    public void UpdateStat(float value, string name = "")
+    public void UpdateStat(IStat stat)
     {
-		switch (name)
+		switch (stat.Name)
 		{
 			case "Shield":
-				Shield.Value = value;
+				Shield.Value = stat.CurrentValue;
 				break;
-			default:
-				Health.Value = value;
+			case "Health":
+				Health.Value = stat.CurrentValue;
 					break;
 		}
     }

@@ -100,8 +100,8 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
         Body.AngularVelocity = (rotationAxis * angle) / Mathf.Max(TimeToRotate, 0.001f);
     }
 
-    public void UpdateStat(float value, string name = null)
+    public void UpdateStat(IStat stat)
     {
-        MoveSpeed = value;
+        MoveSpeed = stat.CurrentValue;
     }
 }

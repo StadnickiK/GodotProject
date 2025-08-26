@@ -71,5 +71,6 @@ process_mode = 4
 visible = false
 script = ExtResource("9_s53j1")
 
-[node name="ArmyPool" type="Node" parent="MapArmyManager"]
+[node name="ArmyPool" type="Node3D" parent="MapArmyManager"]
+visible = false
 script = ExtResource("9_4sj48")

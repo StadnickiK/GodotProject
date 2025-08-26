@@ -2,15 +2,48 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class BaseStat : Node{
 
-    public delegate void StatChangedEventHandler(float value, string statName = null);
-
+public interface IStat
+{
+    public delegate void StatChangedEventHandler(IStat stat);
     public event StatChangedEventHandler StatChanged;
 
+    public float CurrentValue { get; set; }
+
+    public float MaxValue { get; set; }
+
+    public bool HasMaxValue { get; set; }
+
+    public float MinValue { get; set; }
+
+    public bool HasMinValue { get; set; }
+
+    public float BaseValue { get; set; }
+
+    public StringName Name { get; set; }
+
+    public void AddModifier(StatModifier statModifier);
+
+    public void RemoveModifier(StatModifier statModifier);
+
+    public void CloneStat(IStat stat);
+}
+
+public partial class BaseStat : Node, IStat
+{
+
+    public event IStat.StatChangedEventHandler StatChanged;
+
     public BaseStat() { }
-    
+
     private List<StatModifier> Modifiers = new List<StatModifier>();
+
+    private float _currentValue = 0;
+    public float CurrentValue
+    {
+        get { return _currentValue; }
+        set { _currentValue = value; StatChanged?.Invoke(this); }
+    }
 
     public BaseStat(BaseStat stat)
     {
@@ -19,17 +52,20 @@ public partial class BaseStat : Node{
         _currentValue = _baseValue;
     }
 
-    public BaseStat(string name){
+    public BaseStat(string name)
+    {
         Name = name;
     }
 
-    public BaseStat(string name, int baseValue){
+    public BaseStat(string name, int baseValue)
+    {
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
     }
 
-    public BaseStat(string name, int baseValue, int max){
+    public BaseStat(string name, int baseValue, int max)
+    {
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
@@ -37,7 +73,8 @@ public partial class BaseStat : Node{
         HasMaxValue = true;
     }
 
-    public BaseStat(string name, int baseValue, int min,int max){
+    public BaseStat(string name, int baseValue, int min, int max)
+    {
         Name = name;
         _baseValue = baseValue;
         _currentValue = baseValue;
@@ -47,7 +84,7 @@ public partial class BaseStat : Node{
         HasMinValue = true;
     }
 
-    public void CloneStat(BaseStat stat)
+    public void CloneStat(IStat stat)
     {
         Name = stat.Name;
         _baseValue = stat.BaseValue;
@@ -83,19 +120,13 @@ public partial class BaseStat : Node{
     }
 
     public int Index { get; set; }
-    
+
     [Export]
     private float _baseValue = 0;
     public float BaseValue
     {
         get { return _baseValue; }
-    }
-
-    private float _currentValue = 0;
-    public float CurrentValue
-    {
-        get { return _currentValue; }
-        set { _currentValue = value; StatChanged?.Invoke(value, Name); }
+        set{ _baseValue = value; }
     }
     [Export]
     public bool HasMaxValue { get; set; } = false;
@@ -105,9 +136,10 @@ public partial class BaseStat : Node{
     public float MaxValue
     {
         get { return _maxValue; }
+        set { _maxValue = value; }
     }
     [Export]
-    public bool HasMinValue { get; set; } = false; 
+    public bool HasMinValue { get; set; } = false;
     [Export]
     private float _minValue;
     public float MinValue

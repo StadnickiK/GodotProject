@@ -87,12 +87,12 @@ public partial class VisionComponent : Area3D, IUpdateStat
         }
     }
     
-    public void UpdateStat(float value, string name = "")
+    public void UpdateStat(IStat stat)
     {
-        switch (name)
+        switch (stat.Name)
         {
             case "Vision Range":
-                UpdateVisionRange(value);
+                UpdateVisionRange(stat.CurrentValue);
                 break;
         }
     }
