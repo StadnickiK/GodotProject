@@ -9,7 +9,13 @@ public class Unit3dModel : Node3DModel, IMapObjectController
 
 }
 
-public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory, IDamagable, ISavingNode
+public interface ICardIndex
+{
+    public Player Controller { get; set; }
+    public int CardIndex { get; set; }
+}
+
+public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory, IDamagable, ISavingNode, ICardIndex, IStatManager
 {
     private Player controller;
     private ProjectileFactory projectileFactory;
@@ -38,10 +44,13 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
 
     public Shield Shield { get; set; }
 
+    public DeathController DeathController { get; set; }
+
     ISimpleAttackBattery SimpleAttackBattery;
 
     public event Node3DPool.SaveNodeEventHandler SaveNode;
 
+    public int CardIndex { get; set; }
 
     public override void _Ready()
     {
@@ -78,11 +87,13 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         HealthBar = GetNode<HealthBar>("HealthBar");
         SimpleAttackBattery = GetNode<SimpleAttackBattery>("SimpleAttackBattery");
         Shield = GetNode<Shield>("Shield");
+        StatManager = GetNode<StatManager>("StatManager");
+        DeathController = GetNode<DeathController>("DeathController");
     }
 
     public void LoadUnit(IStatManager unit)
     {
-        StatManager = unit.StatManager;
+        StatManager.CloneStats(unit);
         StatManager.ConnectStatListeners(this);
         StatManager.UpdateListeners();
         if (Shield != null)
@@ -187,7 +198,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         HealthBar.UpdatePosition(meshSize);
         Shield.UpdateRadius(size);
     }
-    
+
     public void Damage()
     {
         throw new System.NotImplementedException();
@@ -198,4 +209,9 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         SaveNode?.Invoke(this);
     }
 
+    public void BeforeSave()
+    {
+        OrderQueue?.ClearTargets();
+        StateMachine?.Enter(new IdleState(this));
+    }
 }

@@ -77,13 +77,32 @@ public partial class ArmyPanel : ScrollContainer
 	{
 		var b = card.GetChild(0).GetNode<Button>("Button");
 		b.MouseEntered += () => UI._on_BuildingLabelGuiInputEvent(card.Unit);
-		b.MouseExited += () => UI._mouseLeftBuildingLabel();
+		b.MouseExited += () => UI._mouseLeftBuildingLabel(); // simplifying breaks this
 	}
 
 	public void UpdateArmyList(List<Unit> units, bool IsController)
 	{
 		while(UnitCards.Count < units.Count)
-			AddCards(1);
+			AddCards();
+		for (int i = 0; i < UnitCards.Count; i++)
+		{
+			if (i < units.Count)
+			{
+				UnitCards[i].Show();
+				UnitCards[i].UpdateCard(units[i]);
+				UnitCards[i].button.Disabled = !IsController;
+			}
+			else
+			{
+				UnitCards[i].Hide();
+			}
+		}
+	}
+	
+	public void UpdateArmyList(List<Unit3D> units, bool IsController)
+	{
+		while(UnitCards.Count < units.Count)
+			AddCards();
 		for (int i = 0; i < UnitCards.Count; i++)
 		{
 			if (i < units.Count)
@@ -99,16 +118,18 @@ public partial class ArmyPanel : ScrollContainer
 		}
 	}
 
-	public void ResetPanel(){
+	public void ResetPanel()
+	{
 
-		foreach(var card in UnitCards){
+		foreach (var card in UnitCards)
+		{
 			card.button.ButtonPressed = false;
 		}
 		UnitsToTransfer.Clear();
 		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);
 	}
 
-	void AddCards(int count){
+	void AddCards(int count = 1){
 		for (int i = 0; i < count; i++)
 		{
 			var card = scene.Instantiate<UnitCard>();

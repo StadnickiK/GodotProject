@@ -101,7 +101,8 @@ public partial class UnitController : Node
 
     void CheckNoUnits()
     {
-        if (!HasUnits) NoUnits?.Invoke();
+        if (!HasUnits)
+            NoUnits?.Invoke();
     }
 
     public void TransferUnit(UnitController unitController, int unitID)

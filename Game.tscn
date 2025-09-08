@@ -5,12 +5,15 @@
 [ext_resource type="Script" uid="uid://dieyn7q3vdibs" path="res://Game.cs" id="3"]
 
 [node name="Game" type="Node3D"]
+process_mode = 3
 script = ExtResource("3")
 
 [node name="MainMenu" parent="." instance=ExtResource("1")]
+process_mode = 1
 Title = "RTS 4X"
 
 [node name="Node" type="Node" parent="."]
+process_mode = 3
 script = ExtResource("2")
 
 [connection signal="QuickGame" from="MainMenu" to="." method="_on_QuickGame"]

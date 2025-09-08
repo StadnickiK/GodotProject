@@ -49,6 +49,8 @@ public partial class InputController : Node
     {
       rigidBody3DParent = (CollisionObject3D)GetParent();
       rigidBody3DParent.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
+      var s = rigidBody3DParent.GetNodeOrNull<Shield>("Shield");
+      s?.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
     }
     catch (System.Exception ex)
     {

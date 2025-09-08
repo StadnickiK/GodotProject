@@ -4,22 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public partial class StatManager : Node, IUpdateStat, IStatChangedNotifier
+public partial class StatManager : Node, IStatChangedNotifier
 {
 
     [Export]
     public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
     public Dictionary<string, IStat> Stats { get; set; } = new Dictionary<string, IStat>();
-    public HashSet<string> StatNames { get; set; }
 
     public event IStat.StatChangedEventHandler StatChanged;
 
     public void AddStat(BaseStat stat)
     {
+        AddChild(stat);
         Stats.Add(stat.Name, stat);
         stat.StatChanged += StatChangedInvoke;
-        AddChild(stat);
     }
 
     void StatChangedInvoke(IStat stat)
@@ -43,13 +42,19 @@ public partial class StatManager : Node, IUpdateStat, IStatChangedNotifier
 
     public void CloneStats(IStatManager statManager)
     {
+        var i = 0;
         while (Stats.Count < statManager.StatManager.Stats.Count)
-            AddStat(new BaseStat());
-
-        for (int i = 0; i < Stats.Count; i++)
         {
-            Stats.ElementAt(i).Value.CloneStat(statManager.StatManager.Stats.ElementAt(i).Value);
+            var stat = new BaseStat();
+            stat.CloneStat(statManager.StatManager.Stats.ElementAt(i).Value);
+            AddStat(stat);
+            i++;
         }
+
+        for (i = 0; i < Stats.Count; i++)
+            {
+                Stats.ElementAt(i).Value.CloneStat(statManager.StatManager.Stats.ElementAt(i).Value);
+            }
     }
 
     public void AddStatModifier(string statName, StatModifier modifier)
@@ -103,12 +108,17 @@ public partial class StatManager : Node, IUpdateStat, IStatChangedNotifier
 
     public void ConnectStatListeners(Node parent)
     {
-        foreach (var child in parent.GetChildren()) {
+        foreach (var child in parent.GetChildren())
+        {
             if (child is IUpdateStat updateStat)
+            {
+                StatChanged -= updateStat.UpdateStat;
                 StatChanged += updateStat.UpdateStat;
-            //if (child is IStatChangedNotifier statChangedNotifier)
-                //statChangedNotifier.StatChanged += UpdateStat; 
             }
+            
+            //if (child is IStatChangedNotifier statChangedNotifier)
+            //statChangedNotifier.StatChanged += UpdateStat; 
+        }
     }
 
     public void DisonnectStatListeners(Node parent)
@@ -128,15 +138,5 @@ public partial class StatManager : Node, IUpdateStat, IStatChangedNotifier
         foreach (var stat in Stats.Values)
             str.Append(stat.Name + " " + stat.CurrentValue + "\n");
         return str.ToString();
-    }
-
-    public void UpdateStat(IStat stat)
-    {
-        if (Stats.ContainsKey(stat.Name))
-        {
-            Stats[stat.Name].CurrentValue = stat.CurrentValue;
-        }else
-            GD.Print(GetParent().Name + " does not contain Stat " + stat.Name);
-        
     }
 }

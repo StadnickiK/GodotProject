@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bur84mij7kvjm"]
+[gd_scene load_steps=21 format=3 uid="uid://bur84mij7kvjm"]
 
 [ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3D.cs" id="1_nnrop"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://6n301pbmkkmx" path="res://Map/Battle/SimpleAttackBattery.cs" id="10_7kbm6"]
 [ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar.tscn" id="11_1km8s"]
 [ext_resource type="Script" uid="uid://ccjaexxpi7xr" path="res://Map/Battle/DeathController.cs" id="12_sxrd5"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="15_k73rr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_onp1n"]
 size = Vector3(5, 5, 5)
@@ -51,6 +52,7 @@ script = ExtResource("4_onp1n")
 shape = SubResource("BoxShape3D_onp1n")
 
 [node name="Shield" type="Area3D" parent="."]
+monitorable = false
 script = ExtResource("5_5rpic")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Shield"]
@@ -83,3 +85,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.73916, 0)
 
 [node name="DeathController" type="Node3D" parent="."]
 script = ExtResource("12_sxrd5")
+
+[node name="StatManager" type="Node" parent="."]
+script = ExtResource("15_k73rr")

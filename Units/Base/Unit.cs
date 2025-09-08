@@ -15,7 +15,7 @@ public partial class Unit : Construct, IUpkeep, IStatManager, IDamagable
 
 	public int ModelVolume { get; set; } = 0;
 
-	public bool HasHitpoints { get; private set; } = true;  
+	public bool HasHitpoints { get { return GetStat(GlobalStatNames.Health).CurrentValue > 0; } } 
 
 	public string UnitName { get; set; }
 

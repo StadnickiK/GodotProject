@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://bunhup3qd6gny"]
+
+[ext_resource type="Shader" uid="uid://blu3o8i77ks20" path="res://Shaders/SelectionCircleVisualShader.tres" id="1_n82qy"]
+[ext_resource type="Script" uid="uid://bhj3fb7bcxvbf" path="res://Map/Battle/SelectionCircleControler.cs" id="2_f3o16"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1km8s"]
+render_priority = 0
+shader = ExtResource("1_n82qy")
+shader_parameter/BaseColor = Color(0, 1, 0, 1)
+shader_parameter/CricleWidth = 0.03
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sxrd5"]
+material = SubResource("ShaderMaterial_1km8s")
+size = Vector2(10, 10)
+
+[node name="Selection" type="MeshInstance3D"]
+visible = false
+mesh = SubResource("PlaneMesh_sxrd5")
+script = ExtResource("2_f3o16")

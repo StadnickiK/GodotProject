@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class BattleUi : Control
 {
@@ -26,10 +27,18 @@ public partial class BattleUi : Control
         // LeftDeployZone/LCollisionShape3D
     }
 
-    public void UpdateBattleUI(SpaceBattle SpaceBattle)
+    public void UpdateBattleUI(List<Unit> units)
     {
         Show();
-        ArmyInterface.UpdateArmyPanel(SpaceBattle.GetLocalUnits());
+        ConfirmPanel.Show();
+        ArmyInterface.UpdateArmyPanel(units);
+    }
+
+    public void UpdateBattleUI(List<Unit3D> units)
+    {
+        Show();
+        ConfirmPanel.Show();
+        ArmyInterface.UpdateArmyPanel(units);
     }
 
     public void _on_fight_button_up()

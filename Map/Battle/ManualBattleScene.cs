@@ -23,6 +23,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     BattleUi battleUi;
 
+    List<Action> SelectUnitActions = new List<Action>();
+
     public SpaceBattle SpaceBattle { get; set; }
 
     public HashSet<Ship> Combatants { get; set; } = new HashSet<Ship>();
@@ -35,6 +37,10 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     public event LookAtEventHandler CameraLookAt;
 
+    public delegate void EndBattleEventHandler();
+
+    public event EndBattleEventHandler EndBattle;
+
     public delegate void ChangeMovableStateEventHandler(IMovableState movableState);
 
     public event ChangeMovableStateEventHandler ChangeMovableState;
@@ -44,23 +50,66 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
     public BoxSelectController BoxSelectController { get; set; }
 
     public List<Unit3D> LocalUnitModels { get; set; } = new List<Unit3D>();
+
+    HashSet<Unit3D> Unit3DModels = new HashSet<Unit3D>();
+
+    List<Unit3D> AttackerModels = new List<Unit3D>();
+
+    List<Unit3D> DefenderModels = new List<Unit3D>();
+
+    List<Unit> LocalUnits = new List<Unit>();
     public ProjectileFactory ProjectileFactory { get; set; }
 
     IDamageCalculator DamageCalculator;
 
-
     ArmyInterface armyInterface;
+
+    int LocalModels = 0;
+
+    int EnemyModels = 0;
 
     public void ClearCombat()
     {
         BoxSelectController?.SetProcessInput(false);
-        SpaceBattle.AcceptResult();
         Combatants.Clear();
         SpaceBattle.Attackers.Clear();
         SpaceBattle.Defenders.Clear();
         LocalUnitModels.Clear();
+        LocalUnits.Clear();
+        FreeModels();
         battleUi.Hide();
         DisconnectUnitCardsToSelect();
+    }
+
+    void FreeModels()
+    {
+        foreach (var model in Unit3DModels)
+        {
+            model.SaveNode -= _on_Death;
+            model.InvokeSaveNode();
+        }
+        AttackerModels.Clear();
+        DefenderModels.Clear();
+        Unit3DModels.Clear();
+    }
+
+    public void EndCombat()
+    {
+        DisconnectInputEvent(BattleZone);
+        if (LocalUnitModels.Count > 0)
+        {
+            SpaceBattle.UpdateStats(AttackerModels, SpaceBattle.GetAttackerUnits());
+            SpaceBattle.UpdateStats(DefenderModels, SpaceBattle.GetDefenderUnits());
+        } 
+        SpaceBattle.AcceptResult();
+        ClearCombat();
+    }
+
+    public void ResetCombat()
+    {
+        LocalUnits.Clear();
+        FreeModels();
+        UpdateBattle();
     }
 
     public void InitializeBattle(Random random, ModelLoader modelLoader, WorldCursorControl worldCursorControl)
@@ -88,10 +137,15 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
         Show();
         CameraLookAt?.Invoke(AttackerDeployMarker.GlobalPosition);
+        BoxSelectController?.SetProcessInput(true);
+        AttackerDeployMarker.Show();
+        DefenderDeployMarker.Show();
+        AttackerDeployZone.Show();
+        DefenderDeployZone.Show();
         LoadUnits();
         ConnectDeployZone();
         battleUi.Show();
-        battleUi.UpdateBattleUI(SpaceBattle);
+        battleUi.UpdateBattleUI(LocalUnits);
         ConnectUnitCardsToSelect();
     }
 
@@ -99,20 +153,28 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
     {
         foreach (var card in armyInterface.ArmyPanel.UnitCards)
         {
-            if(card.Visible)
-                card.button.ButtonUp += () => WCC._SelectUnit(LocalUnitModels[card.Index]);
+            if (card.Visible)
+            {
+                void selectAction() => WCC._SelectUnit(LocalUnitModels[card.Index]);
+                card.button.ButtonUp += selectAction;
+                SelectUnitActions.Add(selectAction);
+                LocalUnitModels[card.Index].CardIndex = card.Index;
+            }
         }
     }
 
     void DisconnectUnitCardsToSelect()
     {
-        foreach (var card in armyInterface.ArmyPanel.UnitCards)
-        {
-            if(card.Visible)
-                card.button.ButtonUp -= () => WCC._SelectUnit(LocalUnitModels[card.Index]);
-        }
-    }
+        if(SelectUnitActions.Count > 0)
+            for (int i = 0; i < armyInterface.ArmyPanel.UnitCards.Count; i++)
+            {
+                UnitCard card = armyInterface.ArmyPanel.UnitCards[i];
 
+                if (card.Visible)
+                    card.button.ButtonUp -= SelectUnitActions[i];
+            }
+        SelectUnitActions.Clear();
+    }
 
     void ConnectDeployZone()
     {
@@ -130,11 +192,12 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     void LoadUnits()
     {
-        var attacker = LoadUnits(SpaceBattle.Attackers, SpaceBattle.Attackers[0].Controller);
-        var defender = LoadUnits(SpaceBattle.Defenders, SpaceBattle.Defenders[0].Controller);
-
-        PlaceUnits(attacker, AttackerDeployMarker.Position);
-        PlaceUnits(defender, DefenderDeployMarker.Position);
+        AttackerModels = LoadUnits(SpaceBattle.Attackers, SpaceBattle.Attackers[0].Controller);
+        DefenderModels = LoadUnits(SpaceBattle.Defenders, SpaceBattle.Defenders[0].Controller);
+        Unit3DModels.UnionWith(AttackerModels);
+        Unit3DModels.UnionWith(DefenderModels);
+        PlaceUnits(AttackerModels, AttackerDeployMarker.Position);
+        PlaceUnits(DefenderModels, DefenderDeployMarker.Position);
     }
 
     private List<Unit3D> LoadUnits(List<IEnterCombat> armies, Player controller)
@@ -147,10 +210,17 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
                 var unit3D = UnitFactory.CreateUnit(this, Vector3.Zero, controller, unit);
                 if (controller.IsLocal)
                 {
+                    LocalUnits.Add(unit);
                     unit3D.MovableState = IMovableState.Placement;
                     ChangeMovableState += unit3D.ChangeMovableState;
                     LocalUnitModels.Add(unit3D);
+                    LocalModels++;
                 }
+                else
+                {
+                    EnemyModels++;
+                }
+                unit3D.SaveNode += _on_Death;
                 units.Add(unit3D);
             }
         }
@@ -227,29 +297,24 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     public void ConnectToEnterCombat(Node node)
     {
-        if(!node.IsConnected("EnterCombat", new Callable(this, nameof(_on_EnterCombat))))
+        if (!node.IsConnected("EnterCombat", new Callable(this, nameof(_on_EnterCombat))))
             node.Connect("EnterCombat", new Callable(this, nameof(_on_EnterCombat)));
     }
 
     public void ConnectToEnterCombat(Ship node)
     {
+        node.EnterCombat -= _on_EnterCombat;
         node.EnterCombat += _on_EnterCombat;
     }
 
     public void CreateBattle(List<IEnterCombat> attackers, List<IEnterCombat> defenders, Node parent)
     {
-        BoxSelectController?.SetProcessInput(true);
-        AttackerDeployMarker.Show();
-        DefenderDeployMarker.Show();
-        AttackerDeployZone.Show();
-        DefenderDeployZone.Show();
 
         Combatants.Union(attackers);
         Combatants.Union(defenders);
 
         SpaceBattle.AddAttackers(attackers);
         SpaceBattle.AddDefenders(defenders);
-
     }
 
     void _on_EnterCombat(IEnterCombat ship, IEnterCombat enemy, Node parent)
@@ -278,5 +343,31 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
         DisconnectInputEvent(DefenderDeployZone);
         ConnectInputEvent(BattleZone);
         ChangeMovableState?.Invoke(IMovableState.Movement);
+    }
+
+    void FinishBattle()
+    {
+        OpenBattlePanel?.Invoke(SpaceBattle);
+        SpaceBattle.InvokeBattleFinished();
+        battleUi.Hide();
+        CameraLookAt?.Invoke(SpaceBattle.Attackers[0].GlobalPosition);
+        EndBattle?.Invoke();
+    }
+
+    void _on_Death(Node node)
+    {
+        if (node is ICardIndex unit)
+        {
+            if (unit.Controller.IsLocal)
+            {
+                LocalModels--;
+            }
+            else
+            {
+                EnemyModels--;
+            }
+            if (LocalModels <= 0 || EnemyModels <= 0)
+                FinishBattle();
+        }
     }
 }

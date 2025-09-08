@@ -1,24 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://7t6mr4eafrp4"]
+[gd_scene load_steps=2 format=3 uid="uid://7t6mr4eafrp4"]
 
 [ext_resource type="Script" uid="uid://d2mbtsbspbp3j" path="res://Map/SpaceBattle.cs" id="1"]
 
-[sub_resource type="BoxMesh" id="2"]
-
-[sub_resource type="BoxShape3D" id="1"]
-
-[node name="SpaceBattle" type="StaticBody3D"]
+[node name="SpaceBattle" type="Node"]
 script = ExtResource("1")
-
-[node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-
-[node name="Placeholder" type="MeshInstance3D" parent="."]
-mesh = SubResource("2")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("1")
-
-[node name="Participants" type="Node3D" parent="."]
-visible = false
-
-[connection signal="input_event" from="." to="." method="_on_SpaceBattle_input_event"]

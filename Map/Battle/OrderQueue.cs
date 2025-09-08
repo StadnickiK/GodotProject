@@ -40,7 +40,7 @@ public partial class OrderQueue : Node
         SetProcess(false);
     }
 
-        public void SetTarget(Target Target)
+    public void SetTarget(Target Target)
     {
         _targets.Clear();
         currentTarget = Target;

@@ -69,6 +69,7 @@ skeleton = NodePath("../BattleZone/CollisionShape3D")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
 
 [node name="UnitFactory" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 visible = false
 script = ExtResource("2_eornl")
 
@@ -79,6 +80,7 @@ MinAmount = 20
 Node3DPath = "res://Map/Battle/Unit3D.tscn"
 
 [node name="ProjectileFactory" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 visible = false
 script = ExtResource("5_omgxu")
 

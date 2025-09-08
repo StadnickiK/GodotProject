@@ -19,6 +19,8 @@ public interface ISavingNode
     event Node3DPool.SaveNodeEventHandler SaveNode;
 
     void InvokeSaveNode();
+
+    public void BeforeSave();
 }
 
 public partial class Node3DPool : Node3D
@@ -52,6 +54,8 @@ public partial class Node3DPool : Node3D
         }
         InitAmount(MinAmount);
     }
+
+
 
     public Node3D GetNode3D(Node3DModel model)
     {
@@ -112,6 +116,7 @@ public partial class Node3DPool : Node3D
 
     public void SaveNode3D(Node3D Node3D)
     {
+        if(Node3D is ISavingNode savingNode) savingNode.BeforeSave();
         Node3D.GetParent()?.RemoveChild(Node3D);
         Node3D.Hide();
         AddChild(Node3D);
@@ -141,5 +146,11 @@ public partial class Node3DPool : Node3D
         var transform = Node3D.Transform;
         transform.Origin = position;
         Node3D.Transform = transform;
+    }
+
+    public void ConnectSaveNode(ISavingNode node)
+    {
+        node.SaveNode -= SaveNode3D;
+        node.SaveNode += SaveNode3D;
     }
 }

@@ -63,5 +63,6 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
         WorldCursorControl.ConnectToSelectUnit(Unit3D);
         WorldCursorControl.ConnectToDeselectUnit(Unit3D);
         WorldCursorControl.ConnectToAddUnit(Unit3D);
+        ArmyPool.ConnectSaveNode(Unit3D);
     }
 }

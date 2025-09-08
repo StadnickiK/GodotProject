@@ -49,7 +49,7 @@ public partial class World : Node3D
 	{
 		get { return _UI; }
 	}
-	
+
 	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load("res://World/Player.tscn");
 
 	PackedScene _GalaxyScene = (PackedScene)ResourceLoader.Load("res://Map/Galaxy.tscn");
@@ -58,11 +58,12 @@ public partial class World : Node3D
 	int Seed = -1991794247;
 	public Random Rand { get; set; }
 
-	void InitRand(){
-		if(Seed == -1313)
+	void InitRand()
+	{
+		if (Seed == -1313)
 			Seed = Guid.NewGuid().GetHashCode();
 		Rand = new Random(Seed);
-   	}
+	}
 
 	private Player _Player = null;
 	public Player Host
@@ -91,7 +92,7 @@ public partial class World : Node3D
 		_on_Deselect();
 	}
 
-	void _on_HideBattlePanel(Ship ship)
+	void _on_Battle_Retreat(Ship ship)
 	{
 		ManualBattleScene.ClearCombat();
 		if (ship.Controller.IsLocal)
@@ -102,23 +103,33 @@ public partial class World : Node3D
 
 	void _on_EndBattle()
 	{
-		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
+		//Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
+		Ground.Show();
 		_UI.BattlePan.Hide();
 		_UI.RightPanel.Show();
-		ManualBattleScene.ClearCombat();
+		ManualBattleScene.EndCombat();
+	}
+
+	void _on_ResetBattle()
+	{
+		//Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
+		_map.Hide();
+		ManualBattleScene.Show();
+		_UI.BattlePan.Hide();
+		ManualBattleScene.ResetCombat();
 	}
 
 	void _on_ManualBattle()
 	{
-		Ground.DisconnectInputEvent(WCC.OnGroundInputCallable);
+		//Ground.DisconnectInputEvent(WCC.OnGroundInputCallable);
 		Ground.Hide();
 		_UI.UpdateBattleUI();
 		_map.Hide();
 		ManualBattleScene.UpdateBattle();
 	}
-	void _on_FinishManualBattle()
+	void _on_EndManualBattle()
 	{
-		_UI.UpdateBattleUI();
+		//_UI.UpdateBattleUI();
 		_map.Show();
 		ManualBattleScene.Hide();
 	}
@@ -128,39 +139,48 @@ public partial class World : Node3D
 		node.Connect("OpenPlanetInterface", new Callable(this, nameof(_on_OpenPlanetInterface)));
 	}
 
-	void _on_OpenPlanetInterface(Planet planet){
+	void _on_OpenPlanetInterface(Planet planet)
+	{
 		_on_Deselect();
 		_UI.PInterface.Visible = true;
 		_UI.PInterface.UpdatePlanetInterface(planet);
 	}
 
-	void _on_CreateShip(Planet planet, Unit unit){
+	void _on_CreateShip(Planet planet, Unit unit)
+	{
 		CreateShip(planet, unit);
 	}
 
-	void _on_CameraLookAt(Vector3 position){
+	void _on_CameraLookAt(Vector3 position)
+	{
 		Camera3D.LookAt(position);
 	}
 
-	void _on_LookAtStarSystem(StarSystem system){
-		if(system != null)
+	void _on_LookAtStarSystem(StarSystem system)
+	{
+		if (system != null)
 			Camera3D.LookAt(system.GlobalTransform.Origin);
-		
+
 	}
 
-	void _on_SelectObjectInOrbit(Planet planet, Node node){
-		if(planet != null && node != null){
+	void _on_SelectObjectInOrbit(Planet planet, Node node)
+	{
+		if (planet != null && node != null)
+		{
 			var label = (Label)node;
 			PhysicsBody3D obj = (PhysicsBody3D)node.GetMeta(label.Text); // 4 w/e reason node's name gets corrupted in overviewPanel connection method, but text is ok
-			if(obj != null){
-				if(obj is ISelectMapObject selectMapObject){
+			if (obj != null)
+			{
+				if (obj is ISelectMapObject selectMapObject)
+				{
 					selectMapObject.SelectMapObject();
 				}
 			}
 		}
 	}
 
-	void GetNodes(){
+	void GetNodes()
+	{
 		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
 		ManualBattleScene = GetNode<ManualBattleScene>("ManualBattleScene");
@@ -188,14 +208,17 @@ public partial class World : Node3D
 		_UI.ArmyInterfce.Connect(ArmyInterface.SignalName.Deselect, new Callable(this, nameof(_on_Deselect)));
 		//_map.Combat.SpaceBattle.OpenBattlePanel += _on_ShowBattlePanel;
 		ManualBattleScene.OpenBattlePanel += _on_ShowBattlePanel;
-		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_HideBattlePanel(ManualBattleScene.GetLocalAttakcerOrNull());
+		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_Battle_Retreat(ManualBattleScene.GetLocalAttakcerOrNull());
 		_UI.BattlePan.Center.EndFight.ButtonUp += _on_EndBattle;
+		_UI.BattlePan.Center.RepeatFight.ButtonUp += _on_ResetBattle;
 		_UI.BattlePan.Center.Fight.ButtonUp += _on_ManualBattle;
 		ManualBattleScene.CameraLookAt += Camera3D.LookAt;
+		ManualBattleScene.EndBattle += _on_EndManualBattle;
 		//_map.ConnectToShowBattlePanel(this, nameof(_on_ShowBattlePanel));
 	}
 
-	void ConnectLocalPlayer(Player player){
+	void ConnectLocalPlayer(Player player)
+	{
 		player.ArmiesChanged += _UI.RightPanel.UpdateRightPanel;
 		player.ProdChanged += _UI.ResourcePanel.UpdatePanel;
 		player.UpkeepChanged += _UI.ResourcePanel.UpdatePanel;
@@ -203,36 +226,45 @@ public partial class World : Node3D
 		player.PlayerResourcesChanged += _UI.ResourcePanel.UpdatePanel;
 	}
 
-	public void ConnectToSelectUnit(IInputController controller){
+	public void ConnectToSelectUnit(IInputController controller)
+	{
+		controller.InputController.SelectUnit -= _on_SelectUnit;
 		controller.InputController.SelectUnit += _on_SelectUnit;
 	}
 
-	void _on_SelectUnit(IMovable body){
-		
+	void _on_SelectUnit(IMovable body)
+	{
+
 		_wcc._SelectUnit(body);
 		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
 	}
 
-	void _on_Deselect(){
+	void _on_Deselect()
+	{
 		_UI.ArmyInterfce.DeselectArmy();
 		WCC.ClearSelection();
 	}
 
 
-	void InitPlayers(){
-		if(WorldGenParameters != null){
-			if(WorldGenParameters.ContainsKey("Players")){
+	void InitPlayers()
+	{
+		if (WorldGenParameters != null)
+		{
+			if (WorldGenParameters.ContainsKey("Players"))
+			{
 				PlayerNumber = WorldGenParameters["Players"];
 			}
 		}
-		GD.Print("World 1: "+GetInstanceId());
-		for(int i = 0; i<PlayerNumber;i++){
+		GD.Print("World 1: " + GetInstanceId());
+		for (int i = 0; i < PlayerNumber; i++)
+		{
 			// var player = new AIPlayer(_data);//(Player)_PlayerScene.Instance();
 			var player = (Player)_PlayerScene.Instantiate();
 			// player.SetMap(_map);
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
-			if(i == 0){
+			if (i == 0)
+			{
 				_Player = player;
 				player.IsLocal = true;
 			}
@@ -241,18 +273,23 @@ public partial class World : Node3D
 		}
 	}
 
-	void InitAIPlayers(){
-		if(WorldGenParameters != null){
-			if(WorldGenParameters.ContainsKey("Players")){
+	void InitAIPlayers()
+	{
+		if (WorldGenParameters != null)
+		{
+			if (WorldGenParameters.ContainsKey("Players"))
+			{
 				PlayerNumber = WorldGenParameters["Players"];
 			}
 		}
-		for(int i = 0; i<PlayerNumber;i++){
+		for (int i = 0; i < PlayerNumber; i++)
+		{
 			var player = new AIPlayer(_data);  //(Player)_PlayerScene.Instance();
 			player.SetMap(_map);
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
-			if(i == 0){
+			if (i == 0)
+			{
 				_Player = player;
 				player.IsLocal = true;
 			}
@@ -261,15 +298,19 @@ public partial class World : Node3D
 		}
 	}
 
-	void ConnectPlayers(){
-		foreach(var player in PlayersList){
-			if(player is AIPlayer ai){
+	void ConnectPlayers()
+	{
+		foreach (var player in PlayersList)
+		{
+			if (player is AIPlayer ai)
+			{
 				ai.ConnectSignals();
 			}
 		}
 	}
 
-	void InitGalaxy(){
+	void InitGalaxy()
+	{
 		var generator = new Generator();
 		generator.InitGenerator(this, Rand, WorldGenParameters);
 		Galaxy = generator.GenerateGalaxy();
@@ -280,32 +321,40 @@ public partial class World : Node3D
 		Galaxy.Connect("LookAtStarSystem", new Callable(this, nameof(_on_LookAtStarSystem)));
 	}
 
-	void UpdateGround(){
-		Ground.Scale = new Vector3(2*Galaxy.Radius,1,2*Galaxy.Radius);
+	void UpdateGround()
+	{
+		Ground.Scale = new Vector3(2 * Galaxy.Radius, 1, 2 * Galaxy.Radius);
 	}
 
-	void InitStartPlanets(){
+	void InitStartPlanets()
+	{
 		List<StarSystem> tempStarSystems = new List<StarSystem>(Galaxy.StarSystems);
 		int count = tempStarSystems.Count;
-		if(count > PlayerNumber){
-			foreach(int id in PlayerIDs){
-				var system = tempStarSystems[Rand.Next(0,count)];
+		if (count > PlayerNumber)
+		{
+			foreach (int id in PlayerIDs)
+			{
+				var system = tempStarSystems[Rand.Next(0, count)];
 				var planetList = system.Planets;
 				var player = (Player)Players.GetChild(id);
-				var planet = planetList[Rand.Next(0,planetList.Count)];
+				var planet = planetList[Rand.Next(0, planetList.Count)];
 				planet.ChangeController(player);
 				planet.VisibilityConroller.UpdateVisibility(new VisibilityConroller.VisibilityStruct() { Visible = true, Visibility = VisibilityConroller.VisibilityState.Visible }, player.PlayerID);
-				
+
 			}
-		}else{
+		}
+		else
+		{
 			var usedPlanetList = new List<Planet>();
-			foreach(int id in PlayerIDs){
-				var system = tempStarSystems[Rand.Next(0,count-1)];
+			foreach (int id in PlayerIDs)
+			{
+				var system = tempStarSystems[Rand.Next(0, count - 1)];
 				var planetList = new List<Planet>(system.Planets);
-				var planet = planetList[Rand.Next(0,planetList.Count)];
+				var planet = planetList[Rand.Next(0, planetList.Count)];
 				var player = (Player)Players.GetChild(id);
-				while(usedPlanetList.Contains(planet)){
-					planet = system.Planets[Rand.Next(0,planetList.Count)];
+				while (usedPlanetList.Contains(planet))
+				{
+					planet = system.Planets[Rand.Next(0, planetList.Count)];
 				}
 				planet.ChangeController(player);
 				usedPlanetList.Add(planet);
@@ -314,20 +363,26 @@ public partial class World : Node3D
 		}
 	}
 
-	void InitStartFleets(){
-		foreach(Node node in Players.GetChildren()){
-			if(node is Player player){
-				int maxFleets = 1;	
-				foreach(CollisionObject3D body in player.MapObjects.ToArray()){ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
-					if(body is Planet planet && maxFleets>0){
-						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3,0,3), planet.Name +" "+1);
+	void InitStartFleets()
+	{
+		foreach (Node node in Players.GetChildren())
+		{
+			if (node is Player player)
+			{
+				int maxFleets = 1;
+				foreach (CollisionObject3D body in player.MapObjects.ToArray())
+				{ // ToArray is needed because MapObjects list is modified inside foreach loop which raises exception
+					if (body is Planet planet && maxFleets > 0)
+					{
+						var ship = MapArmyManager.CreateShip(planet, planet.Transform.Origin + new Vector3(3, 0, 3), planet.Name + " " + 1);
 						ConnectShip(ship);
-						for(int i = 0;i< UnitCount;i++){
+						for (int i = 0; i < UnitCount; i++)
+						{
 							var unit = _data.GetUnit(0);
 							ship.UnitController.AddUnit(unit);
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 						}
-						ship.VisibilityConroller.UpdateVisible(new VisibilityConroller.VisibilityStruct() {Visibility = VisibilityConroller.VisibilityState.Unexplored, Visible = _Player == player }, player.PlayerID, _Player == player);
+						ship.VisibilityConroller.UpdateVisible(new VisibilityConroller.VisibilityStruct() { Visibility = VisibilityConroller.VisibilityState.Unexplored, Visible = _Player == player }, player.PlayerID, _Player == player);
 						if (_Player == player)
 						{
 							ship.IsLocal = true;
@@ -338,12 +393,14 @@ public partial class World : Node3D
 		}
 	}
 
-	void CreateShip(ShipModel shipStruct){
+	void CreateShip(ShipModel shipStruct)
+	{
 		var s = MapArmyManager.CreateShip(shipStruct);
 		ConnectShip(s);
 	}
 
-	public Ship CreateShip(Planet planet, Unit unit){
+	public Ship CreateShip(Planet planet, Unit unit)
+	{
 		var ship = MapArmyManager.CreateShip(planet, unit);
 		ConnectShip(ship);
 		//planet.Controller.AddMapObject(ship);
@@ -351,38 +408,50 @@ public partial class World : Node3D
 		return ship;
 	}
 
-	void SplitShip(ShipModel shipStruct){
+	void SplitShip(ShipModel shipStruct)
+	{
 		var s = MapArmyManager.CreateShip(shipStruct);
 		ConnectShip(s);
 		_on_Deselect();
 		_on_SelectUnit(s);
 	}
 
-	void FreeShip(Ship ship){
+	void FreeShip(Ship ship)
+	{
 		MapArmyManager.FreeShip(ship);
 	}
 
-	void ConnectShip(Ship ship){
+	void ConnectShip(Ship ship)
+	{
 		ConnectToSelectUnit(ship);
 		WCC.ConnectToSelectTarget(ship);
 		ManualBattleScene.ConnectToEnterCombat(ship);
 		//_map.ConnectToEnterMapObject(ship);
 		_map.ConnectToExitMapObject(ship);
-		if(ship.Controller == _Player){
+		if (ship.Controller == _Player)
+		{
+			ship.OpenTransferPanel -= OpenTransfeRightPanel;
 			ship.OpenTransferPanel += OpenTransfeRightPanel;
 		}
+		ship.SplitShip -= SplitShip;
 		ship.SplitShip += SplitShip;
+		ship.FreeShip -= FreeShip;
 		ship.FreeShip += FreeShip;
 	}
 
-	void OpenTransfeRightPanel(Ship host, Ship target){
+	void OpenTransfeRightPanel(Ship host, Ship target)
+	{
 		_UI.ArmyInterfce.UpdateArmyPanel(host, target);
 	}
 
-	void InitStartResources(){
-		foreach(StarSystem system in _map.galaxy.StarSystems){
-			foreach(Node node in system.StarSysObjects.GetChildren()){
-				if(node is Planet planet){
+	void InitStartResources()
+	{
+		foreach (StarSystem system in _map.galaxy.StarSystems)
+		{
+			foreach (Node node in system.StarSysObjects.GetChildren())
+			{
+				if (node is Planet planet)
+				{
 					// foreach(var resource in _data.WorldResources.Values){
 					// 	if(resource.IsStarter == true && 
 					// 	planet.Controller != null && 
@@ -393,22 +462,26 @@ public partial class World : Node3D
 					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 					// 	}
 					// }
-					foreach(Resource resource in _data.Resources){
-							if(resource.IsStarter == true && 
-								planet.Controller != null && 
-								(resource.ResourceType == Resource.Type.Ore))
+					foreach (Resource resource in _data.Resources)
+					{
+						if (resource.IsStarter == true &&
+							planet.Controller != null &&
+							(resource.ResourceType == Resource.Type.Ore))
+						{
+							planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
+							// GD.Print("1 ", rNode.Name);
+							//planet.Resources.Add(resource.Index, resource.Quantity);
+						}
+						else if (resource.ResourceType == Resource.Type.Ore)
+						{
+							// GD.Print("2 ", rNode.Name);
+							if (Rand.Next(0, 100) > (100 - resource.Rarity))
 							{
-								 planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
-								// GD.Print("1 ", rNode.Name);
+								planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
 								//planet.Resources.Add(resource.Index, resource.Quantity);
-							}else if(resource.ResourceType == Resource.Type.Ore){
-								// GD.Print("2 ", rNode.Name);
-								if(Rand.Next(0,100)>(100 - resource.Rarity)){
-									planet.ResourcesManager.Resources.Add(resource.Index, resource.Quantity);
-									//planet.Resources.Add(resource.Index, resource.Quantity);
-								}
-									
 							}
+
+						}
 					}
 					planet.InfoLabel.InitResources(planet, _data.Resources);
 				}
@@ -416,7 +489,8 @@ public partial class World : Node3D
 		}
 	}
 
-	void InitPlayerStartResources(){
+	void InitPlayerStartResources()
+	{
 		var resources = _data.GetResourcesIndexList();
 		var starResources = _data.GetStartResources();
 
@@ -431,11 +505,16 @@ public partial class World : Node3D
 		}
 	}
 
-	void InitResistance(){
-		foreach(StarSystem system in _map.galaxy.StarSystems){
-			foreach(Node node in system.StarSysObjects.GetChildren()){
-				if(node is Planet planet){
-					if(planet.Controller == null){
+	void InitResistance()
+	{
+		foreach (StarSystem system in _map.galaxy.StarSystems)
+		{
+			foreach (Node node in system.StarSysObjects.GetChildren())
+			{
+				if (node is Planet planet)
+				{
+					if (planet.Controller == null)
+					{
 						// int amount = 2;//Rand.Next(10, 20);
 						// var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
 						//var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instantiate());
@@ -452,45 +531,55 @@ public partial class World : Node3D
 		}
 	}
 
-	bool CheckBuildingResources(Planet planet, Building building){
-		if(building.Type == Building.Category.Mine)
-			foreach(var resName in building.Products.Keys){
-				if(!planet.ResourcesManager.Resources.ContainsKey(resName)){
+	bool CheckBuildingResources(Planet planet, Building building)
+	{
+		if (building.Type == Building.Category.Mine)
+			foreach (var resName in building.Products.Keys)
+			{
+				if (!planet.ResourcesManager.Resources.ContainsKey(resName))
+				{
 					return false;
 				}
 			}
 		return true;
 	}
 
-	void InitAvaiableBuildings(Planet planet){ // todo: Separate construction and building list into separate nodes for better organization
+	void InitAvaiableBuildings(Planet planet)
+	{ // todo: Separate construction and building list into separate nodes for better organization
 		var construction = planet.BuildingsManager.CurrentConstruction();
-		foreach(var building in _data.Buildings)
-				if(building.Requirements.Count == 0)
-					if(CheckBuildingResources(planet, building))
-						if(planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null)
-							planet.BuildingsManager.AvaiableBuildings.Add(building);
+		foreach (var building in _data.Buildings)
+			if (building.Requirements.Count == 0)
+				if (CheckBuildingResources(planet, building))
+					if (planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null)
+						planet.BuildingsManager.AvaiableBuildings.Add(building);
 	}
 
-	void InitWorldBuildings(){
+	void InitWorldBuildings()
+	{
 		var startBuildings = new List<Building>();
-		foreach(var building in _data.Buildings){
-				if(building.IsStarter == true)
-					startBuildings.Add(building);			
+		foreach (var building in _data.Buildings)
+		{
+			if (building.IsStarter == true)
+				startBuildings.Add(building);
 		}
-		foreach(Player player in Players.GetChildren()){
-			foreach(Planet planet in player.MapObjects.Where(x => x is Planet)){
+		foreach (Player player in Players.GetChildren())
+		{
+			foreach (Planet planet in player.MapObjects.Where(x => x is Planet))
+			{
 				planet.BuildingsManager.AddBuildings(startBuildings);
 				InitAvaiableBuildings(planet);
 			}
 			player.InitResourceLimit();
 		}
-	}	
-
-	void ChangePlayer(Player player){
-	   	
 	}
 
-	void InitWorld(){
+	void ChangePlayer(Player player)
+	{
+
+	}
+
+	void InitWorld()
+	{
 		InitRand();
 		InitPlayers();
 		InitGalaxy();
@@ -498,29 +587,35 @@ public partial class World : Node3D
 		InitPlayerStartResources();
 		InitStartPlanets();
 		InitStartResources();
-		InitStartFleets();		
+		InitStartFleets();
 		//InitResistance(); needs work
 		InitWorldBuildings();
 		ConnectPlanets();
 		ConnectPlayers();
 	}
 
-	void _on_Alert(World.GameAlert alert){
-		switch(alert){
+	void _on_Alert(World.GameAlert alert)
+	{
+		switch (alert)
+		{
 			case GameAlert.NoResource:
 				//_UI.ABox.Visible = true;
 				break;
 		}
 	}
 
-	void _on_OpenPlanetCmdPanel(Planet planet){
-		if(_wcc.HasSelected()){
+	void _on_OpenPlanetCmdPanel(Planet planet)
+	{
+		if (_wcc.HasSelected())
+		{
 			_UI.CommandPanel.ShowPanel(planet);
 		}
 	}
 
-	void _on_ShipCommand(CmdPanel.CmdPanelOption option, Planet planet){
-		switch(option){
+	void _on_ShipCommand(CmdPanel.CmdPanelOption option, Planet planet)
+	{
+		switch (option)
+		{
 			case CmdPanel.CmdPanelOption.MoveTo:
 				WCC._SelectTarget(planet);
 				break;
@@ -533,9 +628,12 @@ public partial class World : Node3D
 	}
 
 
-	void ConnectPlanets(){
-		foreach(StarSystem system in Galaxy.StarSystems){
-			foreach(Planet planet in system.Planets){
+	void ConnectPlanets()
+	{
+		foreach (StarSystem system in Galaxy.StarSystems)
+		{
+			foreach (Planet planet in system.Planets)
+			{
 				planet.Connect("GameAlert", new Callable(this, nameof(_on_Alert)));
 			}
 		}
@@ -548,31 +646,42 @@ public partial class World : Node3D
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
 		_wcc.Connect("Deselect", new Callable(this, nameof(_on_Deselect)));
 		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
-		GD.Print("World: "+GetInstanceId());
+		GD.Print("World: " + GetInstanceId());
 		ConnectSignals();
 		MapArmyManager.ModelLoader = _data.ModelLoader;
 		MapArmyManager.Rand = Rand;
 		InitWorld();
 		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader, _wcc);
-		GD.Print("World: "+GetInstanceId());
-		if(_Player != null){
+		GD.Print("World: " + GetInstanceId());
+		if (_Player != null)
+		{
 			_wcc.LocalPlayerID = _Player.PlayerID;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
 			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
 			_UI.ResourcePanel.UpdatePanel(_Player);
 			ConnectLocalPlayer(_Player);
-
-		}
-
-	}
-	public override void _Process(double delta)
-	{
-		if(_Player != null){
 			_UI.UpdateUI(_Player);
 		}
-		if(Input.IsActionJustReleased("ui_cancel")){
-			_UI.WorldMenu.Visible = true;
-		}
+
 	}
+	// public override void _Process(double delta)
+	// {
+	// 	// if(_Player != null){
+	// 	// 	_UI.UpdateUI(_Player);
+	// 	// }
+	// 	// if (Input.IsActionJustReleased("ui_cancel"))
+	// 	// {
+	// 	// 	_UI.WorldMenu.Visible = true;
+	// 	// }
+	// }
+
+    public override void _UnhandledInput(InputEvent inputEvent)
+    {
+		if (Input.IsActionJustReleased("ui_cancel"))
+		{
+			_UI.WorldMenu.Visible = !_UI.WorldMenu.Visible;
+			GetTree().Paused = _UI.WorldMenu.Visible;
+		}
+    } 
 }

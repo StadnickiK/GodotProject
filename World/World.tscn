@@ -32,16 +32,20 @@ subdivide_width = 500
 subdivide_depth = 500
 
 [node name="World" type="Node3D"]
+process_mode = 3
 script = ExtResource("5")
 
 [node name="Data" parent="." groups=["GameData"] instance=ExtResource("10")]
+process_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("2")
 
 [node name="WorldCursorControl" parent="." instance=ExtResource("4")]
+process_mode = 1
 
 [node name="ManualBattleScene" parent="." instance=ExtResource("12_v0w7q")]
+process_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 
 [node name="SpaceBattle" parent="ManualBattleScene" instance=ExtResource("8_ecnql")]
@@ -52,6 +56,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 mouse_filter = 2
 
 [node name="Map" type="Node3D" parent="."]
+process_mode = 1
 script = ExtResource("13")
 
 [node name="MapObjects" type="Node" parent="Map"]
@@ -62,12 +67,15 @@ visible = false
 mesh = SubResource("6")
 
 [node name="Players" type="Node" parent="."]
+process_mode = 1
 
 [node name="Ground" parent="." instance=ExtResource("6")]
+process_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
 [node name="MapArmyManager" type="Node3D" parent="."]
 process_mode = 4
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
 visible = false
 script = ExtResource("9_s53j1")
 

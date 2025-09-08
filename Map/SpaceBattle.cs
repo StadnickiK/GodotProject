@@ -6,7 +6,7 @@ using System.Linq;
 
 
 
-public partial class SpaceBattle : StaticBody3D, ISelectMapObject
+public partial class SpaceBattle : Node
 {
 
 	// public List<PhysicsBody> Comabatants { get; set; } = new List<PhysicsBody>();
@@ -63,13 +63,6 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 
 	public int TimeStep { get; set; } = 1;
 
-	public new void SetPosition(Vector3 pos)
-	{
-		var trans = Transform;
-		trans.Origin = pos;
-		Transform = trans;
-	}
-
 	public void AddAttackers(List<IEnterCombat> attackers)
 	{
 		if (attackers.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Attacker;
@@ -81,21 +74,6 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 		if (defenders.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Defender;
 		Defenders.AddRange(defenders);
 	}
-
-	void GetNodes()
-	{
-		_placeholder = GetNode<MeshInstance3D>("Placeholder");
-		_mesh = GetNode<Node3D>("Node3D");
-	}
-
-	public override void _Ready()
-	{
-		GetNodes();
-		//GenerateMesh();
-		//InitAttackers();
-		//InitDefenders();
-	}
-
 	HashSet<Unit> GetUnits(List<IEnterCombat> ships)
 	{
 		var set = new HashSet<Unit>();
@@ -162,6 +140,11 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 			gameLogger.LogInfo("Attackers count =" + attackers.Count + "");
 			gameLogger.LogInfo("Defenders count =" + defenders.Count + "");
 		}
+		InvokeBattleFinished();
+	}
+
+	public void InvokeBattleFinished()
+	{
 		BattleFinished?.Invoke(this);
 	}
 
@@ -191,6 +174,15 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
 		Local = HasLocal.None;
 	}
 
+	public void UpdateStats(List<Unit3D> unit3Ds, List<Unit> units)
+	{
+		for (int i = 0; i < units.Count; i++)
+		{
+			units[i].StatManager.CloneStats(unit3Ds[i]);
+		}
+	}
+
+
 	void CleanDeadUnits()
 	{
         if (Logging) gameLogger.LogInfo("Cleaning dead units");
@@ -204,31 +196,10 @@ public partial class SpaceBattle : StaticBody3D, ISelectMapObject
     {
         for (int i = ships.Count - 1; i >= 0; i--)
         {
-            if (Logging) gameLogger.LogInfo("Ship " + i + " count " + Attackers[i].UnitController.Count);
+            if (Logging) gameLogger.LogInfo("Ship " + i + " count " + ships[i].UnitController.Count);
             ships[i].UnitController.ClearUnits();
-            if (Logging) gameLogger.LogInfo("Ship " + i + " clean count " + Attackers[i].UnitController.Count);
+            if (Logging) gameLogger.LogInfo("Ship " + i + " clean count " + ships[i].UnitController.Count);
             if (!ships[i].UnitController.HasUnits) ships.RemoveAt(i);
         }
     }
-
-	public void SelectMapObject()
-    {
-        EmitSignal(nameof(OpenBattlePanel), (PhysicsBody3D)this);
-    }
-
-	public void _on_SpaceBattle_input_event(Camera3D camera, InputEvent input, Vector3 clickPosition, Vector3 clickNormal, int index)
-	{
-		if (input is InputEventMouseButton eventMouseButton)
-		{
-			switch (eventMouseButton.ButtonIndex)
-			{
-				case MouseButton.Left:
-					SelectMapObject();
-					break;
-				case MouseButton.Right:
-					//EmitSignal(nameof(Ship.SelectTarget), (PhysicsBody)this);
-					break;
-			}
-		}
-	}
 }

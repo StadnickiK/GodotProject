@@ -164,8 +164,11 @@ public partial class Ship : CharacterBody3D, IExtendedMapObjectController, IVisi
     public void _on_UpdateUnitsToTransfer(List<Unit> unitsToTransfer){
         CanMove = unitsToTransfer.Count == 0;
         UnitsToTransfer = unitsToTransfer;
-        StateMach.Enter(new IdleState(this));
-        Stance = ArmyStance.Idle;
+        if (!CanMove)
+        {
+            StateMach.Enter(new IdleState(this));
+            Stance = ArmyStance.Idle;
+        }
     } 
 
     void Split(OrderQueue.Target target){

@@ -119,16 +119,26 @@ public partial class ArmyInterface : Control
 			// }
 		}
 	}
-	
-	public void UpdateArmyPanel(List<Unit> units){
+
+	public void UpdateArmyPanel(List<Unit> units)
+	{
+		UpdateArmyPanel();	
+		ArmyPanel.UpdateArmyList(units, true);	
+	}
+
+	public void UpdateArmyPanel(List<Unit3D> units)
+	{
+		UpdateArmyPanel();
+		ArmyPanel.UpdateArmyList(units, true);		
+	}
+	void UpdateArmyPanel()
+	{
 		_armyTransferPanel.Hide();
 		Show();
 		_header.Hide();
-		ArmyPanel.UpdateArmyList(units, true);
 		_armyRecruitment.Hide();
-		_buildButton.Hide();		
+		_buildButton.Hide();
 	}
-
 
 	public void UpdateArmyPanel(Ship ship, Ship target)
 	{

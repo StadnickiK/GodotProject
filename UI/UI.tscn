@@ -291,6 +291,7 @@ cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 default_font = SubResource("4")
 
 [node name="UI" type="Control"]
+process_mode = 1
 custom_minimum_size = Vector2(600, 600)
 layout_mode = 3
 anchors_preset = 15
@@ -400,6 +401,7 @@ grow_vertical = 0
 mouse_filter = 2
 
 [node name="Menu" parent="." instance=ExtResource("12")]
+process_mode = 3
 visible = false
 layout_mode = 1
 mouse_filter = 2

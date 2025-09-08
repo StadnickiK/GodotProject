@@ -22,11 +22,13 @@ public interface IStat
 
     public StringName Name { get; set; }
 
+    public List<StatModifier> Modifiers { get; set; } 
+
     public void AddModifier(StatModifier statModifier);
 
     public void RemoveModifier(StatModifier statModifier);
 
-    public void CloneStat(IStat stat);
+    public IStat CloneStat(IStat stat);
 }
 
 public partial class BaseStat : Node, IStat
@@ -36,7 +38,7 @@ public partial class BaseStat : Node, IStat
 
     public BaseStat() { }
 
-    private List<StatModifier> Modifiers = new List<StatModifier>();
+    public List<StatModifier> Modifiers { get; set; } = new List<StatModifier>();
 
     private float _currentValue = 0;
     public float CurrentValue
@@ -47,9 +49,7 @@ public partial class BaseStat : Node, IStat
 
     public BaseStat(BaseStat stat)
     {
-        Name = stat.Name;
-        _baseValue = stat.BaseValue;
-        _currentValue = _baseValue;
+        CloneStat(stat);
     }
 
     public BaseStat(string name)
@@ -84,7 +84,7 @@ public partial class BaseStat : Node, IStat
         HasMinValue = true;
     }
 
-    public void CloneStat(IStat stat)
+    public IStat CloneStat(IStat stat)
     {
         Name = stat.Name;
         _baseValue = stat.BaseValue;
@@ -93,6 +93,8 @@ public partial class BaseStat : Node, IStat
         HasMaxValue = stat.HasMaxValue;
         _minValue = stat.MinValue;
         HasMinValue = stat.HasMinValue;
+        Modifiers = new List<StatModifier>(stat.Modifiers);
+        return this;
     }
 
     public void AddModifier(StatModifier statModifier)
@@ -141,7 +143,7 @@ public partial class BaseStat : Node, IStat
     [Export]
     public bool HasMinValue { get; set; } = false;
     [Export]
-    private float _minValue;
+    private float _minValue = 0;
     public float MinValue
     {
         get { return _minValue; }

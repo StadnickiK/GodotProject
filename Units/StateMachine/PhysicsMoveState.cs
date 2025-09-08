@@ -55,12 +55,10 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
     public override State<IMovable> ProcessState(double delta)
     {
         CalculateAngularVelocity();
-        CalculateLinearVelocity();
-
-        return this;
+        return CalculateLinearVelocity();
     }
 
-    private void CalculateLinearVelocity()
+    private State<IMovable> CalculateLinearVelocity()
     {
         Vector3 toTarget = Target.Point - Body.GlobalPosition;
 
@@ -68,10 +66,14 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
         if (toTarget.Length() < Tolerance)
         {
             Body.Velocity = Vector3.Zero;
-            return;
+            Body.OrderQueue.NextTarget();
+            if (Body.OrderQueue.HasTarget)
+                return new IdleState(Body);
+            return new PhysicsMoveState(Body.OrderQueue.currentTarget);
         }
 
         Body.Velocity = toTarget.Normalized() * MoveSpeed;
+        return this;
     }
 
     private void CalculateAngularVelocity()

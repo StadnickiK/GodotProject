@@ -11,4 +11,6 @@ public interface IEnterCombat : IMapObjectController
     public event EnterCombatEventHandler EnterCombat;
 
     public UnitController UnitController { get; set; }
+
+    public Vector3 GlobalPosition { get; set; }
 }

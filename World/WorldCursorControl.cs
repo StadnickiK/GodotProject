@@ -30,21 +30,25 @@ public partial class WorldCursorControl : Node3D
 
     public void ConnectToSelectUnit(IInputController controller)
     {
+        controller.InputController.SelectUnit -= _SelectUnit;
         controller.InputController.SelectUnit += _SelectUnit;
     }
 
     public void ConnectToDeselectUnit(IInputController controller)
     {
+        controller.InputController.DeselectUnit -= _DeselectUnit;
         controller.InputController.DeselectUnit += _DeselectUnit;
     }
 
     public void ConnectToAddUnit(IInputController controller)
     {
+        controller.InputController.AddUnit -= _AddUnit;
         controller.InputController.AddUnit += _AddUnit;
     }
 
     public void ConnectToSelectTarget(IInputController controller)
     {
+        controller.InputController.SelectTarget -= _SelectTarget;
         controller.InputController.SelectTarget += _SelectTarget;
     }
 
