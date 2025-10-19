@@ -33,25 +33,25 @@ public partial class ResourcePanel : Control
         ResourceLabelScene = (PackedScene)ResourceLoader.Load(ScenePath);
     }
 
-    public void UpdatePanel(Player player){
-            foreach(var res in player.ResManager.Resources){
+    public void UpdatePanel(ResourceManager ResManager){
+            foreach(var res in ResManager.Resources){
                 if(resLabels.ContainsKey(res.Key)){
-                    resLabels[res.Key].Update(res.Value, player.TotalProduction.Upkeep[res.Key]);
+                    resLabels[res.Key].Update(res.Value, ResManager.TotalProduction.Upkeep[res.Key]);
                     resLabels[res.Key].TooltipText = "[font_size=24][b]"+ resLabels[res.Key].ResName + "[/b][/font_size]\n\n";
                     resLabels[res.Key].TooltipText += " \n";
 
-                    resLabels[res.Key].TooltipText += "[color="+Positive.ToHtml()+"][b]Production: [/b]+" + player.ResManager.Production.Upkeep[res.Key] +"[/color]\n";
+                    resLabels[res.Key].TooltipText += "[color="+Positive.ToHtml()+"][b]Production: [/b]+" + ResManager.Production.Upkeep[res.Key] +"[/color]\n";
                     resLabels[res.Key].TooltipText += " \n";
 
-                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Production cost: [/b]-" + player.ResManager.ProdCost.Upkeep[res.Key] +"[/color]\n";
-                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Upkeep: [/b]-" + player.Upkeep.Upkeep[res.Key] +"[/color]\n";
-                    var total = player.ResManager.ProdCost.Upkeep[res.Key] + player.Upkeep.Upkeep[res.Key];
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Production cost: [/b]-" + ResManager.ProdCost.Upkeep[res.Key] +"[/color]\n";
+                    resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Upkeep: [/b]-" + ResManager.Upkeep.Upkeep[res.Key] +"[/color]\n";
+                    var total = ResManager.ProdCost.Upkeep[res.Key] + ResManager.Upkeep.Upkeep[res.Key];
                     resLabels[res.Key].TooltipText += "[color="+Negative.ToHtml()+"][b]Total spending: [/b]-" + total +"[/color]\n";
                     resLabels[res.Key].TooltipText += " \n";
 
-                    var color = player.TotalProduction.Upkeep[res.Key] > 0 ? Positive.ToHtml() : Negative.ToHtml();
-                    var sign = player.TotalProduction.Upkeep[res.Key] > 0 ? '+' : ' ';
-                    resLabels[res.Key].TooltipText += "[color="+color+"][b]Total: [/b]"+sign + player.TotalProduction.Upkeep[res.Key] +"[/color]\n\n";
+                    var color = ResManager.TotalProduction.Upkeep[res.Key] > 0 ? Positive.ToHtml() : Negative.ToHtml();
+                    var sign = ResManager.TotalProduction.Upkeep[res.Key] > 0 ? '+' : ' ';
+                    resLabels[res.Key].TooltipText += "[color="+color+"][b]Total: [/b]"+sign + ResManager.TotalProduction.Upkeep[res.Key] +"[/color]\n\n";
                 }else{
                     //CreateResourceLabel(resName, Resources[resName]);
                 }

@@ -7,8 +7,8 @@ domain_warp_enabled = true
 width = 512
 height = 512
 depth = 512
-seamless = true
 noise = SubResource("FastNoiseLite_3umnt")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_t0147"]
 output_port_for_preview = 0
@@ -48,7 +48,7 @@ default_value = Color(0.945098, 0.2, 0.2, 1)
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform vec4 ColorParameter2 : source_color = vec4(0.945098, 0.200000, 0.200000, 1.000000);
 uniform sampler3D tex3d_frg_19;

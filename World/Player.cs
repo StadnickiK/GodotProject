@@ -4,21 +4,11 @@ using Godot.Collections;
 using System.Linq;
 using System;
 
-public partial class Player : Node, IEquatable<Player>
+public partial class Player : Node, IEquatable<Player>, IEndTurnListener
 {
     public int PlayerID { get; set; }
 
     public string PlayerName { get; set; }
-
-    public delegate void ResourcesChangedEventHandler(Player player);
-
-    public event ResourcesChangedEventHandler ProdChanged;
-
-    public event ResourcesChangedEventHandler ProdCostChanged;
-
-    public event ResourcesChangedEventHandler UpkeepChanged;
-
-    public event ResourcesChangedEventHandler PlayerResourcesChanged;
 
     public delegate void UnitssChangedEventHandler(Ship mapArmy);
 
@@ -49,10 +39,6 @@ public partial class Player : Node, IEquatable<Player>
 
     public List<Planet> Planets { get; set; } = new List<Planet>();
 
-    public UpkeepComponent Upkeep { get; set; }
-
-    public UpkeepComponent TotalProduction { get; set; }
-
     private Array<CollisionObject3D> _MapObejcts = new Array<CollisionObject3D>();
     public Array<CollisionObject3D> MapObjects
     {
@@ -78,8 +64,6 @@ public partial class Player : Node, IEquatable<Player>
     //     get { return _resourceLimits; }
     // }
 
-    public bool ResourcesChanged { get; set; } = false;
-
     // public bool PayCost(Array<Resource> BuildCost){
     //             foreach(Resource resource in BuildCost){
     //                 if(Resources.ContainsKey(resource.Name)){
@@ -103,43 +87,7 @@ public partial class Player : Node, IEquatable<Player>
             }
         }
         return null;
-    }    
-
-    public void UpdateUpkeep(System.Collections.Generic.Dictionary<int, int> resources){
-        Upkeep.UpdateUpkeep(resources);
-        TotalProduction.RemoveUpkeep(resources);
-        UpkeepChanged?.Invoke(this);
-    }
-
-    public void RemoveUpkeep(System.Collections.Generic.Dictionary<int, int> upkeep){
-        Upkeep.RemoveUpkeep(upkeep);
-        TotalProduction.UpdateUpkeep(upkeep);
-        UpkeepChanged?.Invoke(this);
-    }
-
-    public void AddProduction(System.Collections.Generic.Dictionary<int, int> prod){
-        ResManager.Production.UpdateUpkeep(prod);
-        TotalProduction?.UpdateUpkeep(prod);
-        ProdChanged?.Invoke(this); 
-    }
-
-    public void RemoveProduction(System.Collections.Generic.Dictionary<int, int> prod){
-        ResManager.Production.RemoveUpkeep(prod);
-        TotalProduction.RemoveUpkeep(prod); 
-        ProdChanged?.Invoke(this); 
-    }
-
-    public void AddProductionCost(System.Collections.Generic.Dictionary<int, int> prod){
-        ResManager.ProdCost.UpdateUpkeep(prod);
-        TotalProduction?.RemoveUpkeep(prod); 
-        ProdCostChanged?.Invoke(this); 
-    }
-
-    public void RemoveProductionCost(System.Collections.Generic.Dictionary<int, int> prod){
-        ResManager.ProdCost.RemoveUpkeep(prod);
-        TotalProduction.UpdateUpkeep(prod); 
-        ProdCostChanged?.Invoke(this); 
-    }
+    }   
 
     public void AddMapObject(CollisionObject3D mapObject){
         MapObjects.Add(mapObject);
@@ -147,15 +95,15 @@ public partial class Player : Node, IEquatable<Player>
             Ships.Add(ship);
             ship.Controller = this;
             //ship.Units.AddUpkeep -= UpdateUpkeep;
-            ship.UnitController.AddUpkeep += UpdateUpkeep;
-            ship.UnitController.RemoveUpkeep += RemoveUpkeep;
+            ship.UnitController.AddUpkeep += ResManager.UpdateUpkeep;
+            ship.UnitController.RemoveUpkeep += ResManager.RemoveUpkeep;
             UnitsChanged?.Invoke(ship);
             ArmiesChanged?.Invoke(this);
         }
         if(mapObject is Planet planet){
             Planets.Add(planet);
-            AddProduction(planet.ResourcesManager.Production.Upkeep);
-            AddProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+            ResManager.AddProduction(planet.ResourcesManager.Production.Upkeep);
+            ResManager.AddProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
         }
         
     }
@@ -164,14 +112,15 @@ public partial class Player : Node, IEquatable<Player>
         MapObjects.Remove(mapObject);
         if(mapObject is Ship ship){
             Ships.Remove(ship);
-            ship.UnitController.AddUpkeep -= UpdateUpkeep;
-            ship.UnitController.RemoveUpkeep -= RemoveUpkeep;
+            ship.UnitController.AddUpkeep -= ResManager.UpdateUpkeep;
+            ship.UnitController.RemoveUpkeep -= ResManager.RemoveUpkeep;
             ArmiesChanged?.Invoke(this);
         }
         if(mapObject is Planet planet){
             Planets.Remove(planet);
-            RemoveProduction(planet.ResourcesManager.Production.Upkeep);
-            RemoveProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+            ResManager.RemoveProduction(planet.ResourcesManager.Production.Upkeep);
+            ResManager.RemoveProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+            ResManager.RemoveResourceLimit(planet.ResourcesManager.ResourceLimits.Upkeep);
         }
     }
 
@@ -181,11 +130,9 @@ public partial class Player : Node, IEquatable<Player>
         PlayerID = GetIndex();
         PlayerName = "Player "+ PlayerID;
         Name = PlayerName;
-        
+        EndTurnEmitter.Instance.EndTurn += _on_EndTurn;
         _resourceManager = GetNode<ResourceManager>("ResourceManager");
         Research = GetNode<ConstructionManager>("TechManager");
-        Upkeep = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
-        TotalProduction = GetNodeOrNull<UpkeepComponent>("TotalProduction");
         // AddChild(ResManager);
         // AddChild(Research);
         // for(int i = 0; i<5; i++){
@@ -218,17 +165,11 @@ public partial class Player : Node, IEquatable<Player>
     //     foreach(Planet planet in MapObjects.Where( x => x is Planet )){
     //         UpdateResourceLimit(planet);
     //         _resourceManager.AddResource("Credits", (int)(0.01f*planet.Pops.TotalQuantity));
-    //         _resourceManager.UpdateResources(planet.BuildingsManager.Buildings);
+    //         _resourceManager.UpdateResources(planet.BuildingManager.Buildings);
             
     //         ResourcesChanged = true;
     //     }
     // }
-
-    protected void UpdatePlayerResources(){ 
-        _resourceManager.AddResource(TotalProduction.Upkeep);
-        PlayerResourcesChanged?.Invoke(this);
-        
-    }
 
     protected void InitPlayerResources(List<Resource> resources){
         for(int i = 0; i < resources.Count; i++){
@@ -240,30 +181,7 @@ public partial class Player : Node, IEquatable<Player>
 
     public void InitResourceLimit(){
         foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-            _resourceManager.ResourceLimits.UpdateUpkeep(planet.BuildingsManager.Buildings);
-        }
-    }
-
-    protected void UpdateResourceLimit(){
-        foreach(Planet planet in MapObjects.Where( x => x is Planet )){
-            UpdateResourceLimit(planet);
-        }
-    }
-
-    public void UpdateResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
-        ResManager.ResourceLimits.UpdateUpkeep(resourceLimits);
-    }
-
-    public void RemoveResourceLimit(System.Collections.Generic.Dictionary<int, int> resourceLimits){
-        ResManager.ResourceLimits.RemoveUpkeep(resourceLimits);
-    }
-
-    public void UpdateResourceLimit(Planet planet){
-        if(planet.BuildingsManager.BuildingsChanged){
-            var buildings = planet.BuildingsManager.LastBuilding;
-            _resourceManager.ResourceLimits.UpdateUpkeep(buildings);
-            Upkeep.UpdateUpkeep(buildings);
-            planet.BuildingsManager.BuildingsChanged = false;
+            _resourceManager.ResourceLimits.UpdateUpkeep(planet.BuildingManager.Buildings.ToList<IUpkeep>());
         }
     }
 
@@ -276,17 +194,15 @@ public partial class Player : Node, IEquatable<Player>
         return Array;
     }
 
-    public override void _Process(double delta){
-        _time += delta;
-        if(_time >= TimeStep){
-            //UpdatePlayerResources();
-            //Technologies.AddRange(IConstructToTechnology(Research.UpdateConstruction()));
-            if(Research != null)
-                if(Research.HasConstruct)
-                    Technologies.AddRange(IConstructToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
-            _time = 0;
-        }
-    }
+    // public override void _Process(double delta){
+    //     _time += delta;
+    //     if(_time >= TimeStep){
+    //         if(Research != null)
+    //             if(Research.HasConstruct)
+    //                 Technologies.AddRange(IConstructToTechnology(Research.UpdateConstruction()).Select(x => x.Index));
+    //         _time = 0;
+    //     }
+    // }
 
     // public static bool operator== (Player player1, Player player2)
     // {
@@ -322,5 +238,10 @@ public partial class Player : Node, IEquatable<Player>
     public override int GetHashCode()
     {
         return PlayerID.GetHashCode();
+    }
+
+    public void _on_EndTurn(int TurnNumber)
+    {
+        ResManager.AddResource(ResManager.TotalProduction.Upkeep);
     }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://b4uuv8wu0rx6l"]
+[gd_scene load_steps=20 format=4 uid="uid://b4uuv8wu0rx6l"]
 
 [ext_resource type="PackedScene" uid="uid://br3y8uchebph0" path="res://UI/TopLeftPanel/TopLeftPanel.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bb4lgwd2ifar2" path="res://UI/UI.cs" id="4"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://4j4dbkx335vc" path="res://UI/RightPanel.tscn" id="13"]
 [ext_resource type="Script" uid="uid://bckbnt17am1i4" path="res://UI/UnitCardFactory.cs" id="13_017wa"]
 [ext_resource type="PackedScene" uid="uid://g2iumgomdpct" path="res://UI/Center/AlertBox.tscn" id="14"]
+[ext_resource type="Script" uid="uid://dplja0ri8ex03" path="res://UI/EndTurnPanel.cs" id="15_6q2ik"]
 
 [sub_resource type="Image" id="Image_017wa"]
 data = {
@@ -318,11 +319,11 @@ offset_top = 54.0
 offset_right = 1053.0
 offset_bottom = 329.0
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
 theme_override_font_sizes/bold_italics_font_size = 20
 theme_override_font_sizes/italics_font_size = 20
 theme_override_font_sizes/mono_font_size = 20
-theme_override_font_sizes/normal_font_size = 20
-theme_override_font_sizes/bold_font_size = 20
 
 [node name="CameraGimbal" parent="." instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
@@ -385,7 +386,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TopLeftPanel" parent="." instance=ExtResource("1")]
-layout_mode = 3
 anchors_preset = 0
 
 [node name="BuildingInterface" parent="." instance=ExtResource("5_npmjx")]
@@ -393,10 +393,7 @@ visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 0.0
 anchor_bottom = 1.0
-offset_top = -460.0
-offset_right = 284.0
 grow_vertical = 0
 mouse_filter = 2
 
@@ -408,3 +405,38 @@ mouse_filter = 2
 
 [node name="UnitCardFactory" type="Node3D" parent="."]
 script = ExtResource("13_017wa")
+
+[node name="EndTurnPanel" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.92552084
+anchor_top = 0.912963
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 246.0
+offset_top = 148.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("15_6q2ik")
+metadata/_edit_use_anchors_ = true
+
+[node name="EndTurn" type="Button" parent="EndTurnPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "End Turn"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EndTurnPanel"]
+layout_mode = 2
+
+[node name="Turn" type="Label" parent="EndTurnPanel/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Turn"
+horizontal_alignment = 1
+
+[node name="TurnCount" type="Label" parent="EndTurnPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 64
+text = "1"
+horizontal_alignment = 1

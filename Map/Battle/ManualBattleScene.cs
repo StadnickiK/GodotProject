@@ -62,7 +62,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     IDamageCalculator DamageCalculator;
 
-    ArmyInterface armyInterface;
+    ArmyView armyInterface;
 
     int LocalModels = 0;
 
@@ -151,7 +151,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     private void ConnectUnitCardsToSelect()
     {
-        foreach (var card in armyInterface.ArmyPanel.UnitCards)
+        foreach (var card in armyInterface.ArmyInterfaceContainer.ArmyPanel.UnitCards)
         {
             if (card.Visible)
             {
@@ -166,9 +166,9 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
     void DisconnectUnitCardsToSelect()
     {
         if(SelectUnitActions.Count > 0)
-            for (int i = 0; i < armyInterface.ArmyPanel.UnitCards.Count; i++)
+            for (int i = 0; i < armyInterface.ArmyInterfaceContainer.ArmyPanel.UnitCards.Count; i++)
             {
-                UnitCard card = armyInterface.ArmyPanel.UnitCards[i];
+                UnitCard card = armyInterface.ArmyInterfaceContainer.ArmyPanel.UnitCards[i];
 
                 if (card.Visible)
                     card.button.ButtonUp -= SelectUnitActions[i];
@@ -276,7 +276,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
         SpaceBattle = GetNode<SpaceBattle>("SpaceBattle");
         BoxSelectController = GetNodeOrNull<BoxSelectController>("BoxSelectController");
         battleUi = GetNode<BattleUi>("BattleUI");
-        armyInterface = GetNode<ArmyInterface>("BattleUI/ArmyInterface");
+        armyInterface = GetNode<ArmyView>("BattleUI/ArmyInterface");
         ProjectileFactory = GetNode<ProjectileFactory>("ProjectileFactory");
         DamageCalculator = GetNode<DamageCalculator>("DamageCalculator");
         // LeftDeployZone/AttackerDeployZone
@@ -284,7 +284,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
     public void LoadUI(UI uI)
     {
-        battleUi.ArmyInterface.ArmyPanel.UI = uI;
+        battleUi.ArmyView.ArmyInterfaceContainer.ArmyPanel.UI = uI;
     }
 
     public Ship GetLocalAttakcerOrNull(int index = 0)

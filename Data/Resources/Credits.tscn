@@ -6,4 +6,5 @@
 Index = 1
 ResourceName = "Credits"
 IconPlaceholder = "C"
+IsStarter = true
 Location = 0

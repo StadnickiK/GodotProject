@@ -17,9 +17,9 @@ frequency = 0.2112
 width = 512
 height = 512
 depth = 512
+noise = SubResource("FastNoiseLite_tupti")
 seamless = true
 seamless_blend_skirt = 0.05
-noise = SubResource("FastNoiseLite_tupti")
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_gdu8a"]
 output_port_for_preview = 0
@@ -38,9 +38,9 @@ frequency = 0.2154
 width = 512
 height = 512
 depth = 512
-seamless = true
-color_ramp = SubResource("Gradient_koeq5")
 noise = SubResource("FastNoiseLite_76eap")
+color_ramp = SubResource("Gradient_koeq5")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_dfwmn"]
 output_port_for_preview = 0
@@ -135,9 +135,9 @@ frequency = 0.0115
 width = 512
 height = 512
 depth = 512
-seamless = true
-color_ramp = SubResource("Gradient_kldgf")
 noise = SubResource("FastNoiseLite_kldgf")
+color_ramp = SubResource("Gradient_kldgf")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_d4ufq"]
 output_port_for_preview = 0
@@ -176,7 +176,7 @@ default_value = Color(0.945098, 0.2, 0.2, 1)
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform sampler3D tex3d_frg_66;
 uniform sampler2D tex_frg_50;

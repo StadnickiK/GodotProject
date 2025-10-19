@@ -6,7 +6,7 @@ public partial class MainMenu : Control
     
     CanvasItem _menuNode = null;
 
-    CanvasItem _newGameNode = null;
+    MenuPanel _newGameNode = null;
 
     Label _TitleLabel = null;
 
@@ -16,9 +16,11 @@ public partial class MainMenu : Control
     [Export]
     string Title = "Title";
 
+    public MenuPanel NewGameNode { get => _newGameNode; set => _newGameNode = value; }
+
     void GetNodes(){
         _menuNode = GetNode<CanvasItem>("Menu");
-        _newGameNode = GetNode<CanvasItem>("NewGame");
+        NewGameNode = GetNode<MenuPanel>("NewGame");
         _TitleLabel = GetNode<Label>("Menu/Label");
         _TitleLabel.Text = Title;
     }
@@ -26,12 +28,12 @@ public partial class MainMenu : Control
     public override void _Ready()
     {
         GetNodes();
-        _newGameNode.Visible = false;
+        NewGameNode.Visible = false;
     }
 
     void _on_NewGame_button_up(){
         //_menuNode.Visible = false;
-        _newGameNode.Visible = true;
+        NewGameNode.Visible = true;
     }
 
     void _on_Play_button_up(){

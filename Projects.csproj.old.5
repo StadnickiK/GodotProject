@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Godot.NET.Sdk/4.4.0">
+<Project Sdk="Godot.NET.Sdk/4.4.1">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,7 +33,6 @@
     <Compile Include="Map\Planet\Populations.cs" />
     <Compile Include="PlayerBT\GetIdleShip.cs" />
     <Compile Include="PlayerBT\ScoutSystem.cs" />
-    <Compile Include="UI\Center\UnitTransferPanel.cs" />
     <Compile Include="UI\CmdPanel.cs" />
     <Compile Include="UI\Icon3D.cs" />
     <Compile Include="UI\SmallList.cs" />
@@ -55,7 +54,7 @@
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\MainMenuButton.cs" />
     <Compile Include="Menu\MenuPlanet.cs" />
-    <Compile Include="UI\AlertBox.cs" />
+    <Compile Include="UI\Center\AlertBox.cs" />
     <Compile Include="UI\BattlePanel.cs" />
     <Compile Include="UI\BuildingLabel.cs" />
     <Compile Include="UI\BuildingInterface.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="UI\TopLeftPanel\TechnologyPanel.cs" />
     <Compile Include="UI\TopLeftPanel\TopLeftPanel.cs" />
     <Compile Include="UI\TransferLabel.cs" />
-    <Compile Include="UI\TransferPanel.cs" />
     <Compile Include="UI\UnitInfoPanel.cs" />
     <Compile Include="UI\ValueSlider.cs" />
     <Compile Include="Units\Base\Barrel.cs" />
@@ -150,5 +148,54 @@
     <Compile Include="Data\Construct.cs" />
     <Compile Include="Data\Building.cs" />
     <Compile Include="Map\IMap\IConstruct.cs" />
+    <Compile Include="World\Node3DPool.cs" />
+    <Compile Include="Units\StateMachine\RecruitmentState.cs" />
+    <Compile Include="World\MapArmyManager.cs" />
+    <Compile Include="UI\ArmyTransferPanel.cs" />
+    <Compile Include="CustomMesh3d.cs" />
+    <Compile Include="World\Node2DPool.cs" />
+    <Compile Include="UI\Battle\ArmyContainer.cs" />
+    <Compile Include="UI\NodeFactoryBase.cs" />
+    <Compile Include="UI\UnitCardFactory.cs" />
+    <Compile Include="UI\BattleArmyContainerHandler.cs" />
+    <Compile Include="UI\CenterBattlePanel.cs" />
+    <Compile Include="Units\Stats\StatModifier.cs" />
+    <Compile Include="GameLogger.cs" />
+    <Compile Include="Map\Battle\ManualBattleScene.cs" />
+    <Compile Include="Map\Battle\BattleUi.cs" />
+    <Compile Include="Map\IMap\IEnterCombat.cs" />
+    <Compile Include="Map\Battle\Unit3D.cs" />
+    <Compile Include="Map\Battle\InputEventController.cs" />
+    <Compile Include="Map\Battle\UnitFactory.cs" />
+    <Compile Include="Data\ModelLoader.cs" />
+    <Compile Include="Map\Battle\InputController.cs" />
+    <Compile Include="Map\Battle\OrderQueue.cs" />
+    <Compile Include="Map\IMap\IMovable.cs" />
+    <Compile Include="Units\StateMachine\PhysicsMoveState.cs" />
+    <Compile Include="Units\StateMachine\PhysicsPlacementState.cs" />
+    <Compile Include="Units\StateMachine\GenericStateMachine.cs" />
+    <Compile Include="Map\Battle\BoxSelectController.cs" />
+    <Compile Include="ColorProviderSingleton.cs" />
+    <Compile Include="Map\Battle\SelectionCircleControler.cs" />
+    <Compile Include="Map\IMap\ISelectCircle.cs" />
+    <Compile Include="Map\IMap\IInputController.cs" />
+    <Compile Include="Map\Battle\Laser.cs" />
+    <Compile Include="Units\Stats\IUpdateStat.cs" />
+    <Compile Include="Map\IMap\IStatManager.cs" />
+    <Compile Include="Map\IMap\ITargetable.cs" />
+    <Compile Include="Map\IMap\ITargetSpottedListener.cs" />
+    <Compile Include="Map\Battle\SimpleAttackBattery.cs" />
+    <Compile Include="Map\IMap\IProjectile.cs" />
+    <Compile Include="Map\Battle\ProjectileFactory.cs" />
+    <Compile Include="Map\IMap\IProjectileFactory.cs" />
+    <Compile Include="Map\IMap\IStatChangedNotifier.cs" />
+    <Compile Include="Map\IMap\IDamagable.cs" />
+    <Compile Include="Map\Battle\DamageCalculator.cs" />
+    <Compile Include="Units\HealthBar.cs" />
+    <Compile Include="Map\Battle\DeathController.cs" />
+    <Compile Include="Units\Stats\GlobalStatNames.cs" />
+    <Compile Include="Map\Battle\Shield.cs" />
+    <Compile Include="UI\ArmyInterfaceContainer.cs" />
+    <Compile Include="Units\Base\ControllerComponent.cs" />
   </ItemGroup>
 </Project>

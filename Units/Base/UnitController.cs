@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class UnitController : Node
+public partial class UnitController : Node3D
 {
     public List<Unit> UnitsList { get; } = new List<Unit>();
 
@@ -28,24 +28,34 @@ public partial class UnitController : Node
 
     public event UnitAddedEventHandler UnitAdded;
 
-    public delegate void UnitRemovedEventHandler(List<Unit> units);
+    public delegate void UnitsChangedEventHandler(List<Unit> units);
 
-    public event UnitRemovedEventHandler UnitsRemoved;
+    public event UnitsChangedEventHandler UnitsRemoved;
+
+    public event UnitsChangedEventHandler UnitsToTransferChanged;
 
     [Export]
     public int MaxUnits { get; set; } = 20;
 
     public int Count { get { return UnitsList.Count; } }
-    
+
     public bool HasUnits { get { return UnitsList.Count > 0; } }
 
-	public override void _Ready()
+    public List<Unit> UnitsToTransfer { get; private set; } = new List<Unit>();
+
+    Node Parent;
+
+    public override void _Ready()
     {
         UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
+        Parent = GetParent();
+        SplitShip -= World.Instance.SplitShip;
+        SplitShip += World.Instance.SplitShip;
     }
 
     public void AddUnit(Unit unit)
     {
+        unit.GetParent()?.RemoveChild(unit);
         AddChild(unit);
         UnitsList.Add(unit);
         UpkeepComponent?.UpdateUpkeep(unit);
@@ -53,8 +63,9 @@ public partial class UnitController : Node
         UnitAdded?.Invoke(unit);
     }
 
-    public void AddUnit(List<Unit> units){
-        foreach(Unit unit in units)
+    public void AddUnit(List<Unit> units)
+    {
+        foreach (Unit unit in units)
             AddUnit(unit);
     }
 
@@ -76,8 +87,9 @@ public partial class UnitController : Node
         UnitsRemoved?.Invoke(UnitsList);
     }
 
-    public void RemoveUnit(){
-        for (int i = Count - 1; i >= 0 ; i--)
+    public void RemoveUnit()
+    {
+        for (int i = Count - 1; i >= 0; i--)
         {
             UpkeepComponent?.RemoveUpkeep(UnitsList[i]);
             RemoveUpkeep?.Invoke(UnitsList[i].Upkeep);
@@ -120,38 +132,65 @@ public partial class UnitController : Node
         }
     }
 
-    public void TransferUnit(UnitController unitController){
-        foreach(Unit unit in UnitsList){
+    public void TransferUnit(UnitController target)
+    {
+        foreach (Unit unit in UnitsList)
+        {
             UpkeepComponent?.RemoveUpkeep(unit);
             RemoveUpkeep?.Invoke(unit.Upkeep);
             RemoveChild(unit);
-            unitController.AddUnit(unit);
+            target.AddUnit(unit);
         }
+        Clear();
+    }
+
+    public void Clear()
+    {
         UnitsList.Clear();
+        UnitsToTransfer.Clear();
+        UnitsToTransferChanged?.Invoke(UnitsToTransfer);
     }
 
-    public List<Unit> GetUnitsForTransfer(List<int> unitIDs){
-        var list = new List<Unit>();
-        for (int i = unitIDs.Count - 1; i >= 0 ; i--)
-        {
-            list.Add(UnitsList[i]);
-            RemoveUnit(i);
-        }
-        return list;
+    public void TransferUnits(UnitController target, List<Unit> targetUnits)
+    {
+        RemoveUnits(UnitsToTransfer);
+        target.AddUnit(UnitsToTransfer);
+        target.RemoveUnits(targetUnits);
+        UnitsToTransfer.Clear();
+        UnitsToTransferChanged?.Invoke(UnitsToTransfer);
+        AddUnit(targetUnits);
     }
 
-    public void RemoveUnits(List<Unit> units){
+    public void _on_UpdateUnitsToTransfer(List<Unit> unitsToTransfer)
+    {
+        UnitsToTransfer = unitsToTransfer;
+        UnitsToTransferChanged?.Invoke(UnitsToTransfer);
+    }
+
+    public void RemoveUnits(List<Unit> units)
+    {
         for (int i = units.Count - 1; i >= 0; i--)
         {
             RemoveUnit(units[i]);
         }
     }
-    
-    void Merge(Ship ship){
-            if(Count + ship.UnitController.Count < ship.UnitController.MaxUnits){
-                TransferUnit(ship.UnitController);
-                FreeShip?.Invoke(ship);
-            }
+
+
+    public void Split(OrderQueue.Target target, Player Controller){
+        if(UnitsToTransfer.Count > 0 && UnitsToTransfer.Count < UnitsList.Count){
+                RemoveUnits(UnitsToTransfer);
+                SplitShip?.Invoke(new ShipModel(){
+                    Target = target,
+                    Name = Parent.Name,
+                    Parent = Parent.GetParent(),
+                    Controller = Controller,
+                    Position = GlobalPosition,
+                    Units = UnitsToTransfer,
+                    Visible = this.Visible,
+                });
+            UnitsToTransfer.Clear();
+            UnitsToTransferChanged?.Invoke(UnitsToTransfer);
+        }
     }
 
 }

@@ -1,7 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://dufp5i1gb2nls"]
+[gd_scene load_steps=19 format=3 uid="uid://dufp5i1gb2nls"]
 
 [ext_resource type="Script" uid="uid://bjxlbphmllo8f" path="res://Map/Planet/Planet.cs" id="1"]
-[ext_resource type="Script" uid="uid://n78lmvf8vbys" path="res://Map/Planet/Orbit.cs" id="2"]
 [ext_resource type="PackedScene" uid="uid://brjomq8ccfjka" path="res://UI/MapName3D.tscn" id="3"]
 [ext_resource type="Script" uid="uid://bcf05ukffighv" path="res://Map/Planet/Populations.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://lnnpy38q0r1f" path="res://PlanetMesh.tscn" id="6"]
@@ -12,7 +11,12 @@
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="10_gmh37"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="11_wx722"]
 [ext_resource type="PackedScene" uid="uid://bwcjlw47wuri0" path="res://UI/planet_info_label3D.tscn" id="12_b2ouf"]
+[ext_resource type="PackedScene" uid="uid://davhcatexq1x2" path="res://Units/Base/unit_controller.tscn" id="12_w1uo4"]
 [ext_resource type="Script" uid="uid://1ecj3d65kini" path="res://Map/Planet/RecruitmentManager.cs" id="13_wkd45"]
+[ext_resource type="Script" uid="uid://bryw8j4ijbygc" path="res://Units/Base/ControllerComponent.cs" id="15_0oqpn"]
+[ext_resource type="Script" uid="uid://cewkksffwnsls" path="res://Units/Base/RecruitmentComponent.cs" id="15_nf0j2"]
+[ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="16_nf0j2"]
+[ext_resource type="Script" uid="uid://cmgvvqr16vbqx" path="res://Map/Battle/InputController.cs" id="17_qrj8p"]
 
 [sub_resource type="BoxShape3D" id="1"]
 
@@ -24,10 +28,6 @@ script = ExtResource("1")
 shape = SubResource("1")
 
 [node name="MeshInstance3D" parent="." instance=ExtResource("6")]
-
-[node name="Orbit" type="Node3D" parent="."]
-visible = false
-script = ExtResource("2")
 
 [node name="Populations" type="Node" parent="."]
 script = ExtResource("5")
@@ -49,10 +49,24 @@ script = ExtResource("9_tnti5")
 [node name="PlanetInfoLabel3D" parent="." instance=ExtResource("12_b2ouf")]
 transform = Transform3D(0.117576, 0, 0, 0, 0.117576, 0, 0, 0, 0.117576, 0, -0.959676, 0)
 
-[node name="RecruitmentManager" type="Node" parent="."]
+[node name="UnitController" parent="." instance=ExtResource("12_w1uo4")]
+MaxUnits = 5
+
+[node name="RecruitmentManager" type="Node" parent="." groups=["EndTurnListener"]]
 script = ExtResource("13_wkd45")
 
-[node name="ConstructionManager" type="Node3D" parent="RecruitmentManager"]
+[node name="ConstructionManager" type="Node3D" parent="RecruitmentManager" groups=["EndTurnListener"]]
 script = ExtResource("8_144ly")
+
+[node name="RecruitmentComponent" type="Node" parent="."]
+script = ExtResource("15_nf0j2")
+
+[node name="ControllerComponent" type="Node" parent="."]
+script = ExtResource("15_0oqpn")
+
+[node name="Selection" parent="." instance=ExtResource("16_nf0j2")]
+
+[node name="InputController" type="Node" parent="."]
+script = ExtResource("17_qrj8p")
 
 [connection signal="input_event" from="." to="." method="_on_Planet_input_event"]

@@ -9,60 +9,57 @@
 [node name="MainMenu" type="Control"]
 custom_minimum_size = Vector2(120, 133)
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -95.0
-offset_right = 150.0
-offset_bottom = 95.0
+anchor_left = 0.4609375
+anchor_top = 0.4560185
+anchor_right = 0.5390625
+anchor_bottom = 0.59212965
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4")
+metadata/_edit_use_anchors_ = true
 
 [node name="Menu" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -93.0
+anchor_bottom = 1.5157895
+offset_bottom = -191.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("5")
 theme_override_constants/separation = 10
 alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="Menu"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 64
 text = "Title"
 horizontal_alignment = 1
 
 [node name="NewGame" type="Button" parent="Menu"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "New Game"
 
 [node name="QuickGame" type="Button" parent="Menu"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "Play"
 
 [node name="Exit" type="Button" parent="Menu"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "Exit"
 script = ExtResource("2")
 
 [node name="NewGame" parent="." instance=ExtResource("3")]
 visible = false
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -161.0
-offset_top = -76.5
-offset_right = 161.0
-offset_bottom = 76.5
+layout_mode = 1
+anchor_left = -1.24
+anchor_top = -1.9421053
+anchor_right = 2.24
+anchor_bottom = 1.2143574
 
 [node name="Background" parent="." instance=ExtResource("1")]
 

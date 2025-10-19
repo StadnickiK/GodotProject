@@ -9,26 +9,36 @@ public partial class Game : Node3D
 	PackedScene _mainMenuScene = (PackedScene)ResourceLoader.Load("res://Menu/MainMenu.tscn");
 	GameLogger gameLogger = GameLogger.Instance;
 
+	MainMenu mainMenu;
+
+	Data Data;
+
 	World _curerentWorld = null;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		gameLogger.LogInfo("Game node ready");
-	}
-
-	public void ConnectToStartNewGame(Node node){
-		node.Connect("StartNewGame", new Callable(this, nameof(_on_StartNewGame)));
-		GD.Print(node.GetSignalConnectionList("StartNewGame"));
-		
+		Data = GetNode<Data>("Data");
+		mainMenu = GetNode<MainMenu>("MainMenu");
+		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
+		mainMenu.NewGameNode.StartNewGame += _on_StartNewGame;
 	}
 
 	public void _on_StartNewGame(Dictionary<string, int> WorldGenParameters){
 		GD.Print(GetSignalConnectionList("QuickGame"));
-	   _curerentWorld = (World)_worldScene.Instantiate();
-	   GetNode("MainMenu").QueueFree();
-	   _curerentWorld.WorldGenParameters = WorldGenParameters;
-	   AddChild(_curerentWorld);
+		var WorldGenParams = new WorldGenParams()
+		{
+			WorldGenParameters = WorldGenParameters,
+			ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
+		};
+		_curerentWorld = (World)_worldScene.Instantiate();
+		mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
+		mainMenu.QueueFree();
+		_curerentWorld.WorldGenParameters = WorldGenParams;
+		_curerentWorld.Data = Data;
+		World.Instance = _curerentWorld;
+		AddChild(_curerentWorld);
 	}
 
 	public void ConnectToQuickGame(Node node){
@@ -39,8 +49,17 @@ public partial class Game : Node3D
 
 	public void _on_QuickGame(){
 		_curerentWorld = (World)_worldScene.Instantiate();
+		var WorldGenParams = new WorldGenParams()
+        {
+            WorldGenParameters = new Dictionary<string, int>() { { "Players", 2 } },
+            ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
+        };
+		_curerentWorld.WorldGenParameters = WorldGenParams;
 	   var menu = GetNode("MainMenu");
+	   mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
 	   menu.QueueFree();
+	   _curerentWorld.Data = Data;
+	   World.Instance = _curerentWorld;
 	   AddChild(_curerentWorld);
 	}
 
@@ -48,11 +67,15 @@ public partial class Game : Node3D
 		node.Connect("OpenMainMenu", new Callable(this, nameof(_on_OpenMainMenu)));
 	}
 
-	public void _on_OpenMainMenu(){
-		var menu = (MainMenu)_mainMenuScene.Instantiate();
-	   	GetNode("World").QueueFree();
-	   	AddChild(menu);
-	   	ConnectToQuickGame(menu);
+	public void _on_OpenMainMenu()
+	{
+		mainMenu = (MainMenu)_mainMenuScene.Instantiate();
+		GetNode("World").QueueFree();
+		AddChild(mainMenu);
+		mainMenu.NewGameNode.StartNewGame += _on_StartNewGame;
+		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
+		ConnectToQuickGame(mainMenu);
+		GetTree().Paused = false;
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

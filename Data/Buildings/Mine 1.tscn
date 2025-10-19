@@ -5,6 +5,7 @@
 [node name="Mine 1" type="Node"]
 script = ExtResource("1")
 ExportProducts = Dictionary[String, int]({
-"Common Ores": 222
+"Common Ores": 222,
+"Credits": 1000
 })
 BuildTime = 10

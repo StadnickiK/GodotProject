@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class World : Node3D
+public partial class World : Node3D, IEndTurnListener
 {
 
 	[Export]
@@ -18,7 +18,7 @@ public partial class World : Node3D
 
 	public delegate void FreeShipEventHandler(Ship ship);
 
-	public delegate void TransferUnitsEventHandler(Ship host, Ship target);
+	public delegate void TransferUnitsEventHandler(IPlanetInterface host, IEnterCombat target);
 
 	private Map _map = null;
 
@@ -40,6 +40,8 @@ public partial class World : Node3D
 	public MapArmyManager MapArmyManager { get; set; }
 
 	private Data _data = null;
+
+	public Data Data { get => _data; set => _data = value; }
 
 	Galaxy Galaxy = null;
 	CameraGimbal Camera3D = null;
@@ -70,14 +72,22 @@ public partial class World : Node3D
 	{
 		get { return _Player; }
 	}
+	
+	private static World _instance;
+    public static World Instance
+    {
+        get
+        {
+            return _instance;
+        }
+        set { _instance = value; }
+    }   
 
-
-
-	Node Players = null;
+    Node Players = null;
 
 	List<Player> PlayersList = new List<Player>();
 
-	public Godot.Collections.Dictionary<string, int> WorldGenParameters = new Godot.Collections.Dictionary<string, int>();
+	public WorldGenParams WorldGenParameters;
 
 	List<int> PlayerIDs = new List<int>();
 
@@ -134,15 +144,11 @@ public partial class World : Node3D
 		ManualBattleScene.Hide();
 	}
 
-	public void ConnectTo_OpenPlanetInterface(Node node)
-	{
-		node.Connect("OpenPlanetInterface", new Callable(this, nameof(_on_OpenPlanetInterface)));
-	}
-
-	void _on_OpenPlanetInterface(Planet planet)
+	public void Select(IPlanetInterface planet)
 	{
 		_on_Deselect();
-		_UI.PInterface.Visible = true;
+		_wcc._SelectUnit(planet);
+		_UI.PInterface.Show();
 		_UI.PInterface.UpdatePlanetInterface(planet);
 	}
 
@@ -181,7 +187,6 @@ public partial class World : Node3D
 
 	void GetNodes()
 	{
-		_data = GetNode<Data>("Data");
 		_map = GetNode<Map>("Map");
 		ManualBattleScene = GetNode<ManualBattleScene>("ManualBattleScene");
 		Players = GetNode("Players");
@@ -197,15 +202,14 @@ public partial class World : Node3D
 		//_UI.RightPanel.ConnectToLookAt(this, nameof(_on_LookAtObject));
 		_UI.RightPanel.WorldCamera = Camera3D;
 		_UI.PInterface.ConnectToSelectObjectInOrbit(this, nameof(_on_SelectObjectInOrbit));
-		_UI.ResourcePanel.InitResourcePanel(_data.Resources);
-		_UI.PInterface._data = _data;
+		_UI.ResourcePanel.InitResourcePanel(Data.Resources);
+		_UI.PInterface._data = Data;
 		_UI.PInterface.InitBuildingsPanel();
+		_UI.PInterface.InitRecruitmentPanel();
+		
 		//_UI.UInfo.ConnectToChangeStance(_map, nameof(_map._on_UInfo_ChangeStance));
 		_UI.OrbitList.Connect("SelectObject", new Callable(this, nameof(_on_SelectUnit)));
 		_UI.CommandPanel.Connect("ShipCommand", new Callable(this, nameof(_on_ShipCommand)));
-		_UI.ArmyInterfce._data = _data;
-		_UI.ArmyInterfce.InitRecruitmentPanel(UInterface);
-		_UI.ArmyInterfce.Connect(ArmyInterface.SignalName.Deselect, new Callable(this, nameof(_on_Deselect)));
 		//_map.Combat.SpaceBattle.OpenBattlePanel += _on_ShowBattlePanel;
 		ManualBattleScene.OpenBattlePanel += _on_ShowBattlePanel;
 		_UI.BattlePan.Center.Retreat.ButtonUp += () => _on_Battle_Retreat(ManualBattleScene.GetLocalAttakcerOrNull());
@@ -220,28 +224,22 @@ public partial class World : Node3D
 	void ConnectLocalPlayer(Player player)
 	{
 		player.ArmiesChanged += _UI.RightPanel.UpdateRightPanel;
-		player.ProdChanged += _UI.ResourcePanel.UpdatePanel;
-		player.UpkeepChanged += _UI.ResourcePanel.UpdatePanel;
-		player.ProdCostChanged += _UI.ResourcePanel.UpdatePanel;
-		player.PlayerResourcesChanged += _UI.ResourcePanel.UpdatePanel;
+		player.ResManager.ProdChanged += _UI.ResourcePanel.UpdatePanel;
+		player.ResManager.UpkeepChanged += _UI.ResourcePanel.UpdatePanel;
+		player.ResManager.ProdCostChanged += _UI.ResourcePanel.UpdatePanel;
+		player.ResManager.PlayerResourcesChanged += _UI.ResourcePanel.UpdatePanel;
+		
 	}
 
-	public void ConnectToSelectUnit(IInputController controller)
+	void _on_SelectUnit(ISelection body)
 	{
-		controller.InputController.SelectUnit -= _on_SelectUnit;
-		controller.InputController.SelectUnit += _on_SelectUnit;
-	}
-
-	void _on_SelectUnit(IMovable body)
-	{
-
+		_UI.PInterface.Hide();
 		_wcc._SelectUnit(body);
-		_UI.ArmyInterfce.UpdateArmyPanel((Ship)body);
 	}
 
 	void _on_Deselect()
 	{
-		_UI.ArmyInterfce.DeselectArmy();
+		_UI.PInterface.Hide();
 		WCC.ClearSelection();
 	}
 
@@ -250,10 +248,9 @@ public partial class World : Node3D
 	{
 		if (WorldGenParameters != null)
 		{
-			if (WorldGenParameters.ContainsKey("Players"))
-			{
-				PlayerNumber = WorldGenParameters["Players"];
-			}
+			if (WorldGenParameters.WorldGenParameters.ContainsKey("Players"))
+				PlayerNumber = WorldGenParameters.WorldGenParameters["Players"];
+			
 		}
 		GD.Print("World 1: " + GetInstanceId());
 		for (int i = 0; i < PlayerNumber; i++)
@@ -277,14 +274,14 @@ public partial class World : Node3D
 	{
 		if (WorldGenParameters != null)
 		{
-			if (WorldGenParameters.ContainsKey("Players"))
+			if (WorldGenParameters.WorldGenParameters.ContainsKey("Players"))
 			{
-				PlayerNumber = WorldGenParameters["Players"];
+				PlayerNumber = WorldGenParameters.WorldGenParameters["Players"];
 			}
 		}
 		for (int i = 0; i < PlayerNumber; i++)
 		{
-			var player = new AIPlayer(_data);  //(Player)_PlayerScene.Instance();
+			var player = new AIPlayer(Data);  //(Player)_PlayerScene.Instance();
 			player.SetMap(_map);
 			Players.AddChild(player);
 			player.PlayerID = player.GetIndex();
@@ -312,7 +309,7 @@ public partial class World : Node3D
 	void InitGalaxy()
 	{
 		var generator = new Generator();
-		generator.InitGenerator(this, Rand, WorldGenParameters);
+		generator.InitGenerator(this, Rand, WorldGenParameters.WorldGenParameters);
 		Galaxy = generator.GenerateGalaxy();
 		generator.QueueFree();
 		_map.AddChild(Galaxy);
@@ -378,7 +375,7 @@ public partial class World : Node3D
 						ConnectShip(ship);
 						for (int i = 0; i < UnitCount; i++)
 						{
-							var unit = _data.GetUnit(0);
+							var unit = Data.GetUnit(0);
 							ship.UnitController.AddUnit(unit);
 							// ship.Power.CurrentValue += new Unit().Stats["HitPoints"].CurrentValue;
 						}
@@ -408,7 +405,7 @@ public partial class World : Node3D
 		return ship;
 	}
 
-	void SplitShip(ShipModel shipStruct)
+	public void SplitShip(ShipModel shipStruct)
 	{
 		var s = MapArmyManager.CreateShip(shipStruct);
 		ConnectShip(s);
@@ -423,25 +420,17 @@ public partial class World : Node3D
 
 	void ConnectShip(Ship ship)
 	{
-		ConnectToSelectUnit(ship);
-		WCC.ConnectToSelectTarget(ship);
+		//WCC.ConnectToSelectTarget(ship);
 		ManualBattleScene.ConnectToEnterCombat(ship);
 		//_map.ConnectToEnterMapObject(ship);
 		_map.ConnectToExitMapObject(ship);
 		if (ship.Controller == _Player)
 		{
-			ship.OpenTransferPanel -= OpenTransfeRightPanel;
-			ship.OpenTransferPanel += OpenTransfeRightPanel;
+			ship.OpenTransferPanel -= _UI.PInterface.UpdatePlanetInterface;
+			ship.OpenTransferPanel += _UI.PInterface.UpdatePlanetInterface;
 		}
-		ship.SplitShip -= SplitShip;
-		ship.SplitShip += SplitShip;
 		ship.FreeShip -= FreeShip;
 		ship.FreeShip += FreeShip;
-	}
-
-	void OpenTransfeRightPanel(Ship host, Ship target)
-	{
-		_UI.ArmyInterfce.UpdateArmyPanel(host, target);
 	}
 
 	void InitStartResources()
@@ -462,7 +451,7 @@ public partial class World : Node3D
 					// 			planet.ResourcesManager.Resources.Add(resource.Name, resource.Quantity);
 					// 	}
 					// }
-					foreach (Resource resource in _data.Resources)
+					foreach (Resource resource in Data.Resources)
 					{
 						if (resource.IsStarter == true &&
 							planet.Controller != null &&
@@ -483,7 +472,7 @@ public partial class World : Node3D
 
 						}
 					}
-					planet.InfoLabel.InitResources(planet, _data.Resources);
+					planet.InfoLabel.InitResources(planet, Data.Resources);
 				}
 			}
 		}
@@ -491,17 +480,26 @@ public partial class World : Node3D
 
 	void InitPlayerStartResources()
 	{
-		var resources = _data.GetResourcesIndexList();
-		var starResources = _data.GetStartResources();
-
+		var resources = Data.GetResourcesIndexList();
+		var starResources = Data.GetStartResources();
+		foreach (var item in WorldGenParameters.ResourceSliders)
+		{
+			if (starResources.ContainsKey(item.Key)){
+				starResources[item.Key] = item.Value.CurrentValue;
+			} else {
+				starResources.Add(item.Key, item.Value.CurrentValue);
+			}
+		}
 		foreach (var player in PlayersList)
 		{
 			// without new dictionary the game would use one for all of those instead of separate ones
 			player.ResManager.Resources = new Dictionary<int, int>(starResources);
+
 			player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);
+			player.ResManager.ResourceLimits.Upkeep = new Dictionary<int, int>(resources);
 			player.ResManager.ProdCost.Upkeep = new Dictionary<int, int>(resources);
-			player.Upkeep.Upkeep = new Dictionary<int, int>(resources);
-			player.TotalProduction.Upkeep = new Dictionary<int, int>(resources);
+			player.ResManager.Upkeep.Upkeep = new Dictionary<int, int>(resources);
+			player.ResManager.TotalProduction.Upkeep = new Dictionary<int, int>(resources);
 		}
 	}
 
@@ -546,18 +544,18 @@ public partial class World : Node3D
 
 	void InitAvaiableBuildings(Planet planet)
 	{ // todo: Separate construction and building list into separate nodes for better organization
-		var construction = planet.BuildingsManager.CurrentConstruction();
-		foreach (var building in _data.Buildings)
+		var construction = planet.BuildingManager.CurrentConstruction();
+		foreach (var building in Data.Buildings)
 			if (building.Requirements.Count == 0)
 				if (CheckBuildingResources(planet, building))
-					if (planet.BuildingsManager.Buildings.Find(x => x.Name == building.Name) == null)
-						planet.BuildingsManager.AvaiableBuildings.Add(building);
+					if (planet.BuildingManager.Buildings.Find(x => x.Name == building.Name) == null)
+						planet.BuildingManager.AvaiableBuildings.Add(building);
 	}
 
 	void InitWorldBuildings()
 	{
 		var startBuildings = new List<Building>();
-		foreach (var building in _data.Buildings)
+		foreach (var building in Data.Buildings)
 		{
 			if (building.IsStarter == true)
 				startBuildings.Add(building);
@@ -566,7 +564,7 @@ public partial class World : Node3D
 		{
 			foreach (Planet planet in player.MapObjects.Where(x => x is Planet))
 			{
-				planet.BuildingsManager.AddBuildings(startBuildings);
+				planet.BuildingManager.AddBuildings(startBuildings);
 				InitAvaiableBuildings(planet);
 			}
 			player.InitResourceLimit();
@@ -601,14 +599,6 @@ public partial class World : Node3D
 			case GameAlert.NoResource:
 				//_UI.ABox.Visible = true;
 				break;
-		}
-	}
-
-	void _on_OpenPlanetCmdPanel(Planet planet)
-	{
-		if (_wcc.HasSelected())
-		{
-			_UI.CommandPanel.ShowPanel(planet);
 		}
 	}
 
@@ -648,18 +638,19 @@ public partial class World : Node3D
 		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		GD.Print("World: " + GetInstanceId());
 		ConnectSignals();
-		MapArmyManager.ModelLoader = _data.ModelLoader;
-		MapArmyManager.Rand = Rand;
+		MapArmyManager.ModelLoader = Data.ModelLoader;
 		InitWorld();
-		ManualBattleScene.InitializeBattle(Rand, _data.ModelLoader, _wcc);
+		MapArmyManager.Rand = Rand;
+		ManualBattleScene.InitializeBattle(Rand, Data.ModelLoader, _wcc);
 		GD.Print("World: " + GetInstanceId());
+		EndTurnEmitter.Instance.EndTurn += _on_EndTurn;
 		if (_Player != null)
 		{
 			_wcc.LocalPlayerID = _Player.PlayerID;
 			_UI.PInterface.LocalPlayerID = _Player.PlayerID;
 			_UI.TopLeft._Player = _Player;
-			_UI.TopLeft.WorldTechnology = _data.GetNode("Technology");
-			_UI.ResourcePanel.UpdatePanel(_Player);
+			_UI.TopLeft.WorldTechnology = Data.GetNode("Technology");
+			_UI.ResourcePanel.UpdatePanel(_Player.ResManager);
 			ConnectLocalPlayer(_Player);
 			_UI.UpdateUI(_Player);
 		}
@@ -683,5 +674,11 @@ public partial class World : Node3D
 			_UI.WorldMenu.Visible = !_UI.WorldMenu.Visible;
 			GetTree().Paused = _UI.WorldMenu.Visible;
 		}
-    } 
+    }
+
+    public void _on_EndTurn(int TurnNumber)
+    {
+		_on_Deselect();
+    }
+
 }

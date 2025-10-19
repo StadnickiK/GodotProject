@@ -13,8 +13,6 @@ public partial class UI : Control
 
     public RightPanel RightPanel { get; set; } = null;
 
-    public ArmyInterface ArmyInterfce { get; set; } = null;
-
     public SmallList OrbitList { get; set; } = null;
 
     public CmdPanel CommandPanel { get; set; } = null;
@@ -24,6 +22,8 @@ public partial class UI : Control
     public RichTextLabel ResLabelTooltip { get; set; }
 
     public UnitCardFactory UnitCardFactory { get; set; }
+
+    public EndTurnPanel EndTurnPanel { get; set; }
 
     private Control _menu = null;
     public Control WorldMenu
@@ -46,33 +46,28 @@ public partial class UI : Control
         RightPanel = GetNode<RightPanel>("RightPanel");
         _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
-        ArmyInterfce = GetNode<ArmyInterface>("ArmyInterface");
         ABox = GetNode<AlertBox>("AlertBox");
         OrbitList = GetNode<SmallList>("OrbitList");
         CommandPanel = GetNode<CmdPanel>("CmdPanel");
         TopLeft = GetNode<TopLeftPanel>("TopLeftPanel");
         BuildingInterface = GetNode<BuildingInterface>("BuildingInterface");
         UnitCardFactory = GetNode<UnitCardFactory>("UnitCardFactory");
+        EndTurnPanel = GetNode<EndTurnPanel>("EndTurnPanel");
     }
 
     public void UpdateResourcePanel(Player player)
     {
-        ResourcePanel.UpdatePanel(player);
+        ResourcePanel.UpdatePanel(player.ResManager);
     }
 
     public void UpdateUI(Player player)
     {
         RightPanel.UpdateRightPanel(player);
         // GD.Print("update r panel");
-
-        if (player.ResourcesChanged)
+        if (player.ResManager != null)
         {
-            if (player.ResManager != null)
-            {
-                UpdateResourcePanel(player);
-                player.ResourcesChanged = false;
-            }
-        }
+            UpdateResourcePanel(player);
+        }        
         HideIfLostFocus(OrbitList);
         HideIfLostFocus(CommandPanel);
     }
@@ -90,7 +85,6 @@ public partial class UI : Control
     public override void _Ready()
     {
         GetNodes();
-        ArmyInterfce.ArmyPanel.UI = this;
         UnitCardFactory.UI = this;
         BattlePan.ConnectContainers(this);
     }

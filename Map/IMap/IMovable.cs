@@ -8,22 +8,16 @@ public enum IMovableState
     Drag
 }
 
-public interface IMovable : ISelectCircle, IInputController
+public interface IMovable : ISelection
 {
     public IMovableState MovableState { get; set; }
     public OrderQueue OrderQueue { get; set; }
-
-    public Godot.Vector3 GlobalPosition { get; set; }
 
     public Basis GlobalBasis { get; set; }
 
     public Godot.Vector3 Velocity { get; set; }
 
     public Godot.Vector3 AngularVelocity { get; set; }
-
-    public void MoveToPosition(Godot.Vector3 position);
-    public void MoveToTarget(OrderQueue.Target target);
-    public void ClearTargets();
 
     public void UpdateVelocity(Godot.Vector3 linearVelocity, Godot.Vector3 angularVelocity);
 

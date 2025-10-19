@@ -124,13 +124,7 @@ public partial class Generator : Node
     }
 
     void ConnectPlanet(Planet planet){
-        _world.ConnectTo_OpenPlanetInterface(planet);
         planet.Connect("CreateShip", new Callable(_world, "_on_CreateShip"));
-        var arr = new Godot.Collections.Array();
-        arr.Add(planet.Orbit);
-        // planet.IcoOrbit.Connect("mouse_entered", _world.UInterface,"_on_OrbitIconFocus", arr);
-        var arr2 = new Godot.Collections.Array();
-        arr2.Add(planet);
         planet.Connect("OpenCmdPanel", new Callable(_world, "_on_OpenPlanetCmdPanel"));
         //_world.WCC.ConnectToSelectTarget(planet);  
     }

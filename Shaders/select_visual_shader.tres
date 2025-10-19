@@ -29,7 +29,7 @@ default_input_values = [2, true, 3, 2.0]
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform vec4 ColorParameter : source_color = vec4(0.254902, 0.831373, 0.047059, 1.000000);
 

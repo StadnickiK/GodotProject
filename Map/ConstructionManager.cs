@@ -21,11 +21,10 @@ public partial class ConstructionManager : Node
     [Export]
     public int ConstructionSlots { get; set; } = 1;
 
-    public void ConstructBuilding(IConstruct building, int count = 1){
+    public void ConstructBuilding(IConstruct building){
         if(building != null){
-            for(int i = 0; i<count;i++)
-                ConstructionList.Add(building);
-            // ConstructionListChanged = true;
+            if(ConstructionList.Count >= ConstructionSlots) building.BuildTime += ConstructionList.Count - ConstructionSlots + 1;
+            ConstructionList.Add(building);
         }
     }
 
@@ -47,9 +46,9 @@ public partial class ConstructionManager : Node
     public List<IConstruct> UpdateConstruction(){
         var count = ConstructionList.Count;
         var List = new List<IConstruct>();
-        if(count > 0){
-            if(count > ConstructionSlots){
-                for(int i = 0; i < ConstructionSlots; i++){
+        if (count > 0)
+        {
+            for(int i = 0; i < ConstructionList.Count; i++){
                     UpdateConstruction(i);
                     var building = ConstructionList[i];
                     if(building.CurrentTime >= building.BuildTime){
@@ -57,16 +56,6 @@ public partial class ConstructionManager : Node
                         List.Add(building);
                     }
                 }
-            }else{
-                for(int i = 0; i < count; i++){
-                    UpdateConstruction(i);
-                    var building = ConstructionList[i];
-                    if(building.CurrentTime >= building.BuildTime){
-                        ConstructionList.RemoveAt(i);
-                        List.Add(building);
-                    }
-                }
-            }
         }
         return List;
     }

@@ -1,31 +1,52 @@
-[gd_scene load_steps=3 format=3 uid="uid://cth8qdcx4tb8j"]
+[gd_scene load_steps=4 format=3 uid="uid://cth8qdcx4tb8j"]
 
-[ext_resource type="PackedScene" uid="uid://cl5lyf2ofjpin" path="res://UI/MenuPanel.tscn" id="2"]
+[ext_resource type="Script" uid="uid://b85ixiywt7sod" path="res://UI/MenuPanel.cs" id="1_wjlhw"]
 [ext_resource type="PackedScene" uid="uid://dh2130j8vd8pv" path="res://UI/ValueSlider.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="3_g7dt8"]
 
-[node name="NewGame" instance=ExtResource("2")]
-offset_bottom = 153.0
-Title = "New Game"
+[node name="NewGame" type="Panel"]
+anchors_preset = -1
+anchor_left = 0.3640625
+anchor_top = 0.2851852
+anchor_right = 0.6359375
+anchor_bottom = 0.71481484
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_wjlhw")
+ValueSliderPath = "uid://dh2130j8vd8pv"
+metadata/_edit_use_anchors_ = true
 
-[node name="Header" parent="." index="0"]
-layout_mode = 0
+[node name="Scroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." index="1"]
-layout_mode = 0
-offset_top = 43.0
-offset_right = 321.0
-offset_bottom = 154.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Scroll"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ValueContainer" type="VBoxContainer" parent="VBoxContainer" index="0"]
+[node name="Header" parent="Scroll/VBoxContainer" instance=ExtResource("3_g7dt8")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Scroll/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ValueContainer" type="VBoxContainer" parent="Scroll/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="StarSystems" parent="VBoxContainer/ValueContainer" index="0" instance=ExtResource("3")]
+[node name="StarSystems" parent="Scroll/VBoxContainer/VBoxContainer/ValueContainer" instance=ExtResource("3")]
 layout_mode = 2
-size_flags_horizontal = 3
 tooltip_text = "Number of Star Systems."
 mouse_filter = 0
 Text = "Star Systems"
@@ -33,7 +54,7 @@ ValueName = "Systems"
 _minValue = 1
 _maxValue = 60
 
-[node name="Players" parent="VBoxContainer/ValueContainer" index="1" instance=ExtResource("3")]
+[node name="Players" parent="Scroll/VBoxContainer/VBoxContainer/ValueContainer" instance=ExtResource("3")]
 layout_mode = 2
 tooltip_text = "Number of players."
 mouse_filter = 0
@@ -42,13 +63,24 @@ ValueName = "Players"
 _minValue = 1
 _maxValue = 50
 
-[node name="ConfirmButton" type="HBoxContainer" parent="VBoxContainer" index="1"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Scroll/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Resources" type="GridContainer" parent="Scroll/VBoxContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="ConfirmButton" type="HBoxContainer" parent="Scroll/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="Confirm" type="Button" parent="VBoxContainer/ConfirmButton" index="0"]
+[node name="Confirm" type="Button" parent="Scroll/VBoxContainer/VBoxContainer/ConfirmButton"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "Start"
 
-[connection signal="button_up" from="VBoxContainer/ConfirmButton/Confirm" to="." method="_on_Confirm_button_up"]
+[connection signal="button_up" from="Scroll/VBoxContainer/VBoxContainer/ConfirmButton/Confirm" to="." method="_on_confirm_button_up"]

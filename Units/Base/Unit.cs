@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Unit : Construct, IUpkeep, IStatManager, IDamagable
+public partial class Unit : Construct, IStatManager, IDamagable
 {
 
 	public event Node2DPool.FreeNodeEventHandler FreeUnit;
@@ -18,11 +18,6 @@ public partial class Unit : Construct, IUpkeep, IStatManager, IDamagable
 	public bool HasHitpoints { get { return GetStat(GlobalStatNames.Health).CurrentValue > 0; } } 
 
 	public string UnitName { get; set; }
-
-	[Export]
-	public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
-
-	public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
 	[Export]
 	public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
@@ -64,8 +59,16 @@ public partial class Unit : Construct, IUpkeep, IStatManager, IDamagable
 		return StatManager.GetNodeOrNull<BaseStat>(name);
 	}
 
-    public void Damage()
+	public void Damage()
+	{
+		throw new System.NotImplementedException();
+	}
+	
+	public Unit Duplicate()
     {
-        throw new System.NotImplementedException();
+		var unit = (Unit)base.Duplicate();
+		unit.BuildCost = new System.Collections.Generic.Dictionary<int, int>(BuildCost);
+		unit.BuildTime = BuildTime;
+		return unit;
     }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c70akagmjohcx"]
+[gd_scene load_steps=16 format=3 uid="uid://c70akagmjohcx"]
 
 [ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="1"]
 [ext_resource type="Texture2D" uid="uid://cw326ra810s2" path="res://Backgrounds/light.jpg" id="3_v0w7q"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://7t6mr4eafrp4" path="res://Map/SpaceBattle.tscn" id="8_ecnql"]
 [ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="9_4sj48"]
 [ext_resource type="Script" uid="uid://bk0b4nk47ig03" path="res://World/MapArmyManager.cs" id="9_s53j1"]
-[ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="10"]
 [ext_resource type="Script" uid="uid://btur0gcjdfjq7" path="res://World/MapObjects.cs" id="12"]
 [ext_resource type="PackedScene" uid="uid://dnabucbyeoqmh" path="res://Map/Battle/manual_battle_scene.tscn" id="12_v0w7q"]
 [ext_resource type="Script" uid="uid://brb1sc5lbnqvf" path="res://World/Map.cs" id="13"]
@@ -34,9 +33,6 @@ subdivide_depth = 500
 [node name="World" type="Node3D"]
 process_mode = 3
 script = ExtResource("5")
-
-[node name="Data" parent="." groups=["GameData"] instance=ExtResource("10")]
-process_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("2")

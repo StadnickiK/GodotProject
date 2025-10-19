@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene load_steps=17 format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
@@ -7,11 +7,12 @@
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="5"]
 [ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="6"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
-[ext_resource type="Script" uid="uid://cxxxpr522njfh" path="res://Units/Base/UnitController.cs" id="7_tumiq"]
-[ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="8_5crgs"]
+[ext_resource type="PackedScene" uid="uid://davhcatexq1x2" path="res://Units/Base/unit_controller.tscn" id="7_hq6pt"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
 [ext_resource type="Script" uid="uid://cewkksffwnsls" path="res://Units/Base/RecruitmentComponent.cs" id="11_dgjf5"]
 [ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="12_hq6pt"]
+[ext_resource type="Script" uid="uid://bryw8j4ijbygc" path="res://Units/Base/ControllerComponent.cs" id="13_d2hlb"]
+[ext_resource type="Script" uid="uid://dp7inpctj32jq" path="res://Units/Base/MoveToTargetAction.cs" id="13_pmimd"]
 [ext_resource type="Script" uid="uid://cmgvvqr16vbqx" path="res://Map/Battle/InputController.cs" id="13_s27ef"]
 
 [sub_resource type="BoxShape3D" id="1"]
@@ -20,7 +21,7 @@ size = Vector3(3, 3, 3)
 [sub_resource type="BoxMesh" id="BoxMesh_dgjf5"]
 size = Vector3(3, 3, 3)
 
-[node name="Ship" type="CharacterBody3D" groups=["Selectable", "Targetable"]]
+[node name="Ship" type="CharacterBody3D" groups=["EndTurnListener", "Selectable", "Targetable"]]
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("1_hq6pt")
@@ -51,11 +52,7 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.
 [node name="Fire3" parent="FireControl" instance=ExtResource("4")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494)
 
-[node name="UnitController" type="Node" parent="."]
-script = ExtResource("7_tumiq")
-
-[node name="UpkeepComponent" type="Node" parent="UnitController"]
-script = ExtResource("8_5crgs")
+[node name="UnitController" parent="." instance=ExtResource("7_hq6pt")]
 
 [node name="StateMachine" parent="." instance=ExtResource("7_1l317")]
 script = ExtResource("8_bc3ov")
@@ -71,3 +68,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.41518, 0)
 
 [node name="InputController" type="Node" parent="."]
 script = ExtResource("13_s27ef")
+
+[node name="MoveToTargetAction" type="Node" parent="InputController"]
+script = ExtResource("13_pmimd")
+
+[node name="ControllerComponent" type="Node" parent="."]
+script = ExtResource("13_d2hlb")

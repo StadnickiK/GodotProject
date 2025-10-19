@@ -15,7 +15,7 @@ public interface ICardIndex
     public int CardIndex { get; set; }
 }
 
-public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory, IDamagable, ISavingNode, ICardIndex, IStatManager
+public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IMovable, IProjectileFactory, IDamagable, ISavingNode, ICardIndex, IStatManager, IInputController
 {
     private Player controller;
     private ProjectileFactory projectileFactory;

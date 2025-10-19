@@ -7,10 +7,14 @@
 [node name="Unit 1" type="Node"]
 script = ExtResource("1")
 ModelName = "UFO-1"
+ExportBuildCost = Dictionary[String, int]({
+"": 0,
+"C": 400,
+"Common Ores": 200
+})
 ExportUpkeep = Dictionary[String, int]({
 "Credits": 100
 })
-BuildTime = 10
 
 [node name="StatManager" type="Node" parent="."]
 script = ExtResource("2_w0h5o")

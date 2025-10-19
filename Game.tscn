@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://eelyfleej1wb"]
+[gd_scene load_steps=5 format=3 uid="uid://eelyfleej1wb"]
 
 [ext_resource type="PackedScene" uid="uid://c0lhmp3fj6tkb" path="res://Menu/MainMenu.tscn" id="1"]
 [ext_resource type="Script" uid="uid://dnbi0a2oao2o" path="res://Map/Generator.cs" id="2"]
 [ext_resource type="Script" uid="uid://dieyn7q3vdibs" path="res://Game.cs" id="3"]
+[ext_resource type="PackedScene" uid="uid://bnp018gccir85" path="res://Data/Data.tscn" id="4_sb48q"]
 
 [node name="Game" type="Node3D"]
 process_mode = 3
@@ -15,5 +16,8 @@ Title = "RTS 4X"
 [node name="Node" type="Node" parent="."]
 process_mode = 3
 script = ExtResource("2")
+
+[node name="Data" parent="." groups=["GameData"] instance=ExtResource("4_sb48q")]
+process_mode = 1
 
 [connection signal="QuickGame" from="MainMenu" to="." method="_on_QuickGame"]

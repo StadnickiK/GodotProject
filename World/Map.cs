@@ -8,7 +8,7 @@ public partial class Map : Node3D
 
     MapObjects mapObj = null;
 
-    PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
+    //PackedScene _ShipScene = (PackedScene)ResourceLoader.Load("res://Units/Base/Ship.tscn");
 
     void GetNodes(){
         mapObj = GetNode<MapObjects>("MapObjects");

@@ -219,7 +219,7 @@ public partial class AIPlayer : Player
     public Planet GetIdleBuildConstructionPlanet(){
         foreach(Node node in MapObjects){
             if(node is Planet planet)
-                if(planet.BuildingsManager.Constructions.ConstructionList.Count == 0)
+                if(planet.BuildingManager.Constructions.ConstructionList.Count == 0)
                     return planet;
         }
         return null;
@@ -229,7 +229,7 @@ public partial class AIPlayer : Player
         var list = new List<Planet>();
         foreach(Node node in MapObjects){
             if(node is Planet planet)
-                if(planet.BuildingsManager.Constructions.ConstructionList.Count == 0)
+                if(planet.BuildingManager.Constructions.ConstructionList.Count == 0)
                     list.Add(planet);
         }
         return list;
@@ -431,10 +431,10 @@ public partial class AIPlayer : Player
         if(blackBoard.ContainsKey("BuildConstructor")){
             var planetObj = blackBoard["BuildConstructor"];
             var planet = (Planet)planetObj;
-            if(_data.GetNode("Buildings").GetChildren().Count >0)
-                if(planet.StartConstruction((Building)_data.GetData("Buildings")[0])){
-                    return TreeNode.NodeState.Succes;
-                }
+            // if(_data.GetNode("Buildings").GetChildren().Count >0)
+            //     if(planet.StartConstruction((Building)_data.GetData("Buildings")[0])){
+            //         return TreeNode.NodeState.Succes;
+            //     }
         }
         return TreeNode.NodeState.Failure;
     }
@@ -451,7 +451,7 @@ public partial class AIPlayer : Player
                     blackBoard["BuildingsToBuild"] = reqBuildings = reqBuildings.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
                     for(int i = 0; i < reqBuildings.Count; i++){
                         var building = reqBuildings.Keys.ElementAt(i);
-                        if(planets[0].BuildingsManager.HasBuilding(building)){
+                        if(planets[0].BuildingManager.HasBuilding(building)){
                             reqBuildings.Remove(building);
                         }else{
                             return TreeNode.NodeState.Succes;
@@ -473,25 +473,25 @@ public partial class AIPlayer : Player
                 var invasionsObject = blackBoard["InvasionsInProgress"];
                 var invasionsInProgress = (Dictionary<Ship, Node3D>)invasionsObject;
                 blackBoard["ColonyTargets"] = targets = targets.OrderBy( x => x.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
-                var enemies = targets.Keys.First().Orbit.GetChildren();
-                int count = 0;
-                foreach(Node node in enemies){
-                    if(node is Ship ship)
-                        count += ship.UnitController.GetChildren().Count;
-                }
+                // var enemies = targets.Keys.First().Orbit.GetChildren();
+                // int count = 0;
+                // foreach(Node node in enemies){
+                //     if(node is Ship ship)
+                //         count += ship.UnitController.GetChildren().Count;
+                // }
                 invasionsObject = blackBoard["InvasionPlans"];
                 var invasions = (Dictionary<Ship, Planet>)invasionsObject;
                 for(int i = 0; i < fleets.Count(); i++){
                     var ship = fleets.Keys.ElementAt(i);
-                    if(!invasionsInProgress.ContainsKey(ship))
-                        if(ship.UnitController.GetChildren().Count > count){    
-                            if(!invasions.ContainsKey(ship)){
-                                invasions.Add(ship, targets.Keys.ElementAt(0));
-                                targets.Remove(targets.Keys.ElementAt(0));
-                                fleets.Remove(ship);
-                                return TreeNode.NodeState.Succes;
-                            }
-                        }
+                    // if(!invasionsInProgress.ContainsKey(ship))
+                        // if(ship.UnitController.GetChildren().Count > count){    
+                        //     if(!invasions.ContainsKey(ship)){
+                        //         invasions.Add(ship, targets.Keys.ElementAt(0));
+                        //         targets.Remove(targets.Keys.ElementAt(0));
+                        //         fleets.Remove(ship);
+                        //         return TreeNode.NodeState.Succes;
+                        //     }
+                        // }
                 }
             }
         }
@@ -669,7 +669,7 @@ public partial class AIPlayer : Player
     // todo: change the way buildings are passed to Planet, add a filter or smth
  
     TreeNode.NodeState ConstructBuilding(Dictionary<Building, int> reqBuildings, Planet planet, Building targetBuilding){
-        if(!planet.BuildingsManager.HasBuilding(targetBuilding)){ // needee if the dictionary contains only 1 item
+        if(!planet.BuildingManager.HasBuilding(targetBuilding)){ // needee if the dictionary contains only 1 item
             return ConstructBuildingIfNotHave(reqBuildings, planet, targetBuilding);
         }else{
             var temp = reqBuildings[targetBuilding];
@@ -680,14 +680,14 @@ public partial class AIPlayer : Player
     }
 
     TreeNode.NodeState ConstructBuildingIfNotHave(Dictionary<Building, int> reqBuildings, Planet planet, Building targetBuilding){
-            if(planet.StartConstruction(targetBuilding)){
-                reqBuildings.Remove(targetBuilding);
-                return TreeNode.NodeState.Succes;
-            }else{
-                var temp = reqBuildings[targetBuilding];
-                reqBuildings.Remove(targetBuilding); // remove fist element
-                reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
-            }
+            // if(planet.StartConstruction(targetBuilding)){
+            //     reqBuildings.Remove(targetBuilding);
+            //     return TreeNode.NodeState.Succes;
+            // }else{
+            //     var temp = reqBuildings[targetBuilding];
+            //     reqBuildings.Remove(targetBuilding); // remove fist element
+            //     reqBuildings.Append(new KeyValuePair<Building, int>(targetBuilding, temp));
+            // }
         return TreeNode.NodeState.Failure;
     }
 
@@ -703,7 +703,7 @@ public partial class AIPlayer : Player
                 foreach(var planet in planets){
                         for(int i = reqBuildings.Count() - 1; i > -1; i --){ // foreach throws because indexer changes
                             var building = reqBuildings.Keys.ElementAt(i);
-                            if(buildingReq[building.Name].Count <= 0 && !planet.BuildingsManager.HasBuilding(building))
+                            if(buildingReq[building.Name].Count <= 0 && !planet.BuildingManager.HasBuilding(building))
                                 if(ResManager.CanPayCost(building.BuildCost))
                                     if(building.Products.Count > 0 && building.Type == Building.Category.Mine){
                                         int j = 0;
@@ -736,7 +736,7 @@ public partial class AIPlayer : Player
     }
 
     bool PlanetHasResourceBuilding(Planet planet, int resName){
-        foreach(Building building in planet.BuildingsManager.Buildings){
+        foreach(Building building in planet.BuildingManager.Buildings){
             if(building.Products.ContainsKey(resName))
                 return true;
         }
@@ -828,7 +828,7 @@ public partial class AIPlayer : Player
             if(buildingReq["Building"].Count > 0){
                 foreach(var planet in planets){
                     foreach(var buildingName in buildingReq["Building"].Keys){
-                        if(planet.BuildingsManager.HasBuilding(buildingName)){
+                        if(planet.BuildingManager.HasBuilding(buildingName)){
                             if(!planetScore.ContainsKey(planet)){
                                 planetScore.Add(planet, 1);
                             }else{
@@ -844,7 +844,7 @@ public partial class AIPlayer : Player
                                 }
                         }
                     }
-                    if(!planet.BuildingsManager.HasBuilding(building)){
+                    if(!planet.BuildingManager.HasBuilding(building)){
                         if(!plan.ContainsKey(planet)){
                             plan.Add(planet, new Dictionary<Building, int>(){{building, reqBuildings[building]}});
                         }else{
@@ -858,7 +858,7 @@ public partial class AIPlayer : Player
                 }
             }else{
                 foreach(var planet in planets){
-                    if(!planet.BuildingsManager.HasBuilding(building)){
+                    if(!planet.BuildingManager.HasBuilding(building)){
                         if(!plan.ContainsKey(planet)){
                             plan.Add(planet, new Dictionary<Building, int>(){{building, reqBuildings[building]}});
                         }else{
@@ -953,7 +953,7 @@ public partial class AIPlayer : Player
                         if(count == building.Products.Count)
                             maxPlanetBuildCount += reqBuildings.ContainsKey(building) ? (reqBuildings[building]<0 ? 0.9f : reqBuildings[building]) : 1;
                     }
-                    if(planet.BuildingsManager.Buildings.Contains(building))
+                    if(planet.BuildingManager.Buildings.Contains(building))
                         planetBuildingCount += reqBuildings.ContainsKey(building) ? (reqBuildings[building]<0 ? 0.9f : reqBuildings[building]) : 1;
                 }
             }

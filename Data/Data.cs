@@ -2,8 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
 
 public partial class Data : Node
 {
@@ -64,7 +62,7 @@ public partial class Data : Node
             Buildings.Add(building);
             building.Index = Buildings.Count-1;
             foreach(var unit in building.ExportUnits){
-                building.Units.Add(Units.FirstOrDefault(x => x.UnitName == unit.Key).Index, unit.Value);
+                building.Units.Add(Units.FirstOrDefault(x => x.UnitName == unit.Key));
             }
         }
     }
@@ -80,10 +78,11 @@ public partial class Data : Node
     }
 
     void LoadUnitResources(){
-        System.Threading.Tasks.Parallel.ForEach (Units, unit => {
+        foreach (var unit in Units)
+        {
             unit.BuildCost = LoadResourceCost(unit.ExportBuildCost);
             unit.Upkeep = LoadResourceCost(unit.ExportUpkeep);
-        });
+        }
     }
 
     public Unit GetUnit(int id){
@@ -102,7 +101,15 @@ public partial class Data : Node
         {
             foreach(var resource in exportResourceCost){
                 resName = resource.Key;
-                cost.Add(Resources.FirstOrDefault(x => x.ResourceName == resName).Index ,resource.Value);
+                var res = Resources.FirstOrDefault(x => x.ResourceName == resName || x.IconPlaceholder == resName);
+                if (res != null)
+                {
+                    cost.Add(res.Index, resource.Value);
+                }
+                else
+                {
+                    Console.WriteLine("Error searching for given resource name "+resName+"\n");
+                }
             }
         }
         catch (System.Exception ex)

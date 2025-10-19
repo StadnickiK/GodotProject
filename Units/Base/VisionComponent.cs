@@ -1,10 +1,16 @@
 using Godot;
 using System.Collections.Generic;
 
+
+public interface IVisionComponentListener
+{
+    void _on_area_body_Entered(Node node);
+
+    void _on_area_body_Exited(Node node);
+}
+
 public partial class VisionComponent : Area3D, IUpdateStat
 {
-
-
     IVisible VisibleParent;
 
     CollisionShape3D _shape;
@@ -22,6 +28,7 @@ public partial class VisionComponent : Area3D, IUpdateStat
     public event TargetSpottedEventHandler TargetLost;
 
     public HashSet<string> StatNames { get; set; } = new HashSet<string>() { "Vision Range" };
+    public Player Controller { get; set; }
 
     public void UpdateVisionRange()
     {
@@ -37,14 +44,26 @@ public partial class VisionComponent : Area3D, IUpdateStat
         s.Radius = VisionRange;
         _shape.Shape = s;
     }
+    
     public override void _Ready()
     {
-        var node = GetParent();
-        if (node is IVisible v)
+        var parent = GetParent();
+        if (parent is IVisible v)
             VisibleParent = v;
-        ConnectStatListeners(node);
+        InitListeners(parent);
+        ConnectStatListeners(parent);
         _shape = GetNode<CollisionShape3D>("CollisionShape3D");
         UpdateVisionRange();
+    }
+
+    void InitListeners(Node parent)
+    {
+        foreach (var item in parent.GetChildren())
+            if (item is IVisionComponentListener listener)
+            {
+                BodyEntered += listener._on_area_body_Entered;
+                BodyExited += listener._on_area_body_Exited;
+            }
     }
 
     public void ConnectStatListeners(Node parent)
@@ -86,7 +105,7 @@ public partial class VisionComponent : Area3D, IUpdateStat
             // }       
         }
     }
-    
+
     public void UpdateStat(IStat stat)
     {
         switch (stat.Name)
@@ -97,7 +116,7 @@ public partial class VisionComponent : Area3D, IUpdateStat
         }
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
+    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {
     //      

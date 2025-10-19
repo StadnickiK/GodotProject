@@ -30,10 +30,10 @@ domain_warp_type = 2
 width = 512
 height = 512
 depth = 512
+noise = SubResource("FastNoiseLite_i5ynm")
+color_ramp = SubResource("Gradient_ay8pf")
 seamless = true
 seamless_blend_skirt = 0.165
-color_ramp = SubResource("Gradient_ay8pf")
-noise = SubResource("FastNoiseLite_i5ynm")
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_mxoex"]
 output_port_for_preview = 0
@@ -41,7 +41,7 @@ texture = SubResource("NoiseTexture3D_aytf2")
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform sampler3D tex3d_frg_4;
 

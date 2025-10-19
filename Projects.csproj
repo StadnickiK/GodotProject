@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Godot.NET.Sdk/4.4.1">
+<Project Sdk="Godot.NET.Sdk/4.5.0">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -13,9 +13,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="Army.cs" />
     <Compile Include="Behaviour Tree\ActionTN.cs" />
@@ -195,5 +192,14 @@
     <Compile Include="Map\Battle\DeathController.cs" />
     <Compile Include="Units\Stats\GlobalStatNames.cs" />
     <Compile Include="Map\Battle\Shield.cs" />
+    <Compile Include="UI\ArmyInterfaceContainer.cs" />
+    <Compile Include="Units\Base\ControllerComponent.cs" />
+    <Compile Include="Data\WorldGenParams.cs" />
+    <Compile Include="UI\EndTurnPanel.cs" />
+    <Compile Include="Units\Base\MoveToTargetAction.cs" />
+    <Compile Include="Map\IMap\IMergable.cs" />
+    <Compile Include="Map\IMap\INode.cs" />
+    <Compile Include="UI\TabsOrganizer.cs" />
+    <Compile Include="UI\ArmyView.cs" />
   </ItemGroup>
 </Project>

@@ -26,6 +26,8 @@ ProgressBar/styles/fill = SubResource("StyleBoxFlat_ap3um")
 anchors_preset = -1
 anchor_right = 0.0291667
 anchor_bottom = 0.0962963
+offset_right = -0.0001296997
+offset_bottom = 3.9999847
 script = ExtResource("1_5oevl")
 metadata/_edit_use_anchors_ = true
 
@@ -36,11 +38,11 @@ theme_override_constants/separation = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/icon_pressed_color = Color(0.5564, 0.861689, 0.964114, 1)
 theme_override_font_sizes/font_size = 64
+toggle_mode = true
 text = "U"
 
 [node name="Health" type="ProgressBar" parent="VBoxContainer"]

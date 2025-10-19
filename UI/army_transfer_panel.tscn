@@ -1,0 +1,102 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfnxtw85q2wao"]
+
+[ext_resource type="Script" uid="uid://4cbef4kp12uo" path="res://UI/ArmyTransferPanel.cs" id="1_brmsv"]
+[ext_resource type="Script" uid="uid://06i2q4qhrlqd" path="res://UI/ArmyPanel.cs" id="2_6da8q"]
+[ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="3_bnfpg"]
+
+[node name="ArmyTransferPanel" type="VBoxContainer"]
+custom_minimum_size = Vector2(576, 208)
+anchors_preset = -1
+anchor_left = 0.40989584
+anchor_top = 0.66851854
+anchor_right = 0.5901038
+anchor_bottom = 0.78101856
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_brmsv")
+metadata/_edit_use_anchors_ = true
+
+[node name="TransferArmy" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(278, 104)
+layout_mode = 2
+size_flags_vertical = 8
+script = ExtResource("2_6da8q")
+
+[node name="UnitCard" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard2" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard3" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard4" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard5" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard6" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+layout_mode = 2
+
+[node name="UnitCard7" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="TransferArmy" instance=ExtResource("3_bnfpg")]
+visible = false
+layout_mode = 2
+
+[node name="Confirm" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Confirm"

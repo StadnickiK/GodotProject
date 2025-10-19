@@ -1,13 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://crtw5r4628b2h"]
+[gd_scene load_steps=11 format=3 uid="uid://crtw5r4628b2h"]
 
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="1"]
 [ext_resource type="Script" uid="uid://p7qk3xtfike7" path="res://UI/PlanetInterface.cs" id="2"]
 [ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="2_4b3kr"]
-[ext_resource type="Script" uid="uid://kt6pxl3077rj" path="res://UI/BuildMenu.cs" id="2_a1sp5"]
+[ext_resource type="PackedScene" uid="uid://bfnxtw85q2wao" path="res://UI/army_transfer_panel.tscn" id="3_4kujc"]
+[ext_resource type="Script" uid="uid://chxr53f6krmoi" path="res://UI/TabsOrganizer.cs" id="3_c2p80"]
 [ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="4"]
 [ext_resource type="Script" uid="uid://cg0wvj3psirpa" path="res://UI/BuildingPanel.cs" id="4_cb1m1"]
 [ext_resource type="PackedScene" uid="uid://4l0t3vw6ub8r" path="res://UI/Build_button.tscn" id="5_5o4pk"]
 [ext_resource type="Script" uid="uid://dmqv3lqisku2g" path="res://UI/BuildButton.cs" id="6_1gfal"]
+[ext_resource type="PackedScene" uid="uid://ng20bm5m0wo" path="res://UI/army_view.tscn" id="8_r6aq8"]
 
 [node name="PlanetInterface" type="Control"]
 layout_mode = 3
@@ -37,63 +39,96 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 2
+[node name="UnitMenuScroll" parent="." instance=ExtResource("2_4b3kr")]
+layout_mode = 0
+anchor_left = 0.430208
+anchor_top = 0.756944
+anchor_right = 0.569792
+anchor_bottom = 0.855093
+offset_left = 0.0
+offset_top = 0.0
+offset_right = -0.00268555
+offset_bottom = -0.00183105
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ArmyTransferPanel" parent="." instance=ExtResource("3_4kujc")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 576.0
+offset_bottom = 208.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="TabsOrganizer" type="VBoxContainer" parent="."]
+layout_mode = 0
 anchor_left = 0.430208
 anchor_top = 0.862037
 anchor_right = 0.569792
 anchor_bottom = 1.0
+offset_left = -0.00012207031
+offset_top = -10.999878
+offset_right = -0.0026855469
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("3_c2p80")
 metadata/_edit_use_anchors_ = true
 
-[node name="Header" parent="VBoxContainer" instance=ExtResource("1")]
+[node name="Header" parent="TabsOrganizer" instance=ExtResource("1")]
 layout_mode = 2
 
-[node name="Tabs" type="TabContainer" parent="VBoxContainer"]
+[node name="Tabs" type="TabContainer" parent="TabsOrganizer"]
 layout_mode = 2
+size_flags_vertical = 3
 tab_alignment = 1
 current_tab = 0
 tabs_position = 1
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
-[node name="Buildings" type="ScrollContainer" parent="VBoxContainer/Tabs"]
+[node name="Buildings" type="ScrollContainer" parent="TabsOrganizer/Tabs"]
 clip_contents = false
 custom_minimum_size = Vector2(536, 212)
 layout_mode = 2
 script = ExtResource("4_cb1m1")
 metadata/_tab_index = 0
 
-[node name="BuildingPanel" type="GridContainer" parent="VBoxContainer/Tabs/Buildings"]
+[node name="BuildingPanel" type="GridContainer" parent="TabsOrganizer/Tabs/Buildings"]
 custom_minimum_size = Vector2(536, 106)
 layout_mode = 2
 columns = 5
 
-[node name="BuildButton" parent="VBoxContainer/Tabs/Buildings/BuildingPanel" instance=ExtResource("5_5o4pk")]
+[node name="BuildButton" parent="TabsOrganizer/Tabs/Buildings/BuildingPanel" instance=ExtResource("5_5o4pk")]
 layout_mode = 2
 script = ExtResource("6_1gfal")
 
-[node name="Recruitment" type="ScrollContainer" parent="VBoxContainer/Tabs"]
+[node name="Orbit" parent="TabsOrganizer/Tabs" instance=ExtResource("8_r6aq8")]
 visible = false
 layout_mode = 2
-script = ExtResource("2_a1sp5")
 metadata/_tab_index = 1
 
-[node name="BuildMenu" type="GridContainer" parent="VBoxContainer/Tabs/Recruitment"]
+[node name="TabBin" type="Control" parent="TabsOrganizer"]
+visible = false
 layout_mode = 2
 
 [node name="BuildingInterface" parent="." instance=ExtResource("4")]
 visible = false
 layout_direction = 1
-layout_mode = 2
+layout_mode = 0
 anchors_preset = 0
 anchor_left = 0.328125
-anchor_top = 0.284259
-anchor_right = 0.402083
+anchor_top = 0.497222
+anchor_right = 0.328125
 anchor_bottom = 0.497222
-offset_bottom = 0.0
+offset_top = 0.0
+offset_bottom = 460.0
 size_flags_horizontal = 4
 size_flags_vertical = 4

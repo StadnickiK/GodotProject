@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public partial class Select : Node
 {
 
-    SelectManager<IMovable> selectManager;
+    SelectManager<ISelection> selectManager;
 
     Vector3 _destination;
 
@@ -58,35 +58,35 @@ public partial class Select : Node
 
     void AddSelectEffect(){
         foreach(var c in selectManager.SelectedUnits)
-                c.Selection.Show();
+                c.Selection?.Show();
     }
 
-    void AddSelectEffect(IMovable c){
-        c.Selection.Show();
+    void AddSelectEffect(ISelection c){
+        c.Selection?.Show();
     }
 
     void RemoveSelectEffect(){
         foreach(var c in selectManager.SelectedUnits)
-                c.Selection.Hide();
+                c.Selection?.Hide();
     }
 
-    void RemoveSelectEffect(IMovable unit){
-        unit.Selection.Hide();
+    void RemoveSelectEffect(ISelection unit){
+        unit.Selection?.Hide();
     }
 
-    void SubscribeShip(IMovable ship){
+    void SubscribeShip(ISelection ship){
         OnMove += ship.MoveToPosition;
         OnTarget += ship.MoveToTarget;
         OnClear += ship.ClearTargets;
     }
 
-    void UnsubscribeShip(IMovable ship){
+    void UnsubscribeShip(ISelection ship){
         OnMove -= ship.MoveToPosition;
         OnTarget -= ship.MoveToTarget;
         OnClear -= ship.ClearTargets;
     }
 
-    public void SelectUnit(IMovable unit){
+    public void SelectUnit(ISelection unit){
         if(!selectManager.SelectedUnits.Contains(unit)){
             ClearSelection();
             selectManager.SelectUnit(unit);
@@ -94,7 +94,7 @@ public partial class Select : Node
         }
     }
 
-    public void DeselectUnit(IMovable unit){
+    public void DeselectUnit(ISelection unit){
         if(selectManager.SelectedUnits.Contains(unit)){
             UnsubscribeShip(unit);
             selectManager.DeselectUnit(unit);
@@ -102,7 +102,7 @@ public partial class Select : Node
         }
     }
 
-    public void AddSelectedUnit(IMovable unit)
+    public void AddSelectedUnit(ISelection unit)
     {
         if (!selectManager.SelectedUnits.Contains(unit))
         {
@@ -111,7 +111,7 @@ public partial class Select : Node
         }
     }
 
-    void UpdateSelection(IMovable unit)
+    void UpdateSelection(ISelection unit)
     {
         RemoveSelectEffect();
         SubscribeShip(unit);
@@ -150,7 +150,7 @@ public partial class Select : Node
         foreach (var unit in selectManager.SelectedUnits)
         {
             UnsubscribeShip(unit);
-            unit.Selection.Hide();
+            unit.Selection?.Hide();
         }
         selectManager.ClearSelection();
     }
@@ -163,7 +163,7 @@ public partial class Select : Node
     public override void _Ready()
     {
         // SetProcess(false);   
-        selectManager = new SelectManager<IMovable>();
+        selectManager = new SelectManager<ISelection>();
         AddChild(selectManager);
     }
 

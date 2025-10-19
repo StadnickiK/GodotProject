@@ -10,12 +10,9 @@ script = ExtResource("1")
 
 [node name="ResourceManager" parent="." instance=ExtResource("2_7rmrn")]
 
-[node name="TechManager" type="Node" parent="."]
-script = ExtResource("3_ixvud")
-
-[node name="UpkeepComponent" type="Node" parent="."]
-script = ExtResource("4_m5k62")
-
-[node name="TotalProduction" type="Node" parent="."]
+[node name="TotalProduction" type="Node" parent="ResourceManager"]
 script = ExtResource("4_m5k62")
 CanGoNegative = true
+
+[node name="TechManager" type="Node" parent="."]
+script = ExtResource("3_ixvud")

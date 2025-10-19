@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://bqfm6cf66f6b4"]
 
 [ext_resource type="Script" uid="uid://ye6khi6qkk28" path="res://Map/Battle/BattleUi.cs" id="1_dukux"]
-[ext_resource type="PackedScene" uid="uid://cd8trni2dvfhs" path="res://UI/ArmyInterface.tscn" id="1_wqa4t"]
 [ext_resource type="PackedScene" uid="uid://dkw0uv5rxi6sc" path="res://UI/BuildingInterface.tscn" id="2_rc8m1"]
+[ext_resource type="PackedScene" uid="uid://ng20bm5m0wo" path="res://UI/army_view.tscn" id="3_7qeny"]
 
 [node name="BattleUI" type="Control"]
 layout_mode = 3
@@ -15,18 +15,21 @@ mouse_filter = 1
 script = ExtResource("1_dukux")
 metadata/_edit_use_anchors_ = true
 
-[node name="ArmyInterface" parent="." instance=ExtResource("1_wqa4t")]
+[node name="ArmyInterface" parent="." instance=ExtResource("3_7qeny")]
 layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-grow_vertical = 2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -268.0
+offset_top = -230.0
+offset_right = 268.0
+offset_bottom = -18.000732
+grow_horizontal = 2
+grow_vertical = 0
+ShowInfoPanel = false
+metadata/_tab_index = 1
 
 [node name="ConfirmPanel" type="VBoxContainer" parent="."]
 layout_mode = 1

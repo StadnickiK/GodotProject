@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class ArmyPanel : ScrollContainer
+public partial class ArmyPanel : HBoxContainer
 {
 	public delegate void UpdateUnitsToTransferEventHandler(List<Unit> UnitsToTransfer);
 
@@ -10,6 +10,14 @@ public partial class ArmyPanel : ScrollContainer
 
 	[Export]
 	public string ItemScenePath { get; set; } = "res://UI/Unit_Card.tscn";
+
+	[Export]
+	public int MinUnitCards { get; set; } = 5;
+
+	[Export]
+	public int MaxUnitCards { get; set; } = 20;
+	[Export]
+	public float CardSpacing { get; set; } = 4;
 
 	public delegate void NewCardEventHandler(UnitCard card);
 
@@ -21,23 +29,30 @@ public partial class ArmyPanel : ScrollContainer
 
 	public List<Unit> UnitsToTransfer { get; set; } = new List<Unit>();
 
+	Vector2 unitCardSizing;
+
+	Vector2 originalSize;
+
 	public UI UI { get; set; }
     public List<UnitCard> UnitCards { get => unitCards; private set => unitCards = value; }
 
-    Node container;
+    //HBoxContainer container;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		scene = (PackedScene)ResourceLoader.Load(ItemScenePath);
-        GetNodes();
+		GetNodes();
+		unitCardSizing = unitCards[0].Size;
+		unitCardSizing.X += CardSpacing;
+		originalSize = Size;
 	}
 
 	void GetNodes(){
-		container = GetNode("Grid");
+		//container = GetNode<HBoxContainer>("Grid");
 		//GetChildren()[0].GetChildren().Count;
 		var p = 0;
-		foreach (var item in container.GetChildren())
+		foreach (var item in GetChildren())
 		{
 			if(item is UnitCard card){
 				UnitCards.Add(card);
@@ -61,7 +76,7 @@ public partial class ArmyPanel : ScrollContainer
 	} 
 
 	public void ConnectBuildButtons(ArmyInterface planetInterface){
-		foreach (var node in container.GetChildren()){
+		foreach (var node in GetChildren()){
 			var b = (Button)node.GetChild(0);
 			b.MouseEntered += () => planetInterface._on_build_button_mouse_entered();
 		}
@@ -97,11 +112,12 @@ public partial class ArmyPanel : ScrollContainer
 				UnitCards[i].Hide();
 			}
 		}
+		UpdateSize(units.Count);
 	}
-	
+
 	public void UpdateArmyList(List<Unit3D> units, bool IsController)
 	{
-		while(UnitCards.Count < units.Count)
+		while (UnitCards.Count < units.Count)
 			AddCards();
 		for (int i = 0; i < UnitCards.Count; i++)
 		{
@@ -116,7 +132,24 @@ public partial class ArmyPanel : ScrollContainer
 				UnitCards[i].Hide();
 			}
 		}
+		UpdateSize(units.Count);
 	}
+	
+	public void UpdateSize(int count)
+    {
+        if(count <= MinUnitCards)
+        {
+            Size = originalSize;
+        }
+        else
+		{
+			var cardCount = count - MinUnitCards;
+			cardCount = cardCount <= MaxUnitCards ? cardCount : MaxUnitCards;
+			var newSize = new Vector2(originalSize.X, originalSize.Y);
+			newSize.X += cardCount * unitCardSizing.X;
+			SetSize(newSize);
+        }
+    }
 
 	public void ResetPanel()
 	{
@@ -125,7 +158,7 @@ public partial class ArmyPanel : ScrollContainer
 		{
 			card.button.ButtonPressed = false;
 		}
-		UnitsToTransfer.Clear();
+		UnitsToTransfer?.Clear();
 		UpdateUnitsToTransfer?.Invoke(UnitsToTransfer);
 	}
 
@@ -135,13 +168,8 @@ public partial class ArmyPanel : ScrollContainer
 			var card = scene.Instantiate<UnitCard>();
 			ConnectUnitCard(card);
 			UnitCards.Add(card);
-			container.AddChild(card);
+			AddChild(card);
 			NewCard?.Invoke(card);
 		}
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
 	}
 }

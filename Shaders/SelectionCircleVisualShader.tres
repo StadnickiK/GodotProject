@@ -57,7 +57,7 @@ default_input_values = [0, 0.5, 1, 0.0]
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform vec4 BaseColor : source_color = vec4(0.000000, 1.000000, 0.000000, 1.000000);
 uniform float CricleWidth = 0.02999999932945;

@@ -1,0 +1,250 @@
+[gd_scene load_steps=7 format=3 uid="uid://ng20bm5m0wo"]
+
+[ext_resource type="Script" uid="uid://darm8dt03qys4" path="res://UI/ArmyView.cs" id="1_e0jib"]
+[ext_resource type="Script" uid="uid://bibq2sy8hsrc6" path="res://UI/InfoPanel.cs" id="2_no02p"]
+[ext_resource type="Script" uid="uid://bx4g70xd1riox" path="res://UI/ArmyInterfaceContainer.cs" id="3_7f3mt"]
+[ext_resource type="Script" uid="uid://c0p30ub3sq80t" path="res://UI/ArmyRecruitment.cs" id="4_jd02g"]
+[ext_resource type="PackedScene" uid="uid://ceejx2dqj3b7h" path="res://UI/Unit_Card.tscn" id="5_hxm2o"]
+[ext_resource type="Script" uid="uid://06i2q4qhrlqd" path="res://UI/ArmyPanel.cs" id="6_a0n15"]
+
+[node name="ArmyView" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.13229166
+anchor_bottom = 0.098148145
+offset_right = 16.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_e0jib")
+metadata/_edit_use_anchors_ = true
+
+[node name="InfoPanel" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+script = ExtResource("2_no02p")
+
+[node name="Controller" type="Label" parent="InfoPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Owned by"
+
+[node name="Upkeep" type="Label" parent="InfoPanel"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 20
+text = "Upkeep:"
+horizontal_alignment = 2
+
+[node name="ArmyInterfaceContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+script = ExtResource("3_7f3mt")
+
+[node name="BuildButton" type="Button" parent="ArmyInterfaceContainer"]
+custom_minimum_size = Vector2(100, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "+"
+
+[node name="ArmyRecruitment" type="HBoxContainer" parent="ArmyInterfaceContainer"]
+layout_mode = 2
+script = ExtResource("4_jd02g")
+
+[node name="UnitCard" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard2" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard3" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard4" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard5" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard6" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard7" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard8" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard21" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard22" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard23" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard24" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard25" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard26" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard27" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard28" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard29" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard30" parent="ArmyInterfaceContainer/ArmyRecruitment" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="ArmyPanel" type="HBoxContainer" parent="ArmyInterfaceContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("6_a0n15")
+
+[node name="UnitCard" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard2" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard3" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard4" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard5" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard6" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard7" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+layout_mode = 2
+
+[node name="UnitCard8" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard9" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard10" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard11" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard12" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard13" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard14" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard15" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard16" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard17" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard18" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard19" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2
+
+[node name="UnitCard20" parent="ArmyInterfaceContainer/ArmyPanel" instance=ExtResource("5_hxm2o")]
+visible = false
+layout_mode = 2

@@ -26,7 +26,7 @@ public partial class MapArmyManager : Node3D
 		var ship = (Ship)ArmyPool.GetNode3D(planet.System.StarSysObjects, planet.Transform.Origin+ new Vector3(3,0,3), planet.Name +" "+Rand.Next(0,1000));
         ship.ModelLoader = ModelLoader;
 		AddUnit(ship, unit);
-		ship.UnitController.AddChild(unit);
+		ship.UnitController.AddUnit(unit);
 		//ConnectShip(ship);
         UpdateController(ship, planet.Controller);
 		//  planet.AddToOrbit(ship);

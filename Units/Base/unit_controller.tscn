@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://davhcatexq1x2"]
+
+[ext_resource type="Script" uid="uid://cxxxpr522njfh" path="res://Units/Base/UnitController.cs" id="1_dqv72"]
+[ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="2_osukd"]
+
+[node name="UnitController" type="Node3D"]
+script = ExtResource("1_dqv72")
+
+[node name="UpkeepComponent" type="Node" parent="."]
+script = ExtResource("2_osukd")

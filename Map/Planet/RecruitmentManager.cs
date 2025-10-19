@@ -3,7 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class RecruitmentManager : Node, IMapObjectController
+public interface RecruitmentFinishedListener
+{
+    public void RecruitmentFinished(RecruitmentManager recruitmentManager, List<IConstruct> constructs);
+}
+
+public partial class RecruitmentManager : Node, IVisionComponentListener, IChangeControllerListener, IEndTurnListener
 {
     [Export]
     public string VisionComponentPath { get; set; } = "res://Units/Base/VisionComponent.tscn";
@@ -14,7 +19,7 @@ public partial class RecruitmentManager : Node, IMapObjectController
     [Export]
     public Godot.Collections.Dictionary<string, int> ExportUnits { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public Dictionary<int, int> AvaiableUnits { get; set; } = new Dictionary<int, int>();
+    public HashSet<Unit> AvaiableUnits { get; set; } = new HashSet<Unit>();
 
     public Player Controller { get; set; }
 
@@ -24,103 +29,148 @@ public partial class RecruitmentManager : Node, IMapObjectController
 
     public List<int> CantPay { get; set; } = new List<int>();
 
+    public delegate void RecruitmentFinishedEventHandler(RecruitmentManager recruitmentManager, List<IConstruct> constructs);
+
+    public event RecruitmentFinishedEventHandler RecruitmentFinished;
+
     public override void _Ready()
     {
         var parent = GetParent();
-        InitVisionComponent(parent);
         InitAvaiableUnits(parent);
         GetConstructionManager();
         GetController(parent);
+        EndTurnEmitter.Instance.EndTurn += _on_EndTurn;
     }
 
-    void GetController(Node parent){
-        if(parent is IMapObjectController controller)
+    void GetController(Node parent)
+    {
+        if (parent is IMapObjectController controller)
             Controller = controller.Controller;
     }
 
-    void InitVisionComponent(Node parent){
-        var node = parent.GetNodeOrNull<VisionComponent>("VisionComponent");
-        if(node == null){
-            var scene = (PackedScene)ResourceLoader.Load(VisionComponentPath);
-            node = scene.Instantiate<VisionComponent>();
-            parent.AddChild(node);
-        }
-        node.BodyEntered += _on_area_body_Entered;
-        node.BodyExited += _on_area_body_Exited;
-    }
-
-    void InitAvaiableUnits(Node parent){
+    void InitAvaiableUnits(Node parent)
+    {
         var buildings = parent.GetNodeOrNull<BuildingManager>("BuildingManager");
-        if(buildings != null){
+        if (buildings != null)
+        {
             buildings.BuildingFinished += UpdateAvaiableUnits;
             UpdateAvaiableUnits(buildings.Buildings);
-        }else{
+        }
+        else
+        {
             var data = (Data)GetTree().GetNodesInGroup("GameData")[0];
-            foreach(var u in ExportUnits){
-                var id = data.Units.FirstOrDefault(x => x.Name == u.Key);
-                if(id != null)
-                    AvaiableUnits.Add(id.Index, u.Value);
+            foreach (var u in ExportUnits)
+            {
+                var unit = data.Units.FirstOrDefault(x => x.Name == u.Key);
+                if (unit != null)
+                    AvaiableUnits.Add(unit);
             }
         }
     }
 
-    void GetConstructionManager(){
+    void GetConstructionManager()
+    {
         _constructions = GetNodeOrNull<ConstructionManager>("ConstructionManager");
-        if(_constructions == null){
+        if (_constructions == null)
+        {
             _constructions = new ConstructionManager();
             AddChild(_constructions);
             _constructions.ConstructionSlots = RecruitmentSlots;
         }
     }
 
-    public bool StartConstruction(Player player, Unit unit){
-            if(player.ResManager.PayCost(unit.BuildCost)){
-                _constructions.ConstructBuilding(unit);
-                return true;
-            }else{
-                //EmitSignal(nameof(GameAlertEventHandler), this); //game alert should be static
-                return false;
-            }
-    }
-
-    public void StopConstruction(Player player, int Position){
-        var c = _constructions.StopConstruction(Position);
-        player.ResManager.AddResource(c.BuildCost);
-    }
-
-    public void UpdateAvaiableUnits(List<Building> buildings){
-        foreach(var building in buildings){
-            foreach(var unit in building.Units){
-                if(!AvaiableUnits.ContainsKey(unit.Key))
-                    AvaiableUnits.Add(unit.Key, unit.Value);
-            }
-            
+    public bool StartConstruction(Unit unit)
+    {
+        if (Controller.ResManager.PayCost(unit.BuildCost))
+        {
+            _constructions.ConstructBuilding(unit);
+            return true;
+        }
+        else
+        {
+            //EmitSignal(nameof(GameAlertEventHandler), this); //game alert should be static
+            return false;
         }
     }
 
-    public void UpdateCanPayUnits(ResourceManager resourceManager, List<Unit> units){
+    public bool StartConstruction(IConstruct unit)
+    {
+        if (Controller.ResManager.PayCost(unit.BuildCost))
+        {
+            _constructions.ConstructBuilding(unit);
+            return true;
+        }
+        else
+        {
+            //EmitSignal(nameof(GameAlertEventHandler), this); //game alert should be static
+            return false;
+        }
+    }
+
+    public void StopConstruction(int Position)
+    {
+        var c = _constructions.StopConstruction(Position);
+        Controller.ResManager.AddResource(c.BuildCost);
+        c.QueueFree();
+    }
+
+    public void UpdateAvaiableUnits(List<Building> buildings)
+    {
+        foreach (var building in buildings)
+        {
+            foreach (var unit in building.Units)
+            {
+                if (!AvaiableUnits.Contains(unit))
+                    AvaiableUnits.Add(unit);
+            }
+
+        }
+    }
+
+    public void UpdateCanPay(ResourceManager resourceManager)
+    {
         CanPay.Clear();
         CantPay.Clear();
-        foreach (var building in AvaiableUnits){
-            if (resourceManager.CanPayCost(units[building.Key].BuildCost)){
-                CanPay.Add(building.Key);
-            }else{
-                CantPay.Add(building.Key);
-            }   
+        foreach (var item in AvaiableUnits)
+        {
+            if (resourceManager.CanPayCost(item.BuildCost))
+            {
+                CanPay.Add(item.Index);
+            }
+            else
+            {
+                CantPay.Add(item.Index);
+            }
         }
     }
 
-    void _on_area_body_Entered(Node node){
+    public void _on_area_body_Entered(Node node)
+    {
         var rc = node.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
-        if (rc != null){
-            rc.SetAvaialableUnits(this, AvaiableUnits.Keys.ToList());
+        if (rc != null)
+        {
+            rc.SetAvaialableUnits(this, AvaiableUnits.ToList());
         }
-    } 
+    }
 
-    void _on_area_body_Exited(Node node){
+    public void _on_area_body_Exited(Node node)
+    {
         var rc = node.GetNodeOrNull<RecruitmentComponent>("RecruitmentComponent");
-        if (rc != null){
-            rc.RemoveAvaialableUnits(this, AvaiableUnits.Keys.ToList());
+        if (rc != null)
+        {
+            rc.RemoveAvaialableUnits(this);
         }
-    } 
+    }
+
+    public void ChangeContoller(Player player)
+    {
+        Controller = player;
+    }
+
+    public void _on_EndTurn(int TurnNumber)
+    {
+        var constructs = _constructions.UpdateConstruction();
+        if(constructs.Count > 0)
+            RecruitmentFinished?.Invoke(this, constructs);
+    }
 }

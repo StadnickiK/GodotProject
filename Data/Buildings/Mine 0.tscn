@@ -6,7 +6,8 @@
 script = ExtResource("1")
 IsStarter = true
 ExportProducts = Dictionary[String, int]({
-"Common Ores": 700
+"Common Ores": 700,
+"Credits": 500
 })
 ExportBuildCost = Dictionary[String, int]({
 "Credits": 5000

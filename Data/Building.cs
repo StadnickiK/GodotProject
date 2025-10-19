@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Building : Construct, IUpkeep
+public partial class Building : Construct
 {
     // public List<Resource> Resources { get; set; } = new List<Resource>();
 
@@ -27,14 +27,9 @@ public partial class Building : Construct, IUpkeep
     public System.Collections.Generic.Dictionary<int, int> ResourceLimits { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
 
     [Export]
-    public Godot.Collections.Dictionary<string, int> ExportUpkeep { get; set; } = new Godot.Collections.Dictionary<string, int>();
-
-    public System.Collections.Generic.Dictionary<int, int> Upkeep { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
-
-    [Export]
     public Godot.Collections.Dictionary<string, int> ExportUnits { get; set; } = new Godot.Collections.Dictionary<string, int>();
 
-    public System.Collections.Generic.Dictionary<int, int> Units { get; set; } = new System.Collections.Generic.Dictionary<int, int>();
+    public System.Collections.Generic.HashSet<Unit> Units { get; set; } = new System.Collections.Generic.HashSet<Unit>();
 
 
     [Export]

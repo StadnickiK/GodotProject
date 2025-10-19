@@ -47,8 +47,8 @@ public partial class BuildMenu : ScrollContainer
 					label.BButton.Text = building.Name;
 				}
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(label.RefBuilding, label.BButton.Disabled);
-				label.MouseExited += () => planetInterface._mouseLeftBuildingLabel();
-				label.MouseExited += () => _on_mouse_exited();
+				label.MouseExited += planetInterface._mouseLeftBuildingLabel;
+				label.MouseExited += _on_mouse_exited;
 				container.AddChild(label);
 				buildingLabels.Add(label);
 		}
@@ -70,6 +70,7 @@ public partial class BuildMenu : ScrollContainer
 				}
 				label.BButton.ButtonUp += () => planetInterface._on_StartUnitConstruction(unit);
 				label.MouseEntered += () => planetInterface._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
+				label.MouseExited += planetInterface._mouseLeftBuildingLabel;
 				label.MouseExited += _on_mouse_exited;
 				container.AddChild(label);
 				buildingLabels.Add(label);
@@ -93,7 +94,8 @@ public partial class BuildMenu : ScrollContainer
 				}
 				label.BButton.ButtonUp += () => ArmyInterface._on_StartUnitConstruction(unit);
 				label.MouseEntered += () => uI._on_BuildingLabelGuiInputEvent(unit, label.BButton.Disabled);
-				label.MouseExited += () => _on_mouse_exited();
+				label.MouseExited += _on_mouse_exited;
+				label.MouseExited += uI._mouseLeftBuildingLabel;
 				container.AddChild(label);
 				buildingLabels.Add(label);
 			}
@@ -128,18 +130,26 @@ public partial class BuildMenu : ScrollContainer
 		newOrder.AddRange(recManager.CanPay);
 		newOrder.AddRange(recManager.CantPay);
 		var labels = new List<BuildingLabel>();
-		foreach(var label in buildingLabels)
-			if(recManager.AvaiableUnits.ContainsKey(label.RefUnit.Index)){
+		foreach (var label in buildingLabels)
+		{
+			if (recManager.AvaiableUnits.Contains(label.RefUnit))
+			{
 				label.Show();
 				labels.Add(label);
-				if(recManager.CanPay.Contains(label.RefUnit.Index)){
+				if (recManager.CanPay.Contains(label.RefUnit.Index))
+				{
 					label.BButton.Disabled = false;
-				}else{
+				}
+				else
+				{
 					label.BButton.Disabled = true;
 				}
-			}else{
+			}
+			else
+			{
 				label.Hide();
-			}	
+			}
+		}	
 		SortBuildLabels(labels, newOrder);
 	}
 

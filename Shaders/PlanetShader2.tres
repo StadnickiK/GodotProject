@@ -21,9 +21,9 @@ domain_warp_enabled = true
 width = 512
 height = 512
 depth = 512
-seamless = true
-color_ramp = SubResource("Gradient_fo175")
 noise = SubResource("FastNoiseLite_tnk1b")
+color_ramp = SubResource("Gradient_fo175")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_tnk1b"]
 output_port_for_preview = 0
@@ -76,9 +76,9 @@ domain_warp_fractal_octaves = 4
 width = 512
 height = 512
 depth = 512
-seamless = true
-color_ramp = SubResource("Gradient_tnk1b")
 noise = SubResource("FastNoiseLite_1r77g")
+color_ramp = SubResource("Gradient_tnk1b")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_3teak"]
 output_port_for_preview = 0
@@ -86,7 +86,7 @@ texture = SubResource("NoiseTexture3D_3teak")
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform sampler3D tex3d_frg_9;
 uniform float FloatParameter4 = 0.60000002384186;

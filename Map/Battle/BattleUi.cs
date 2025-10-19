@@ -10,7 +10,7 @@ public partial class BattleUi : Control
 
     Control TopPanel;
 
-    public ArmyInterface ArmyInterface { get; set; }
+    public ArmyView ArmyView { get; set; }
 
 
     public override void _Ready()
@@ -23,7 +23,7 @@ public partial class BattleUi : Control
         Fight = GetNode<Button>("ConfirmPanel/Fight");
         ConfirmPanel = GetNode<Control>("ConfirmPanel");
         TopPanel = GetNode<Control>("TopPanel");
-        ArmyInterface = GetNode<ArmyInterface>("ArmyInterface");
+        ArmyView = GetNode<ArmyView>("ArmyInterface");
         // LeftDeployZone/LCollisionShape3D
     }
 
@@ -31,14 +31,14 @@ public partial class BattleUi : Control
     {
         Show();
         ConfirmPanel.Show();
-        ArmyInterface.UpdateArmyPanel(units);
+        ArmyView.ArmyInterfaceContainer.ArmyPanel.UpdateArmyList(units, true);
     }
 
     public void UpdateBattleUI(List<Unit3D> units)
     {
         Show();
         ConfirmPanel.Show();
-        ArmyInterface.UpdateArmyPanel(units);
+        ArmyView.ArmyInterfaceContainer.ArmyPanel.UpdateArmyList(units, true);
     }
 
     public void _on_fight_button_up()
