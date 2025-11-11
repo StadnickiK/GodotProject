@@ -46,7 +46,9 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
 
     public DeathController DeathController { get; set; }
 
-    ISimpleAttackBattery SimpleAttackBattery;
+    public SimpleFireControl SimpleFireControl { get; set; }
+
+    TurretControl TurretControl;
 
     public event Node3DPool.SaveNodeEventHandler SaveNode;
 
@@ -58,7 +60,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         UpdateController();
         StateMachine.Body = this;
         StateMachine.Enter(new IdleState(this));
-        SimpleAttackBattery.Source = this;
+        TurretControl.Source = this;
     }
 
     void UpdateController()
@@ -85,10 +87,11 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         StateMachine = GetNode<StateMachine>("StateMachine");
         Selection = GetNode<SelectionCircleControler>("Selection");
         HealthBar = GetNode<HealthBar>("HealthBar");
-        SimpleAttackBattery = GetNode<SimpleAttackBattery>("SimpleAttackBattery");
+        TurretControl = GetNode<TurretControl>("TurretControl");
         Shield = GetNode<Shield>("Shield");
         StatManager = GetNode<StatManager>("StatManager");
         DeathController = GetNode<DeathController>("DeathController");
+        SimpleFireControl = GetNode<SimpleFireControl>("SimpleFireControl");
     }
 
     public void LoadUnit(IStatManager unit)
@@ -164,10 +167,18 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
                             state.Tolerance = StatManager.GetStat("Range").CurrentValue;
                         }
                 StatManager.Stats[state.StatNames.FirstOrDefault()].StatChanged += state.UpdateStat;
+                state.MoveStateExited += OnExitPhysicsMoveState;
+                SimpleFireControl.Start();
                 StateMachine.Enter(state);
 
                 break;
         }
+    }
+
+
+    void OnExitPhysicsMoveState(OrderQueue.Target target)
+    {
+        SimpleFireControl.Stop();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -188,15 +199,17 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         GlobalTransform = g;
     }
 
-    public void UpdateModel(Mesh mesh, Shape3D collisionShape)
+    public void UpdateModel(ModelData model)
     {
-        MeshInstance3D.Mesh = mesh;
-        CollisionShape3D.Shape = collisionShape;
+        MeshInstance3D.Mesh = model.MeshInstance3D.Mesh;
+        CollisionShape3D.Shape = model.CollisionShape3D.Shape;
         var meshSize = MeshInstance3D.Mesh.GetAabb().Size;
         var size = meshSize.Z > meshSize.X ? meshSize.Z : meshSize.X;
         Selection.Size = new Vector2(size, size);
         HealthBar.UpdatePosition(meshSize);
         Shield.UpdateRadius(size);
+        SimpleFireControl.LoadEmitters(model.FireEmitters);
+        TurretControl.InitTurrets(this, model.Turrets);
     }
 
     public void Damage()

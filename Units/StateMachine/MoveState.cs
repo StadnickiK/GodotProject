@@ -49,6 +49,7 @@ public partial class MoveState : State<IMovable>
             {
                 //Body.EmitSignal(nameof(Ship.SignalName.SignalEnterMapObject), Body, _target.TargetNode);
                 MoveStateExited?.Invoke(_target);
+                //MoveStateExited -= Body.Merge;
                 return new IdleState(Body);
             }
             // Check if there’s another target in the player's queue.
@@ -58,6 +59,7 @@ public partial class MoveState : State<IMovable>
             }
             else
             {
+                MoveStateExited?.Invoke(_target);
                 // No more targets: transition to idle.
                 Body.UpdateVelocity(new Vector3(0, Body.Velocity.Y, 0), Vector3.Zero);
                 return new IdleState(Body);

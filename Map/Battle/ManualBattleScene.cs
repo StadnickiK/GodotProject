@@ -243,10 +243,10 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory
 
                 var unit = units[unitIndex];
                 var size = unit.GetUnitSize();
-                Vector3 offset = new Vector3(x * (FormationSpacing + size.X), GlobalPosition.Y, z * (FormationSpacing + size.Z));
+                Vector3 offset = new Vector3(x * (FormationSpacing + size.X + (size.Z/2)), 1, z * (FormationSpacing + size.Z + size.X));
                 Vector3 position = center + offset;
 
-                unit.GlobalTransform = new Transform3D(Basis.Identity, position);
+                unit.GlobalTransform = new Transform3D(Basis.Identity, position); 
 
                 unitIndex++;
             }

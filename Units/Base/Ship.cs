@@ -64,9 +64,9 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
 
     public ControllerComponent ControllerComponent { get; set; }
 
-    //public Vector3 PlanetPos { get; set; } = Vector3.Zero;
+    public SimpleFireControl SimpleFireControl { get; set; }
 
-    public Planet ClosePlanet { get; set; }
+    //public Vector3 PlanetPos { get; set; } = Vector3.Zero;
 
     public MeshInstance3D Mesh { get; set; } = null;  
 
@@ -84,8 +84,6 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     public OrderQueue OrderQueue { get; set; } = new OrderQueue();
 
     //public CmdPanel.CmdPanelOption Task { get; set; } = CmdPanel.CmdPanelOption.None;
-
-    SimpleFireControl _control = null;
 
     public enum ArmyStance
     {
@@ -156,20 +154,27 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
             StateMach.Enter(new IdleState(this));
             Stance = ArmyStance.Idle;
         }
-    } 
+    }
 
-    void Split(OrderQueue.Target target){
+    void Split(OrderQueue.Target target)
+    {
         UnitController.Split(target, Controller);
+    }
+    
+    void _on_ExitState(OrderQueue.Target target)
+    {
+        SimpleFireControl.Stop();
     }
 
     void Merge(OrderQueue.Target target){
-        if(target.TargetNode is IEnterCombat ship && target.TargetNode != this){
+        if (target.TargetNode is IEnterCombat ship && target.TargetNode != this)
+        {
             if (ship.Controller.PlayerID == Controller.PlayerID)
             {
                 if (UnitController.Count + ship.UnitController.Count < ship.UnitController.MaxUnits)
                 {
                     UnitController.TransferUnit(ship.UnitController);
-                    if(Selection.Visible) ship.InputController.SelectUnitInvoke();
+                    if (Selection.Visible) ship.InputController.SelectUnitInvoke();
                     FreeShipInvoke();
                 }
                 else
@@ -182,6 +187,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
                 EnterCombat?.Invoke(this, ship, GetParent());
             }
         }
+        SimpleFireControl.Stop();
     }
 
     public void SelectMapObject()
@@ -196,7 +202,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         }
         ship.Controller.RemoveMapObject(ship);
         ArmiesChanged?.Invoke();
-        FreeShip?.Invoke(ship);
+        FreeShipInvoke();
         //ship.QueueFree();
     }
 
@@ -216,6 +222,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
                 StateMach.Enter(moveState);
                 moveState.MoveStateExited += Merge;
                 Stance = ArmyStance.Moving;
+                SimpleFireControl.Start();
             }
             else
             {
@@ -258,8 +265,11 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     public void MoveToPosition(Vector3 destination){
         // Sleeping = false;
         if(CanMove){
-            OrderQueue.SetTarget(new OrderQueue.Target(destination)); 
-            StateMach.Enter(new MoveState(destination));
+            OrderQueue.SetTarget(new OrderQueue.Target(destination));
+            var moveState = new MoveState(destination);
+            StateMach.Enter(moveState);
+            SimpleFireControl.Start();
+            moveState.MoveStateExited += _on_ExitState;
         }else{
             Split(new OrderQueue.Target(destination));
         }
@@ -350,6 +360,8 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         {
             CurrentModelVoluume = unit.ModelVolume;
             Mesh.Mesh = ModelLoader.GetMiniMeshInstance3D(unit.ModelName).Mesh;
+            SimpleFireControl.UpdateEmitters(ModelLoader.GetMiniFireEmmiters(unit.ModelName));
+
         }
     }
 
@@ -368,7 +380,6 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         _area = GetNode<VisionComponent>("Area3D");
         VisibilityConroller = GetNode<VisibilityConroller>("VisibilityConroller");
         Mesh = GetNode<MeshInstance3D>("MeshInstance3D");
-        _control = GetNode<SimpleFireControl>("FireControl");
         StateMach = GetNode<StateMachine>("StateMachine");
         //_velocityController = GetNode<VelocityController>("VelocityController");
         UnitController = GetNode<UnitController>("UnitController");
@@ -376,6 +387,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         Selection = GetNode<SelectionCircleControler>("Selection");
         InputController = GetNode<InputController>("InputController");
         ControllerComponent = GetNode<ControllerComponent>("ControllerComponent");
+        SimpleFireControl = GetNode<SimpleFireControl>("SimpleFireControl");
         AddChild(OrderQueue);
     }
 
@@ -430,6 +442,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     void FreeShipInvoke()
     {
         UnitController.Clear();
+        SimpleFireControl.ClearEmitters();
         FreeShip?.Invoke(this);
     }
 

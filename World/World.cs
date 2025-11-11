@@ -144,12 +144,15 @@ public partial class World : Node3D, IEndTurnListener
 		ManualBattleScene.Hide();
 	}
 
-	public void Select(IPlanetInterface planet)
+	public void Select(ISelection planet)
 	{
 		_on_Deselect();
 		_wcc._SelectUnit(planet);
-		_UI.PInterface.Show();
-		_UI.PInterface.UpdatePlanetInterface(planet);
+		if (planet is IPlanetInterface planetInterface)
+		{
+			_UI.PInterface.Show();
+			_UI.PInterface.UpdatePlanetInterface(planetInterface);
+		}
 	}
 
 	void _on_CreateShip(Planet planet, Unit unit)
@@ -185,7 +188,7 @@ public partial class World : Node3D, IEndTurnListener
 		}
 	}
 
-	void GetNodes()
+	public void GetNodes()
 	{
 		_map = GetNode<Map>("Map");
 		ManualBattleScene = GetNode<ManualBattleScene>("ManualBattleScene");

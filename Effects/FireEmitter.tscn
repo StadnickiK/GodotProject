@@ -1,0 +1,37 @@
+[gd_scene load_steps=9 format=3 uid="uid://ets0luse0ggc"]
+
+[ext_resource type="Script" uid="uid://7ko2pdvrt0ph" path="res://Effects/FireEmitter.cs" id="1_6xm3m"]
+[ext_resource type="Material" uid="uid://d3jy2d38xpu12" path="res://Effects/FireEmitterMaterial.tres" id="1_t6v0y"]
+
+[sub_resource type="Gradient" id="1"]
+offsets = PackedFloat32Array(0.103806, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.703125, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="2"]
+gradient = SubResource("1")
+
+[sub_resource type="Curve" id="3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.128205, 0.960227), 0.0, 0.0, 0, 0, Vector2(0.63141, 0.451136), -1.13455, -1.13455, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="4"]
+curve = SubResource("3")
+
+[sub_resource type="ParticleProcessMaterial" id="5"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+spread = 0.0
+gravity = Vector3(0, 0, 19.6)
+scale_curve = SubResource("4")
+color_ramp = SubResource("2")
+
+[sub_resource type="SphereMesh" id="7"]
+material = ExtResource("1_t6v0y")
+
+[node name="FireEmitter" type="GPUParticles3D"]
+emitting = false
+amount = 40
+local_coords = true
+process_material = SubResource("5")
+draw_pass_1 = SubResource("7")
+script = ExtResource("1_6xm3m")

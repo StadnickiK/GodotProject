@@ -22,7 +22,7 @@ public partial class ProjectileFactory : Node3D
     public IProjectile CreateLaser(Vector3 position, Vector3 target)
     {
         var projectile = GetLaser(ProjectileParent, position);
-        projectile.Shoot(position, target);
+        projectile.Shoot(position, target, Vector3.Zero);
         // ConnectSignals(projectile);
         // Unit3D.LoadUnit(projectileData);
         // Unit3D.UpdateModel(ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh, ModelLoader.GetCollisionShape3D(unit.ModelName).Shape);

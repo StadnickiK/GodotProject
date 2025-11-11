@@ -315,6 +315,7 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
             ResourcesManager.ResourceLimits.UpdateUpkeep(item.ResourceLimits);
             Controller.ResManager.AddProduction(item.Products);
             Controller.ResManager.AddProductionCost(item.ProductCost);
+            Controller.ResManager.AddResourceLimit(item.ProductCost);
         }
     }
 

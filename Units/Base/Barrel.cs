@@ -30,24 +30,25 @@ public partial class Barrel : Turret
     // Called when the node enters the scene tree for the first time.
 
     void _on_Timer_timeout(){
-        if(OrderQueue.HasTarget){
-            GD.Print("s");
-            Shoot();
-        }
+        // if(OrderQueue.HasTarget){
+        //     GD.Print("s");
+        //     Shoot();
+        // }
     }
 
     new protected Vector3 DirToTarget(){
-        return GlobalTransform.Origin.DirectionTo(OrderQueue.currentTarget.Point);
+        // return GlobalTransform.Origin.DirectionTo(OrderQueue.currentTarget.Point);
+        return Vector3.Zero;
     }
 
     public override void _Ready()
     {
             ray = GetNode<RayCast3D>("RayCast3D");
             ray.TargetPosition = ray.Transform.Origin+new Vector3(0,0,EffectiveRange);
-            projectiles = GetNode("/root/World/Projectiles");
-            OrderQueue = new OrderQueue();
-            _velocityController.RotationSpeed = RotationSpeed;
-            SetTimer();
+            // projectiles = GetNode("/root/World/Projectiles");
+            // OrderQueue = new OrderQueue();
+            // _velocityController.RotationSpeed = RotationSpeed;
+            // SetTimer();
     }
 
     new void ResetVelocity(){
@@ -65,21 +66,21 @@ public partial class Barrel : Turret
     }
 
     void Update(PhysicsDirectBodyState3D state){
-        if(OrderQueue.HasTarget){
-            Vector3 targetPos = OrderQueue.currentTarget.Point;
-            if(targetPos != Vector3.Zero){
-                float angle = _velocityController.GetAngleToTargetOnXAxis(GlobalTransform, targetPos); 
-                if(angle > 0.05f || angle < -0.05f ){
-                    StopTimer();
-                }else{
-                    if(OrderQueue.HasTarget){
-                        StartTimer();
-                    }
-                }
-            }else{
-                // Sleeping = true;
-            }
-        }
+        // if(OrderQueue.HasTarget){
+        //     Vector3 targetPos = OrderQueue.currentTarget.Point;
+        //     if(targetPos != Vector3.Zero){
+        //         float angle = _velocityController.GetAngleToTargetOnXAxis(GlobalTransform, targetPos); 
+        //         if(angle > 0.05f || angle < -0.05f ){
+        //             StopTimer();
+        //         }else{
+        //             if(OrderQueue.HasTarget){
+        //                 StartTimer();
+        //             }
+        //         }
+        //     }else{
+        //         // Sleeping = true;
+        //     }
+        // }
     }
 
     // public override void _IntegrateForces(PhysicsDirectBodyState3D state)

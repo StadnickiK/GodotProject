@@ -1,9 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene load_steps=16 format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_dgjf5"]
-[ext_resource type="PackedScene" uid="uid://ets0luse0ggc" path="res://Effects/Fire.tscn" id="4"]
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="5"]
 [ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="6"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
@@ -37,20 +36,8 @@ shape = SubResource("1")
 
 [node name="Area3D" parent="." instance=ExtResource("3")]
 
-[node name="FireControl" type="Node3D" parent="."]
+[node name="SimpleFireControl" type="Node3D" parent="."]
 script = ExtResource("5")
-
-[node name="Fire" parent="FireControl" instance=ExtResource("4")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, 0.297499, -1.33494)
-
-[node name="Fire4" parent="FireControl" instance=ExtResource("4")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.786639, -0.290623, -1.33494)
-
-[node name="Fire2" parent="FireControl" instance=ExtResource("4")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, 0.297499, -1.33494)
-
-[node name="Fire3" parent="FireControl" instance=ExtResource("4")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.769605, -0.30814, -1.33494)
 
 [node name="UnitController" parent="." instance=ExtResource("7_hq6pt")]
 

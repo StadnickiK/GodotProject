@@ -19,6 +19,8 @@ public partial class Unit : Construct, IStatManager, IDamagable
 
 	public string UnitName { get; set; }
 
+	public Vector3 GlobalPosition { get; set; }
+
 	[Export]
 	public Godot.Collections.Dictionary<string, int> ExportStats { get; set; } = new Godot.Collections.Dictionary<string, int>();
 

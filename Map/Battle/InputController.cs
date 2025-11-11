@@ -14,7 +14,7 @@ public interface IRightClickAction
 
 public partial class InputController : Node
 {
-  public delegate void MoveEventHandler(IPlanetInterface movable);
+  public delegate void MoveEventHandler(ISelection movable);
 
   public delegate void TargetEventHandler(CollisionObject3D movable);
 
@@ -69,8 +69,11 @@ public partial class InputController : Node
     {
       throw new Exception("Parent should be RigidBody3D " + ex.Message);
     }
-    SelectUnit -= World.Instance.Select;
-    SelectUnit += World.Instance.Select;
+    if(rigidBody3DParent is ISelection selection)
+    {
+      SelectUnit -= World.Instance.Select;
+      SelectUnit += World.Instance.Select;
+    }
     DeselectUnit -= WorldCursorControl.Instance._DeselectUnit;
     DeselectUnit += WorldCursorControl.Instance._DeselectUnit;
     AddUnit -= WorldCursorControl.Instance._AddUnit;
@@ -118,17 +121,17 @@ public partial class InputController : Node
 
   public void SelectUnitInvoke()
   {
-    SelectUnit?.Invoke((IPlanetInterface)rigidBody3DParent);
+    SelectUnit?.Invoke((ISelection)rigidBody3DParent);
   }
 
   public void DeselectUnitInvoke()
   {
-    DeselectUnit?.Invoke((IPlanetInterface)rigidBody3DParent);
+    DeselectUnit?.Invoke((ISelection)rigidBody3DParent);
   }
 
   public void AddUnitInvoke()
   {
-    AddUnit?.Invoke((IPlanetInterface)rigidBody3DParent);
+    AddUnit?.Invoke((ISelection)rigidBody3DParent);
   }
 
   public void SelectTargetInvoke()

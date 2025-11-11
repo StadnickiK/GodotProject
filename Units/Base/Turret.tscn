@@ -1,25 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://b34bvvt6vry3k"]
+[gd_scene load_steps=3 format=3 uid="uid://bmj0ix77scicd"]
 
-[ext_resource type="PackedScene" uid="uid://bdcl5y1xnxhkk" path="res://Units/Base/Ship.tscn" id="1"]
-[ext_resource type="Script" uid="uid://36kfevpfv203" path="res://Units/Base/Turret.cs" id="2"]
-[ext_resource type="PackedScene" uid="uid://jneor5oyqgto" path="res://Units/Base/RBullet.tscn" id="3"]
+[ext_resource type="Script" uid="uid://36kfevpfv203" path="res://Units/Base/Turret.cs" id="1_2v12x"]
 
-[sub_resource type="BoxMesh" id="1"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_tgdtv"]
 
-[node name="Turret" instance=ExtResource("1")]
-script = ExtResource("2")
-EffectiveRange = 10
-RotationSpeed = 1.0
-FireRate = 60
-projectileScene = ExtResource("3")
-barrelScene = null
+[node name="Turret" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_2v12x")
 
-[node name="Timer" type="Timer" parent="." index="2"]
+[node name="TurretMesh" type="MeshInstance3D" parent="."]
 
-[node name="Muzzle" type="Node3D" parent="." index="3"]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Muzzle" index="0"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 2.69874)
-mesh = SubResource("1")
-
-[connection signal="timeout" from="Timer" to="." method="_Timer_timeout"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_tgdtv")

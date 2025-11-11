@@ -6,7 +6,7 @@
 
 [node name="Unit 1" type="Node"]
 script = ExtResource("1")
-ModelName = "UFO-1"
+ModelName = "Battleship"
 ExportBuildCost = Dictionary[String, int]({
 "": 0,
 "C": 400,

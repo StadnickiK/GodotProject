@@ -23,6 +23,9 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
     public double Reload { get; set; } = 3;
 
     [Export]
+    public string Projectile { get; set; } = "Laser";
+
+    [Export]
     double shotDelay = 0.1;
 
     double currentTime = 0;
@@ -74,7 +77,7 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
 
     public override void _Process(double delta)
     {
-        if (currentTime >= Reload)
+        if (currentTime >= Reload && CurrentTarget != null)
         {
             if (batteryTimer >= shotDelay * currentBattery) {
                 if (currentBattery == Batteries.Count-1)
@@ -93,9 +96,9 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
                 batteryTimer += delta;
             }
         }
-            else
-            {
-                currentTime += delta;
-            }
+        else
+        {
+            currentTime += delta;
+        }
     }
 }

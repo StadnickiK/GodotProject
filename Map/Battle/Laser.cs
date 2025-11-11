@@ -89,14 +89,12 @@ public partial class Laser : RayCast3D, IProjectile, ISavingNode
         cylinderMesh.BottomRadius = radius;
     }
 
-    public void Shoot(Vector3 from, Vector3 to)
+    public void Shoot(Vector3 from, Vector3 to, Vector3 direction)
     {
         time = 0;
         DmgInstances = 0;
         GlobalPosition = from;
         LookAt(to);
-        //TargetPosition = ToLocal(to);
-        //meshInstance3D.LookAt(to, new Vector3(1,0,0));
         Show();
     }
 

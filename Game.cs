@@ -38,6 +38,7 @@ public partial class Game : Node3D
 		_curerentWorld.WorldGenParameters = WorldGenParams;
 		_curerentWorld.Data = Data;
 		World.Instance = _curerentWorld;
+		_curerentWorld.GetNodes();
 		AddChild(_curerentWorld);
 	}
 
@@ -59,7 +60,8 @@ public partial class Game : Node3D
 	   mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
 	   menu.QueueFree();
 	   _curerentWorld.Data = Data;
-	   World.Instance = _curerentWorld;
+		World.Instance = _curerentWorld;
+	   _curerentWorld.GetNodes();
 	   AddChild(_curerentWorld);
 	}
 

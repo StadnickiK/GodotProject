@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://d323mv7wh8mdi"]
+
+[ext_resource type="Script" uid="uid://bromdced1jkoi" path="res://Units/Base/Turretjoint.cs" id="1_e4rf2"]
+[ext_resource type="PackedScene" uid="uid://bmj0ix77scicd" path="res://Units/Base/turret.tscn" id="2_e4rf2"]
+
+[node name="TurretJoint" type="ConeTwistJoint3D"]
+node_b = NodePath("Turret")
+swing_span = 0.0
+script = ExtResource("1_e4rf2")
+
+[node name="Turret" parent="." instance=ExtResource("2_e4rf2")]
+mass = 0.001

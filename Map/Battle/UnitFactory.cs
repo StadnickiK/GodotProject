@@ -22,7 +22,7 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
         ConnectSignals(Unit3D);
         Unit3D.LoadUnit(unit);
         Unit3D.ProjectileFactory = ProjectileFactory;
-        Unit3D.UpdateModel(ModelLoader.GetMeshInstance3D(unit.ModelName).Mesh, ModelLoader.GetCollisionShape3D(unit.ModelName).Shape);
+        Unit3D.UpdateModel(ModelLoader.Models[unit.ModelName]);
         return Unit3D;
     }
 

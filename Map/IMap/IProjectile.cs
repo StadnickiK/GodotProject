@@ -8,6 +8,6 @@ public interface IProjectile
     public event DamageEventHandler Damage;
 
     public IDamagable Source { get; set; }
-    public void Shoot(Vector3 from, Vector3 to);
+    public void Shoot(Vector3 from, Vector3 to, Vector3 direction);
 
 }
