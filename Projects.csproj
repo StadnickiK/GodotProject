@@ -206,5 +206,8 @@
     <Compile Include="Effects\FireEmitter.cs" />
     <Compile Include="Map\Battle\TurretControl.cs" />
     <Compile Include="Units\Base\Turretjoint.cs" />
+    <Compile Include="Map\Battle\DeployZone.cs" />
+    <Compile Include="Data\ScenePaths.cs" />
+    <Compile Include="World\CampaignScene.cs" />
   </ItemGroup>
 </Project>

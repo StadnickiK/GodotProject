@@ -47,6 +47,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Play"
 
+[node name="Skirmish" type="Button" parent="Menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Skirmish"
+
 [node name="Exit" type="Button" parent="Menu"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
@@ -64,5 +69,4 @@ anchor_bottom = 1.2143574
 [node name="Background" parent="." instance=ExtResource("1")]
 
 [connection signal="button_up" from="Menu/NewGame" to="." method="_on_NewGame_button_up"]
-[connection signal="button_up" from="Menu/QuickGame" to="." method="_on_Play_button_up"]
 [connection signal="button_up" from="Menu/Exit" to="Menu/Exit" method="_on_Exit_button_up"]

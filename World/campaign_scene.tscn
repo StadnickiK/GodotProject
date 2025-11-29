@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://lby1y465e7gt"]
+
+[ext_resource type="Script" uid="uid://bm44qtvbyu6d3" path="res://World/CampaignScene.cs" id="1_qk3k5"]
+[ext_resource type="PackedScene" uid="uid://b4uuv8wu0rx6l" path="res://UI/UI.tscn" id="2_xfx3e"]
+[ext_resource type="Script" uid="uid://brb1sc5lbnqvf" path="res://World/Map.cs" id="3_ja7pl"]
+[ext_resource type="Script" uid="uid://btur0gcjdfjq7" path="res://World/MapObjects.cs" id="4_xwyg0"]
+[ext_resource type="Script" uid="uid://bk0b4nk47ig03" path="res://World/MapArmyManager.cs" id="5_daj3g"]
+[ext_resource type="Script" uid="uid://1cvfwckb2i4g" path="res://World/Node3DPool.cs" id="6_3mimt"]
+[ext_resource type="PackedScene" uid="uid://dnabucbyeoqmh" path="res://Map/Battle/manual_battle_scene.tscn" id="7_7vquc"]
+
+[sub_resource type="BoxMesh" id="6"]
+size = Vector3(300, 2, 300)
+subdivide_width = 500
+subdivide_depth = 500
+
+[node name="CampaignScene" type="Node3D"]
+script = ExtResource("1_qk3k5")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" parent="CanvasLayer" instance=ExtResource("2_xfx3e")]
+mouse_filter = 2
+
+[node name="Map" type="Node3D" parent="."]
+process_mode = 1
+script = ExtResource("3_ja7pl")
+
+[node name="MapObjects" type="Node" parent="Map"]
+script = ExtResource("4_xwyg0")
+
+[node name="FOW" type="MeshInstance3D" parent="Map"]
+visible = false
+mesh = SubResource("6")
+
+[node name="MapArmyManager" type="Node3D" parent="."]
+process_mode = 4
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+visible = false
+script = ExtResource("5_daj3g")
+
+[node name="ArmyPool" type="Node3D" parent="MapArmyManager"]
+visible = false
+script = ExtResource("6_3mimt")
+
+[node name="ManualBattleScene" parent="." instance=ExtResource("7_7vquc")]
+process_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)

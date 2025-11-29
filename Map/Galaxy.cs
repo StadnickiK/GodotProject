@@ -24,6 +24,8 @@ public partial class Galaxy : Node3D
         get { return _starSystems; }
     }
 
+    public List<Planet> Planets { get; private set; } = new List<Planet>();
+
     public RigidBody3D Ground { get; set; } = null;
 
     [Signal]

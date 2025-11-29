@@ -10,17 +10,20 @@ public partial class MainMenu : Control
 
     Label _TitleLabel = null;
 
-    [Signal]
-    public delegate void QuickGameEventHandler();
-
     [Export]
     string Title = "Title";
 
     public MenuPanel NewGameNode { get => _newGameNode; set => _newGameNode = value; }
 
+    public Button Skirmish { get; set; }
+
+    public Button QuickGame { get; set; }
+
     void GetNodes(){
         _menuNode = GetNode<CanvasItem>("Menu");
         NewGameNode = GetNode<MenuPanel>("NewGame");
+        Skirmish = _menuNode.GetNode<Button>("Skirmish");
+        QuickGame = _menuNode.GetNode<Button>("QuickGame");
         _TitleLabel = GetNode<Label>("Menu/Label");
         _TitleLabel.Text = Title;
     }
@@ -36,8 +39,11 @@ public partial class MainMenu : Control
         NewGameNode.Visible = true;
     }
 
-    void _on_Play_button_up(){
-        EmitSignal(nameof(QuickGame));
+    public void ConnecMainMenu(Game game)
+    {
+        NewGameNode.StartNewGame += game._on_StartNewGame;
+		Skirmish.ButtonUp += game._on_Skirmish_ButtonUp;
+        QuickGame.ButtonUp += game._on_QuickGame;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

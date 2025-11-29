@@ -58,11 +58,7 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
 
     void ConnectSignals(Unit3D Unit3D)
     {
-        // WorldCursorControl.ConnectToSelectTarget(Unit3D);
-        // //WorldCursorControl.ConnectToAddTarget(Unit3D.InputController);
-        // WorldCursorControl.ConnectToSelectUnit(Unit3D);
-        // WorldCursorControl.ConnectToDeselectUnit(Unit3D);
-        // WorldCursorControl.ConnectToAddUnit(Unit3D);
+        Unit3D.InputController.ConnectWCC(WorldCursorControl);
         ArmyPool.ConnectSaveNode(Unit3D);
     }
 }

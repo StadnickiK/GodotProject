@@ -49,8 +49,8 @@ public partial class UnitController : Node3D
     {
         UpkeepComponent = GetNodeOrNull<UpkeepComponent>("UpkeepComponent");
         Parent = GetParent();
-        SplitShip -= World.Instance.SplitShip;
-        SplitShip += World.Instance.SplitShip;
+        SplitShip -= Game.Instance.SplitShip;
+        SplitShip += Game.Instance.SplitShip;
     }
 
     public void AddUnit(Unit unit)

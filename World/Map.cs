@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class Map : Node3D
@@ -78,6 +79,61 @@ public partial class Map : Node3D
         }
         return target;
     }
+
+    public void InitMap(IWorld world, IGameScene scene)
+    {
+        InitGalaxy(world, scene);
+        InitResistance();
+        ConnectPlanets();
+    }
+
+    void InitGalaxy(IWorld world, IGameScene scene)
+	{
+		var generator = new Generator();
+		generator.InitGenerator(scene, world.Rand, world.WorldGenParameters.WorldGenParameters);
+		galaxy = generator.GenerateGalaxy();
+		generator.QueueFree();
+		AddChild(galaxy);
+		galaxy.Connect("CameraLookAt", new Callable(this, nameof(world.Camera3D.LookAt)));
+		//galaxy.Connect("LookAtStarSystem", new Callable(this, nameof(world._on_LookAtStarSystem)));
+	}
+
+    void InitResistance()
+	{
+		foreach (StarSystem system in galaxy.StarSystems)
+		{
+			foreach (Node node in system.StarSysObjects.GetChildren())
+			{
+				if (node is Planet planet)
+				{
+					if (planet.Controller == null)
+					{
+						// int amount = 2;//Rand.Next(10, 20);
+						// var unitFileName = _data.GetNode<Unit>("Units/Unit 1").SceneFilePath;
+						//var ship = CreateShip((Unit)((PackedScene)GD.Load(unitFileName)).Instantiate());
+						// for(int i = 0;i<amount;i++){
+						// 	var unit = ((PackedScene)GD.Load(unitFileName)).Instantiate();
+						// 	var stat = unit.GetNode<BaseStat>("Stats/Attack");
+						// 	ship.Units.AddChild(unit);
+						// }
+						// planet.AddToOrbit(ship);
+						//var transform = ship.Transform;
+					}
+				}
+			}
+		}
+	}
+
+    void ConnectPlanets()
+	{
+		foreach (StarSystem system in galaxy.StarSystems)
+		{
+			foreach (Planet planet in system.Planets)
+			{
+				//planet.Connect("GameAlert", new Callable(this, nameof(_on_Alert)));
+			}
+		}
+	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)

@@ -9,7 +9,7 @@ public partial class Generator : Node
 
     Godot.Collections.Dictionary<string, int> parameters = null;
 
-    World _world = null;
+    IGameScene _world = null;
 
     public int SystemSize { get; set; } = 10;
 
@@ -21,7 +21,9 @@ public partial class Generator : Node
 
     PackedScene PlanetScene = (PackedScene)GD.Load("res://Map/Planet/Planet.tscn");
 
-    public void InitGenerator(World world, Random random, Godot.Collections.Dictionary<string, int> Parameters){
+    public List<Planet> Planets { get; private set; } = new List<Planet>();
+
+    public void InitGenerator(IGameScene world, Random random, Godot.Collections.Dictionary<string, int> Parameters){
         Rand = random;
         parameters = Parameters;
         _world = world;
@@ -100,6 +102,7 @@ public partial class Generator : Node
 			var planet = GeneratePlanet(system, dist, i);
 			system.StarSysObjects.AddChild(planet);
 			system.Planets.Add(planet);
+            Planets.Add(planet);
             ConnectPlanet(planet);
 			dist += Rand.Next(8, 16);
 			angle += Rand.Next(0,50);
@@ -124,8 +127,8 @@ public partial class Generator : Node
     }
 
     void ConnectPlanet(Planet planet){
-        planet.Connect("CreateShip", new Callable(_world, "_on_CreateShip"));
-        planet.Connect("OpenCmdPanel", new Callable(_world, "_on_OpenPlanetCmdPanel"));
+        planet.Connect("CreateShip", new Callable(_world.GetAsNode, "_on_CreateShip"));
+        //planet.Connect("OpenCmdPanel", new Callable(_world, "_on_OpenPlanetCmdPanel"));
         //_world.WCC.ConnectToSelectTarget(planet);  
     }
 

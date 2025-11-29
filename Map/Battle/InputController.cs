@@ -69,18 +69,23 @@ public partial class InputController : Node
     {
       throw new Exception("Parent should be RigidBody3D " + ex.Message);
     }
-    if(rigidBody3DParent is ISelection selection)
+    if(rigidBody3DParent is ISelection selection && Game.Instance != null)
     {
-      SelectUnit -= World.Instance.Select;
-      SelectUnit += World.Instance.Select;
-    }
-    DeselectUnit -= WorldCursorControl.Instance._DeselectUnit;
-    DeselectUnit += WorldCursorControl.Instance._DeselectUnit;
-    AddUnit -= WorldCursorControl.Instance._AddUnit;
-    AddUnit += WorldCursorControl.Instance._AddUnit;
-    SelectTarget -= WorldCursorControl.Instance._SelectTarget;
-    SelectTarget += WorldCursorControl.Instance._SelectTarget;
+      SelectUnit -= Game.Instance.Select;
+      SelectUnit += Game.Instance.Select;
+    }    
   }
+
+  public void ConnectWCC(WorldCursorControl Instance)
+  {
+    DeselectUnit -= Instance._DeselectUnit;
+    DeselectUnit += Instance._DeselectUnit;
+    AddUnit -= Instance._AddUnit;
+    AddUnit += Instance._AddUnit;
+    SelectTarget -= Instance._SelectTarget;
+    SelectTarget += Instance._SelectTarget; 
+  }
+
 
   public override void _Input(InputEvent inputEvent)
   {

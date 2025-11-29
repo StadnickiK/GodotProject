@@ -25,12 +25,6 @@ public partial class UI : Control
 
     public EndTurnPanel EndTurnPanel { get; set; }
 
-    private Control _menu = null;
-    public Control WorldMenu
-    {
-        get { return _menu; }
-    }
-
     private BattlePanel _battlePanel;
     public BattlePanel BattlePan
     {
@@ -44,7 +38,6 @@ public partial class UI : Control
         ResourcePanel = GetNode<ResourcePanel>("ResourcePanel");
         PInterface = GetNode<PlanetInterface>("PlanetInterface");
         RightPanel = GetNode<RightPanel>("RightPanel");
-        _menu = GetNode<Control>("Menu");
         _battlePanel = GetNode<BattlePanel>("BattlePanel");
         ABox = GetNode<AlertBox>("AlertBox");
         OrbitList = GetNode<SmallList>("OrbitList");

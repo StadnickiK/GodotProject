@@ -43,7 +43,6 @@ public partial class WorldCursorControl : Node3D
     {
         get
         {
-            if (_instance == null) _instance = new WorldCursorControl();
             return _instance;
         }
         private set { _instance = value; }
@@ -182,6 +181,11 @@ public partial class WorldCursorControl : Node3D
     public void ClearSelection()
     {
         select.ClearSelection();
+    }
+
+    internal void ConnectUnit3D(Unit3D unit3D)
+    {
+        throw new NotImplementedException();
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

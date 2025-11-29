@@ -18,6 +18,8 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
 
     public event PlayerDataChanged ArmiesChanged;
 
+    public event PlayerDataChanged PlanetsChanged;
+
     [Export]
     public Color PlayerColor { get; set; }
 
@@ -104,6 +106,7 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
             Planets.Add(planet);
             ResManager.AddProduction(planet.ResourcesManager.Production.Upkeep);
             ResManager.AddProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
+            PlanetsChanged?.Invoke(this);
         }
         
     }
@@ -121,6 +124,7 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
             ResManager.RemoveProduction(planet.ResourcesManager.Production.Upkeep);
             ResManager.RemoveProductionCost(planet.ResourcesManager.ProdCost.Upkeep);
             ResManager.RemoveResourceLimit(planet.ResourcesManager.ResourceLimits.Upkeep);
+            PlanetsChanged.Invoke(this);
         }
     }
 

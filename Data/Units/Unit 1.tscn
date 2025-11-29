@@ -44,4 +44,4 @@ _baseValue = 50.0
 
 [node name="Vision Range" type="Node" parent="StatManager"]
 script = ExtResource("2")
-_baseValue = 50.0
+_baseValue = 400.0

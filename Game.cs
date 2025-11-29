@@ -5,8 +5,12 @@ using Godot.Collections;
 
 public partial class Game : Node3D
 {
-	PackedScene _worldScene = (PackedScene)ResourceLoader.Load("res://World/World.tscn");
-	PackedScene _mainMenuScene = (PackedScene)ResourceLoader.Load("res://Menu/MainMenu.tscn");
+	PackedScene _worldScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.WorldScene);
+	PackedScene _mainMenuScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.MainMenuScene);
+	PackedScene _manualBattleScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.ManualBattleScene);
+
+	PackedScene _campaignScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.CampaignScene);
+
 	GameLogger gameLogger = GameLogger.Instance;
 
 	MainMenu mainMenu;
@@ -15,6 +19,18 @@ public partial class Game : Node3D
 
 	World _curerentWorld = null;
 
+	ManualBattleScene manualBattleScene = null;
+
+	private static IGameScene _instance;
+    public static IGameScene Instance
+    {
+        get
+        {
+            return _instance;
+        }
+        set { _instance = value; }
+    }  
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -22,7 +38,7 @@ public partial class Game : Node3D
 		Data = GetNode<Data>("Data");
 		mainMenu = GetNode<MainMenu>("MainMenu");
 		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
-		mainMenu.NewGameNode.StartNewGame += _on_StartNewGame;
+		mainMenu.ConnecMainMenu(this);
 	}
 
 	public void _on_StartNewGame(Dictionary<string, int> WorldGenParameters){
@@ -32,37 +48,46 @@ public partial class Game : Node3D
 			WorldGenParameters = WorldGenParameters,
 			ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
 		};
-		_curerentWorld = (World)_worldScene.Instantiate();
-		mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
-		mainMenu.QueueFree();
-		_curerentWorld.WorldGenParameters = WorldGenParams;
-		_curerentWorld.Data = Data;
-		World.Instance = _curerentWorld;
-		_curerentWorld.GetNodes();
-		AddChild(_curerentWorld);
+		var _campaign = _campaignScene.Instantiate<CampaignScene>();
+		LoadWorld(_campaign, WorldGenParams);
+		FreeMainMenu();
 	}
 
-	public void ConnectToQuickGame(Node node){
-		node.Connect("QuickGame", new Callable(this, nameof(_on_QuickGame)));
-		GD.Print(node.GetSignalConnectionList("QuickGame"));
-		GD.Print(GetSignalConnectionList("QuickGame"));
-	}
+	void LoadWorld(IGameScene scene, WorldGenParams worldGenParams)
+    {
+		_instance = scene;
+        _curerentWorld = _worldScene.Instantiate<World>();
+		_curerentWorld.WorldGenParameters = worldGenParams;
+		_curerentWorld.Data = Data;
+		_curerentWorld.GetNodes();
+		AddChild(_curerentWorld);
+		_curerentWorld.InitScene(scene);
+    }
+
+	public void _on_Skirmish_ButtonUp()
+    {
+
+        manualBattleScene = _manualBattleScene.Instantiate<ManualBattleScene>();
+		LoadWorld(manualBattleScene, null);
+		FreeMainMenu();
+    } 
+
+	void FreeMainMenu()
+    {
+        mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
+		mainMenu.QueueFree();
+    }
 
 	public void _on_QuickGame(){
 		_curerentWorld = (World)_worldScene.Instantiate();
 		var WorldGenParams = new WorldGenParams()
-        {
-            WorldGenParameters = new Dictionary<string, int>() { { "Players", 2 } },
-            ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
-        };
-		_curerentWorld.WorldGenParameters = WorldGenParams;
-	   var menu = GetNode("MainMenu");
-	   mainMenu.NewGameNode.StartNewGame -= _on_StartNewGame;
-	   menu.QueueFree();
-	   _curerentWorld.Data = Data;
-		World.Instance = _curerentWorld;
-	   _curerentWorld.GetNodes();
-	   AddChild(_curerentWorld);
+		{
+			WorldGenParameters = new Dictionary<string, int>() { { "Players", 2 } },
+			ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
+		};
+		var _campaign = _campaignScene.Instantiate<CampaignScene>();
+		LoadWorld(_campaign, WorldGenParams);
+		FreeMainMenu();
 	}
 
 	public void ConnectToOpenMainMenu(Node node){
@@ -72,11 +97,17 @@ public partial class Game : Node3D
 	public void _on_OpenMainMenu()
 	{
 		mainMenu = (MainMenu)_mainMenuScene.Instantiate();
-		GetNode("World").QueueFree();
+		if(_curerentWorld != null)
+        {
+            _curerentWorld.QueueFree();
+        }
+        else
+        {
+            manualBattleScene.QueueFree();
+        }
 		AddChild(mainMenu);
-		mainMenu.NewGameNode.StartNewGame += _on_StartNewGame;
+		mainMenu.ConnecMainMenu(this);
 		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
-		ConnectToQuickGame(mainMenu);
 		GetTree().Paused = false;
 	}
 

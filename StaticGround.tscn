@@ -9,7 +9,6 @@ size = Vector3(10, 1, 10)
 size = Vector3(10, 1, 10)
 
 [node name="Ground" type="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.45095, 3.54177)
 collision_mask = 0
 monitoring = false
 monitorable = false
