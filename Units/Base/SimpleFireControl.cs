@@ -8,7 +8,7 @@ public partial class SimpleFireControl : Node
     List<GpuParticles3D> GpuParticles3Ds = new List<GpuParticles3D>();
 
     [Export]
-    public string ItemScenePath { get; set; } = "res://Effects/FireEmitter.tscn";
+    public string ItemScenePath { get; set; } = ScenePaths.Instance.FlameScene;
 
     PackedScene packedScene;
 
@@ -29,21 +29,21 @@ public partial class SimpleFireControl : Node
             node.Emitting = false;
     }
 
-    public void LoadEmitters(List<MeshInstance3D> meshes)
+    void LoadEmitters(List<MeshInstance3D> meshes, float Lifetime = 0.6f)
     {
         foreach (var mesh in meshes)
         {
             var node = (FireEmitter)packedScene.Instantiate();
-            node.UpdateMesh(mesh);
+            node.UpdateMesh(mesh, Lifetime);
             AddChild(node);
             GpuParticles3Ds.Add(node);
         }
     }
 
-    public void UpdateEmitters(List<MeshInstance3D> meshes)
+    public void UpdateEmitters(List<MeshInstance3D> meshes, float Lifetime = 0.6f)
     {
         ClearEmitters();
-        LoadEmitters(meshes);
+        LoadEmitters(meshes, Lifetime);
     }
 
     public void ClearEmitters()

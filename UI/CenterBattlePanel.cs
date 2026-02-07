@@ -59,7 +59,7 @@ public partial class CenterBattlePanel : Panel
         PostButtons.Visible = true;
     }
 
-    public void Update(IEnterCombat attacker, IEnterCombat defender, int odds = 50)
+    public void Update(IEnterCombatBase attacker, IEnterCombatBase defender, int odds = 50)
     {
         ShowPreButtons();
         BattleOdds.Value = odds;
@@ -67,9 +67,11 @@ public partial class CenterBattlePanel : Panel
         Defender.Text = defender.Name;
     }
 
-    public void UpdatePostBattle(IEnterCombat attacker, IEnterCombat defender, int odds = 50)
+    public void UpdatePostBattle(IEnterCombatBase attacker, IEnterCombatBase defender, int odds = 50)
     {
         ShowPostButtons();
         BattleOdds.Value = odds;
+        Attacker.Text = attacker.Name;
+        Defender.Text = defender.Name;
     }
 }

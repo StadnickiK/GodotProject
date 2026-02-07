@@ -37,6 +37,8 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
 
     public event World.TransferUnitsEventHandler OpenTransferPanel;
 
+    public Node GetAsNode { get {return this;} }
+
     public InputController InputController { get; set; }
 
     public IMovableState MovableState { get; set; } = IMovableState.Movement;
@@ -80,6 +82,8 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     public RecruitmentComponent RecruitmentComponent { get; set; }
 
     public StateMachine StateMach { get; set; }
+
+    public StatManager StatManager { get; set; }
 
     public OrderQueue OrderQueue { get; set; } = new OrderQueue();
 
@@ -360,7 +364,11 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         {
             CurrentModelVoluume = unit.ModelVolume;
             Mesh.Mesh = ModelLoader.GetMiniMeshInstance3D(unit.ModelName).Mesh;
-            SimpleFireControl.UpdateEmitters(ModelLoader.GetMiniFireEmmiters(unit.ModelName));
+            if (unit.StatManager.HasStat("MiniFireLifetime"))
+            {
+                SimpleFireControl.UpdateEmitters(ModelLoader.GetMiniFireEmmiters(unit.ModelName), unit.StatManager.GetStatCurrentValue("MiniFireLifetime"));
+            }else
+                SimpleFireControl.UpdateEmitters(ModelLoader.GetMiniFireEmmiters(unit.ModelName));
 
         }
     }

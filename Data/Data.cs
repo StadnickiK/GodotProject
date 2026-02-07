@@ -68,13 +68,21 @@ public partial class Data : Node
     }
 
     void LoadBuildingResources(){
-        System.Threading.Tasks.Parallel.ForEach (Buildings, building => {
+        foreach (var building in Buildings)
+        {
             building.ResourceLimits = LoadResourceCost(building.ExportResourceLimits);
             building.ProductCost = LoadResourceCost(building.ExportProductCost);
             building.Products = LoadResourceCost(building.ExportProducts);
             building.BuildCost = LoadResourceCost(building.ExportBuildCost);
             building.Upkeep = LoadResourceCost(building.ExportUpkeep);
-        });
+        }
+        // System.Threading.Tasks.Parallel.ForEach (Buildings, building => {
+        //     building.ResourceLimits = LoadResourceCost(building.ExportResourceLimits);
+        //     building.ProductCost = LoadResourceCost(building.ExportProductCost);
+        //     building.Products = LoadResourceCost(building.ExportProducts);
+        //     building.BuildCost = LoadResourceCost(building.ExportBuildCost);
+        //     building.Upkeep = LoadResourceCost(building.ExportUpkeep);
+        // });
     }
 
     void LoadUnitResources(){
@@ -82,6 +90,15 @@ public partial class Data : Node
         {
             unit.BuildCost = LoadResourceCost(unit.ExportBuildCost);
             unit.Upkeep = LoadResourceCost(unit.ExportUpkeep);
+            if(unit.ModelName != null)
+            {
+                unit.ModelData = ModelLoader.Models[unit.ModelName];
+            }
+            else
+            {
+                
+            }
+                
         }
     }
 
@@ -91,6 +108,7 @@ public partial class Data : Node
         unit.BuildCost = Units[id].BuildCost;
         unit.Upkeep = Units[id].Upkeep;
         unit.ModelVolume = Units[id].ModelVolume;
+        unit.ModelData = Units[id].ModelData;
         return unit;
     }
 
@@ -141,6 +159,17 @@ public partial class Data : Node
                 unit.ModelVolume = (int)ModelLoader.GetMeshInstance3D(unit.ModelName).GetAabb().Volume;
             Units.Add(unit);
             unit.Index = Units.Count - 1;
+        }
+    }
+
+    public List<Turret> Turrets { get; set; } = new List<Turret>();
+
+    void GetTurrets(){
+        var arr = GetData("Turrets");
+        foreach(Turret unit in arr){
+            unit.Name = unit.Name;
+            Turrets.Add(unit);
+            unit.Index = Turrets.Count - 1;
         }
     }
 

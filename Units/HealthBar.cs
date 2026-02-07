@@ -1,54 +1,77 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 
-public partial class HealthBar : Node3D, IUpdateStat
+public partial class HealthBar : ProgressBar
 {
-    public ProgressBar Health { get; set; }
+    [Export]
+    public float SeparatorWidht { get; set; } = 16;
 
-    public ProgressBar Shield { get; set; }
-    public HashSet<string> StatNames { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    [Export]
+    public float SmallStep { get; set; } = 100;
 
-    public void UpdateStat(IStat stat)
-    {
-        switch (stat.Name)
-        {
-            case "Health":
-                UpdateHealth(stat);
-                break;
-            case "Shield":
-                UpdateShield(stat);
-                break;
-            // default:
-        }
-    }
+    [Export]
+    public float LargeStep { get; set; } = 1000;
 
-    public void UpdateHealth(IStat stat)
-    {
-        Health.MinValue = stat.MinValue;
-        Health.MaxValue = stat.MaxValue;
-        Health.Value = stat.CurrentValue;
-        //Health._Draw();
-    }
+    [Export]
+    public bool DrawSteps { get; set; } = true;
 
-    public void UpdateShield(IStat stat)
-    {
-        Shield.Visible = true;
-        Shield.MinValue = stat.MinValue;
-        Shield.MaxValue = stat.MaxValue;
-        Shield.Value = stat.CurrentValue;
-        //Shield._Draw();
-    }
+    [Export]
+    public Color FillColor { get; set; } = new Color("4C681F");
 
-    public void UpdatePosition(Vector3 meshSize)
-    {
-        Position = new Vector3(0, meshSize.Y, 0);
-    }
+    [Export]
+    public Color SeparatorColor { get; set; } = new Color("2B3B12");
+
+    [Export]
+    public bool ShowSeparators { get; set; } = true;
+
+    StyleBoxFlat FillStyle;
 
     public override void _Ready()
     {
-        Health = GetNode<ProgressBar>("SubViewport/VBoxContainer/Health");
-        Shield = GetNode<ProgressBar>("SubViewport/VBoxContainer/Shield");
+        base._Ready();
+        FillStyle = (StyleBoxFlat)GetThemeStylebox("fill");
+        UpdateFillColor(FillColor);
+    }
+
+
+    public void Update(IStat stat, bool visible = true)
+    {
+        Visible = visible;
+        MinValue = stat.MinValue;
+        MaxValue = stat.MaxValue;
+        Value = stat.CurrentValue;
+        QueueRedraw();
+    }
+
+    public void UpdateFillColor(Color color)
+    {
+        FillStyle.BgColor = color;
+        AddThemeStyleboxOverride("fill", FillStyle);
+    }
+
+    public override void _Draw()
+    {
+        base._Draw();
+        if (ShowSeparators)
+        {
+            var CurrentValue = Value;
+            float width = Size.X;
+            var separation = (float)(Size.X / (MaxValue / 100));
+            while(width >= separation)
+            {
+                width -= separation;
+                CurrentValue -= 100;
+                if(CurrentValue % 1000 == 0)
+                {
+                    DrawRect(new Rect2(width,0,SeparatorWidht, Size.Y), SeparatorColor, true);
+                }
+                else
+                {
+                    DrawRect(new Rect2(width,0,SeparatorWidht, Size.Y/2), SeparatorColor, true);
+                }  
+            }
+        }
     }
 
 }

@@ -98,7 +98,7 @@ void KeyboardAction(double time){
 	Direction = GlobalTransform.Basis.Z.Normalized() * input_movement_vector.Y * MovementSpeed * (float)time;
 	Direction += GlobalTransform.Basis.X.Normalized() * input_movement_vector.X * MovementSpeed * (float)time;
 
-	if(Limit >-1){
+	if(Limit > 0){
 		UpdatePositionWithLimit(Direction);
 	}else{
 		AddGlobalOrigin(Direction);

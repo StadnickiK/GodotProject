@@ -8,7 +8,7 @@ public interface IWorld
 {
     public WorldCursorControl WCC { get; }
 
-	public Player Host { get; }
+	public Player Host { set; get; }
 
 	public Ground Ground { get; set; }
 
@@ -27,6 +27,8 @@ public interface IWorld
 	public WorldGenParams WorldGenParameters { get; set; }
 
 	public Node GetAsNode { get; }
+
+	public void AddPlayer(Player player);
 }
 
 public partial class World : Node3D, IWorld
@@ -34,9 +36,6 @@ public partial class World : Node3D, IWorld
 
 	[Export]
 	public int UnitCount { get; set; } = 4;
-
-	[Export]
-	int Seed = -1991794247;
 
 	public enum GameAlert
 	{
@@ -66,21 +65,21 @@ public partial class World : Node3D, IWorld
 
 	Control WorldMenu { get; set; }
 
-	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load("res://World/Player.tscn");
+	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.PlayerScene);
 
 	public Random Rand { get; set; }
 
-	void InitRand()
+	void InitRand(int seed)
 	{
-		if (Seed == -1313)
-			Seed = Guid.NewGuid().GetHashCode();
-		Rand = new Random(Seed);
+		// if (seed == -1313)
+		// 	seed = Guid.NewGuid().GetHashCode();
+		Rand = new Random(seed);
 	}
 
 	private Player _Player = null;
 	public Player Host
 	{
-		get { return _Player; }
+		set {_Player = value; } get { return _Player; }
 	} 
 
     Node Players = null;
@@ -101,7 +100,7 @@ public partial class World : Node3D, IWorld
 
 	public void GetNodes()
 	{
-		InitRand();
+		InitRand(WorldGenParameters.WorldGenParameters["Seed"]);
 		WorldMenu = GetNode<Control>("Menu");
 		Players = GetNode("Players");
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
@@ -113,6 +112,13 @@ public partial class World : Node3D, IWorld
     {
         AddChild(scene.GetAsNode);
 		scene.InitializeScene(this);
+    }
+
+	public void AddPlayer(Player player)
+    {
+		if(player.GetParent() == null) Players.AddChild(player);
+		player.PlayerID = PlayersList.Count;
+		PlayersList.Add(player);
     }
 
 	void InitPlayers()
@@ -129,14 +135,12 @@ public partial class World : Node3D, IWorld
 			// var player = new AIPlayer(_data);//(Player)_PlayerScene.Instance();
 			var player = (Player)_PlayerScene.Instantiate();
 			// player.SetMap(_map);
-			Players.AddChild(player);
-			player.PlayerID = player.GetIndex();
+			AddPlayer(player);
 			if (i == 0)
 			{
 				_Player = player;
 				player.IsLocal = true;
 			}
-			PlayersList.Add(player);
 		}
 	}
 
@@ -153,14 +157,12 @@ public partial class World : Node3D, IWorld
 		{
 			var player = new AIPlayer(Data);  //(Player)_PlayerScene.Instance();
 			player.SetMap(map);
-			Players.AddChild(player);
-			player.PlayerID = player.GetIndex();
+			AddPlayer(player);
 			if (i == 0)
 			{
 				_Player = player;
 				player.IsLocal = true;
 			}
-			PlayersList.Add(player);
 		}
 	}
 
@@ -177,27 +179,30 @@ public partial class World : Node3D, IWorld
 
 	void InitPlayerStartResources()
 	{
-		var resources = Data.GetResourcesIndexList();
-		var starResources = Data.GetStartResources();
-		foreach (var item in WorldGenParameters.ResourceSliders)
-		{
-			if (starResources.ContainsKey(item.Key)){
-				starResources[item.Key] = item.Value.CurrentValue;
-			} else {
-				starResources.Add(item.Key, item.Value.CurrentValue);
+		if(WorldGenParameters.ResourceSliders != null)
+        {
+			var resources = Data.GetResourcesIndexList();
+			var starResources = Data.GetStartResources();
+			foreach (var item in WorldGenParameters.ResourceSliders)
+			{
+				if (starResources.ContainsKey(item.Key)){
+					starResources[item.Key] = item.Value.CurrentValue;
+				} else {
+					starResources.Add(item.Key, item.Value.CurrentValue);
+				}
 			}
-		}
-		foreach (var player in PlayersList)
-		{
-			// without new dictionary the game would use one for all of those instead of separate ones
-			player.ResManager.Resources = new Dictionary<int, int>(starResources);
+			foreach (var player in PlayersList)
+			{
+				// without new dictionary the game would use one for all of those instead of separate ones
+				player.ResManager.Resources = new Dictionary<int, int>(starResources);
 
-			player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);
-			player.ResManager.ResourceLimits.Upkeep = new Dictionary<int, int>(resources);
-			player.ResManager.ProdCost.Upkeep = new Dictionary<int, int>(resources);
-			player.ResManager.Upkeep.Upkeep = new Dictionary<int, int>(resources);
-			player.ResManager.TotalProduction.Upkeep = new Dictionary<int, int>(resources);
-		}
+				player.ResManager.Production.Upkeep = new Dictionary<int, int>(resources);
+				player.ResManager.ResourceLimits.Upkeep = new Dictionary<int, int>(resources);
+				player.ResManager.ProdCost.Upkeep = new Dictionary<int, int>(resources);
+				player.ResManager.Upkeep.Upkeep = new Dictionary<int, int>(resources);
+				player.ResManager.TotalProduction.Upkeep = new Dictionary<int, int>(resources);
+			}
+        }
 	}
 
 	bool CheckBuildingResources(Planet planet, Building building)

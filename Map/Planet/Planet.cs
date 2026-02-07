@@ -38,6 +38,9 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     public Player Controller { get => controller; set { controller = value; ControllerComponent.Controller = value; } }
     //public Array<Tile> Tiles { get; set; } = new Array<Tile>();
 
+    public Node GetAsNode { get {return this;} }
+
+
     public Random Rand { get; set; } = new Random();
 
     public string PlanetName { get; set; } = "PlanetName";
@@ -97,6 +100,8 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     public SelectionCircleControler Selection { get; set; }
 
     public InputController InputController { get; set; }
+
+
 
     // private Dictionary<int, int> _resources = new Dictionary<int, int>();
     // public Dictionary<int, int> Resources

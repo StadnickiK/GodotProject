@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Godot.NET.Sdk/4.5.1">
+<Project Sdk="Godot.NET.Sdk/4.6.0">
   <PropertyGroup>
     <ProjectGuid>{1A8A8008-7EFE-47FA-9ED7-712E4D963112}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -202,12 +202,25 @@
     <Compile Include="UI\TabsOrganizer.cs" />
     <Compile Include="UI\ArmyView.cs" />
     <Compile Include="Units\Base\Projectile.cs" />
-    <Compile Include="Units\Base\GuidedMissile.cs" />
+    <Compile Include="Data\GuidedMissile.cs" />
     <Compile Include="Effects\FireEmitter.cs" />
     <Compile Include="Map\Battle\TurretControl.cs" />
     <Compile Include="Units\Base\Turretjoint.cs" />
     <Compile Include="Map\Battle\DeployZone.cs" />
     <Compile Include="Data\ScenePaths.cs" />
     <Compile Include="World\CampaignScene.cs" />
+    <Compile Include="Map\Combatant.cs" />
+    <Compile Include="Data\TurretModel.cs" />
+    <Compile Include="Data\Turrets.cs" />
+    <Compile Include="World\Diplomacy\DiplomaticRelation.cs" />
+    <Compile Include="World\Diplomacy\DiplomaticEvent.cs" />
+    <Compile Include="World\Diplomacy\DiplomacyHandler.cs" />
+    <Compile Include="UI\Battle\CustomBatttleMenu.cs" />
+    <Compile Include="UI\Battle\PlayerContainerControler.cs" />
+    <Compile Include="UI\Battle\ArmyVievContainer.cs" />
+    <Compile Include="UI\Battle\CustomBattlePlayerInfoContainer.cs" />
+    <Compile Include="UI\Battle\CustomBattlePlayerContainer.cs" />
+    <Compile Include="Units\HealthBar3D.cs" />
+    <Compile Include="UI\Battle\BattlefieldSettingsMenu.cs" />
   </ItemGroup>
 </Project>

@@ -19,10 +19,16 @@ public partial class MainMenu : Control
 
     public Button QuickGame { get; set; }
 
+    public CustomBatttleMenu CustomBatttleMenu { get; set; }
+
     void GetNodes(){
         _menuNode = GetNode<CanvasItem>("Menu");
         NewGameNode = GetNode<MenuPanel>("NewGame");
+        CustomBatttleMenu =  GetNode<CustomBatttleMenu>("CustomBatttleMenu");    
+        NewGameNode.CloseButton.ButtonUp += _on_ShowMainMenu;
+        CustomBatttleMenu.CloseButton.ButtonUp += _on_ShowMainMenu;
         Skirmish = _menuNode.GetNode<Button>("Skirmish");
+        Skirmish.ButtonUp += _on_CustomBattle_button_up;
         QuickGame = _menuNode.GetNode<Button>("QuickGame");
         _TitleLabel = GetNode<Label>("Menu/Label");
         _TitleLabel.Text = Title;
@@ -35,14 +41,31 @@ public partial class MainMenu : Control
     }
 
     void _on_NewGame_button_up(){
-        //_menuNode.Visible = false;
-        NewGameNode.Visible = true;
+        _menuNode.Hide();
+        NewGameNode.Show();
     }
 
-    public void ConnecMainMenu(Game game)
+    void _on_CustomBattle_button_up(){
+        _menuNode.Hide();
+        CustomBatttleMenu.Show();
+    }
+
+    void _on_ShowMainMenu()
+    {
+        _menuNode.Show();
+    }
+
+    public void InitializeMainMenu(Game game, Data data)
+    {
+        ConnectMainMenu(game);
+        CustomBatttleMenu.Initialize(data);
+        
+    }
+
+    void ConnectMainMenu(Game game)
     {
         NewGameNode.StartNewGame += game._on_StartNewGame;
-		Skirmish.ButtonUp += game._on_Skirmish_ButtonUp;
+		CustomBatttleMenu.PlayButton.ButtonUp += game._on_Skirmish_ButtonUp;
         QuickGame.ButtonUp += game._on_QuickGame;
     }
 

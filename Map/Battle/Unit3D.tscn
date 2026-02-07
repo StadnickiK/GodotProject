@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_mju74"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_rapbe"]
 [ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="9_rapbe"]
-[ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar.tscn" id="11_1km8s"]
+[ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar3D.tscn" id="11_1km8s"]
 [ext_resource type="Script" uid="uid://ccjaexxpi7xr" path="res://Map/Battle/DeathController.cs" id="12_sxrd5"]
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="15_4btxt"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="15_k73rr"]

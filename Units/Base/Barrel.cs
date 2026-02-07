@@ -21,10 +21,12 @@ public partial class Barrel : Turret
     //int Max_ammo = 600;
     //int Ammo = 0;
     [Export]
-    new public PackedScene projectileScene = (PackedScene)ResourceLoader.Load("res://Units/Base/RBullet.tscn");
+    public PackedScene projectileScene = (PackedScene)ResourceLoader.Load("res://Units/Base/RBullet.tscn");
 
     [Export]
-    new public float RotationSpeed { get; set; } = 10;
+    public float RotationSpeed { get; set; } = 10;
+
+    public float Range { get; set; } = 50;
 
     RayCast3D ray;
     // Called when the node enters the scene tree for the first time.
@@ -44,7 +46,7 @@ public partial class Barrel : Turret
     public override void _Ready()
     {
             ray = GetNode<RayCast3D>("RayCast3D");
-            ray.TargetPosition = ray.Transform.Origin+new Vector3(0,0,EffectiveRange);
+            ray.TargetPosition = ray.Transform.Origin+new Vector3(0,0, Range);
             // projectiles = GetNode("/root/World/Projectiles");
             // OrderQueue = new OrderQueue();
             // _velocityController.RotationSpeed = RotationSpeed;

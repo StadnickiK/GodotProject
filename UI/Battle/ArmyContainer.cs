@@ -51,7 +51,7 @@ public partial class ArmyContainer : VBoxContainer
 		}
 	}
 
-	public void UpdateArmyContainer(IEnterCombat army)
+	public void UpdateArmyContainer(IEnterCombatBase army)
 	{
 		Show();
 		ArmyName.Text = army.Name;

@@ -4,7 +4,7 @@ using System;
 
 
 
-public partial class Laser : RayCast3D, IProjectile, ISavingNode
+public partial class Laser : RayCast3D, IProjectile
 {
     [Export]
     private Color _color = new Color("ff0000b4");
@@ -46,6 +46,10 @@ public partial class Laser : RayCast3D, IProjectile, ISavingNode
     public float CircleRadius { get => circleRadius; set { circleRadius = value; UpdateRadius(value); } }
 
     public float Range { get => range; set { range = value; UpdateRange(value); } }
+
+    public Node GetAsNode { get {return this; }}
+
+    public CollisionObject3D CollisionObject3D { get; set; }
 
     ShaderMaterial shaderMaterial;
 
@@ -151,4 +155,12 @@ public partial class Laser : RayCast3D, IProjectile, ISavingNode
     public void BeforeSave()
     {}
 
+    public void Shoot(Vector3 from, ITargetable to, Vector3 direction)
+    {
+        time = 0;
+        DmgInstances = 0;
+        GlobalPosition = from;
+        LookAt(to.GlobalPosition);
+        Show();
+    }
 }

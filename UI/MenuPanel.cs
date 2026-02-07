@@ -1,3 +1,4 @@
+using System;
 using Godot;
 //using System.Collections.Generic;
 using Godot.Collections;
@@ -25,6 +26,7 @@ public partial class MenuPanel : Panel
 
     [Export]
     public int MaxResource { get; set; } = 5000;
+    public Button CloseButton { get => _closeButton; set => _closeButton = value; }
 
     [Signal]
     public delegate void StartNewGameEventHandler(Godot.Collections.Dictionary<string, int> WorldGenParameters);
@@ -33,17 +35,20 @@ public partial class MenuPanel : Panel
 
     void GetNodes()
     {
-        _closeButton = GetNode<Button>("Scroll/VBoxContainer/Header/XButton");
+        CloseButton = GetNode<Button>("Scroll/VBoxContainer/Header/XButton");
         _titleLabel = GetNode<Label>("Scroll/VBoxContainer/Header/Title");
         _valueContainer = GetNode<Node>("Scroll/VBoxContainer/VBoxContainer/ValueContainer");
         ResourceContainer = GetNode<Node>("Scroll/VBoxContainer/VBoxContainer/ScrollContainer/Resources");
+        
     }
 
     public override void _Ready()
     {
         GetNodes();
-        _closeButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
+        CloseButton.Connect("button_up", new Callable(this, nameof(_on_XButton_button_up)));
         ValueSliderScene = (PackedScene)ResourceLoader.Load(ValueSliderPath);
+        var RandSeed = _valueContainer.GetNode<ValueSlider>("Seed");
+        RandSeed.SetValue(Guid.NewGuid().GetHashCode());
         //Connect("StartNewGame", new Callable(parent, "_on_StartNewGame"));
     }
 
@@ -56,9 +61,8 @@ public partial class MenuPanel : Panel
     {
         foreach (Node n in _valueContainer.GetChildren())
         {
-            if (n is ValueSlider)
+            if (n is ValueSlider value)
             {
-                ValueSlider value = (ValueSlider)n;
                 if (WorldGenParameters.ContainsKey(value.ValueName))
                 {
                     WorldGenParameters[value.ValueName] = value.CurrentValue;

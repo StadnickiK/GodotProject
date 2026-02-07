@@ -6,7 +6,7 @@ using System;
 
 public partial class Player : Node, IEquatable<Player>, IEndTurnListener
 {
-    public int PlayerID { get; set; }
+    public int PlayerID { get; set; } = -1;
 
     public string PlayerName { get; set; }
 
@@ -27,6 +27,8 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
 
     [Export]
     public int TimeStep { get; set; } = 1;
+
+    // public int TeamID { get; set; }
 
     [Export]
     public Array<Technology> ExportTechnologies { get; set; } = new Array<Technology>();
@@ -59,6 +61,8 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
     { 
         get { return _resourceManager; } 
     }
+
+    public DiplomacyHandler DiplomacyHandler { get; set; }
 
     // private Dictionary<string, int> _resourceLimits = new Dictionary<string, int>();
     // public Dictionary<string, int> ResourceLimits
@@ -131,12 +135,14 @@ public partial class Player : Node, IEquatable<Player>, IEndTurnListener
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        PlayerID = GetIndex();
+        if(PlayerID == -1) 
+            PlayerID = GetIndex();
         PlayerName = "Player "+ PlayerID;
-        Name = PlayerName;
+        //Name = PlayerName;
         EndTurnEmitter.Instance.EndTurn += _on_EndTurn;
         _resourceManager = GetNode<ResourceManager>("ResourceManager");
         Research = GetNode<ConstructionManager>("TechManager");
+        DiplomacyHandler = GetNode<DiplomacyHandler>("DiplomacyHandler");
         // AddChild(ResManager);
         // AddChild(Research);
         // for(int i = 0; i<5; i++){

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public interface IDamagable
+public interface IDamagable : ITypedNode<CollisionObject3D>
 {
     public void Damage();
 

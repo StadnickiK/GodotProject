@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 public interface IStat
 {
+    public enum StatVisibility
+    {
+        Hidden,
+        Visible
+    }
     public delegate void StatChangedEventHandler(IStat stat);
     public event StatChangedEventHandler StatChanged;
 
@@ -39,6 +44,9 @@ public partial class BaseStat : Node, IStat
     public BaseStat() { }
 
     public List<StatModifier> Modifiers { get; set; } = new List<StatModifier>();
+
+    [Export]
+    public IStat.StatVisibility Visibility { get; set; } = IStat.StatVisibility.Visible;
 
     private float _currentValue = 0;
     public float CurrentValue

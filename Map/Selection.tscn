@@ -9,11 +9,11 @@ shader = ExtResource("1_n82qy")
 shader_parameter/BaseColor = Color(0, 1, 0, 1)
 shader_parameter/CricleWidth = 0.03
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_sxrd5"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_n82qy"]
 material = SubResource("ShaderMaterial_1km8s")
 size = Vector2(10, 10)
 
 [node name="Selection" type="MeshInstance3D"]
 visible = false
-mesh = SubResource("PlaneMesh_sxrd5")
+mesh = SubResource("PlaneMesh_n82qy")
 script = ExtResource("2_f3o16")

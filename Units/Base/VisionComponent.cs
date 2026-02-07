@@ -27,7 +27,7 @@ public partial class VisionComponent : Area3D, IUpdateStat
 
     public event TargetSpottedEventHandler TargetLost;
 
-    public HashSet<string> StatNames { get; set; } = new HashSet<string>() { "Vision Range" };
+    public HashSet<string> StatNames { get; set; } = new HashSet<string>() { GlobalStatNames.VisionRange };
     public Player Controller { get; set; }
 
     public void UpdateVisionRange()
@@ -110,7 +110,7 @@ public partial class VisionComponent : Area3D, IUpdateStat
     {
         switch (stat.Name)
         {
-            case "Vision Range":
+            case GlobalStatNames.VisionRange:
                 UpdateVisionRange(stat.CurrentValue);
                 break;
         }

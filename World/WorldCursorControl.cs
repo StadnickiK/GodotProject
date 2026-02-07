@@ -124,7 +124,6 @@ public partial class WorldCursorControl : Node3D
 
     public void _SelectTarget(CollisionObject3D target)
     {
-        ;
         select.AddTarget(target);
     }
 

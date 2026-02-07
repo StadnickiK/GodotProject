@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dtwjs6kflab87"]
+[gd_scene load_steps=7 format=3 uid="uid://dtwjs6kflab87"]
 
-[ext_resource type="Script" uid="uid://dout6ctjbsc0b" path="res://Units/HealthBar.cs" id="1_hee6m"]
+[ext_resource type="Script" uid="uid://dout6ctjbsc0b" path="res://Units/HealthBar3D.cs" id="1_hee6m"]
+[ext_resource type="Script" uid="uid://dqo1jcoebeuwy" path="res://Units/HealthBar.cs" id="2_7dljd"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_qeusx"]
 viewport_path = NodePath("SubViewport")
@@ -35,31 +36,33 @@ texture = SubResource("ViewportTexture_qeusx")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(1024, 256)
+size = Vector2i(4096, 400)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SubViewport"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 100.0
+offset_bottom = 200.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Health" type="ProgressBar" parent="SubViewport/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_qeusx")
 theme_override_styles/fill = SubResource("StyleBoxFlat_7dljd")
 value = 50.0
 show_percentage = false
+script = ExtResource("2_7dljd")
 
 [node name="Shield" type="ProgressBar" parent="SubViewport/VBoxContainer"]
 visible = false
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_qeusx")
 theme_override_styles/fill = SubResource("StyleBoxFlat_hee6m")
 value = 50.0
 show_percentage = false
+script = ExtResource("2_7dljd")

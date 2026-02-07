@@ -4,27 +4,26 @@
 [ext_resource type="Shader" uid="uid://qqvbmeqp88ly" path="res://LaserShader.tres" id="1_shsop"]
 [ext_resource type="PackedScene" uid="uid://bva2qneec646t" path="res://Map/Battle/end_laser_particles.tscn" id="3_307kl"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wp44h"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sxdsp"]
 render_priority = 0
 shader = ExtResource("1_shsop")
 shader_parameter/Color = Color(1, 0, 0, 1)
 shader_parameter/EmissionMultiplier = 2.0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_1gj8b"]
-material = SubResource("ShaderMaterial_wp44h")
+[sub_resource type="CylinderMesh" id="CylinderMesh_efqfq"]
+material = SubResource("ShaderMaterial_sxdsp")
 flip_faces = true
-top_radius = 0.03
-bottom_radius = 0.03
 height = 20.0
 
 [node name="Laser" type="RayCast3D"]
 target_position = Vector3(0, 0, -100)
 collide_with_areas = true
 script = ExtResource("1_1gj8b")
-circleRadius = 0.3
+circleRadius = 0.5
+range = 500.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("CylinderMesh_1gj8b")
+mesh = SubResource("CylinderMesh_efqfq")
 
 [node name="EndLaserParticles" parent="." instance=ExtResource("3_307kl")]

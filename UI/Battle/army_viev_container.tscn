@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0skengtk0fug"]
+
+[ext_resource type="Script" uid="uid://v14nibgaq7dy" path="res://UI/Battle/ArmyVievContainer.cs" id="1_hpagf"]
+[ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="2_tb6j0"]
+[ext_resource type="PackedScene" uid="uid://ng20bm5m0wo" path="res://UI/army_view.tscn" id="3_bfdwp"]
+
+[node name="ArmyVievContainer" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.134375
+anchor_bottom = 0.13148148
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_hpagf")
+metadata/_edit_use_anchors_ = true
+
+[node name="Header" parent="." instance=ExtResource("2_tb6j0")]
+layout_mode = 2
+
+[node name="ArmyView" parent="." instance=ExtResource("3_bfdwp")]
+layout_mode = 2

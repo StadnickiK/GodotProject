@@ -11,6 +11,10 @@ script = ExtResource("1")
 script = ExtResource("5")
 DirPath = "res://Data/Units/"
 
+[node name="Turrets" type="Node" parent="."]
+script = ExtResource("5")
+DirPath = "res://Data/Turrets/"
+
 [node name="Technology" type="Node" parent="."]
 script = ExtResource("5")
 DirPath = "res://Data/Technology/"

@@ -26,6 +26,8 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
     public MeshInstance3D MeshInstance3D { get; set; }
     public CollisionShape3D CollisionShape3D { get; set; }
 
+    public Node GetAsNode { get {return this;} }
+
     public InputController InputController { get; set; }
 
     public IMovableState MovableState { get; set; } = IMovableState.Movement;
@@ -36,7 +38,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
 
     public SelectionCircleControler Selection { get; set; }
 
-    public HealthBar HealthBar { get; set; }
+    public HealthBar3D HealthBar { get; set; }
 
     public StatManager StatManager { get; set; }
 
@@ -53,6 +55,9 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
     public event Node3DPool.SaveNodeEventHandler SaveNode;
 
     public int CardIndex { get; set; }
+
+    public CollisionObject3D GetAsSpecificNode { get {return this;} }
+
 
     public override void _Ready()
     {
@@ -86,7 +91,7 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         OrderQueue = GetNode<OrderQueue>("TargetManager");
         StateMachine = GetNode<StateMachine>("StateMachine");
         Selection = GetNode<SelectionCircleControler>("Selection");
-        HealthBar = GetNode<HealthBar>("HealthBar");
+        HealthBar = GetNode<HealthBar3D>("HealthBar");
         TurretControl = GetNode<TurretControl>("TurretControl");
         Shield = GetNode<Shield>("Shield");
         StatManager = GetNode<StatManager>("StatManager");
@@ -159,14 +164,6 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
                 break;
             default:
                 var state = new PhysicsMoveState(target);
-                state.MoveSpeed = StatManager.GetStat("Speed").CurrentValue;
-                if (target.TargetNode != null)
-                    if (target.TargetNode is IMapObjectController controller)
-                        if (controller.Controller.PlayerID != Controller.PlayerID)
-                        {
-                            state.Tolerance = StatManager.GetStat("Range").CurrentValue;
-                        }
-                StatManager.Stats[state.StatNames.FirstOrDefault()].StatChanged += state.UpdateStat;
                 state.MoveStateExited += OnExitPhysicsMoveState;
                 SimpleFireControl.Start();
                 StateMachine.Enter(state);
@@ -199,17 +196,22 @@ public partial class Unit3D : RigidBody3D, IMapObjectController, ITargetable, IM
         GlobalTransform = g;
     }
 
-    public void UpdateModel(ModelData model)
+    public void UpdateModel(Unit unit)
     {
-        MeshInstance3D.Mesh = model.MeshInstance3D.Mesh;
-        CollisionShape3D.Shape = model.CollisionShape3D.Shape;
+        MeshInstance3D.Mesh = unit.ModelData.MeshInstance3D.Mesh;
+        CollisionShape3D.Shape = unit.ModelData.CollisionShape3D.Shape;
         var meshSize = MeshInstance3D.Mesh.GetAabb().Size;
         var size = meshSize.Z > meshSize.X ? meshSize.Z : meshSize.X;
         Selection.Size = new Vector2(size, size);
         HealthBar.UpdatePosition(meshSize);
         Shield.UpdateRadius(size);
-        SimpleFireControl.LoadEmitters(model.FireEmitters);
-        TurretControl.InitTurrets(this, model.Turrets);
+        SimpleFireControl.UpdateEmitters(unit.ModelData.FireEmitters, 2f);
+        if (StatManager.HasStat("FireLifetime"))
+            {
+                SimpleFireControl.UpdateEmitters(unit.ModelData.FireEmitters, StatManager.GetStatCurrentValue("FireLifetime"));
+            }else
+                SimpleFireControl.UpdateEmitters(unit.ModelData.FireEmitters);
+        TurretControl.InitTurrets(unit);
     }
 
     public void Damage()

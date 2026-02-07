@@ -1,18 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0lhmp3fj6tkb"]
+[gd_scene load_steps=7 format=3 uid="uid://c0lhmp3fj6tkb"]
 
 [ext_resource type="PackedScene" uid="uid://2tb1823d4u38" path="res://Menu/Background.tscn" id="1"]
 [ext_resource type="Script" uid="uid://cpb8hv2w7bk6y" path="res://Menu/ExitButton.cs" id="2"]
 [ext_resource type="PackedScene" uid="uid://cth8qdcx4tb8j" path="res://UI/NewGame.tscn" id="3"]
 [ext_resource type="Script" uid="uid://dskq2wrugl1ab" path="res://Menu/MainMenu.cs" id="4"]
 [ext_resource type="Theme" uid="uid://herq15xa5tcn" path="res://Themes/Main_Menu_theme.tres" id="5"]
+[ext_resource type="PackedScene" uid="uid://ra2e45icexeu" path="res://UI/Battle/custom_batttle_menu.tscn" id="5_biqin"]
 
 [node name="MainMenu" type="Control"]
 custom_minimum_size = Vector2(120, 133)
 layout_mode = 3
-anchor_left = 0.4609375
-anchor_top = 0.4560185
-anchor_right = 0.5390625
-anchor_bottom = 0.59212965
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4")
@@ -20,16 +20,23 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Menu" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(120, 0)
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.5157895
-offset_bottom = -191.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -142.0
+offset_top = -180.0
+offset_right = 142.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("5")
 theme_override_constants/separation = 10
 alignment = 1
-metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="Menu"]
 layout_mode = 2
@@ -50,7 +57,8 @@ text = "Play"
 [node name="Skirmish" type="Button" parent="Menu"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Skirmish"
+text = "Custom Battle
+"
 
 [node name="Exit" type="Button" parent="Menu"]
 layout_mode = 2
@@ -61,10 +69,10 @@ script = ExtResource("2")
 [node name="NewGame" parent="." instance=ExtResource("3")]
 visible = false
 layout_mode = 1
-anchor_left = -1.24
-anchor_top = -1.9421053
-anchor_right = 2.24
-anchor_bottom = 1.2143574
+
+[node name="CustomBatttleMenu" parent="." instance=ExtResource("5_biqin")]
+visible = false
+layout_mode = 1
 
 [node name="Background" parent="." instance=ExtResource("1")]
 

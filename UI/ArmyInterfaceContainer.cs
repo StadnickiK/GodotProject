@@ -15,5 +15,4 @@ public partial class ArmyInterfaceContainer : HBoxContainer
         ArmyRecruitment = GetNode<ArmyRecruitment>("ArmyRecruitment");
         ArmyPanel = GetNode<ArmyPanel>("ArmyPanel");
     }
-
 }

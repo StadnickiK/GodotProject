@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://ov51eetk3ggy"]
+
+[ext_resource type="Script" uid="uid://bo7ys0t0u80m3" path="res://UI/Battle/BattlefieldSettingsMenu.cs" id="1_grvop"]
+
+[node name="BattlefieldSettingsMenu" type="VBoxContainer"]
+offset_left = 1038.0
+offset_right = 1622.0
+offset_bottom = 94.0
+script = ExtResource("1_grvop")
+
+[node name="MapSettingsLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Map Settings"
+
+[node name="Settings" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Map Settings"
+
+[node name="Width" type="SpinBox" parent="Settings"]
+layout_mode = 2
+min_value = 400.0
+max_value = 2000.0
+value = 500.0
+allow_greater = true
+
+[node name="HeightLabel" type="Label" parent="Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Map Settings"
+
+[node name="Height" type="SpinBox" parent="Settings"]
+layout_mode = 2
+min_value = 400.0
+max_value = 2000.0
+value = 500.0
+allow_greater = true
+
+[node name="VRLabel" type="Label" parent="Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Vision range multiplier"
+
+[node name="VRmultiplier" type="SpinBox" parent="Settings"]
+layout_mode = 2
+min_value = 2.0
+max_value = 10.0
+value = 3.0
+allow_greater = true
+
+[node name="OptimalSize" type="Label" parent="Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Optimal size: "
+
+[connection signal="value_changed" from="Settings/Width" to="." method="_on_width_value_changed"]
+[connection signal="value_changed" from="Settings/Height" to="." method="_on_height_value_changed"]

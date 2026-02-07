@@ -63,7 +63,7 @@ public partial class CampaignScene : Node3D, IEndTurnListener, IGameScene
         ConnectSignals(world);
 		MapArmyManager.ModelLoader = world.Data.ModelLoader;
         MapArmyManager.Rand = Rand = world.Rand;
-        ManualBattleScene.InitializeScene(world);
+        ManualBattleScene.InitializeBattle(world);
 		InitCampaign(world);
         if (Host != null)
 		{
@@ -152,7 +152,7 @@ public partial class CampaignScene : Node3D, IEndTurnListener, IGameScene
 		UI.PInterface.InitBuildingsPanel();
 		UI.PInterface.InitRecruitmentPanel();
 		ManualBattleScene.OpenBattlePanel += _on_ShowBattlePanel;
-		UI.BattlePan.Center.Retreat.ButtonUp += () => _on_Battle_Retreat(ManualBattleScene.GetLocalAttakcerOrNull());
+		UI.BattlePan.Center.Retreat.ButtonUp += () => _on_Battle_Retreat(ManualBattleScene.GetLocalOrNull());
 		UI.BattlePan.Center.EndFight.ButtonUp += _on_EndBattle;
 		UI.BattlePan.Center.RepeatFight.ButtonUp += _on_ResetBattle;
 		UI.BattlePan.Center.Fight.ButtonUp += _on_ManualBattle;
@@ -238,6 +238,7 @@ public partial class CampaignScene : Node3D, IEndTurnListener, IGameScene
 						ship.VisibilityConroller.UpdateVisible(new VisibilityConroller.VisibilityStruct() { Visibility = VisibilityConroller.VisibilityState.Unexplored, Visible = world.Host == player }, player.PlayerID, world.Host == player);
 						if (world.Host == player)
 						{
+							world.Camera3D.LookAt(ship.GlobalPosition);
 							ship.IsLocal = true;
 						}
 					}
@@ -276,7 +277,7 @@ public partial class CampaignScene : Node3D, IEndTurnListener, IGameScene
 
 	void ConnectShip(Ship ship)
 	{
-		//WCC.ConnectToSelectTarget(ship);
+		ship.InputController.ConnectWCC(WCC);
 		ManualBattleScene.ConnectToEnterCombat(ship);
 		//_map.ConnectToEnterMapObject(ship);
 		Map.ConnectToExitMapObject(ship);

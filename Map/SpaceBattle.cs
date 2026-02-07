@@ -27,7 +27,11 @@ public partial class SpaceBattle : Node
 	[Export]
 	public bool Logging { get; set; } = true;
 
-	public List<IEnterCombat> Attackers { get; set; } = new List<IEnterCombat>();
+	// public List<IEnterCombatBase> Attackers { get; set; } = new List<IEnterCombatBase>();
+	// public List<IEnterCombatBase> Defenders { get; set; } = new List<IEnterCombatBase>();
+
+	public HashSet<IEnterCombatBase> Combatants { get; set; } = new HashSet<IEnterCombatBase>();
+	public Dictionary<int, HashSet<IEnterCombatBase>> CombatantTeams { get; set; } = new Dictionary<int, HashSet<IEnterCombatBase>>();
 
 	public float AttackPower { get; set; }
 
@@ -35,7 +39,7 @@ public partial class SpaceBattle : Node
 
 	public Random Rand { get; set; } = new Random();
 
-	public List<IEnterCombat> Defenders { get; set; } = new List<IEnterCombat>();
+	
 
 	public float DefPower { get; set; }
 
@@ -63,18 +67,19 @@ public partial class SpaceBattle : Node
 
 	public int TimeStep { get; set; } = 1;
 
-	public void AddAttackers(List<IEnterCombat> attackers)
-	{
-		if (attackers.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Attacker;
-		Attackers.AddRange(attackers);
-	}
+	// public void AddAttackers(List<IEnterCombatBase> attackers)
+	// {
+	// 	if (attackers.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Attacker;
+	// 	Attackers.AddRange(attackers);
+	// }
 
-	public void AddDefenders(List<IEnterCombat> defenders)
-	{
-		if (defenders.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Defender;
-		Defenders.AddRange(defenders);
-	}
-	HashSet<Unit> GetUnits(List<IEnterCombat> ships)
+	// public void AddDefenders(List<IEnterCombatBase> defenders)
+	// {
+	// 	if (defenders.FirstOrDefault(x => x.Controller.IsLocal) != null) Local = HasLocal.Defender;
+	// 	Defenders.AddRange(defenders);
+	// }
+	
+	HashSet<Unit> GetUnits(List<IEnterCombatBase> ships)
 	{
 		var set = new HashSet<Unit>();
 		foreach (var s in ships)
@@ -82,7 +87,12 @@ public partial class SpaceBattle : Node
 		return set;
 	}
 	
-	List<Unit> GetUnitsList(List<IEnterCombat> ships)
+	public List<Unit> GetUnitsList()
+	{
+		return GetUnitsList(Combatants.ToList());
+	}
+
+	public List<Unit> GetUnitsList(List<IEnterCombatBase> ships)
 	{
 		var set = new List<Unit>();
 		foreach (var s in ships)
@@ -90,34 +100,23 @@ public partial class SpaceBattle : Node
 		return set;
 	}
 
-	public List<Unit> GetLocalUnits()
-	{
-		switch (Local)
-		{
-			case HasLocal.Attacker:
-				return GetUnitsList(Attackers);
-			default:
-				return GetUnitsList(Defenders);
-		}
-	}
+	// public List<Unit> GetAttackerUnits()
+	// {
+	// 	return GetUnitsList(Attackers);
+	// }
 
-	public List<Unit> GetAttackerUnits()
-	{
-		return GetUnitsList(Attackers);
-	}
-
-	public List<Unit> GetDefenderUnits()
-	{
-		return GetUnitsList(Defenders);
-	}
+	// public List<Unit> GetDefenderUnits()
+	// {
+	// 	return GetUnitsList(Defenders);
+	// }
 
 
 	public void AutoFight()
 	{
 		if (Logging) gameLogger.LogInfo("Auto Fight start");
 
-		var attackers = GetUnits(Attackers);
-		var defenders = GetUnits(Defenders);
+		var attackers = GetUnits(CombatantTeams[0].ToList());
+		var defenders = GetUnits(CombatantTeams[1].ToList());
 
 		int round = 1;
 		while (attackers.Count > 0 && defenders.Count > 0)
@@ -186,13 +185,18 @@ public partial class SpaceBattle : Node
 	void CleanDeadUnits()
 	{
         if (Logging) gameLogger.LogInfo("Cleaning dead units");
-        if (Logging) gameLogger.LogInfo("Attackers");
-        CleanDeadUnits(Attackers);
-        if (Logging) gameLogger.LogInfo("Defenders");
-        CleanDeadUnits(Defenders);
+		foreach (var item in CombatantTeams)
+		{
+			CleanDeadUnits(item.Value);
+		}
+		//CleanDeadUnits(Combatants);
+        // if (Logging) gameLogger.LogInfo("Attackers");
+        // CleanDeadUnits(Attackers);
+        // if (Logging) gameLogger.LogInfo("Defenders");
+        // CleanDeadUnits(Defenders);
 	}
 
-    void CleanDeadUnits(List<IEnterCombat> ships)
+    void CleanDeadUnits(List<IEnterCombatBase> ships)
     {
         for (int i = ships.Count - 1; i >= 0; i--)
         {
@@ -201,5 +205,14 @@ public partial class SpaceBattle : Node
             if (Logging) gameLogger.LogInfo("Ship " + i + " clean count " + ships[i].UnitController.Count);
             if (!ships[i].UnitController.HasUnits) ships.RemoveAt(i);
         }
+    }
+
+	void CleanDeadUnits(HashSet<IEnterCombatBase> ships)
+    {
+		foreach (var item in ships)
+		{
+			item.UnitController.ClearUnits();
+			if (!item.UnitController.HasUnits) ships.Remove(item);
+		}
     }
 }

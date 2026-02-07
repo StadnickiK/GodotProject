@@ -5,11 +5,13 @@ using Godot.Collections;
 
 public partial class Game : Node3D
 {
-	PackedScene _worldScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.WorldScene);
+	PackedScene _worldScene;
 	PackedScene _mainMenuScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.MainMenuScene);
-	PackedScene _manualBattleScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.ManualBattleScene);
+	PackedScene _manualBattleScene;
 
-	PackedScene _campaignScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.CampaignScene);
+	PackedScene _campaignScene;
+
+	PackedScene _PlayerScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.PlayerScene);
 
 	GameLogger gameLogger = GameLogger.Instance;
 
@@ -38,11 +40,33 @@ public partial class Game : Node3D
 		Data = GetNode<Data>("Data");
 		mainMenu = GetNode<MainMenu>("MainMenu");
 		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
-		mainMenu.ConnecMainMenu(this);
+		mainMenu.InitializeMainMenu(this, Data);
 	}
+
+	public static PackedScene LoadScene(string path)
+    {
+        return (PackedScene)ResourceLoader.Load(path);
+    }
+
+	void LoadCampaignScene()
+    {
+        if(_campaignScene == null) _campaignScene = LoadScene(ScenePaths.Instance.CampaignScene);
+    }
+
+	void LoadManualBattleScene()
+    {
+        if(_manualBattleScene == null) _manualBattleScene = LoadScene(ScenePaths.Instance.ManualBattleScene);
+    }
+
+	void LoadWorldScene()
+    {
+        if(_worldScene == null) _worldScene = LoadScene(ScenePaths.Instance.WorldScene);
+    }
+	
 
 	public void _on_StartNewGame(Dictionary<string, int> WorldGenParameters){
 		GD.Print(GetSignalConnectionList("QuickGame"));
+		LoadCampaignScene();
 		var WorldGenParams = new WorldGenParams()
 		{
 			WorldGenParameters = WorldGenParameters,
@@ -55,6 +79,7 @@ public partial class Game : Node3D
 
 	void LoadWorld(IGameScene scene, WorldGenParams worldGenParams)
     {
+		LoadWorldScene();
 		_instance = scene;
         _curerentWorld = _worldScene.Instantiate<World>();
 		_curerentWorld.WorldGenParameters = worldGenParams;
@@ -66,9 +91,28 @@ public partial class Game : Node3D
 
 	public void _on_Skirmish_ButtonUp()
     {
-
+		LoadManualBattleScene();
         manualBattleScene = _manualBattleScene.Instantiate<ManualBattleScene>();
-		LoadWorld(manualBattleScene, null);
+		// var Attackers = new System.Collections.Generic.List<IEnterCombatBase>();
+		// var Defenders = new System.Collections.Generic.List<IEnterCombatBase>();
+		// foreach (var item in mainMenu.CustomBatttleMenu.PlayerContainerControler.CustomBattlePlayerContainers)
+		// {
+		// 	if(item.Index % 2 == 0)
+		// 	{
+		// 		Attackers.Add(item.Combatant);
+		// 	}else
+		// 		Defenders.Add(item.Combatant);
+		// }
+		var WorldGenParams = new WorldGenParams()
+		{
+			WorldGenParameters = new Dictionary<string, int>() { { "Players", 0 }, {"Seed", Guid.NewGuid().GetHashCode() } },
+			Combatants = mainMenu.CustomBatttleMenu.PlayerContainerControler.Combatants,
+			BattlefieldSettings = mainMenu.CustomBatttleMenu.MapSettings.BattlefieldSettings,
+			// Attackers = Attackers,
+			// Defenders = Defenders
+			
+		};
+		LoadWorld(manualBattleScene, WorldGenParams);
 		FreeMainMenu();
     } 
 
@@ -82,9 +126,10 @@ public partial class Game : Node3D
 		_curerentWorld = (World)_worldScene.Instantiate();
 		var WorldGenParams = new WorldGenParams()
 		{
-			WorldGenParameters = new Dictionary<string, int>() { { "Players", 2 } },
+			WorldGenParameters = new Dictionary<string, int>() { { "Players", 2 }, {"Seed", Guid.NewGuid().GetHashCode() } },
 			ResourceSliders = mainMenu.NewGameNode.ResourceValueSliders
 		};
+		LoadCampaignScene();
 		var _campaign = _campaignScene.Instantiate<CampaignScene>();
 		LoadWorld(_campaign, WorldGenParams);
 		FreeMainMenu();
@@ -106,7 +151,7 @@ public partial class Game : Node3D
             manualBattleScene.QueueFree();
         }
 		AddChild(mainMenu);
-		mainMenu.ConnecMainMenu(this);
+		mainMenu.InitializeMainMenu(this, Data);
 		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
 		GetTree().Paused = false;
 	}

@@ -63,6 +63,19 @@ ValueName = "Players"
 _minValue = 1
 _maxValue = 50
 
+[node name="Seed" parent="Scroll/VBoxContainer/VBoxContainer/ValueContainer" instance=ExtResource("3")]
+layout_mode = 2
+tooltip_text = "Number of players."
+mouse_filter = 0
+Text = "Random seed"
+ValueName = "Seed"
+_minValue = 1
+_maxValue = 50
+AllowGreater = true
+AllowLesser = true
+ShowSlider = false
+CurrentValue = -1991794247
+
 [node name="ScrollContainer" type="ScrollContainer" parent="Scroll/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

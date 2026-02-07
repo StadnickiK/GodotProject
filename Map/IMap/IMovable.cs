@@ -8,12 +8,14 @@ public enum IMovableState
     Drag
 }
 
-public interface IMovable : ISelection
+public interface IMovable : ISelection, IStatManager, IMapObjectController
 {
     public IMovableState MovableState { get; set; }
     public OrderQueue OrderQueue { get; set; }
 
     public Basis GlobalBasis { get; set; }
+
+    public Transform3D GlobalTransform { get; set; }
 
     public Godot.Vector3 Velocity { get; set; }
 

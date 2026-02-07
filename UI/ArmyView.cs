@@ -5,6 +5,11 @@ public partial class ArmyView : VBoxContainer
 {
     private bool showInfoPanel = true;
 
+    [Export]
+    public string ControllerLabelText { get; set; } = "Controlled by: ";
+
+    [Export]
+    public string UpkeepLabelText { get; set; } = "Upkeep: ";
 
     public ArmyInterfaceContainer ArmyInterfaceContainer { get; set; }
 
@@ -18,6 +23,8 @@ public partial class ArmyView : VBoxContainer
         ArmyInterfaceContainer = GetNode<ArmyInterfaceContainer>("ArmyInterfaceContainer");
         InfoPanel = GetNode<InfoPanel>("InfoPanel");
         InfoPanel.Visible = ShowInfoPanel;
+        InfoPanel.Controller.Text = ControllerLabelText;
+        InfoPanel.Upkeep.Text = UpkeepLabelText;
     }
 
 }

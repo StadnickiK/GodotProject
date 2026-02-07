@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using Godot.Collections;
+using System.Linq;
 
 public partial class BattlePanel : Control
 {
@@ -41,16 +42,16 @@ public partial class BattlePanel : Control
             Center.AutoFight.ButtonUp += _battle.AutoFight;
             _battle.BattleFinished += UpdatePanelPostBattle;
         }
-        Center.Update(battle.Attackers[0], battle.Defenders[0]);
-        Left.UpdateArmyContainers(battle.Attackers);
-        Right.UpdateArmyContainers(battle.Defenders);
+        Center.Update(battle.CombatantTeams[0].FirstOrDefault(), battle.CombatantTeams[1].FirstOrDefault());
+        Left.UpdateArmyContainers(battle.CombatantTeams[0].ToList());
+        Right.UpdateArmyContainers(battle.CombatantTeams[1].ToList());
     }
 
     public void UpdatePanelPostBattle(SpaceBattle battle)
     {
-        Center.UpdatePostBattle(battle.Attackers[0], battle.Defenders[0]);
-        Left.UpdateArmyContainers(battle.Attackers);
-        Right.UpdateArmyContainers(battle.Defenders);
+        Center.UpdatePostBattle(battle.CombatantTeams[0].FirstOrDefault(), battle.CombatantTeams[1].FirstOrDefault());
+        Left.UpdateArmyContainers(battle.CombatantTeams[0].ToList());
+        Right.UpdateArmyContainers(battle.CombatantTeams[1].ToList());
     }
 
 }

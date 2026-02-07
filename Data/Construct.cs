@@ -29,5 +29,7 @@ public partial class Construct : Node, IConstruct, IUpkeep
     public int CurrentTime { get ; set ; }
 
     public int Index { get; set; }
+
+    public Node GetAsNode { get {return this;} }
     
 }

@@ -39,7 +39,7 @@ public partial class BattleArmyContainerHandler : VBoxContainer
         }
     }
 
-    public void UpdateArmyContainers(List<IEnterCombat> nodes)
+    public void UpdateArmyContainers(List<IEnterCombatBase> nodes)
     {
         if (nodes.Count > ArmyContainers.Count)
             AddCards(ArmyContainers.Count - nodes.Count);

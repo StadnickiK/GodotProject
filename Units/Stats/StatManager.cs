@@ -42,19 +42,21 @@ public partial class StatManager : Node, IStatChangedNotifier
 
     public void CloneStats(IStatManager statManager)
     {
-        var i = 0;
-        while (Stats.Count < statManager.StatManager.Stats.Count)
+        CloneStats(statManager.StatManager);
+    }
+
+    public void CloneStats(StatManager statManager)
+    {
+        for (int i = Stats.Count; i < statManager.Stats.Count; i++)
         {
             var stat = new BaseStat();
-            stat.CloneStat(statManager.StatManager.Stats.ElementAt(i).Value);
+            stat.CloneStat(statManager.Stats.ElementAt(i).Value);
             AddStat(stat);
-            i++;
         }
-
-        for (i = 0; i < Stats.Count; i++)
-            {
-                Stats.ElementAt(i).Value.CloneStat(statManager.StatManager.Stats.ElementAt(i).Value);
-            }
+        for (var i = 0; i < Stats.Count; i++)
+        {
+            Stats.ElementAt(i).Value.CloneStat(statManager.Stats.ElementAt(i).Value);
+        }
     }
 
     public void AddStatModifier(string statName, StatModifier modifier)
@@ -72,9 +74,14 @@ public partial class StatManager : Node, IStatChangedNotifier
         return Stats[statName];
     }
 
-    public float GetCurrentValue(string statName)
+    public float GetStatCurrentValue(string statName)
     {
         return GetStat(statName).CurrentValue;
+    }
+
+    public bool HasStat(string statName)
+    {
+        return Stats.ContainsKey(statName);
     }
 
     public override void _Ready()

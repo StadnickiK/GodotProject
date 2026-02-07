@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene load_steps=19 format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
 [ext_resource type="PackedScene" uid="uid://davhcatexq1x2" path="res://Units/Base/unit_controller.tscn" id="7_hq6pt"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
+[ext_resource type="Shader" uid="uid://blu3o8i77ks20" path="res://Shaders/SelectionCircleVisualShader.tres" id="11_d2hlb"]
 [ext_resource type="Script" uid="uid://cewkksffwnsls" path="res://Units/Base/RecruitmentComponent.cs" id="11_dgjf5"]
 [ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="12_hq6pt"]
 [ext_resource type="Script" uid="uid://bryw8j4ijbygc" path="res://Units/Base/ControllerComponent.cs" id="13_d2hlb"]
@@ -19,6 +20,16 @@ size = Vector3(3, 3, 3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_dgjf5"]
 size = Vector3(3, 3, 3)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1km8s"]
+render_priority = 0
+shader = ExtResource("11_d2hlb")
+shader_parameter/BaseColor = Color(0, 1, 0, 1)
+shader_parameter/CricleWidth = 0.03
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pmimd"]
+material = SubResource("ShaderMaterial_1km8s")
+size = Vector2(10, 10)
 
 [node name="Ship" type="CharacterBody3D" groups=["EndTurnListener", "Selectable", "Targetable"]]
 collision_mask = 2
@@ -51,7 +62,7 @@ script = ExtResource("11_dgjf5")
 mesh = SubResource("BoxMesh_dgjf5")
 
 [node name="Selection" parent="." instance=ExtResource("12_hq6pt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.41518, 0)
+mesh = SubResource("PlaneMesh_pmimd")
 
 [node name="InputController" type="Node" parent="."]
 script = ExtResource("13_s27ef")

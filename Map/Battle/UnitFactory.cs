@@ -6,9 +6,9 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
     Node3DPool ArmyPool { get; set; }
 
     public WorldCursorControl WorldCursorControl { get; set; }
-
-    public ModelLoader ModelLoader { get; set; }
     public ProjectileFactory ProjectileFactory { get; set; }
+
+    public Data Data { get; set; }
 
     public override void _Ready()
     {
@@ -22,7 +22,7 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
         ConnectSignals(Unit3D);
         Unit3D.LoadUnit(unit);
         Unit3D.ProjectileFactory = ProjectileFactory;
-        Unit3D.UpdateModel(ModelLoader.Models[unit.ModelName]);
+        Unit3D.UpdateModel(unit);
         return Unit3D;
     }
 

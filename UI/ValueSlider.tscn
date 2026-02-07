@@ -30,7 +30,7 @@ rounded = true
 
 [node name="CurrentValue" type="SpinBox" parent="."]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 10
 theme = SubResource("Theme_vlpr1")
 rounded = true
 

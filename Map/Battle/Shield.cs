@@ -20,6 +20,12 @@ public partial class Shield : Area3D, IUpdateStat, IDamagable
 
     public StatManager StatManager { get; set; }
 
+    public Node GetAsNode {get { return this; }}
+
+    public CollisionObject3D GetAsSpecificNode {get { return this; }}
+
+    Node INode.GetAsNode => GetAsNode;
+
 
     public override void _Ready()
     {

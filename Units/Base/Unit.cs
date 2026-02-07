@@ -32,8 +32,15 @@ public partial class Unit : Construct, IStatManager, IDamagable
 
 	public System.Collections.Generic.List<BaseStat> StatsList { get; set; } = new List<BaseStat>();
 
-	// World - initStartFleets, InitResistance
-	public Unit(){  
+	public Turrets Turrets { get; set; }
+
+	public ModelData ModelData { get; set; }
+
+    public CollisionObject3D GetAsSpecificNode => throw new System.NotImplementedException();
+
+    // World - initStartFleets, InitResistance
+
+    public Unit(){  
 	}
 
 	public Unit(string name, Array<BaseStat> stats){
@@ -46,6 +53,7 @@ public partial class Unit : Construct, IStatManager, IDamagable
 	public override void _Ready()
 	{
 		StatManager = GetNode<StatManager>("StatManager");
+		Turrets = GetNodeOrNull<Turrets>("Turrets");
 	}
 
 	/// <summary>

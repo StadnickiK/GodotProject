@@ -15,6 +15,8 @@ public partial class BuildingInterface : Panel
     // [Signal]
     // public delegate void StartConstructionEventHandler(Node building);
 
+    public string TextTooExpensive { get; set; }
+
     void GetNodes(){
         _title = GetNode<Label>("TitleLabel");
         _desc = GetNode<RichTextLabel>("Description");
@@ -22,9 +24,12 @@ public partial class BuildingInterface : Panel
 
     public override void _Ready()
     {
+        TextTooExpensive = "[b][color=" + Negative.ToHtml() + "][font_size=18]Not enough resources[/font_size][/color][/b]\n\n";
         GetNodes();
         if(Position0 != Vector2.Zero)
             Position0 = Position;
+        MouseEntered += Show;
+        MouseExited += Hide;
     }
 
     public void ResetPosition()
@@ -104,6 +109,12 @@ public partial class BuildingInterface : Panel
             
         }
     }
+
+    public void UpdateInterface(string title, string desc)
+    {
+        _title.Text = title;
+        _desc.Text = desc;
+    }
     
     public void UpdateInterface(string UnitName, IStatManager manager){
 
@@ -117,7 +128,7 @@ public partial class BuildingInterface : Panel
 
     public void TooExpensive(bool TooExpensive)
     {
-        if (TooExpensive) _desc.AppendText("[b][color=" + Negative.ToHtml() + "][font_size=18]Not enough resources[/font_size][/color][/b]\n\n");
+        if (TooExpensive) _desc.AppendText(TextTooExpensive);
     }
 
     public void ConstructionTime(int time){
@@ -131,6 +142,19 @@ public partial class BuildingInterface : Panel
             }
     }
 
+	public void _on_ShowUnitInfo(Unit unit, bool tooExpensive){
+		Show();
+        MoveControlToMousePosition();
+		UpdateInterface(unit, tooExpensive);
+	}
+
+    private void MoveControlToMousePosition()
+    {
+        var pos = GetGlobalMousePosition();
+		var x = pos.X-(Size.X/2);
+		var y = pos.Y-Size.Y-20;
+        Position = new Vector2(x, y);
+    }
 
     public void UpdateInterface(){
     }

@@ -25,7 +25,7 @@ script = ExtResource("2_no02p")
 [node name="Controller" type="Label" parent="InfoPanel"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Owned by"
+text = "Owned by: "
 
 [node name="Upkeep" type="Label" parent="InfoPanel"]
 layout_mode = 2

@@ -27,6 +27,8 @@ public class ModelData
 
 public class TurretData
 {
+    public string TurretName { get; set; }
+
     public MeshInstance3D Body { get; set; }
 
     public List<MeshInstance3D> Barrels { get; set; } = new List<MeshInstance3D>();
@@ -60,6 +62,9 @@ public partial class ModelLoader : Node3D
 
     [Export]
     bool Log { get; set; } = false;
+
+    [Export]
+    public char SplitChar { get; set; } = '#';
 
     private static readonly HashSet<string> validExtensions = new HashSet<string>()
     {
@@ -218,6 +223,8 @@ public partial class ModelLoader : Node3D
             if (item.Name.ToString().Contains(TurretName))
             {
                 var turretData = new TurretData();
+                var name = item.Name.ToString();
+                turretData.TurretName = name.Split(SplitChar)[1];
                 turretData.Body = (MeshInstance3D)item;
                 var itemChildren = item.GetChildren();
                 foreach (var child in itemChildren)

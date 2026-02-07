@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://3dfxw58lppwb"]
+[gd_scene load_steps=6 format=3 uid="uid://3dfxw58lppwb"]
 
 [ext_resource type="Script" uid="uid://bsrhsarq63iqu" path="res://Units/Base/Unit.cs" id="1"]
 [ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="2"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_w0h5o"]
+[ext_resource type="Script" uid="uid://cscnmrf6rhai1" path="res://Data/Turrets.cs" id="4_asoch"]
+[ext_resource type="PackedScene" uid="uid://d17udve00muyr" path="res://Data/Turrets/Turret 1.tscn" id="4_eldsa"]
 
 [node name="Unit 1" type="Node"]
 script = ExtResource("1")
@@ -29,14 +31,14 @@ _baseValue = 5.0
 
 [node name="Health" type="Node" parent="StatManager"]
 script = ExtResource("2")
-_baseValue = 50.0
+_baseValue = 1000.0
 
 [node name="Shield" type="Node" parent="StatManager"]
 script = ExtResource("2")
 
 [node name="Speed" type="Node" parent="StatManager"]
 script = ExtResource("2")
-_baseValue = 10.0
+_baseValue = 30.0
 
 [node name="Range" type="Node" parent="StatManager"]
 script = ExtResource("2")
@@ -45,3 +47,24 @@ _baseValue = 50.0
 [node name="Vision Range" type="Node" parent="StatManager"]
 script = ExtResource("2")
 _baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 3.0
+
+[node name="Tolerance" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Rotation Tolerance" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 0.01
+
+[node name="FireLifetime" type="Node" parent="StatManager"]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Turrets" type="Node" parent="."]
+script = ExtResource("4_asoch")
+
+[node name="Turret 1" parent="Turrets" instance=ExtResource("4_eldsa")]

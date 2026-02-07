@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmivjx7bt1qd4"]
+
+[ext_resource type="Script" uid="uid://crytjcpqksl87" path="res://UI/Battle/CustomBattlePlayerContainer.cs" id="1_f65ji"]
+[ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="2_aifib"]
+[ext_resource type="Script" uid="uid://d3jdchsx4cixu" path="res://UI/Battle/CustomBattlePlayerInfoContainer.cs" id="2_da32w"]
+[ext_resource type="PackedScene" uid="uid://ng20bm5m0wo" path="res://UI/army_view.tscn" id="4_imxke"]
+[ext_resource type="PackedScene" uid="uid://ccol7l0bxjjfc" path="res://Map/Battle/Combatant.tscn" id="5_aifib"]
+
+[node name="CustomBattlePlayerContainer" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.19609375
+anchor_bottom = 0.09398148
+script = ExtResource("1_f65ji")
+metadata/_edit_use_anchors_ = true
+
+[node name="Header" parent="." instance=ExtResource("2_aifib")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CustomBattlePlayerInfoContainer" type="GridContainer" parent="HBoxContainer"]
+layout_mode = 2
+columns = 2
+script = ExtResource("2_da32w")
+
+[node name="TeamLabel" type="Label" parent="HBoxContainer/CustomBattlePlayerInfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Team:      "
+
+[node name="Team" type="OptionButton" parent="HBoxContainer/CustomBattlePlayerInfoContainer"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Team 1"
+popup/item_0/id = 0
+popup/item_1/text = "Team 2"
+popup/item_1/id = 1
+
+[node name="PositinLabel" type="Label" parent="HBoxContainer/CustomBattlePlayerInfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Position: "
+
+[node name="Position" type="OptionButton" parent="HBoxContainer/CustomBattlePlayerInfoContainer"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Position 1"
+popup/item_0/id = 0
+popup/item_1/text = "Position 2"
+popup/item_1/id = 1
+
+[node name="ArmyView" parent="HBoxContainer" instance=ExtResource("4_imxke")]
+layout_mode = 2
+
+[node name="Combatant" parent="." instance=ExtResource("5_aifib")]
+visible = false

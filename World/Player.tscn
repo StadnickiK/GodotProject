@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://db8xtixbo53uo"]
+[gd_scene load_steps=6 format=3 uid="uid://db8xtixbo53uo"]
 
 [ext_resource type="Script" uid="uid://blsbbux1j1q8p" path="res://World/Player.cs" id="1"]
 [ext_resource type="PackedScene" uid="uid://cy4um4b67wiwl" path="res://Map/resource_manager.tscn" id="2_7rmrn"]
 [ext_resource type="Script" uid="uid://b0q0d1cts1tdt" path="res://Map/ConstructionManager.cs" id="3_ixvud"]
 [ext_resource type="Script" uid="uid://b3f7bhnbix8se" path="res://Map/Planet/UpkeepComponent.cs" id="4_m5k62"]
+[ext_resource type="Script" uid="uid://b5qftydbo5bik" path="res://World/Diplomacy/DiplomacyHandler.cs" id="5_uxv41"]
 
 [node name="Player" type="Node"]
 script = ExtResource("1")
@@ -16,3 +17,6 @@ CanGoNegative = true
 
 [node name="TechManager" type="Node" parent="."]
 script = ExtResource("3_ixvud")
+
+[node name="DiplomacyHandler" type="Node" parent="."]
+script = ExtResource("5_uxv41")

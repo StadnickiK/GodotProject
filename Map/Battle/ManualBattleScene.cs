@@ -10,16 +10,16 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     public float FormationSpacing { get; set; } = 5;
 
     [Export]
-    public float VisionRangeBattlefieldSizeMultiplier { get; set; } = 4;
+    public float VisionRangeBattlefieldSizeMultiplier { get; set; } = 8;
 
     [Export]
     public float DeploymentZoneWidhtMultiplier { get; set; } = 0.9f;
 
     [Export]
-    public float DeploymentZoneBaseHeightMultiplier { get; set; } = 0.1f;
+    public float DeploymentZoneHeightMultiplier { get; set; } = 0.2f;
 
     [Export]
-    public float DeploymentZoneHeightMultiplier { get; set; } = 3f;
+    public float UnitHeightMultiplier { get; set; } = 3f;
 
     public Node GetAsNode { get { return this; } }
 
@@ -36,8 +36,6 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     List<Action> SelectUnitActions = new List<Action>();
 
     public SpaceBattle SpaceBattle { get; set; }
-
-    public HashSet<Ship> Combatants { get; set; } = new HashSet<Ship>();
 
     public delegate void OpenBattlePanelEventHandler(SpaceBattle battle);
 
@@ -63,9 +61,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     HashSet<Unit3D> Unit3DModels = new HashSet<Unit3D>();
 
-    List<Unit3D> AttackerModels = new List<Unit3D>();
-
-    List<Unit3D> DefenderModels = new List<Unit3D>();
+    Dictionary<int, Unit3D> Models = new Dictionary<int, Unit3D>();
 
     Vector3 MaxUnitSize = Vector3.Zero;
 
@@ -85,9 +81,9 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     public void ClearCombat()
     {
         BoxSelectController?.SetProcessInput(false);
-        Combatants.Clear();
-        SpaceBattle.Attackers.Clear();
-        SpaceBattle.Defenders.Clear();
+        SpaceBattle.Combatants.Clear();
+        // SpaceBattle.Attackers.Clear();
+        // SpaceBattle.Defenders.Clear();
         LocalUnitModels.Clear();
         LocalUnits.Clear();
         FreeModels();
@@ -104,8 +100,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         }
         MaxUnitSize = Vector3.Zero;
         MaxVisionRange = 0;
-        AttackerModels.Clear();
-        DefenderModels.Clear();
+        Models.Clear();
         Unit3DModels.Clear();
     }
 
@@ -114,8 +109,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         DisconnectInputEvent(BattleZone);
         if (LocalUnitModels.Count > 0)
         {
-            SpaceBattle.UpdateStats(AttackerModels, SpaceBattle.GetAttackerUnits());
-            SpaceBattle.UpdateStats(DefenderModels, SpaceBattle.GetDefenderUnits());
+            // SpaceBattle.UpdateStats(AttackerModels, SpaceBattle.GetAttackerUnits());
+            SpaceBattle.UpdateStats(Models.Values.ToList(), SpaceBattle.GetUnitsList());
         } 
         SpaceBattle.AcceptResult();
         ClearCombat();
@@ -128,11 +123,11 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         UpdateBattle();
     }
 
-    void InitializeBattle(Random random, ModelLoader modelLoader)
+    public void InitializeBattle(IWorld world)
     {
-        SpaceBattle.Rand = random;
-        UnitFactory.ModelLoader = modelLoader;
-        UnitFactory.WorldCursorControl = WCC;
+        SpaceBattle.Rand = world.Rand;
+        UnitFactory.Data = world.Data;
+        UnitFactory.WorldCursorControl = WCC =  world.WCC;
     }
 
     void ConnectInputEvent(Node node)
@@ -147,28 +142,46 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
             node.Disconnect(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable);
     }
 
-    public void UpdateBattle()
+    public void UpdateBattle(BattlefieldSettings settings = null)
     {
-
         Show();
-        CameraLookAt?.Invoke(AttackZone.GlobalPosition);
         BoxSelectController?.SetProcessInput(true);
         AttackZone.Show();
         DefendZone.Show();
-        LoadUnits();
+        LoadUnits(settings);
         ConnectDeployZone();
         battleUi.Show();
         battleUi.UpdateBattleUI(LocalUnits);
         ConnectUnitCardsToSelect();
     }
 
-    void UpdateBattlefieldSize()
+    float GetMaxAxis(Vector3 vector3)
     {
-        var max = Mathf.Max(BattleZone.Size.X, BattleZone.Size.Y);
-        max = Mathf.Max(max, BattleZone.Size.Z);
-        if (max > VisionRangeBattlefieldSizeMultiplier * MaxVisionRange)
-            max = VisionRangeBattlefieldSizeMultiplier * MaxVisionRange;
-        BattleZone.UpdateSize(new Vector3(max, max, max));
+        var max = Mathf.Max(vector3.X, vector3.Y);
+        return Mathf.Max(max, vector3.Z);
+    }
+
+    void CalculateBattlefieldSize()
+    {
+        var max = GetMaxAxis(BattleZone.Size);
+        max = Mathf.Max(max, VisionRangeBattlefieldSizeMultiplier * MaxVisionRange);  
+        
+        if(MaxUnitSize.Z * UnitHeightMultiplier > DeploymentZoneHeightMultiplier * max) // check if unit higher than deployment zone height
+        {
+            max = MaxUnitSize.Z * UnitHeightMultiplier * (1f/DeploymentZoneHeightMultiplier);
+        }
+        UpdateBattlefieldSize(new Vector3(max, 1, max));
+    }
+
+    void UpdateBattlefieldSize(Vector3 size)
+    {
+        AttackZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, 1, DeploymentZoneHeightMultiplier*size.Z));
+        DefendZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, 1, DeploymentZoneHeightMultiplier*size.Z));
+        var half = size.Z/2;
+        BattleZone.UpdateSize(size);
+        var z = (0.9f-DeploymentZoneHeightMultiplier) * half;
+        AttackZone.UpdatePosition(new Vector3(0, 1, z));
+        DefendZone.UpdatePosition(new Vector3(0, 1, -z));
     }
 
     private void ConnectUnitCardsToSelect()
@@ -213,28 +226,37 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         }
     }
 
-    void LoadUnits()
+    void LoadUnits(BattlefieldSettings settings)
     {
-        AttackerModels = LoadUnits(SpaceBattle.Attackers, SpaceBattle.Attackers[0].Controller);
-        DefenderModels = LoadUnits(SpaceBattle.Defenders, SpaceBattle.Defenders[0].Controller);
+        //var units = LoadUnits(SpaceBattle.Combatants);
+        
+        var AttackerModels = LoadUnits(SpaceBattle.CombatantTeams[0]);
+        var DefenderModels = LoadUnits(SpaceBattle.CombatantTeams[1]);
+        
         Unit3DModels.UnionWith(AttackerModels);
         Unit3DModels.UnionWith(DefenderModels);
-        UpdateBattlefieldSize();
-        PlaceUnits(AttackerModels, AttackZone.Position);
-        PlaceUnits(DefenderModels, DefendZone.Position, MathF.PI);
+        
+        if(settings == null)
+            CalculateBattlefieldSize();
+        else
+            UpdateBattlefieldSize(settings.BattleZone);
+        CameraLookAt?.Invoke(AttackZone.GlobalPosition);
+        AttackZone.PlaceUnits(AttackerModels, AttackZone.Position);
+        DefendZone.PlaceUnits(DefenderModels, DefendZone.Position, MathF.PI);
     }
 
-    private List<Unit3D> LoadUnits(List<IEnterCombat> armies, Player controller)
+    private List<Unit3D> LoadUnits(HashSet<IEnterCombatBase> armies)
     {
         var units = new List<Unit3D>();
         foreach (var army in armies)
         {
             foreach (var unit in army.UnitController.UnitsList)
             {
-                var unit3D = UnitFactory.CreateUnit(this, Vector3.Zero, controller, unit);
+                var unit3D = UnitFactory.CreateUnit(this, Vector3.Zero, army.Controller, unit);
+                unit3D.Name = unit.UnitName + " " + units.Count;
                 CheckUnitSize(unit3D.GetUnitSize());
                 CheckVisionRange(unit3D.StatManager.GetStat("Vision Range").CurrentValue);
-                if (controller.IsLocal)
+                if (army.Controller.IsLocal)
                 {
                     LocalUnits.Add(unit);
                     unit3D.MovableState = IMovableState.Placement;
@@ -271,33 +293,6 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
             MaxVisionRange = Mathf.CeilToInt(range);
     }
 
-
-    void PlaceUnits(List<Unit3D> units, Vector3 center, float yRotation = 0)
-    {
-        int rows = (int)Mathf.Ceil(Mathf.Sqrt(units.Count));
-        int cols = rows;
-        int unitIndex = 0;
-
-        for (int x = 0; x < cols; x++)
-        {
-            for (int z = 0; z < rows; z++)
-            {
-                if (unitIndex >= units.Count)
-                    return;
-
-                var unit = units[unitIndex];
-                var size = unit.GetUnitSize();
-                Vector3 offset = new Vector3(x * (FormationSpacing + size.X + (size.Z/2)), center.Y, z * (FormationSpacing + size.Z + size.X));
-                Vector3 position = center + offset + (GlobalPosition * Vector3.Up);
-
-                unit.GlobalTransform = new Transform3D(GlobalBasis, position);
-                unit.GlobalRotation = new Vector3(0, yRotation, 0);
-
-                unitIndex++;
-            }
-        }
-    }
-
     public override void _Ready()
     {
         GetNodes();
@@ -312,8 +307,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     private void GetNodes()
     {
-        AttackZone = GetNode<DeployZone>("LeftDeployZone");
-        DefendZone = GetNode<DeployZone>("RightDeployZone");
+        AttackZone = GetNode<DeployZone>("AttackZone");
+        DefendZone = GetNode<DeployZone>("DefendZone");
         BattleZone = GetNode<DeployZone>("BattleZone");
         UnitFactory = GetNode<UnitFactory>("UnitFactory");
         SpaceBattle = GetNode<SpaceBattle>("SpaceBattle");
@@ -330,11 +325,13 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         battleUi.ArmyView.ArmyInterfaceContainer.ArmyPanel.UI = uI;
     }
 
-    public Ship GetLocalAttakcerOrNull(int index = 0)
+    public Ship GetLocalOrNull()
     {
-        var s = SpaceBattle.Attackers[index];
-        if (s.Controller.IsLocal && s is Ship ship)
-            return ship;
+        foreach (var s in SpaceBattle.Combatants)
+        {
+            if (s.Controller.IsLocal && s is Ship ship)
+                return ship;
+        }      
         return null;
     }
 
@@ -350,30 +347,64 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         node.EnterCombat += _on_EnterCombat;
     }
 
-    public void CreateBattle(List<IEnterCombat> attackers, List<IEnterCombat> defenders, Node parent)
+    // public void CreateBattle(List<IEnterCombatBase> attackers, List<IEnterCombatBase> defenders, Node parent)
+    // {
+
+    //     Combatants.Union(attackers);
+    //     Combatants.Union(defenders);
+
+    //     SpaceBattle.AddAttackers(attackers);
+    //     SpaceBattle.AddDefenders(defenders);
+    // }
+
+    public void CreateBattle(HashSet<Combatant> combatants, Node parent)
     {
-
-        Combatants.Union(attackers);
-        Combatants.Union(defenders);
-
-        SpaceBattle.AddAttackers(attackers);
-        SpaceBattle.AddDefenders(defenders);
+        SpaceBattle.Combatants.Union(combatants);
+        foreach (var item in combatants)
+        {
+            if (SpaceBattle.CombatantTeams.ContainsKey(item.Team))
+            {
+                SpaceBattle.CombatantTeams[item.Team].Add(item);
+            }else
+            {
+                SpaceBattle.CombatantTeams.Add(item.Team, new HashSet<IEnterCombatBase>(){ item });
+            }
+        }
     }
 
-    void _on_EnterCombat(IEnterCombat ship, IEnterCombat enemy, Node parent)
+    void _on_EnterCombat(IEnterCombatBase ship, IEnterCombatBase enemy, Node parent)
     {
         if (ship != null && enemy != null)
         {
             if (ship != enemy)
             {
-                if (!Combatants.Contains(ship) && !Combatants.Contains(enemy))
+                if (!SpaceBattle.Combatants.Contains(ship) && !SpaceBattle.Combatants.Contains(enemy))
                 {
-                    CreateBattle(new System.Collections.Generic.List<IEnterCombat>() { ship }, new System.Collections.Generic.List<IEnterCombat>() { enemy }, parent);
+                    CreateBattle(OrganizeCombatants(new HashSet<IEnterCombatBase>(){ship, enemy}), parent);
+                    //CreateBattle(new System.Collections.Generic.List<IEnterCombatBase>() { ship }, new System.Collections.Generic.List<IEnterCombatBase>() { enemy }, parent);
                     OpenBattlePanel?.Invoke(SpaceBattle);
                     //battle.ConnectToOpenBattlePanel(this, nameof(_on_OpenBattlePanel));
                 }
             }
         }
+    }
+
+
+    private HashSet<Combatant> OrganizeCombatants(HashSet<IEnterCombatBase> enterCombatBases)
+    {
+        var scene = ResourceLoader.Load<PackedScene>(ScenePaths.Instance.CombatantScene);
+        var set = new HashSet<Combatant>();
+        int team = 0;
+        foreach (var combatBase in enterCombatBases)
+        {
+            var c = scene.Instantiate<Combatant>();
+            c.Controller = combatBase.Controller;
+            c.UnitController = combatBase.UnitController;
+            c.Team = team;
+            set.Add(c);
+            team++;
+        }
+        return set;
     }
 
     public void _on_Fight()
@@ -391,7 +422,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         OpenBattlePanel?.Invoke(SpaceBattle);
         SpaceBattle.InvokeBattleFinished();
         battleUi.Hide();
-        CameraLookAt?.Invoke(SpaceBattle.Attackers[0].GlobalPosition);
+        var local = GetLocalOrNull();
+        if(local != null) CameraLookAt?.Invoke(local.GlobalPosition);
         EndBattle?.Invoke();
     }
 
@@ -412,11 +444,6 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         }
     }
 
-    public void InitializeScene(World world)
-    {
-        throw new NotImplementedException();
-    }
-
     public void _on_Deselect()
 	{
 		WCC.ClearSelection();
@@ -435,6 +462,21 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     public void InitializeScene(IWorld world)
     {
-        InitializeBattle(world.Rand, world.Data.ModelLoader);
+        CameraLookAt += world.Camera3D.LookAt;
+        InitializeBattle(world);
+        LoadPlayers(world.WorldGenParameters.Combatants, world);
+        world.Host = world.WorldGenParameters.Combatants.FirstOrDefault().Controller;
+        // CreateBattle(world.WorldGenParameters.Attackers, world.WorldGenParameters.Defenders, world.GetAsNode);
+        CreateBattle(world.WorldGenParameters.Combatants, world.GetAsNode);
+        UpdateBattle(world.WorldGenParameters.BattlefieldSettings);
+    }
+
+    void LoadPlayers(HashSet<Combatant> bases, IWorld world)
+    {
+        foreach (var item in bases)
+        {
+            world.AddPlayer(item.Controller);
+            if(item.GetAsNode.GetParent() == null) world.GetAsNode.AddChild(item.GetAsNode);
+        }
     }
 }

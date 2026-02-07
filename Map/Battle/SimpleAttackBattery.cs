@@ -27,13 +27,17 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
 
     [Export]
     double shotDelay = 0.1;
+    [Export]
+    double shotDelayMinRandom = -0.1;
+
+    [Export]
+    double shotDelayMaxRandom = 0.1;
 
     double currentTime = 0;
 
     double batteryTimer = 0;
 
-    [Export]
-    public Godot.Collections.Array<Vector3> Batteries { get; set; } = [new Vector3(0,0,0) ];
+    public List<Node3D> Batteries { get; set; } = new List<Node3D>();
 
     int currentBattery = 0;
 
@@ -44,8 +48,9 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
     {
         // OrderQueue = GetNode<OrderQueue>("OrderQueue");
         ProcessMode = ProcessModeEnum.Disabled;
+        shotDelay += new Random().NextDouble() * (shotDelayMaxRandom - shotDelayMinRandom) + shotDelayMinRandom;
     }
-    public void OnTargetLost(ITargetable targetable)
+    public virtual void OnTargetLost(ITargetable targetable)
     {
         if (targetable.Controller.PlayerID != Controller.PlayerID)
         {
@@ -54,7 +59,7 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
         }
     }
 
-    public void OnTargetSpotted(ITargetable targetable)
+    public virtual void OnTargetSpotted(ITargetable targetable)
     {
         if (CurrentTarget == null && !targetable.Controller.Equals(Controller))
         {
@@ -63,33 +68,28 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
         }
     }
 
-    void Shoot()
+    public virtual void Shoot(int batteryId)
     {
-        var projectile = ProjectileFactory.CreateLaser(GlobalPosition + Batteries[currentBattery], CurrentTarget.GlobalTransform.Origin);
+        var projectile = ProjectileFactory.CreateLaser(Batteries[batteryId].GlobalPosition, CurrentTarget);
         projectile.Source = Source;
+        //Batteries[currentBattery].AddChild(projectile.GetAsNode);
     }
 
-    void Shoot(ITargetable target)
-    {
-        CurrentTarget = target;
-        Shoot();
-    }
-
-    public override void _Process(double delta)
+    public virtual void BatteryFire(double delta)
     {
         if (currentTime >= Reload && CurrentTarget != null)
         {
             if (batteryTimer >= shotDelay * currentBattery) {
                 if (currentBattery == Batteries.Count-1)
                 {
-                    Shoot();
+                    Shoot(currentBattery);
                     currentBattery = 0;
                     currentTime = batteryTimer;
                     batteryTimer = 0;
                 }
                 else
                 {
-                    Shoot();
+                    Shoot(currentBattery);
                     currentBattery++;
                 }
             } else {
@@ -100,5 +100,10 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
         {
             currentTime += delta;
         }
+    }
+
+    public override void _Process(double delta)
+    {
+        BatteryFire(delta);
     }
 }

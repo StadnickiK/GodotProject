@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bmj0ix77scicd"]
+[gd_scene load_steps=5 format=3 uid="uid://bmj0ix77scicd"]
 
 [ext_resource type="Script" uid="uid://36kfevpfv203" path="res://Units/Base/Turret.cs" id="1_2v12x"]
+[ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="2_olind"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="3_g27op"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tgdtv"]
 
@@ -13,3 +15,9 @@ script = ExtResource("1_2v12x")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_tgdtv")
+
+[node name="VelocityController" type="Node" parent="."]
+script = ExtResource("2_olind")
+
+[node name="StatManager" type="Node" parent="."]
+script = ExtResource("3_g27op")

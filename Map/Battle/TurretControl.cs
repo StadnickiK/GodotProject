@@ -1,34 +1,44 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class TurretControl : SimpleAttackBattery
 {
     [Export]
-    public string TurretPath { get; set; } = "res://Units/Base/turret.tscn";
+    public string TurretPath { get; set; } = ScenePaths.Instance.TurretPath;
 
     // public string TurretPath { get; set; } = "res://Units/Base/turretjoint.tscn";
 
     PackedScene packedScene;
 
+    public Node3D TransformParent { get; set; }
+
     public List<Turret> Turrets { get; set; } = new List<Turret>();
+
+    int[] TurretIDsRange = {0, 1};
 
     // public List<Turretjoint> Turrets { get; set; } = new List<Turretjoint>();
 
     public override void _Ready()
     {
         packedScene = ResourceLoader.Load<PackedScene>(TurretPath);
+        if(GetParent() is Node3D node) TransformParent = node;
     }
 
-
-    public void InitTurrets(RigidBody3D parent, List<TurretData> TurretsData)
+    public void InitTurrets(Unit unit)
     {
-        foreach (var t in TurretsData)
+        TurretIDsRange[0] = Batteries.Count;
+        foreach (var t in unit.ModelData.Turrets)
         {
             var turret = packedScene.Instantiate<Turret>();
             AddChild(turret);
+            turret.Name = "Turret "+ Turrets.Count;
             turret.TurretMesh.Mesh = t.Body.Mesh;
             turret.Transform = t.Body.Transform;
+            var model = unit.Turrets.TurretModels[t.TurretName];
+            turret.StatManager.CloneStats(model);
+            turret.Projectiles = model.Projectiles;
             foreach (var Barrel in t.Barrels)
             {
                 var meshInstance = new MeshInstance3D();
@@ -36,12 +46,58 @@ public partial class TurretControl : SimpleAttackBattery
                 meshInstance.Transform = Barrel.Transform;
                 turret.AddChild(meshInstance);
                 turret.Barrels.Add(meshInstance);
+                // Batteries.Add(meshInstance);
             }
-
+            turret.TransformParent = TransformParent;
             turret.ProjectileFactory = ProjectileFactory;
             Turrets.Add(turret);
+            Batteries.Add(turret);
         }
+        TurretIDsRange[1] = Batteries.Count;
     }
+
+    public override void OnTargetLost(ITargetable targetable)
+    {
+        base.OnTargetLost(targetable);
+        ResetTurretTarget();
+    }
+
+    public override void OnTargetSpotted(ITargetable targetable)
+    {
+        if (targetable.Controller != Controller)
+        {
+            base.OnTargetSpotted(targetable);
+            UpdateTurretTarget(targetable);
+        } 
+    }
+    void UpdateTurretTarget(ITargetable targetable)
+    {
+        foreach (var t in Turrets)
+            t.UpdateTarget(targetable);
+        
+    }
+
+    void ResetTurretTarget()
+    {
+        foreach (var t in Turrets)
+            t.ResetTarget();
+        
+    }
+
+    public override void BatteryFire(double delta)
+    {
+        base.BatteryFire(delta);   
+    }
+
+    public override void Shoot(int batteryId)
+    {
+        if(batteryId < TurretIDsRange[0] && batteryId >= TurretIDsRange[1])
+            base.Shoot(batteryId);
+        else
+            Turrets[batteryId].Shoot(CurrentTarget, Source);
+    }
+
+
 
     // public void InitTurrets(RigidBody3D parent, List<TurretData> TurretsData)
     // {

@@ -20,6 +20,7 @@ public partial class IdleState : State<IMovable>
     {
         // Stop horizontal movement (preserving the Y velocity).
         Body.Velocity = new Vector3(0, 0, 0);
+        Body.AngularVelocity = new Vector3(0, 0, 0);
         return this;
     }
 }

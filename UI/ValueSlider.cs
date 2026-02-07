@@ -27,8 +27,18 @@ public partial class ValueSlider : HBoxContainer
     int _maxValue = 100;
 
     [Export]
+    public bool AllowGreater = false;
+
+    [Export]
+    public bool AllowLesser = false;
+
+    [Export]
+    public bool ShowSlider = true;
+
+    [Export]
     string _hint = "";
 
+    [Export]
     public int CurrentValue { get; set; }
     public Label NameLabel { get => _nameLabel; private set => _nameLabel = value; }
 
@@ -37,7 +47,6 @@ public partial class ValueSlider : HBoxContainer
         NameLabel = GetNode<Label>("ValueName");
         _SpinBox = GetNode<SpinBox>("CurrentValue");
         _slider = GetNode<Slider>("Value");
-
     }
 
     void _on_Value_changed(float Value)
@@ -71,6 +80,9 @@ public partial class ValueSlider : HBoxContainer
         GetNodes();
         CurrentValue = (int)_slider.Value;
         _SpinBox.Value = CurrentValue;
+        _SpinBox.AllowGreater = AllowGreater;
+        _SpinBox.AllowLesser = AllowLesser;
+        _slider.Visible = ShowSlider;
         NameLabel.Text = Text;
         TooltipText = _hint;
         UpdateSlider();
@@ -86,6 +98,12 @@ public partial class ValueSlider : HBoxContainer
     {
         _slider.MaxValue = value;
         _SpinBox.MaxValue = value;
+    }
+
+    public void SetValue(double value)
+    {
+        _slider.Value = value;
+        _SpinBox.Value = value;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

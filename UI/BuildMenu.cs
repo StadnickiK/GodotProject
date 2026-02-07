@@ -102,6 +102,25 @@ public partial class BuildMenu : ScrollContainer
 		}
 	}
 
+	public void InitAllUnits(List<Unit> nodes){ // todo: Separate construction and building list into separate nodes for better organization
+		var ItemScene = (PackedScene)ResourceLoader.Load(ItemScenePath);
+		foreach(var unit in nodes){
+			var label = (BuildingLabel)ItemScene.Instantiate();
+			label.RefUnit = unit;
+			label.Size = new Vector2(100, 100);
+			label.Name = unit.Name;
+			if(label.BButton != null){
+				label.BButton.Text = unit.Name;
+			}else{
+				label.BButton = label.GetNode<Button>("Button");
+				label.BButton.Text = unit.Name;
+			}
+			label.MouseExited += _on_mouse_exited;
+			container.AddChild(label);
+			buildingLabels.Add(label);
+		}
+	}
+
 	public void UpdateBuildMenu(BuildingManager buildingManager){
 
 		var newOrder = new List<int>();
