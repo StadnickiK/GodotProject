@@ -27,7 +27,7 @@ public class ModelData
 
 public class TurretData
 {
-    public string TurretName { get; set; }
+    public int TurretIndex { get; set; }
 
     public MeshInstance3D Body { get; set; }
 
@@ -173,7 +173,9 @@ public partial class ModelLoader : Node3D
         // var coll = Models[name].GetNodeOrNull(ColliderName);
         // GD.Print("Colltype " + coll.GetType());
         // var collType = coll.GetType();
-        return node.GetNodeOrNull(ColliderName)?.GetChildren()[0].GetNode<CollisionShape3D>("CollisionShape3D");
+        var collisionShape3D = node.GetNodeOrNull(ColliderName)?.GetChildren()[0].GetNode<CollisionShape3D>("CollisionShape3D");
+        if(collisionShape3D != null) collisionShape3D.Disabled = true;
+        return collisionShape3D;
     }
 
     public CollisionShape3D GetCollisionShape3D(string name)
@@ -224,7 +226,7 @@ public partial class ModelLoader : Node3D
             {
                 var turretData = new TurretData();
                 var name = item.Name.ToString();
-                turretData.TurretName = name.Split(SplitChar)[1];
+                turretData.TurretIndex = Int32.Parse(name.Split(SplitChar)[1]);
                 turretData.Body = (MeshInstance3D)item;
                 var itemChildren = item.GetChildren();
                 foreach (var child in itemChildren)

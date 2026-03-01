@@ -142,6 +142,20 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
             node.Disconnect(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable);
     }
 
+    void ConnectDeployZone()
+    {
+        DisconnectInputEvent(BattleZone);
+        switch (SpaceBattle.Local)
+        {
+            case SpaceBattle.HasLocal.Attacker:
+                ConnectInputEvent(AttackZone);
+                break;
+            default:
+                ConnectInputEvent(DefendZone);
+                break;
+        }
+    }
+
     public void UpdateBattle(BattlefieldSettings settings = null)
     {
         Show();
@@ -212,20 +226,6 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         SelectUnitActions.Clear();
     }
 
-    void ConnectDeployZone()
-    {
-        DisconnectInputEvent(BattleZone);
-        switch (SpaceBattle.Local)
-        {
-            case SpaceBattle.HasLocal.Attacker:
-                ConnectInputEvent(AttackZone);
-                break;
-            default:
-                ConnectInputEvent(DefendZone);
-                break;
-        }
-    }
-
     void LoadUnits(BattlefieldSettings settings)
     {
         //var units = LoadUnits(SpaceBattle.Combatants);
@@ -235,7 +235,10 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         
         Unit3DModels.UnionWith(AttackerModels);
         Unit3DModels.UnionWith(DefenderModels);
-        
+        if(AttackerModels[0].Controller.IsLocal)
+            SpaceBattle.Local = SpaceBattle.HasLocal.Attacker;
+            else
+            SpaceBattle.Local = SpaceBattle.HasLocal.Defender;
         if(settings == null)
             CalculateBattlefieldSize();
         else

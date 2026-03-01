@@ -17,7 +17,7 @@ public partial class DeathController : Node3D, IUpdateStat
         switch (stat.Name)
         {
 
-            case "Health":
+            case GlobalStatNames.Health:
                 if (stat.CurrentValue <= 0)
                     savingNode.InvokeSaveNode();
                 break;

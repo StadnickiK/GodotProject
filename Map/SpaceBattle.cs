@@ -57,7 +57,7 @@ public partial class SpaceBattle : Node
 		Attacker,
 		Defender
 	}
-	public HasLocal Local { get; private set; } = SpaceBattle.HasLocal.None;
+	public HasLocal Local { get; set; } = SpaceBattle.HasLocal.None;
 
 	MeshInstance3D _placeholder = null;
 

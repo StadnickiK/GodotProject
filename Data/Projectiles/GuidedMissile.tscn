@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://chc7lbd6yd8gl"]
+[gd_scene format=3 uid="uid://chc7lbd6yd8gl"]
 
 [ext_resource type="Script" uid="uid://jyg8mauis356" path="res://Data/GuidedMissile.cs" id="1_buyd8"]
 [ext_resource type="PackedScene" uid="uid://ets0luse0ggc" path="res://Effects/FireEmitter.tscn" id="2_a0hvb"]
@@ -20,24 +20,31 @@ material = SubResource("StandardMaterial3D_po6ld")
 flip_faces = true
 bottom_radius = 1.0
 
-[node name="GuidedMissile" type="RayCast3D"]
-target_position = Vector3(0, 0, 20)
-collide_with_areas = true
+[sub_resource type="BoxShape3D" id="BoxShape3D_buyd8"]
+size = Vector3(1, 1, 8)
+
+[node name="GuidedMissile" type="Area3D" unique_id=1581134543]
 script = ExtResource("1_buyd8")
 
-[node name="FireEmitter" parent="." instance=ExtResource("2_a0hvb")]
+[node name="FireEmitter" parent="." unique_id=1208242452 instance=ExtResource("2_a0hvb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.017502)
 emitting = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=516021297]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 4.3831234)
 mesh = SubResource("CylinderMesh_8jnbx")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1352134520]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0.8831234)
 mesh = SubResource("CylinderMesh_3ddrl")
 skeleton = NodePath("../MeshInstance3D")
 
-[node name="EndLaserParticles" parent="." instance=ExtResource("3_a0hvb")]
+[node name="EndLaserParticles" parent="." unique_id=1539123993 instance=ExtResource("3_a0hvb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1168766)
 visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=316724481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.4598389)
+shape = SubResource("BoxShape3D_buyd8")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

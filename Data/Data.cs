@@ -104,11 +104,11 @@ public partial class Data : Node
 
     public Unit GetUnit(int id){
         var unit = (Unit)Units[id].Duplicate();
-        unit.UnitName = Units[id].UnitName;
-        unit.BuildCost = Units[id].BuildCost;
-        unit.Upkeep = Units[id].Upkeep;
-        unit.ModelVolume = Units[id].ModelVolume;
-        unit.ModelData = Units[id].ModelData;
+        // unit.UnitName = Units[id].UnitName;
+        // unit.BuildCost = Units[id].BuildCost;
+        // unit.Upkeep = Units[id].Upkeep;
+        // unit.ModelVolume = Units[id].ModelVolume;
+        // unit.ModelData = Units[id].ModelData;
         return unit;
     }
 

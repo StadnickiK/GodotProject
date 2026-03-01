@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class GuidedMissile : RayCast3D, IProjectile
+public partial class GuidedMissile : Area3D, IProjectile
 {
 
     [Export]
@@ -11,7 +11,9 @@ public partial class GuidedMissile : RayCast3D, IProjectile
     public double RotationSpeed { get; set; } = 1.1;
 
     [Export]
-    public double Duration { get; set; } = 30;
+    public double Lifetime { get; set; } = 30;
+
+    public string ExplosionPath { get; set; } = ScenePaths.Instance.ExplosionPath;
 
     public IDamagable Source { get; set; }
 
@@ -30,6 +32,14 @@ public partial class GuidedMissile : RayCast3D, IProjectile
     double time = 0;
 
     public event Node3DPool.SaveNodeEventHandler SaveNode;
+
+    PackedScene packedScene;
+
+    public override void _Ready()
+    {
+        packedScene = ResourceLoader.Load<PackedScene>(ExplosionPath);
+    }
+
 
     public void Shoot(Vector3 from, ITargetable to, Vector3 direction)
     {
@@ -54,15 +64,38 @@ public partial class GuidedMissile : RayCast3D, IProjectile
 
         GlobalPosition += Velocity;
         LookAt(GlobalPosition + Velocity);
+        if(time >= Lifetime)
+        {
+            Death();
+        }
+        time += delta;
+       
+    }
 
-        if (IsColliding() || time > Duration){
-            if (GetCollider() is IDamagable damagable)
+    public void _on_body_entered(Node node)
+    {
+        if(node != Source && node != CollisionObject3D)
+        {
+            if (node is IDamagable damagable)
             {
                 Damage?.Invoke(Source, damagable);
+                
             }
-        InvokeSaveNode();
+            Death();
+            time = Lifetime + 1;
+            //InvokeSaveNode();
         }
-       
+    }
+
+    void Death()
+    {
+        // ar explosion = packedScene.Instantiate<Node3D>();
+        // var transform = explosion.Transform;
+        // transform.Origin = GlobalPosition;
+        // explosion.Transform = transform;
+        // GetParent().AddChild(explosion);
+        InvokeSaveNode();
+        Hide();
     }
 
     public void InvokeSaveNode()

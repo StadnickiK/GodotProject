@@ -1,38 +1,39 @@
-[gd_scene load_steps=4 format=3 uid="uid://d17udve00muyr"]
+[gd_scene format=3 uid="uid://d17udve00muyr"]
 
 [ext_resource type="Script" uid="uid://cqp7jc5alt3kc" path="res://Data/TurretModel.cs" id="1_rfqkg"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_k7nsf"]
 [ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="3_va2xl"]
 
-[node name="Turret 1" type="Node"]
+[node name="Turret 1" type="Node" unique_id=1213051871]
 script = ExtResource("1_rfqkg")
+Projectiles = Array[String](["Laser"])
 
-[node name="StatManager" type="Node" parent="."]
+[node name="StatManager" type="Node" parent="." unique_id=349053955]
 script = ExtResource("2_k7nsf")
 
-[node name="Attack" type="Node" parent="StatManager"]
+[node name="Attack" type="Node" parent="StatManager" unique_id=246541572]
 script = ExtResource("3_va2xl")
 _baseValue = 10.0
 
-[node name="Defence" type="Node" parent="StatManager"]
+[node name="Defence" type="Node" parent="StatManager" unique_id=626211182]
 script = ExtResource("3_va2xl")
 _baseValue = 5.0
 
-[node name="Health" type="Node" parent="StatManager"]
+[node name="Health" type="Node" parent="StatManager" unique_id=1293300069]
 script = ExtResource("3_va2xl")
 _baseValue = 50.0
 
-[node name="Shield" type="Node" parent="StatManager"]
+[node name="Shield" type="Node" parent="StatManager" unique_id=465711067]
 script = ExtResource("3_va2xl")
 
-[node name="Range" type="Node" parent="StatManager"]
+[node name="Range" type="Node" parent="StatManager" unique_id=1881770190]
 script = ExtResource("3_va2xl")
 _baseValue = 50.0
 
-[node name="Rotation Speed" type="Node" parent="StatManager"]
+[node name="Rotation Speed" type="Node" parent="StatManager" unique_id=571873010]
 script = ExtResource("3_va2xl")
 _baseValue = 3.0
 
-[node name="Rotation Tolerance" type="Node" parent="StatManager"]
+[node name="Rotation Tolerance" type="Node" parent="StatManager" unique_id=1754028425]
 script = ExtResource("3_va2xl")
 _baseValue = 0.01

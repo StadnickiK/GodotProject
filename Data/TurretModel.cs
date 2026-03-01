@@ -6,7 +6,8 @@ public partial class TurretModel : Node, IStatManager
 {
     public StatManager StatManager { get; set; }
 
-    public List<string> Projectiles { get; set; } = new List<string>();
+    [Export]
+    public Godot.Collections.Array<string> Projectiles { get; set; } = new Godot.Collections.Array<string>();
 
     public override void _Ready()
     {

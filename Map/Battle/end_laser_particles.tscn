@@ -1,12 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://bva2qneec646t"]
+[gd_scene format=3 uid="uid://bva2qneec646t"]
 
-[ext_resource type="Shader" uid="uid://qqvbmeqp88ly" path="res://LaserShader.tres" id="1_jleap"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8a75y"]
-render_priority = 0
-shader = ExtResource("1_jleap")
-shader_parameter/Color = Color(1, 0, 0, 0.705882)
-shader_parameter/EmissionMultiplier = 2.0
+[ext_resource type="Script" uid="uid://dtee6w66oi0ac" path="res://Map/Battle/EndLaserParticles.cs" id="1_jleap"]
 
 [sub_resource type="Gradient" id="Gradient_uquf5"]
 offsets = PackedFloat32Array(0, 0.80226)
@@ -27,7 +21,7 @@ lifetime_randomness = 0.4
 direction = Vector3(0, 0, 0)
 spread = 80.0
 initial_velocity_min = 1.0
-initial_velocity_max = 1.0
+initial_velocity_max = 20.0
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_um23b")
 color_ramp = SubResource("GradientTexture1D_tq4p6")
@@ -35,21 +29,44 @@ collision_mode = 2
 sub_emitter_mode = 3
 sub_emitter_amount_at_collision = 1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mtsc"]
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_jleap"]
+expanded_output_ports = [0]
+parameter_name = "Color"
+default_value_enabled = true
+default_value = Color(1, 0, 0, 0.705882)
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_8a75y"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_uquf5"]
+parameter_name = "EmissionMultiplier"
+default_value_enabled = true
+default_value = 2.0
+
+[sub_resource type="VisualShader" id="VisualShader_tq4p6"]
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_jleap")
+nodes/fragment/2/position = Vector2(-600, 60)
+nodes/fragment/3/node = SubResource("VisualShaderNodeVectorOp_8a75y")
+nodes/fragment/3/position = Vector2(120, 340)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_uquf5")
+nodes/fragment/4/position = Vector2(-580, 440)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 2, 4, 0, 1, 2, 0, 0, 18, 4, 0, 3, 1, 2, 0, 3, 0, 3, 0, 0, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8a75y"]
 render_priority = 0
-shader = ExtResource("1_jleap")
+shader = SubResource("VisualShader_tq4p6")
 shader_parameter/Color = Color(1, 0, 0, 0.705882)
 shader_parameter/EmissionMultiplier = 2.0
 
-[sub_resource type="QuadMesh" id="QuadMesh_6igxl"]
-material = SubResource("ShaderMaterial_6mtsc")
-size = Vector2(0.02, 0.02)
+[sub_resource type="SphereMesh" id="SphereMesh_bqal8"]
+material = SubResource("ShaderMaterial_8a75y")
 
-[node name="EndLaserParticles" type="GPUParticles3D"]
-material_override = SubResource("ShaderMaterial_8a75y")
+[node name="EndLaserParticles" type="GPUParticles3D" unique_id=942879053]
 amount = 45
 amount_ratio = 0.8
-lifetime = 0.5
+explosiveness = 1.0
+randomness = 0.5
 transform_align = 1
 process_material = SubResource("ParticleProcessMaterial_ju33y")
-draw_pass_1 = SubResource("QuadMesh_6igxl")
+draw_pass_1 = SubResource("SphereMesh_bqal8")
+script = ExtResource("1_jleap")

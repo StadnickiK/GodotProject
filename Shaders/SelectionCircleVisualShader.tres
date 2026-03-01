@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=13 format=3 uid="uid://blu3o8i77ks20"]
+[gd_resource type="VisualShader" format=3 uid="uid://blu3o8i77ks20"]
 
 [sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_7y8lq"]
 output_port_for_preview = 0
@@ -56,71 +56,6 @@ output_port_for_preview = 0
 default_input_values = [0, 0.5, 1, 0.0]
 
 [resource]
-code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
-
-uniform vec4 BaseColor : source_color = vec4(0.000000, 1.000000, 0.000000, 1.000000);
-uniform float CricleWidth = 0.02999999932945;
-
-
-
-void fragment() {
-// ColorParameter:2
-	vec4 n_out2p0 = BaseColor;
-
-
-// FloatConstant:19
-	float n_out19p0 = 0.500000;
-
-
-// Input:3
-	vec2 n_out3p0 = UV;
-
-
-// Distance:5
-	vec2 n_in5p1 = vec2(0.50000, 0.50000);
-	float n_out5p0 = distance(n_out3p0, n_in5p1);
-
-
-// Step:6
-	float n_out6p0 = step(n_out19p0, n_out5p0);
-
-
-// FloatFunc:13
-	float n_out13p0 = 1.0 - n_out6p0;
-
-
-// FloatParameter:18
-	float n_out18p0 = CricleWidth;
-
-
-// FloatOp:20
-	float n_out20p0 = n_out19p0 - n_out18p0;
-
-
-// Step:15
-	float n_out15p0 = step(n_out5p0, n_out20p0);
-
-
-// FloatFunc:16
-	float n_out16p0 = 1.0 - n_out15p0;
-
-
-// VectorOp:17
-	vec2 n_out17p0 = vec2(n_out13p0) * vec2(n_out16p0);
-
-
-// VectorOp:14
-	vec2 n_out14p0 = vec2(n_out2p0.xy) * n_out17p0;
-
-
-// Output:0
-	ALBEDO = vec3(n_out14p0, 0.0);
-	ALPHA = n_out17p0.x;
-
-
-}
-"
 nodes/fragment/0/position = Vector2(1240, -100)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_5660f")
 nodes/fragment/2/position = Vector2(0, -440)

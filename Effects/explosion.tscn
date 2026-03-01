@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://blj5jo5btc41v"]
+
+[ext_resource type="Material" uid="uid://bpspwn2nerewa" path="res://Shaders/m_explosive_cloud.tres" id="1_fub62"]
+[ext_resource type="Script" uid="uid://cf56iaymvhauc" path="res://Effects/Explosion.cs" id="2_ke2p8"]
+
+[sub_resource type="Curve" id="Curve_aac42"]
+_data = [Vector2(0.7472036, 0), 0.0, 0.0, 0, 0, Vector2(0.97762865, 1), 0.094704546, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_lfbub"]
+curve = SubResource("Curve_aac42")
+
+[sub_resource type="Gradient" id="Gradient_aac42"]
+offsets = PackedFloat32Array(0.13064133, 0.4655582)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lfbub"]
+gradient = SubResource("Gradient_aac42")
+
+[sub_resource type="Curve" id="Curve_7284s"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5615213, 0), 0.0, 0.0, 0, 0, Vector2(0.9932886, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_8teb6"]
+curve = SubResource("Curve_7284s")
+
+[sub_resource type="Curve" id="Curve_p1d7l"]
+_data = [Vector2(0, 0.14618641), 0.0, 3.3240883, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jqbr2"]
+curve = SubResource("Curve_p1d7l")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g1fam"]
+lifetime_randomness = 0.2
+emission_shape = 1
+emission_sphere_radius = 4.0
+spread = 180.0
+radial_velocity_min = 0.99997765
+radial_velocity_max = 1.9999776
+radial_velocity_curve = SubResource("CurveTexture_8teb6")
+gravity = Vector3(0, 0, 0)
+scale_max = 1.8
+scale_curve = SubResource("CurveTexture_jqbr2")
+color_ramp = SubResource("GradientTexture1D_lfbub")
+alpha_curve = SubResource("CurveTexture_lfbub")
+
+[sub_resource type="SphereMesh" id="SphereMesh_hjs1k"]
+radial_segments = 128
+rings = 64
+
+[node name="Explosion" type="GPUParticles3D" unique_id=795319536]
+material_override = ExtResource("1_fub62")
+amount = 16
+explosiveness = 0.8
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_g1fam")
+draw_pass_1 = SubResource("SphereMesh_hjs1k")
+script = ExtResource("2_ke2p8")
+
+[connection signal="finished" from="." to="." method="_on_finished"]

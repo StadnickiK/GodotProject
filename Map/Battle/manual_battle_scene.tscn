@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dnabucbyeoqmh"]
+[gd_scene format=3 uid="uid://dnabucbyeoqmh"]
 
 [ext_resource type="Script" uid="uid://bucssk3ciqoo0" path="res://Map/Battle/ManualBattleScene.cs" id="1_swgib"]
 [ext_resource type="Script" uid="uid://bg4vk38mwp0io" path="res://Map/Battle/UnitFactory.cs" id="2_eornl"]
@@ -40,95 +40,95 @@ albedo_color = Color(0.8963325, 0.22303936, 0.27211308, 0.1254902)
 material = SubResource("StandardMaterial3D_gnwo8")
 size = Vector3(450, 1, 50)
 
-[node name="ManualBattleScene" type="Node3D"]
+[node name="ManualBattleScene" type="Node3D" unique_id=546173372]
 script = ExtResource("1_swgib")
 
-[node name="BattleUI" parent="." instance=ExtResource("5_fgmcw")]
+[node name="BattleUI" parent="." unique_id=640322948 instance=ExtResource("5_fgmcw")]
 visible = false
 mouse_filter = 2
 
-[node name="BattleZone" type="Area3D" parent="."]
+[node name="BattleZone" type="Area3D" parent="." unique_id=1929974103]
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(500, 1, 500)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleZone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleZone" unique_id=596203569]
 shape = SubResource("BoxShape3D_73bjj")
 debug_color = Color(0.929418, 0.132021, 0.57205, 0.42)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BattleZone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BattleZone" unique_id=1212366931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5369415, -1.994812, -0.94958496)
 mesh = SubResource("BoxMesh_t80qe")
 skeleton = NodePath("../../BattleZone/CollisionShape3D")
 
-[node name="AttackZone" type="Area3D" parent="."]
+[node name="AttackZone" type="Area3D" parent="." unique_id=1660188281]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 200)
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(450, 1, 50)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackZone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackZone" unique_id=1873201043]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 0)
 shape = SubResource("BoxShape3D_ylu47")
 debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AttackZone"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AttackZone" unique_id=1291357593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("BoxMesh_gnwo8")
 skeleton = NodePath("../../BattleZone/CollisionShape3D")
 
-[node name="DefendZone" type="Area3D" parent="."]
+[node name="DefendZone" type="Area3D" parent="." unique_id=1854662256]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -200)
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(450, 0, 50)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DefendZone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DefendZone" unique_id=1186016213]
 shape = SubResource("BoxShape3D_ylu47")
 debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DefendZone"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DefendZone" unique_id=918184390]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 visible = false
 mesh = SubResource("BoxMesh_j7er2")
 skeleton = NodePath("../../BattleZone/CollisionShape3D")
 
-[node name="ActiveObjects" type="Node3D" parent="."]
+[node name="ActiveObjects" type="Node3D" parent="." unique_id=2104026654]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
 
-[node name="UnitFactory" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+[node name="UnitFactory" type="Node3D" parent="." unique_id=1447573993]
+process_mode = 4
 visible = false
 script = ExtResource("2_eornl")
 
-[node name="UnitPool" type="Node3D" parent="UnitFactory"]
+[node name="UnitPool" type="Node3D" parent="UnitFactory" unique_id=1704220597]
 visible = false
 script = ExtResource("2_ph0dr")
 MinAmount = 20
 Node3DPath = "res://Map/Battle/Unit3D.tscn"
 
-[node name="ProjectileFactory" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+[node name="ProjectileFactory" type="Node3D" parent="." unique_id=1936410459]
+process_mode = 4
 visible = false
 script = ExtResource("5_omgxu")
 
-[node name="LaserPool" type="Node3D" parent="ProjectileFactory"]
+[node name="LaserPool" type="Node3D" parent="ProjectileFactory" unique_id=1008230506]
 visible = false
 script = ExtResource("2_ph0dr")
 MinAmount = 100
-Node3DPath = "res://Units/Base/projectile.tscn"
+Node3DPath = "res://Data/Projectiles/GuidedMissile.tscn"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=33746258]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 100, 0)
 light_energy = 8.0
 light_indirect_energy = 4.0
 shadow_enabled = true
 sky_mode = 1
 
-[node name="BoxSelectController" type="Node2D" parent="."]
+[node name="BoxSelectController" type="Node2D" parent="." unique_id=510122485]
 script = ExtResource("4_8b6k4")
 
-[node name="DamageCalculator" type="Node" parent="."]
+[node name="DamageCalculator" type="Node" parent="." unique_id=1125572435]
 script = ExtResource("7_fuhv8")
 
-[node name="SpaceBattle" parent="." instance=ExtResource("9_j7er2")]
+[node name="SpaceBattle" parent="." unique_id=713725332 instance=ExtResource("9_j7er2")]

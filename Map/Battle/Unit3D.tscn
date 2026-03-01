@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bur84mij7kvjm"]
+[gd_scene format=3 uid="uid://bur84mij7kvjm"]
 
 [ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3D.cs" id="1_nnrop"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_mju74"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_rapbe"]
 [ext_resource type="PackedScene" uid="uid://bunhup3qd6gny" path="res://Map/Selection.tscn" id="9_rapbe"]
-[ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar3D.tscn" id="11_1km8s"]
+[ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar.tscn" id="11_1km8s"]
 [ext_resource type="Script" uid="uid://ccjaexxpi7xr" path="res://Map/Battle/DeathController.cs" id="12_sxrd5"]
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="15_4btxt"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="15_k73rr"]
@@ -27,58 +27,60 @@ radius = 5.0
 [sub_resource type="BoxMesh" id="BoxMesh_vl4dh"]
 size = Vector3(5, 5, 5)
 
-[node name="Unit3D" type="RigidBody3D"]
+[node name="Unit3D" type="RigidBody3D" unique_id=1959915902]
 gravity_scale = 0.0
 script = ExtResource("1_nnrop")
 
-[node name="VisibilityConroller" parent="." instance=ExtResource("3_onp1n")]
+[node name="VisibilityConroller" parent="." unique_id=1961736525 instance=ExtResource("3_onp1n")]
 
-[node name="Area3D" parent="." instance=ExtResource("3_a02ob")]
+[node name="Area3D" parent="." unique_id=2078174617 instance=ExtResource("3_a02ob")]
 collision_layer = 0
 
-[node name="InputEventController" type="Node" parent="."]
+[node name="InputEventController" type="Node" parent="." unique_id=1483636222]
 script = ExtResource("4_onp1n")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1798110588]
 shape = SubResource("BoxShape3D_onp1n")
+disabled = true
 
-[node name="Shield" type="Area3D" parent="."]
+[node name="Shield" type="Area3D" parent="." unique_id=1611827434]
 monitorable = false
 script = ExtResource("5_5rpic")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Shield"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Shield" unique_id=1775690403]
 shape = SubResource("SphereShape3D_sxrd5")
+disabled = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Shield"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Shield" unique_id=1008958677]
 transform = Transform3D(-0.16336034, -0.9865665, 0, 0.9865665, -0.16336034, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_5rpic")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1204913520]
 mesh = SubResource("BoxMesh_vl4dh")
 
-[node name="InputController" type="Node" parent="."]
+[node name="InputController" type="Node" parent="." unique_id=1736109030]
 script = ExtResource("5_vl4dh")
 
-[node name="OrderQueue" type="Node" parent="."]
+[node name="OrderQueue" type="Node" parent="." unique_id=323647245]
 script = ExtResource("6_72exn")
 
-[node name="StateMachine" parent="." instance=ExtResource("7_mju74")]
+[node name="StateMachine" parent="." unique_id=1269037733 instance=ExtResource("7_mju74")]
 script = ExtResource("8_rapbe")
 
-[node name="Selection" parent="." instance=ExtResource("9_rapbe")]
+[node name="Selection" parent="." unique_id=1986357288 instance=ExtResource("9_rapbe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.41518, 0)
 
-[node name="HealthBar" parent="." instance=ExtResource("11_1km8s")]
+[node name="HealthBar" parent="." unique_id=12503149 instance=ExtResource("11_1km8s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.73916, 0)
 
-[node name="DeathController" type="Node3D" parent="."]
+[node name="DeathController" type="Node3D" parent="." unique_id=436053782]
 script = ExtResource("12_sxrd5")
 
-[node name="StatManager" type="Node" parent="."]
+[node name="StatManager" type="Node" parent="." unique_id=967805283]
 script = ExtResource("15_k73rr")
 
-[node name="SimpleFireControl" type="Node3D" parent="."]
+[node name="SimpleFireControl" type="Node3D" parent="." unique_id=608087596]
 script = ExtResource("15_4btxt")
 
-[node name="TurretControl" type="Node3D" parent="."]
+[node name="TurretControl" type="Node3D" parent="." unique_id=1366420257]
 script = ExtResource("16_4btxt")

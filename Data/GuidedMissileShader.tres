@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=4 format=3 uid="uid://bcr6vi6t4gfoc"]
+[gd_resource type="VisualShader" format=3 uid="uid://bcr6vi6t4gfoc"]
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_hkwlt"]
 expanded_output_ports = [0]
@@ -15,35 +15,6 @@ default_value_enabled = true
 default_value = 2.0
 
 [resource]
-code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
-
-uniform vec4 Color : source_color = vec4(0.075867, 0.075867, 0.075867, 1.000000);
-uniform float EmissionMultiplier = 2.0;
-
-
-
-void fragment() {
-// ColorParameter:2
-	vec4 n_out2p0 = Color;
-
-
-// FloatParameter:4
-	float n_out4p0 = EmissionMultiplier;
-
-
-// VectorOp:3
-	vec3 n_out3p0 = vec3(n_out2p0.xyz) * vec3(n_out4p0);
-
-
-// Output:0
-	ALBEDO = vec3(n_out2p0.xyz);
-	EMISSION = n_out3p0;
-	BACKLIGHT = n_out3p0;
-
-
-}
-"
 nodes/fragment/0/position = Vector2(800, -440)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_hkwlt")
 nodes/fragment/2/position = Vector2(-140, -540)

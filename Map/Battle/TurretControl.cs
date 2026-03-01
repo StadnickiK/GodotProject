@@ -36,7 +36,7 @@ public partial class TurretControl : SimpleAttackBattery
             turret.Name = "Turret "+ Turrets.Count;
             turret.TurretMesh.Mesh = t.Body.Mesh;
             turret.Transform = t.Body.Transform;
-            var model = unit.Turrets.TurretModels[t.TurretName];
+            var model = unit.Turrets.TurretModels[t.TurretIndex];
             turret.StatManager.CloneStats(model);
             turret.Projectiles = model.Projectiles;
             foreach (var Barrel in t.Barrels)

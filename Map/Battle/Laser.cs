@@ -9,7 +9,7 @@ public partial class Laser : RayCast3D, IProjectile
     [Export]
     private Color _color = new Color("ff0000b4");
     [Export]
-    private float circleRadius = 0.03f;
+    private float _projectileRadius = 0.03f;
     [Export]
     float height = 0.01f;
 
@@ -43,7 +43,7 @@ public partial class Laser : RayCast3D, IProjectile
 
     public float Height { get => height; set { height = value; UpdateHeight(value); } }
 
-    public float CircleRadius { get => circleRadius; set { circleRadius = value; UpdateRadius(value); } }
+    public float ProjectileRadius { get => _projectileRadius; set { _projectileRadius = value; UpdateRadius(value); } }
 
     public float Range { get => range; set { range = value; UpdateRange(value); } }
 
@@ -68,7 +68,7 @@ public partial class Laser : RayCast3D, IProjectile
 
         cylinderMesh = (CylinderMesh)meshInstance3D.Mesh;
         shaderMaterial = cylinderMesh.Material as ShaderMaterial;
-        UpdateRadius(circleRadius);
+        UpdateRadius(_projectileRadius);
         UpdateRange(Range);
     }
 

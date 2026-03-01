@@ -61,7 +61,7 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
 
     public virtual void OnTargetSpotted(ITargetable targetable)
     {
-        if (CurrentTarget == null && !targetable.Controller.Equals(Controller))
+        if (CurrentTarget == null && !Controller.Equals(targetable.Controller))
         {
             CurrentTarget = targetable;
             ProcessMode = ProcessModeEnum.Inherit;

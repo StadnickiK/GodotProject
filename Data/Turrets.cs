@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class Turrets : Node
 {
-    public Dictionary<string, TurretModel> TurretModels { get; set; } = new Dictionary<string, TurretModel>();
+    public List<TurretModel> TurretModels { get; set; } = new List<TurretModel>();
 
     public override void _Ready()
     {
@@ -12,7 +12,7 @@ public partial class Turrets : Node
         foreach (var item in GetChildren())
         {
             if(item is TurretModel turretModel)
-                TurretModels.Add(item.Name, turretModel);
+                TurretModels.Add(turretModel);
         }
     }
 

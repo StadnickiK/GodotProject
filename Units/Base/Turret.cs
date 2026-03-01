@@ -10,7 +10,7 @@ public partial class Turret : CharacterBody3D, IStatManager
 
     public List<MeshInstance3D> Barrels { get; set; } = new List<MeshInstance3D>();
 
-    public List<string> Projectiles { get; set; } = new List<string>();
+    public Godot.Collections.Array<string> Projectiles { get; set; } = new Godot.Collections.Array<string>();
 
     public MeshInstance3D TurretMesh { get; set; }
 

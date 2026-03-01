@@ -222,5 +222,7 @@
     <Compile Include="UI\Battle\CustomBattlePlayerContainer.cs" />
     <Compile Include="Units\HealthBar3D.cs" />
     <Compile Include="UI\Battle\BattlefieldSettingsMenu.cs" />
+    <Compile Include="Map\Battle\EndLaserParticles.cs" />
+    <Compile Include="Effects\Explosion.cs" />
   </ItemGroup>
 </Project>

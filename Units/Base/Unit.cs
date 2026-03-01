@@ -79,6 +79,10 @@ public partial class Unit : Construct, IStatManager, IDamagable
 		var unit = (Unit)base.Duplicate();
 		unit.BuildCost = new System.Collections.Generic.Dictionary<int, int>(BuildCost);
 		unit.BuildTime = BuildTime;
+		unit.UnitName = UnitName;
+        unit.Upkeep = new System.Collections.Generic.Dictionary<int, int>(Upkeep);
+        unit.ModelVolume = ModelVolume;
+        unit.ModelData = ModelData;
 		return unit;
     }
 }

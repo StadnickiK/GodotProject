@@ -141,6 +141,7 @@ public partial class Game : Node3D
 
 	public void _on_OpenMainMenu()
 	{
+		GetTree().Paused = false;
 		mainMenu = (MainMenu)_mainMenuScene.Instantiate();
 		if(_curerentWorld != null)
         {
@@ -151,9 +152,8 @@ public partial class Game : Node3D
             manualBattleScene.QueueFree();
         }
 		AddChild(mainMenu);
-		mainMenu.InitializeMainMenu(this, Data);
 		mainMenu.NewGameNode.LoadGameResources(Data.Resources);
-		GetTree().Paused = false;
+		mainMenu.InitializeMainMenu(this, Data);
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
