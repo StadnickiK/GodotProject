@@ -23,6 +23,8 @@ public partial class Select : Node
     
     public bool HasMany { get => selectManager.SelectedUnits.Count > 1; }
 
+    public HashSet<ISelection> SelectedUnits { get { return selectManager.SelectedUnits;} }
+
     Vector3 CalculateFormationCenter()
     {
         Vector3 center = new Vector3();
@@ -58,20 +60,20 @@ public partial class Select : Node
 
     void AddSelectEffect(){
         foreach(var c in selectManager.SelectedUnits)
-                c.Selection?.Show();
+                c.Select();
     }
 
     void AddSelectEffect(ISelection c){
-        c.Selection?.Show();
+        c.Select();
     }
 
     void RemoveSelectEffect(){
         foreach(var c in selectManager.SelectedUnits)
-                c.Selection?.Hide();
+                c.Deselect();
     }
 
     void RemoveSelectEffect(ISelection unit){
-        unit.Selection?.Hide();
+        unit.Deselect();
     }
 
     void SubscribeShip(ISelection ship){
@@ -118,12 +120,12 @@ public partial class Select : Node
         AddSelectEffect();
     }
 
-    public void AddTarget(CollisionObject3D target){
+    public void AddTarget(INode3D target){
         var t = new OrderQueue.Target(target.GlobalPosition,target);
         OnTarget?.Invoke(t);
     }
 
-    public void AddTarget(CollisionObject3D target, CmdPanel.CmdPanelOption task){
+    public void AddTarget(INode3D target, CmdPanel.CmdPanelOption task){
         foreach(CollisionObject3D rigidB in selectManager.SelectedUnits){
             if(rigidB is Ship){
                 Ship ship = (Ship)rigidB;
@@ -150,7 +152,7 @@ public partial class Select : Node
         foreach (var unit in selectManager.SelectedUnits)
         {
             UnsubscribeShip(unit);
-            unit.Selection?.Hide();
+            unit.Deselect();
         }
         selectManager.ClearSelection();
     }

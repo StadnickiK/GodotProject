@@ -1,31 +1,22 @@
 using Godot;
 using System;
 
-public enum StatModifierValueType
+
+public class StatModifier<T> : IStatModifier
 {
-    Flat,       // Direct addition (e.g., +5)
-    Percent     // Percentage of base value (e.g., +10%)
-}
-
-
-public class StatModifier
-{
-
+    public T Value { get; protected set; }
+    public T ValueChange { get; set; }
     public int Index { get; set; }
-    public string Name { get; set; }
-    public float Value { get; set; }
-    public float ValueChange { get; set; } = 0;
-    
-    public StatModifierValueType ValueType { get; }
+    public StringName Name { get; set; }
+    public double Duration { get; protected set; }
+    public Node Source { get; set; }
+    public StatModifierValueType ValueType { get; protected set; }
 
-    public double Duration { get; set; } = -1;
-
-    public Node Source { get; }
-
-    public StatModifier(float value, StatModifierValueType type, Node source = null)
+    public StatModifier(T value, StatModifierValueType type, Node source = null)
     {
         Value = value;
         ValueType = type;
         Source = source;
     }
+
 }

@@ -8,7 +8,9 @@ public partial class BoxSelectController : Node2D
     private Vector2 DragStart { get; set; }
     private Rect2 SelectBox { get; set; }
 
-    public List<Unit3D> LocalUnits { get; set; }
+    public List<IUnit3D> LocalUnits { get; set; }
+
+    public UnitDragHandler unitDragHandler { get; set; }
 
     Camera3D camera3D;
 
@@ -22,29 +24,30 @@ public partial class BoxSelectController : Node2D
 
     public override void _UnhandledInput(InputEvent inputEvent)
     {
-        if (inputEvent is InputEventMouseButton mouseButton &&
-            mouseButton.ButtonIndex == MouseButton.Left)
-        {
-            if (mouseButton.Pressed)
+        if(!unitDragHandler.Drag)
+            if (inputEvent is InputEventMouseButton mouseButton &&
+                mouseButton.ButtonIndex == MouseButton.Left)
             {
-                Selecting = true;
-                //SelectUnits();
-                DragStart = mouseButton.Position;
+                if (mouseButton.Pressed)
+                {
+                    Selecting = true;
+                    //SelectUnits();
+                    DragStart = mouseButton.Position;
+                }
+                else
+                {
+                    Selecting = false;
+                    if (DragStart.IsEqualApprox(mouseButton.Position)) SelectBox = new Rect2(mouseButton.Position, Vector2.Zero);
+                    SelectUnits();
+                    QueueRedraw();
+                }
             }
-            else
+            else if (Selecting && inputEvent is InputEventMouseMotion mouseMotion)
             {
-                Selecting = false;
-                if (DragStart.IsEqualApprox(mouseButton.Position)) SelectBox = new Rect2(mouseButton.Position, Vector2.Zero);
+                DrawBox(mouseMotion.Position);
                 SelectUnits();
                 QueueRedraw();
             }
-        }
-        else if (Selecting && inputEvent is InputEventMouseMotion mouseMotion)
-        {
-            DrawBox(mouseMotion.Position);
-            SelectUnits();
-            QueueRedraw();
-        }
     }
 
     void DrawBox(Vector2 Position)
@@ -76,11 +79,15 @@ public partial class BoxSelectController : Node2D
             var point = camera3D.UnprojectPosition(unit.GlobalPosition);
             if (SelectBox.HasPoint(point))
             {
-                unit.InputController.AddUnitInvoke();
+                if (unit.InputController != null)
+                    unit?.InputController.AddUnitInvoke();
             }
             else
             {
-                unit.InputController.DeselectUnitInvoke();
+                if (unit.InputController != null)
+                    unit.InputController.DeselectUnitInvoke();
+                
+                
             }
         }
     }

@@ -8,6 +8,11 @@ public partial class StateMachine : GenericStateMachine<IMovable>
     
 }
 
+public partial class StateMachine3D : GenericStateMachine<IMovable3D>
+{
+    
+}
+
 // public partial class MovableState : State
 // {
 //     //new protected IMovable Body;

@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://c70akagmjohcx"]
+[gd_scene format=3 uid="uid://c70akagmjohcx"]
 
 [ext_resource type="Texture2D" uid="uid://cw326ra810s2" path="res://Backgrounds/light.jpg" id="3_v0w7q"]
 [ext_resource type="PackedScene" uid="uid://5vkwnunfc0kc" path="res://World/WorldCursorControl.tscn" id="4"]
 [ext_resource type="Script" uid="uid://cotigyio4cdaf" path="res://World/World.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://bfu8bv1603x1g" path="res://StaticGround.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bf72ubck6a7kc" path="res://UI/Debug/Text3.tscn" id="7_eue43"]
 [ext_resource type="PackedScene" uid="uid://j71w4i837oot" path="res://UI/FreeCamera.tscn" id="11_v0w7q"]
 [ext_resource type="PackedScene" uid="uid://bqxom23btjo2r" path="res://Menu/Menu.tscn" id="12_l2bp3"]
 
@@ -20,27 +21,32 @@ ambient_light_color = Color(0.8, 0.8, 0.8, 1)
 ambient_light_sky_contribution = 0.7
 tonemap_mode = 1
 
-[node name="World" type="Node3D"]
+[node name="World" type="Node3D" unique_id=638763835]
 process_mode = 3
 script = ExtResource("5")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1256465717]
 environment = SubResource("2")
 
-[node name="WorldCursorControl" parent="." instance=ExtResource("4")]
+[node name="WorldCursorControl" parent="." unique_id=1600131918 instance=ExtResource("4")]
 process_mode = 1
 
-[node name="Players" type="Node" parent="."]
+[node name="Players" type="Node" parent="." unique_id=86814726]
 process_mode = 1
 
-[node name="Ground" parent="." instance=ExtResource("6")]
+[node name="Ground" parent="." unique_id=1842535107 instance=ExtResource("6")]
 process_mode = 1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+collision_mask = 1
+monitoring = true
+monitorable = true
 
-[node name="CameraGimbal" parent="." instance=ExtResource("11_v0w7q")]
+[node name="CameraGimbal" parent="." unique_id=533834796 instance=ExtResource("11_v0w7q")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
 
-[node name="Menu" parent="." instance=ExtResource("12_l2bp3")]
+[node name="Menu" parent="." unique_id=1362586350 instance=ExtResource("12_l2bp3")]
 process_mode = 3
 visible = false
-mouse_filter = 2
+mouse_filter = 1
+
+[node name="DebugContainer" parent="." unique_id=2144749387 instance=ExtResource("7_eue43")]

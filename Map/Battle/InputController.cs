@@ -16,18 +16,21 @@ public partial class InputController : Node
 {
   public delegate void MoveEventHandler(ISelection movable);
 
-  public delegate void TargetEventHandler(CollisionObject3D movable);
-
   public event MoveEventHandler SelectUnit;
 
   public event MoveEventHandler DeselectUnit;
 
-  public event TargetEventHandler SelectTarget;
-
   public event MoveEventHandler AddUnit;
+
+  public delegate void TargetEventHandler(INode3D movable);
+
+  public event TargetEventHandler SelectTarget;
 
   public event TargetEventHandler AddTarget;
 
+  public delegate void DragEventHandler();
+
+  public event DragEventHandler Drag;
 
   [Export]
   public InputMode Mode { get; set; } = InputMode.Select;
@@ -35,13 +38,15 @@ public partial class InputController : Node
   [Export]
   public int DragSpeed { get; set; } = 10;
 
-  bool DoDrag = false;
-
   bool MultiSelect = false;
 
-  CollisionObject3D rigidBody3DParent;
+  bool inputEventConnected = false;
 
-  IRightClickAction RightClickAction;
+  public bool Selected { get; set; } = false;
+
+  public ISelection RigidBody3DParent;
+
+  CollisionObject3D collisionObject;
 
   public enum InputMode
   {
@@ -54,26 +59,20 @@ public partial class InputController : Node
     Mode = mode;
   }
 
-
-  public override void _Ready()
+  public void Initialize(CollisionObject3D collisionObject3D, ISelection parent, Shield shield = null)
   {
-    try
+      RigidBody3DParent = parent;
+      collisionObject = collisionObject3D;
+    if(!inputEventConnected)
     {
-      rigidBody3DParent = (CollisionObject3D)GetParent();
-      rigidBody3DParent.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
+      inputEventConnected = true;
+      var inputEventCallable = new Callable(this, nameof(_on_input_event));
+      collisionObject3D.Connect(CollisionObject3D.SignalName.InputEvent, inputEventCallable);
+    }
       //RightClickAction = GetNode<MoveToTargetAction>("RightClickAction");
-      var s = rigidBody3DParent.GetNodeOrNull<Shield>("Shield");
-      s?.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
-    }
-    catch (System.Exception ex)
-    {
-      throw new Exception("Parent should be RigidBody3D " + ex.Message);
-    }
-    if(rigidBody3DParent is ISelection selection && Game.Instance != null)
-    {
+      shield?.Connect(CollisionObject3D.SignalName.InputEvent, new Callable(this, nameof(_on_input_event)));
       SelectUnit -= Game.Instance.Select;
       SelectUnit += Game.Instance.Select;
-    }    
   }
 
   public void ConnectWCC(WorldCursorControl Instance)
@@ -85,6 +84,16 @@ public partial class InputController : Node
     SelectTarget -= Instance._SelectTarget;
     SelectTarget += Instance._SelectTarget; 
   }
+
+  public void ConnectToSquad(Squad3D Instance)
+	{
+		DeselectUnit -= Instance.DeselectSquad;
+		DeselectUnit += Instance.DeselectSquad;
+		AddUnit -= Instance.AddSquad;
+		AddUnit += Instance.AddSquad;
+		SelectTarget -= Instance.SelectTargetSquad;
+		SelectTarget += Instance.SelectTargetSquad; 
+	}
 
 
   public override void _Input(InputEvent inputEvent)
@@ -109,13 +118,20 @@ public partial class InputController : Node
   {
     if (inputEvent.IsActionPressed("Select_multiple"))
       AddUnitInvoke();
-    if (inputEvent is InputEventMouseButton eventMouseButton)
+    if (inputEvent is InputEventMouseButton eventMouseButton) //&& inputEvent.IsReleased()
     {
       switch (eventMouseButton.ButtonIndex)
       {
         case MouseButton.Left:
-          SelectUnitInvoke();
-          DoDrag = inputEvent.IsPressed() && Mode == InputMode.Drag;
+          if(inputEvent.IsReleased())
+            SelectUnitInvoke();
+          if (inputEvent.IsPressed())
+          {
+            if(!Selected) SelectUnitInvoke();
+            if(Mode == InputMode.Drag) Drag?.Invoke();
+          }
+          // else if(inputEvent.IsPressed())
+          //   Drag?.Invoke(RigidBody3DParent.Position);
           break;
         case MouseButton.Right:
           SelectTargetInvoke();
@@ -126,41 +142,26 @@ public partial class InputController : Node
 
   public void SelectUnitInvoke()
   {
-    SelectUnit?.Invoke((ISelection)rigidBody3DParent);
+    SelectUnit?.Invoke((ISelection)RigidBody3DParent);
   }
 
   public void DeselectUnitInvoke()
   {
-    DeselectUnit?.Invoke((ISelection)rigidBody3DParent);
+    DeselectUnit?.Invoke((ISelection)RigidBody3DParent);
   }
 
   public void AddUnitInvoke()
   {
-    AddUnit?.Invoke((ISelection)rigidBody3DParent);
+    AddUnit?.Invoke((ISelection)RigidBody3DParent);
   }
 
   public void SelectTargetInvoke()
   {
-    SelectTarget?.Invoke(rigidBody3DParent);
+    SelectTarget?.Invoke(RigidBody3DParent);
   }
   public void AddTargetInvoke()
   {
-    AddTarget?.Invoke(rigidBody3DParent);
-  }
-
-  void Drag()
-  {
-    var transform = rigidBody3DParent.GlobalTransform;
-    transform.Origin = GetMouseWorldPosition();
-    rigidBody3DParent.GlobalTransform = transform;
-  }
-
-  public override void _Process(double delta)
-  {
-    if (DoDrag)
-    {
-      Drag();
-    }
+    AddTarget?.Invoke(RigidBody3DParent);
   }
 
   public Vector3 GetMouseWorldPosition()
@@ -170,18 +171,18 @@ public partial class InputController : Node
     var camera3D = GetViewport().GetCamera3D();
     var from = camera3D.ProjectRayOrigin(mousePos);
     var to = from + camera3D.ProjectRayNormal(mousePos) * ray_length;
-    Vector3 p = rigidBody3DParent.Position;
-    var space_state = rigidBody3DParent.GetWorld3D().DirectSpaceState;
+    Vector3 p = RigidBody3DParent.Position;
+    var space_state = collisionObject.GetWorld3D().DirectSpaceState;
     var state = space_state.IntersectRay(new PhysicsRayQueryParameters3D()
     {
       From = from,
       To = to,
-      Exclude = { rigidBody3DParent.GetRid() }
+      Exclude = { collisionObject.GetRid() }
     });
     if (state.ContainsKey("position"))
     {
       p = (Vector3)state["position"];
-      p.Y = rigidBody3DParent.Position.Y;
+      p.Y = RigidBody3DParent.Position.Y;
     }
     return p;
   }

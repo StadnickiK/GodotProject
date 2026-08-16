@@ -138,7 +138,7 @@ public partial class BuildingInterface : Panel
     public void BuildCost(Construct construct){
             _desc.AppendText("\n[b][font_size=20]Build Cost[/font_size][/b]\n\n");
             foreach(var resName in construct.ExportBuildCost.Keys){
-                _desc.Text = resName + " - " + construct.ExportBuildCost[resName] + "\n";
+                _desc.AppendText(resName + " - " + construct.ExportBuildCost[resName] + "\n");
             }
     }
 
@@ -150,10 +150,13 @@ public partial class BuildingInterface : Panel
 
     private void MoveControlToMousePosition()
     {
-        var pos = GetGlobalMousePosition();
-		var x = pos.X-(Size.X/2);
-		var y = pos.Y-Size.Y-20;
-        Position = new Vector2(x, y);
+        var mousePos = GetGlobalMousePosition();
+        var viewportSize = GetViewport().GetVisibleRect().Size;
+
+        Position = new Vector2(
+            Mathf.Clamp(mousePos.X - Size.X / 2, 0, viewportSize.X - Size.X),
+            Mathf.Clamp(mousePos.Y - Size.Y - 20, 0, viewportSize.Y - Size.Y)
+        );
     }
 
     public void UpdateInterface(){

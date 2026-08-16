@@ -9,6 +9,13 @@
 [ext_resource type="Script" uid="uid://cjwa3f8iuh44c" path="res://Map/Battle/ProjectileFactory.cs" id="5_omgxu"]
 [ext_resource type="Script" uid="uid://b7en5rnmtqbi2" path="res://Map/Battle/DamageCalculator.cs" id="7_fuhv8"]
 [ext_resource type="PackedScene" uid="uid://7t6mr4eafrp4" path="res://Map/SpaceBattle.tscn" id="9_j7er2"]
+[ext_resource type="Script" uid="uid://c2xhkuhlb2x1r" path="res://Map/Battle/DrawingLines3DController.cs" id="10_hde5u"]
+[ext_resource type="PackedScene" uid="uid://de43yrhmjcjyt" path="res://Map/line_3d.tscn" id="10_t80qe"]
+[ext_resource type="Script" uid="uid://c720cuskqte8r" path="res://Map/Battle/UnitDragHandler.cs" id="12_y7mvv"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_hde5u"]
+vertices = PackedVector3Array(-249.5, 1, -249.5, -249.5, 1, 249.5, 249.5, 1, 249.5, 249.5, 1, -249.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_73bjj"]
 size = Vector3(500, 1, 500)
@@ -40,6 +47,21 @@ albedo_color = Color(0.8963325, 0.22303936, 0.27211308, 0.1254902)
 material = SubResource("StandardMaterial3D_gnwo8")
 size = Vector3(450, 1, 50)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gk03p"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cx8fy"]
+albedo_color = Color(0.94036186, 5.3425133e-06, 3.85046e-07, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ujk5d"]
+albedo_color = Color(0.27337447, 0.490281, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ooua1"]
+albedo_color = Color(0, 0.94509804, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n4y2n"]
+albedo_color = Color(0, 0.9989807, 0, 1)
+
 [node name="ManualBattleScene" type="Node3D" unique_id=546173372]
 script = ExtResource("1_swgib")
 
@@ -47,22 +69,25 @@ script = ExtResource("1_swgib")
 visible = false
 mouse_filter = 2
 
-[node name="BattleZone" type="Area3D" parent="." unique_id=1929974103]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1814518799]
+navigation_mesh = SubResource("NavigationMesh_hde5u")
+
+[node name="BattleZone" type="Area3D" parent="NavigationRegion3D" unique_id=1929974103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(500, 1, 500)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleZone" unique_id=596203569]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/BattleZone" unique_id=596203569]
 shape = SubResource("BoxShape3D_73bjj")
 debug_color = Color(0.929418, 0.132021, 0.57205, 0.42)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BattleZone" unique_id=1212366931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5369415, -1.994812, -0.94958496)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/BattleZone" unique_id=1212366931]
 mesh = SubResource("BoxMesh_t80qe")
-skeleton = NodePath("../../BattleZone/CollisionShape3D")
+skeleton = NodePath("../CollisionShape3D")
 
 [node name="AttackZone" type="Area3D" parent="." unique_id=1660188281]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 200)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(450, 1, 50)
@@ -75,10 +100,10 @@ debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AttackZone" unique_id=1291357593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("BoxMesh_gnwo8")
-skeleton = NodePath("../../BattleZone/CollisionShape3D")
+skeleton = NodePath("../../NavigationRegion3D/BattleZone/CollisionShape3D")
 
 [node name="DefendZone" type="Area3D" parent="." unique_id=1854662256]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -200)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -200)
 monitorable = false
 script = ExtResource("3_gnwo8")
 MinSize = Vector3(450, 0, 50)
@@ -91,7 +116,7 @@ debug_color = Color(0.297136, 0.597299, 0.553703, 0.42)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 visible = false
 mesh = SubResource("BoxMesh_j7er2")
-skeleton = NodePath("../../BattleZone/CollisionShape3D")
+skeleton = NodePath("../../NavigationRegion3D/BattleZone/CollisionShape3D")
 
 [node name="ActiveObjects" type="Node3D" parent="." unique_id=2104026654]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4995, 200)
@@ -132,3 +157,18 @@ script = ExtResource("4_8b6k4")
 script = ExtResource("7_fuhv8")
 
 [node name="SpaceBattle" parent="." unique_id=713725332 instance=ExtResource("9_j7er2")]
+
+[node name="DrawingLines3D" type="Node3D" parent="." unique_id=435438729]
+script = ExtResource("10_hde5u")
+LineMaterials = Dictionary[String, Material]({
+"Aligment": SubResource("StandardMaterial3D_gk03p"),
+"Avoidance": SubResource("StandardMaterial3D_cx8fy"),
+"Separation": SubResource("StandardMaterial3D_ujk5d"),
+"Velocity": SubResource("StandardMaterial3D_ooua1")
+})
+
+[node name="Line3D" parent="DrawingLines3D" unique_id=1714893058 instance=ExtResource("10_t80qe")]
+
+[node name="UnitDragHandler" type="Node" parent="." unique_id=436990641]
+script = ExtResource("12_y7mvv")
+MeshMaterial = SubResource("StandardMaterial3D_n4y2n")

@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://cqy1sgj6mqv24"]
+
+[ext_resource type="Script" uid="uid://bsrhsarq63iqu" path="res://Units/Base/Unit.cs" id="1_o3lba"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_gfiqr"]
+[ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/StatT.cs" id="3_koaq0"]
+[ext_resource type="Script" uid="uid://cscnmrf6rhai1" path="res://Data/Turrets.cs" id="4_ip84a"]
+
+[node name="Unit 4" type="Node" unique_id=511959733]
+script = ExtResource("1_o3lba")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+ExportBuildCost = Dictionary[String, int]({
+"": 0,
+"C": 400,
+"Common Ores": 200
+})
+ExportUpkeep = Dictionary[String, int]({
+"Credits": 100
+})
+
+[node name="StatManager" type="Node" parent="." unique_id=1930873766]
+script = ExtResource("2_gfiqr")
+
+[node name="Attack" type="Node" parent="StatManager" unique_id=1896850043]
+script = ExtResource("3_koaq0")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="StatManager" unique_id=1301393306]
+script = ExtResource("3_koaq0")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="StatManager" unique_id=1618409443]
+script = ExtResource("3_koaq0")
+_baseValue = 1000.0
+
+[node name="Shield" type="Node" parent="StatManager" unique_id=1614746544]
+script = ExtResource("3_koaq0")
+
+[node name="Speed" type="Node" parent="StatManager" unique_id=551757444]
+script = ExtResource("3_koaq0")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="StatManager" unique_id=979811339]
+script = ExtResource("3_koaq0")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="StatManager" unique_id=1257352689]
+script = ExtResource("3_koaq0")
+_baseValue = 30.0
+
+[node name="Rotation Speed" type="Node" parent="StatManager" unique_id=247945111]
+script = ExtResource("3_koaq0")
+_baseValue = 50.0
+
+[node name="Tolerance" type="Node" parent="StatManager" unique_id=239702815]
+script = ExtResource("3_koaq0")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="StatManager" unique_id=120878183]
+script = ExtResource("3_koaq0")
+
+[node name="FireLifetime" type="Node" parent="StatManager" unique_id=73185846]
+script = ExtResource("3_koaq0")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="StatManager" unique_id=1799857867]
+script = ExtResource("3_koaq0")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="StatManager" unique_id=948714245]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="StatManager" unique_id=434494083]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="StatManager" unique_id=316629972]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="StatManager" unique_id=894848818]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="StatManager" unique_id=422364176]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="StatManager" unique_id=778549418]
+script = ExtResource("3_koaq0")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Turrets" type="Node" parent="." unique_id=962775193]
+script = ExtResource("4_ip84a")

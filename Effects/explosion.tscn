@@ -50,11 +50,11 @@ rings = 64
 
 [node name="Explosion" type="GPUParticles3D" unique_id=795319536]
 material_override = ExtResource("1_fub62")
+emitting = false
 amount = 16
+one_shot = true
 explosiveness = 0.8
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_g1fam")
 draw_pass_1 = SubResource("SphereMesh_hjs1k")
 script = ExtResource("2_ke2p8")
-
-[connection signal="finished" from="." to="." method="_on_finished"]

@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 
 public partial class UnitController : Node3D
 {
@@ -56,10 +57,13 @@ public partial class UnitController : Node3D
         }
     }
 
-    public void AddUnit(Unit unit)
+    public void AddUnit(Unit original)
     {
+        var unit = original.Duplicate();
         unit.GetParent()?.RemoveChild(unit);
         AddChild(unit);
+        unit.LoadModelData(original);
+        var children = unit.GetChildren();
         UnitsList.Add(unit);
         UpkeepComponent?.UpdateUpkeep(unit);
         AddUpkeep?.Invoke(unit.Upkeep);

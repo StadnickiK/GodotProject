@@ -13,6 +13,9 @@ public partial class Unit : Construct, IStatManager, IDamagable
 	[Export]
 	public string ModelName { get; set; }
 
+	[Export]
+    public Godot.Collections.Array<Vector3> ExportBatteries { get; set; } = new Godot.Collections.Array<Vector3>();
+
 	public int ModelVolume { get; set; } = 0;
 
 	public bool HasHitpoints { get { return GetStat(GlobalStatNames.Health).CurrentValue > 0; } } 
@@ -34,20 +37,13 @@ public partial class Unit : Construct, IStatManager, IDamagable
 
 	public Turrets Turrets { get; set; }
 
-	public ModelData ModelData { get; set; }
+	public ModelData ModelData { get; protected set; }
 
     public CollisionObject3D GetAsSpecificNode => throw new System.NotImplementedException();
 
-    // World - initStartFleets, InitResistance
-
-    public Unit(){  
-	}
-
-	public Unit(string name, Array<BaseStat> stats){
-		Name = name;
-		foreach(BaseStat stat in stats){
-			Stats.AddChild(stat);
-		}
+	public virtual IEnumerable<Unit> GetUnits()
+	{
+		yield return this;
 	}
 
 	public override void _Ready()
@@ -74,7 +70,7 @@ public partial class Unit : Construct, IStatManager, IDamagable
 		throw new System.NotImplementedException();
 	}
 	
-	public Unit Duplicate()
+	public virtual Unit Duplicate()
     {
 		var unit = (Unit)base.Duplicate();
 		unit.BuildCost = new System.Collections.Generic.Dictionary<int, int>(BuildCost);
@@ -85,4 +81,14 @@ public partial class Unit : Construct, IStatManager, IDamagable
         unit.ModelData = ModelData;
 		return unit;
     }
+
+	public virtual void LoadModelData(ModelLoader modelLoader)
+	{
+		ModelData = modelLoader.Models[ModelName];
+	}
+
+	public virtual void LoadModelData(Unit unit)
+	{
+		ModelData = unit.ModelData;
+	}
 }

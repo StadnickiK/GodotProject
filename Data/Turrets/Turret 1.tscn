@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cqp7jc5alt3kc" path="res://Data/TurretModel.cs" id="1_rfqkg"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_k7nsf"]
-[ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="3_va2xl"]
+[ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/StatT.cs" id="3_va2xl"]
 
 [node name="Turret 1" type="Node" unique_id=1213051871]
 script = ExtResource("1_rfqkg")

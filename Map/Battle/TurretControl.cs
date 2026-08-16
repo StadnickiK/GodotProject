@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,14 +30,32 @@ public partial class TurretControl : SimpleAttackBattery
     public void InitTurrets(Unit unit)
     {
         TurretIDsRange[0] = Batteries.Count;
-        foreach (var t in unit.ModelData.Turrets)
+        InitBatteries(unit.ExportBatteries);
+        if(unit.ModelData.Turrets != null && unit.Turrets != null)InitTurrets(unit.ModelData.Turrets, unit.Turrets.TurretModels);
+        TurretIDsRange[1] = Batteries.Count;
+    }
+
+    private void InitBatteries(Array<Vector3> exportBatteries)
+    {
+        foreach (var item in exportBatteries)
+        {
+            var node = new Node3D();
+            node.Position = item;
+            AddChild(node);
+            Batteries.Add(node);
+        }
+    }
+
+    void InitTurrets(List<TurretData> turretDatas, List<TurretModel> turretModels)
+    {
+        foreach (var t in turretDatas)
         {
             var turret = packedScene.Instantiate<Turret>();
             AddChild(turret);
             turret.Name = "Turret "+ Turrets.Count;
             turret.TurretMesh.Mesh = t.Body.Mesh;
             turret.Transform = t.Body.Transform;
-            var model = unit.Turrets.TurretModels[t.TurretIndex];
+            var model = turretModels[t.TurretIndex];
             turret.StatManager.CloneStats(model);
             turret.Projectiles = model.Projectiles;
             foreach (var Barrel in t.Barrels)
@@ -53,7 +72,6 @@ public partial class TurretControl : SimpleAttackBattery
             Turrets.Add(turret);
             Batteries.Add(turret);
         }
-        TurretIDsRange[1] = Batteries.Count;
     }
 
     public override void OnTargetLost(ITargetable targetable)
@@ -89,15 +107,13 @@ public partial class TurretControl : SimpleAttackBattery
         base.BatteryFire(delta);   
     }
 
-    public override void Shoot(int batteryId)
-    {
-        if(batteryId < TurretIDsRange[0] && batteryId >= TurretIDsRange[1])
-            base.Shoot(batteryId);
-        else
-            Turrets[batteryId].Shoot(CurrentTarget, Source);
-    }
-
-
+    // public override void Shoot(int batteryId)
+    // {
+    //     if((batteryId < TurretIDsRange[0] || batteryId == 0) && batteryId >= TurretIDsRange[1])
+    //         base.Shoot(batteryId);
+    //     else
+    //         Turrets[batteryId].Shoot(CurrentTarget, Source);
+    // }
 
     // public void InitTurrets(RigidBody3D parent, List<TurretData> TurretsData)
     // {

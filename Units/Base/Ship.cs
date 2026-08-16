@@ -103,6 +103,9 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     public BuildingManager BuildingManager { get; set; }
     public RecruitmentManager RecruitmentManager { get; set; }
 
+    public VelocityController VelocityController { get; set; }
+    public MeshInstance3D MeshInstance3D { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     // protected void UpdateLinearVelocity(PhysicsDirectBodyState3D state){
     //     // was GlobalTransform.Basis.XForm (new Vector3(0, 0, 1)
     //         state.LinearVelocity = _velocityController.GetAcceleratedVelocity(GlobalTransform.Basis * (new Vector3(0, 0, 1)),GlobalTransform.Origin,OrderQueue.currentTarget.Point);
@@ -397,6 +400,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         ControllerComponent = GetNode<ControllerComponent>("ControllerComponent");
         SimpleFireControl = GetNode<SimpleFireControl>("SimpleFireControl");
         AddChild(OrderQueue);
+        InputController.Initialize(this, this);
     }
 
     public void ConnectToEnterCombat(Node node, string methodName){
@@ -416,6 +420,7 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
         UnitController.UnitsRemoved += UpdateMesh_onRemoveUnit;
         UnitController.UnitsToTransferChanged += _on_UpdateUnitsToTransfer;
         RecruitmentComponent.UnitController = UnitController;
+        InputController.Initialize(this, this);
     }
 
     public void UpdatePower(){
@@ -469,5 +474,15 @@ public partial class Ship : CharacterBody3D, IMapObjectController, IVision, IEnt
     public void UpdateVelocity(Vector3 linearVelocity, Vector3 angularVelocity)
     {
         Velocity = linearVelocity;
+    }
+
+    public void Select()
+    {
+        Selection?.Show();
+    }
+
+    public void Deselect()
+    {
+        Selection?.Hide();
     }
 }

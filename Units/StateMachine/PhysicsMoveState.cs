@@ -1,38 +1,22 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 
-public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
+public partial class PhysicsMoveState : State<IMovable>
 {
     private OrderQueue.Target _target;
-
-    public delegate void MoveStateExitedEventHandler(OrderQueue.Target target);
-
-    public event MoveStateExitedEventHandler MoveStateExited;
-
-
-    [Export]
-    public HashSet<string> StatNames { get; set; } = new HashSet<string>() { "Speed" };
-    [Export]
-    private float _tolerance = 2f;
-    [Export]
-    private float _rotationTolerance = 0.01f;
-    [Export]
-    public float MoveSpeed = 5f;         // Units per second
-    [Export]
-    public float RotationSpeed { get; set; } = 3;
     public OrderQueue.Target Target { get => _target; set => _target = value; }
-    public float Tolerance { get => _tolerance; set => _tolerance = value; }
 
-    
-    public float RotationTolerance
-    {
-        get { return _rotationTolerance; }
-        set { _rotationTolerance = value; }
-    }
-    
+    VelocityController velocityController;
+
+    NavAgent3d NavAgent3D;
+
+    // bool TargetReached = false;
+
+    float Tolerance;
 
     /// <summary>
     /// Creates a new state instance with the given target position.
@@ -45,11 +29,18 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
         Target = target;
     }
 
-    public PhysicsMoveState(OrderQueue.Target target, float tolerance)
+    public PhysicsMoveState(OrderQueue.Target target, NavAgent3d agent3D, VelocityController VelocityController)
     {
+        velocityController = VelocityController; 
         Target = target;
-        Tolerance = tolerance;
+        // agent3D.TargetReached += _on_NavigationFinished;
+        NavAgent3D = agent3D;
     }
+
+    // void _on_NavigationFinished()
+    // {
+    //     TargetReached = true;
+    // }
 
     public PhysicsMoveState(Vector3 target)
     {
@@ -59,27 +50,25 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
     public override void Enter(IMovable body)
     {
         base.Enter(body);
-        if(body.StatManager != null)
-        {
-            if(body.StatManager.HasStat("Speed")) MoveSpeed = body.StatManager.GetStatCurrentValue("Speed");
-            if(body.StatManager.HasStat("RotationSpeed")) RotationSpeed = body.StatManager.GetStatCurrentValue("RotationSpeed");
-            if(body.StatManager.HasStat("Tolerance")) Tolerance = body.StatManager.GetStatCurrentValue("Tolerance");
-            if(body.StatManager.HasStat("RotationTolerance")) RotationTolerance = body.StatManager.GetStatCurrentValue("RotationTolerance");
-        }
-        if (Target.TargetNode != null)
-            if (Target.TargetNode is IMapObjectController controller)
-                if (controller.Controller.PlayerID != body.Controller.PlayerID)
-                {
-                    if(body.StatManager.HasStat("Range")) Tolerance = body.StatManager.GetStatCurrentValue("Range");
-                }
-        body.StatManager.Stats[StatNames.FirstOrDefault()].StatChanged += UpdateStat;
+        if(Target != null)
+            if (Target.TargetNode != null){
+                if (Target.TargetNode is IMapObjectController controller)
+                    if (controller.Controller.PlayerID != body.Controller.PlayerID)
+                    {
+                        if(body.StatManager.HasStat(GlobalStatNames.Range)) Tolerance = velocityController.Stats[GlobalStatNames.Range].CurrentValue;
+                    }
+            }
+            else
+            {
+                Tolerance = velocityController.Stats[GlobalStatNames.Tolerance].CurrentValue;
+            }
         // Optionally: play a walking or moving animation.
     }
 
     public override void Exit()
     {
         base.Exit();
-        MoveStateExited.Invoke(Target);
+        InvokwMoveStateExited(Target);
     }
 
     public override State<IMovable> ProcessState(double delta)
@@ -90,84 +79,50 @@ public partial class PhysicsMoveState : State<IMovable>, IUpdateStat
 
     private State<IMovable> CalculateLinearVelocity()
     {
+        Vector3 dir = Body.GlobalTransform.Basis * Vector3.Forward;
         Vector3 toTarget = Target.Point - Body.GlobalPosition;
 
         // Prevent tiny jitter if already at target
         var len = toTarget.Length();
-        if (len < Tolerance)
+        if(len < NavAgent3D.TargetDesiredDistance)
+        {
+            //var p = NavAgent3D.GetNextPathPosition();
+            GD.Print("T pos " + Target.Point + " B pos " + Body.GlobalPosition + " " + len);
+        }
+            
+        if (NavAgent3D.IsNavigationFinished())
         {
             Body.Velocity = Vector3.Zero;
             Body.OrderQueue.NextTarget();
             if (!Body.OrderQueue.HasTarget)
                 return new IdleState(Body);
+            NavAgent3D.TargetPosition = Body.OrderQueue.currentTarget.Point;
             return new PhysicsMoveState(Body.OrderQueue.currentTarget);
         }
-
-        Body.Velocity = toTarget.Normalized() * MoveSpeed;
+        
+        var speed = len / 0.6f;
+        speed = Mathf.Min(speed, velocityController.Stats[GlobalStatNames.Speed].CurrentValue);
+        var vel = dir.Normalized() * speed;
+        Body.Velocity = vel;
+        //Body.Velocity = velocityController.GetSteering(vel);
         return this;
     }
 
-    public Vector3 GetTargetDir(Vector3 currentPosition, Vector3 targetPosition){
-        return (targetPosition - currentPosition).Normalized();
-    }
-
-    public float GetAngleToTarget(Transform3D transform, Vector3 targetPosition){
-        Vector3 dir = transform.Basis*new Vector3(0, 0, 1);
-        var targetDir = GetTargetDir(targetPosition, transform.Origin);
-        float angle = (Mathf.Atan2(targetDir.X,targetDir.Z) - Mathf.Atan2(dir.X,dir.Z));
-        return angle;
-    }
-
-    //
-    //  Summary:
-    //      Returns angular velocity required to partialy rotate on y axis towards position.
-    //      The default forward facing direction is on positive z axis Vector3(0,0,1)
-    public Vector3 GetAngularVelocity(Transform3D currentTransform, Vector3 targetPosition)
-	{
-        int rotationFix = 1;
-
-        Vector3 upDir = new Vector3(0, 1, 0);
-        float angle = GetAngleToTarget(currentTransform, targetPosition);
-
-        if (angle > Math.PI)        { angle -= 2 * (float)Math.PI; }
-        else if (angle <= -Math.PI) { angle += 2 * (float)Math.PI; }
-
-        if((targetPosition-currentTransform.Origin).Length() < 8){
-            rotationFix *= 4;
-        }
-
-        return upDir*(angle) * RotationSpeed * rotationFix;
-	}
-
     private void CalculateAngularVelocity()
     {
-        // 1. Current facing direction (assuming -Z is forward)
-        Vector3 forward = -Body.GlobalBasis.Z.Normalized();
-
-        // 2. Desired direction toward target
-        Vector3 toTarget = (Target.Point - Body.GlobalPosition).Normalized();
-
-        // 3. If vectors are nearly aligned, don't rotate
-        float dot = forward.Dot(toTarget);
-        if (dot > 1 - RotationTolerance)
-        {
-            Body.AngularVelocity = Vector3.Zero;
-            return;
-        }
-
-        // 4. Compute rotation axis
-        Vector3 rotationAxis = forward.Cross(toTarget).Normalized();
-
-        // 5. Angle between current direction and target direction
-        float angle = Mathf.Acos(Mathf.Clamp(dot, -1f, 1f));
-
-        // 6. Angular velocity: how fast to rotate per second
-        //Body.AngularVelocity = (rotationAxis * angle) / Mathf.Max(TimeToRotate, 0.001f);
-        Body.AngularVelocity = GetAngularVelocity(Body.GlobalTransform, Target.Point);
+        Vector3 vector3 = Vector3.Zero;
+        var p = NavAgent3D.GetNextPathPosition();
+        // vector3 = velocityController.GetAngularVelocity(Body.GlobalTransform, Target.Point);
+        vector3 = velocityController.GetAngularVelocity(Body.GlobalTransform, p);
+        // if(ClosestCollider == null && Target != null)
+        //     vector3 = velocityController.GetAngularVelocity(Body.GlobalTransform, Target.Point);
+        // else
+        //     vector3 = velocityController.GetAvoidanceAngularVelocity(Body.GlobalTransform, ClosestIntersection, ClosestCollider);
+        Body.AngularVelocity = vector3;
     }
 
-    public void UpdateStat(IStat stat)
-    {
-        MoveSpeed = stat.CurrentValue;
-    }
+    // public void UpdateStat(IStat stat)
+    // {
+    //     velocityController.Stats[GlobalStatNames.Speed].CurrentValue = stat.CurrentValue;
+    // }
 }

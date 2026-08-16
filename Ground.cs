@@ -36,7 +36,7 @@ public partial class Ground : Area3D
 
 	public void UpdateGround(float Radius)
 	{
-		UpdateGround(new Vector3(Radius, 0, Radius));
+		UpdateGround(new Vector3(Radius, 1, Radius));
 	}
 
 	public void UpdateGround(Vector3 size)

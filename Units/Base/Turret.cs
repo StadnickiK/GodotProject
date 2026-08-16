@@ -16,6 +16,8 @@ public partial class Turret : CharacterBody3D, IStatManager
 
     public ITargetable Target { get; set; }
 
+    public IDamagable Source { get; set; }
+
     Vector3 IdleRotation = Vector3.Zero;
 
     public Node3D TransformParent { get; set; }
@@ -23,6 +25,10 @@ public partial class Turret : CharacterBody3D, IStatManager
     public StatManager StatManager { get; set; }
 
     public int Index { get; set; }
+
+    public double Reload { get; set; } = 5;
+
+    double currentTime = 0;
 
     public void RemoveTarget()
     {
@@ -35,14 +41,13 @@ public partial class Turret : CharacterBody3D, IStatManager
     {
         Idle,
         Tracking,
-
+        Shoot,
         Reset
     }
 
     protected void ResetVelocity()
     {
-        _velocityController.ResetSpeed();
-        // LinearVelocity = Vector3.Zero;
+        Velocity = Vector3.Zero;
         // AngularVelocity = Vector3.Zero;
         // Sleeping = true;
     }
@@ -65,7 +70,36 @@ public partial class Turret : CharacterBody3D, IStatManager
         //transform.Origin = Barrel.GlobalTransform.Origin + 1.2f*Scale.Z*dir;
         //projectile.Transform = transform;
         //projectiles.AddChild(projectile);
+    }
+
+    void Shoot(){
+        foreach (var item in Barrels)
+        {
+            var projectile = ProjectileFactory.CreateLaser(item.GlobalPosition, Target);
+            projectile.CollisionObject3D = this;
+            projectile.Source = Source;
+            projectile.Show();
+            // var transform = projectile.Transform;
+            //var dir = DirToTarget();
+            //projectile.Shoot(item.GlobalPosition, Target, dir);
+        }
+        //transform.Origin = Barrel.GlobalTransform.Origin + 1.2f*Scale.Z*dir;
+        //projectile.Transform = transform;
+        //projectiles.AddChild(projectile);
         
+    }
+
+    protected virtual void FireControl(double delta)
+    {
+        if (currentTime >= Reload)
+        {
+            if(Target != null) Shoot();
+            currentTime = 0;
+        }
+        else
+        {
+            currentTime += delta;
+        }
     }
 
     // public void _IntegrateForces(PhysicsDirectBodyState3D state){
@@ -96,19 +130,29 @@ public partial class Turret : CharacterBody3D, IStatManager
     }
     
     void UpdateYrotation(Vector3 targetPos, double delta){
-        float angleY = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
-        if(angleY > _velocityController.RotationTolerance || angleY < - _velocityController.RotationTolerance ){
+        float angleY = VelocityController.GetAngleYToTarget(GlobalTransform, targetPos);;
+        if(angleY > _velocityController.Stats[GlobalStatNames.RotationTolerance].CurrentValue || angleY < - _velocityController.Stats[GlobalStatNames.RotationTolerance].CurrentValue ){
+            if(State == TurretState.Shoot) State = TurretState.Tracking;
             Rotation += _velocityController.GetAngularVelocity(GlobalTransform, targetPos) * (float)delta;
         }else{
             ResetVelocity();
-            if(State == TurretState.Reset) State = TurretState.Idle;
+            switch (State)
+            {
+                case TurretState.Reset:
+                    State = TurretState.Idle;
+                    break;
+                case TurretState.Tracking:
+                    State = TurretState.Shoot;
+                    break;
+            }
         }
     }
 
     void UpdateYrotation2(Vector3 targetPos, double delta){
-        float angleY = _velocityController.GetAngleToTarget(GlobalTransform, targetPos); 
-        if(angleY > _velocityController.RotationTolerance || angleY < - _velocityController.RotationTolerance ){
-            Rotation += _velocityController.GetAngularVelocity(GlobalTransform, targetPos, -_velocityController.Forward) * (float)delta;
+        float angleY = VelocityController.GetAngleYToTarget(GlobalTransform, targetPos);;
+        if(angleY > _velocityController.Stats[GlobalStatNames.RotationTolerance].CurrentValue || angleY < - _velocityController.Stats[GlobalStatNames.RotationTolerance].CurrentValue ){
+            Rotation += _velocityController.GetAngularVelocity(GlobalTransform, targetPos) * (float)delta;
+            // Rotation += _velocityController.GetAngularVelocity(GlobalTransform, targetPos, -_velocityController.Forward) * (float)delta;
         }else{
             ResetVelocity();
             if(State == TurretState.Reset) State = TurretState.Idle;

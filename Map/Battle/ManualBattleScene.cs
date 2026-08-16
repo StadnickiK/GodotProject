@@ -29,6 +29,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     public DeployZone BattleZone { get; set; }
 
+    public UnitDragHandler unitDragHandler { get; set; }
+
     UnitFactory UnitFactory { get; set; }
 
     BattleUi battleUi;
@@ -57,9 +59,11 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     public BoxSelectController BoxSelectController { get; set; }
 
-    public List<Unit3D> LocalUnitModels { get; set; } = new List<Unit3D>();
+    public List<IUnit3D> LocalUnitModels { get; set; } = new List<IUnit3D>();
 
-    HashSet<Unit3D> Unit3DModels = new HashSet<Unit3D>();
+    public DrawingLines3DController DrawingLines3D { get; set; }
+
+    HashSet<IUnit3D> Unit3DModels = new HashSet<IUnit3D>();
 
     Dictionary<int, Unit3D> Models = new Dictionary<int, Unit3D>();
 
@@ -73,6 +77,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     IDamageCalculator DamageCalculator;
 
     ArmyView armyInterface;
+
+    NavigationRegion3D NavRegion3D;
 
     int LocalModels = 0;
 
@@ -106,7 +112,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     public void EndCombat()
     {
-        DisconnectInputEvent(BattleZone);
+        DisconnectInputEvent(BattleZone, WCC.OnGroundInputCallable);
         if (LocalUnitModels.Count > 0)
         {
             // SpaceBattle.UpdateStats(AttackerModels, SpaceBattle.GetAttackerUnits());
@@ -128,30 +134,33 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         SpaceBattle.Rand = world.Rand;
         UnitFactory.Data = world.Data;
         UnitFactory.WorldCursorControl = WCC =  world.WCC;
+        unitDragHandler.WorldCursorControl = WCC;
+        BoxSelectController.unitDragHandler = unitDragHandler;
     }
 
-    void ConnectInputEvent(Node node)
+    void ConnectInputEvent(Node node, Callable callable)
     {
-        if (!node.IsConnected(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable))
-            node.Connect(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable);
+        if (!node.IsConnected(CollisionObject3D.SignalName.InputEvent, callable))
+            node.Connect(CollisionObject3D.SignalName.InputEvent, callable);
     }
 
-    void DisconnectInputEvent(Node node)
+    void DisconnectInputEvent(Node node, Callable callable)
     {
-        if (node.IsConnected(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable))
-            node.Disconnect(CollisionObject3D.SignalName.InputEvent, WCC.OnGroundInputCallable);
+        if (node.IsConnected(CollisionObject3D.SignalName.InputEvent, callable))
+            node.Disconnect(CollisionObject3D.SignalName.InputEvent, callable);
     }
 
     void ConnectDeployZone()
     {
-        DisconnectInputEvent(BattleZone);
+        // DisconnectInputEvent(BattleZone);
+        // ConnectInputEvent(BattleZone, WCC.OnMouseInputCallable);
         switch (SpaceBattle.Local)
         {
             case SpaceBattle.HasLocal.Attacker:
-                ConnectInputEvent(AttackZone);
+                ConnectInputEvent(AttackZone, WCC.OnGroundInputCallable);
                 break;
             default:
-                ConnectInputEvent(DefendZone);
+                ConnectInputEvent(DefendZone, WCC.OnGroundInputCallable);
                 break;
         }
     }
@@ -184,18 +193,20 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         {
             max = MaxUnitSize.Z * UnitHeightMultiplier * (1f/DeploymentZoneHeightMultiplier);
         }
-        UpdateBattlefieldSize(new Vector3(max, 1, max));
+        UpdateBattlefieldSize(new Vector3(max, BattleZone.Size.Y, max));
     }
 
     void UpdateBattlefieldSize(Vector3 size)
     {
-        AttackZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, 1, DeploymentZoneHeightMultiplier*size.Z));
-        DefendZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, 1, DeploymentZoneHeightMultiplier*size.Z));
+        AttackZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, AttackZone.Position.Y, DeploymentZoneHeightMultiplier*size.Z));
+        DefendZone.UpdateSize(new Vector3(DeploymentZoneWidhtMultiplier*size.X, DefendZone.Position.Y, DeploymentZoneHeightMultiplier*size.Z));
         var half = size.Z/2;
         BattleZone.UpdateSize(size);
         var z = (0.9f-DeploymentZoneHeightMultiplier) * half;
-        AttackZone.UpdatePosition(new Vector3(0, 1, z));
-        DefendZone.UpdatePosition(new Vector3(0, 1, -z));
+        AttackZone.UpdatePosition(new Vector3(0, AttackZone.Position.Y, z));
+        DefendZone.UpdatePosition(new Vector3(0, DefendZone.Position.Y, -z));
+        unitDragHandler.UpdateDeploymentZoneLimits(AttackZone.Position, AttackZone.Size);
+        NavRegion3D.BakeNavigationMesh();
     }
 
     private void ConnectUnitCardsToSelect()
@@ -243,14 +254,16 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
             CalculateBattlefieldSize();
         else
             UpdateBattlefieldSize(settings.BattleZone);
+
         CameraLookAt?.Invoke(AttackZone.GlobalPosition);
+
         AttackZone.PlaceUnits(AttackerModels, AttackZone.Position);
         DefendZone.PlaceUnits(DefenderModels, DefendZone.Position, MathF.PI);
     }
 
-    private List<Unit3D> LoadUnits(HashSet<IEnterCombatBase> armies)
+    private List<IUnit3D> LoadUnits(HashSet<IEnterCombatBase> armies)
     {
-        var units = new List<Unit3D>();
+        var units = new List<IUnit3D>();
         foreach (var army in armies)
         {
             foreach (var unit in army.UnitController.UnitsList)
@@ -262,7 +275,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
                 if (army.Controller.IsLocal)
                 {
                     LocalUnits.Add(unit);
-                    unit3D.MovableState = IMovableState.Placement;
+                    unit3D.ChangeMovableState(IMovableState.Placement);
                     ChangeMovableState -= unit3D.ChangeMovableState;
                     ChangeMovableState += unit3D.ChangeMovableState;
                     LocalUnitModels.Add(unit3D);
@@ -282,12 +295,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     void CheckUnitSize(Vector3 size)
     {
-        if (size.X > MaxUnitSize.X)
-            size.X = MaxUnitSize.X;
-        if (size.Y > MaxUnitSize.Y)
-            size.Y = MaxUnitSize.Y;
-        if (size.Z > MaxUnitSize.Z)
-            size.Z = MaxUnitSize.Z;
+        size = size.Min(MaxUnitSize);
     }
 
     void CheckVisionRange(float range)
@@ -303,6 +311,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         BoxSelectController?.SetProcessInput(false);
         battleUi.Fight.ButtonUp += _on_Fight;
         UnitFactory.ProjectileFactory = ProjectileFactory;
+        UnitFactory.DrawingLines3D = DrawingLines3D;
+        UnitFactory.UnitDragHandler = unitDragHandler;
         ProjectileFactory.ProjectileParent = this;
         ProjectileFactory.DamageCalculator = DamageCalculator;
         SpaceBattle.DamageCalculator = DamageCalculator;
@@ -312,7 +322,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     {
         AttackZone = GetNode<DeployZone>("AttackZone");
         DefendZone = GetNode<DeployZone>("DefendZone");
-        BattleZone = GetNode<DeployZone>("BattleZone");
+        NavRegion3D = GetNode<NavigationRegion3D>("NavigationRegion3D");
+        BattleZone = NavRegion3D.GetNode<DeployZone>("BattleZone");
         UnitFactory = GetNode<UnitFactory>("UnitFactory");
         SpaceBattle = GetNode<SpaceBattle>("SpaceBattle");
         BoxSelectController = GetNodeOrNull<BoxSelectController>("BoxSelectController");
@@ -320,6 +331,8 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
         armyInterface = GetNode<ArmyView>("BattleUI/ArmyInterface");
         ProjectileFactory = GetNode<ProjectileFactory>("ProjectileFactory");
         DamageCalculator = GetNode<DamageCalculator>("DamageCalculator");
+        DrawingLines3D = GetNode<DrawingLines3DController>("DrawingLines3D");
+        unitDragHandler = GetNode<UnitDragHandler>("UnitDragHandler");
         // LeftDeployZone/AttackerDeployZone
     }
 
@@ -414,9 +427,10 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
     {
         AttackZone.Hide();
         DefendZone.Hide();
-        DisconnectInputEvent(AttackZone);
-        DisconnectInputEvent(DefendZone);
-        ConnectInputEvent(BattleZone);
+        // DisconnectInputEvent(AttackZone);
+        // DisconnectInputEvent(DefendZone);
+        // DisconnectInputEvent(BattleZone, WCC.OnMouseInputCallable);
+        ConnectInputEvent(BattleZone, WCC.OnGroundInputCallable);
         ChangeMovableState?.Invoke(IMovableState.Movement);
     }
 
@@ -454,7 +468,7 @@ public partial class ManualBattleScene : Node3D, IProjectileFactory, IGameScene
 
     public void Select(ISelection planet)
     {
-        _on_Deselect();
+        //_on_Deselect(); // unnecesary for manual battles bcs selectunit does the same
 		WCC._SelectUnit(planet);
     }
 

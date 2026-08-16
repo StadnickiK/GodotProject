@@ -19,6 +19,8 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
 
     public IDamagable Source { get; set; }
 
+    public bool Fire { get; set; } = true;  
+
     [Export]
     public double Reload { get; set; } = 3;
 
@@ -104,6 +106,7 @@ public partial class SimpleAttackBattery : Node3D, ISimpleAttackBattery, IMapObj
 
     public override void _Process(double delta)
     {
-        BatteryFire(delta);
+        if(Fire)
+            BatteryFire(delta);
     }
 }

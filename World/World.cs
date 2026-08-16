@@ -88,6 +88,8 @@ public partial class World : Node3D, IWorld
 
 	public WorldGenParams WorldGenParameters { get; set; }
 
+	public DebugContainer DebugContainer { get; set; }
+
 	[Export]
 	public int PlayerNumber { get; set; } = 1;
 
@@ -106,6 +108,7 @@ public partial class World : Node3D, IWorld
 		_wcc = GetNode<WorldCursorControl>("WorldCursorControl");
 		Ground = GetNode<Ground>("Ground");
 		Camera3D = GetNode<CameraGimbal>("CameraGimbal");
+		DebugContainer = GetNode<DebugContainer>("DebugContainer");
 	}
 
 	public void InitScene(IGameScene scene)
@@ -270,8 +273,8 @@ public partial class World : Node3D, IWorld
 	public override void _Ready()
 	{
 		GetNodes();
-		
 		_wcc.camera = Camera3D.GetNode<Camera3D>("InnerGimbal/Camera3D");
+		DebugContainer.Initialize(this);
 		Ground.ConnectToInputEvent(WCC.OnGroundInputCallable);
 		GD.Print("World: " + GetInstanceId());
 		InitWorld();
@@ -293,8 +296,11 @@ public partial class World : Node3D, IWorld
 		if (Input.IsActionJustReleased("ui_cancel"))
 		{
 			WorldMenu.Visible = !WorldMenu.Visible;
+			DebugContainer.Visible = false;
 			GetTree().Paused = WorldMenu.Visible;
 		}
+		if (Input.IsActionJustReleased("OpenDebug") && !WorldMenu.Visible)
+			DebugContainer.Visible = !DebugContainer.Visible;
     }
 
 }

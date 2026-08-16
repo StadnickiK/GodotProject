@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ra2e45icexeu"]
+[gd_scene format=3 uid="uid://ra2e45icexeu"]
 
 [ext_resource type="Script" uid="uid://bvqodugd7cabs" path="res://UI/Battle/CustomBatttleMenu.cs" id="1_ioarx"]
 [ext_resource type="PackedScene" uid="uid://csudfi7npqyku" path="res://UI/Header.tscn" id="1_xscii"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://4h88d7nq7l62" path="res://UI/build_menu_scroll.tscn" id="5_4ybk8"]
 [ext_resource type="PackedScene" uid="uid://ov51eetk3ggy" path="res://UI/Battle/battlefield_settings_menu.tscn" id="5_ynypf"]
 
-[node name="CustomBatttleMenu" type="Control"]
+[node name="CustomBatttleMenu" type="Control" unique_id=107333645]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,17 +18,7 @@ grow_vertical = 2
 script = ExtResource("1_ioarx")
 metadata/_edit_use_anchors_ = true
 
-[node name="BuildingInterface" parent="." instance=ExtResource("2_oonas")]
-visible = false
-layout_mode = 1
-anchor_top = 0.625
-anchor_right = 0.15494792
-anchor_bottom = 1.0
-offset_top = 0.0
-offset_right = 0.0
-grow_vertical = 0
-
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1613341794]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,7 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=922171895]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -46,11 +36,11 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="Header" parent="VBoxContainer" instance=ExtResource("1_xscii")]
+[node name="Header" parent="VBoxContainer" unique_id=1135582471 instance=ExtResource("1_xscii")]
 layout_mode = 2
 Title = "Custom Battle"
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=1124487386]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 100
@@ -58,54 +48,64 @@ theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
 
-[node name="PlayerContainerControler" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="PlayerContainerControler" type="VBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=2086104494]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("3_voyoh")
 
-[node name="MapSettings" parent="VBoxContainer/MarginContainer/PlayerContainerControler" instance=ExtResource("5_ynypf")]
+[node name="MapSettings" parent="VBoxContainer/MarginContainer/PlayerContainerControler" unique_id=721822175 instance=ExtResource("5_ynypf")]
 layout_mode = 2
 
-[node name="PlayersLabel" type="Label" parent="VBoxContainer/MarginContainer/PlayerContainerControler"]
+[node name="PlayersLabel" type="Label" parent="VBoxContainer/MarginContainer/PlayerContainerControler" unique_id=1706491478]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Players"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler" unique_id=1588523837]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PlayerContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer"]
+[node name="PlayerContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer" unique_id=891802654]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CustomBattlePlayerContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer/PlayerContainer" instance=ExtResource("4_voyoh")]
+[node name="CustomBattlePlayerContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer/PlayerContainer" unique_id=524652912 instance=ExtResource("4_voyoh")]
 layout_mode = 2
 IsLocal = true
 
-[node name="CustomBattlePlayerContainer2" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer/PlayerContainer" instance=ExtResource("4_voyoh")]
+[node name="CustomBattlePlayerContainer2" parent="VBoxContainer/MarginContainer/PlayerContainerControler/ScrollContainer/PlayerContainer" unique_id=1939932148 instance=ExtResource("4_voyoh")]
 layout_mode = 2
 Team = 1
 
-[node name="TeamControlls" type="HBoxContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler"]
+[node name="TeamControlls" type="HBoxContainer" parent="VBoxContainer/MarginContainer/PlayerContainerControler" unique_id=631558363]
 layout_mode = 2
 alignment = 1
 
-[node name="AddPlayerButton" type="Button" parent="VBoxContainer/MarginContainer/PlayerContainerControler/TeamControlls"]
+[node name="AddPlayerButton" type="Button" parent="VBoxContainer/MarginContainer/PlayerContainerControler/TeamControlls" unique_id=1995025731]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "Add Player"
 
-[node name="BuildMenuScroll" parent="VBoxContainer/MarginContainer/PlayerContainerControler" instance=ExtResource("5_4ybk8")]
+[node name="BuildMenuScroll" parent="VBoxContainer/MarginContainer/PlayerContainerControler" unique_id=2116239361 instance=ExtResource("5_4ybk8")]
 layout_mode = 2
 
-[node name="Play Controls" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Play Controls" type="HBoxContainer" parent="VBoxContainer" unique_id=1839091536]
 layout_mode = 2
 alignment = 2
 
-[node name="Play" type="Button" parent="VBoxContainer/Play Controls"]
+[node name="Play" type="Button" parent="VBoxContainer/Play Controls" unique_id=1658776790]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "Play
 "
+
+[node name="BuildingInterface" parent="." unique_id=426327150 instance=ExtResource("2_oonas")]
+visible = false
+layout_mode = 1
+anchor_top = 0.625
+anchor_right = 0.15494792
+anchor_bottom = 1.0
+offset_top = 0.0
+offset_right = 0.0
+grow_vertical = 0

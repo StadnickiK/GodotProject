@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bf3gd0e3vlb"]
+
+[ext_resource type="Script" uid="uid://b11g8amcsxnil" path="res://NavAgent3d.cs" id="1_1j2ci"]
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" unique_id=1947295488]
+avoidance_enabled = true
+use_3d_avoidance = true
+script = ExtResource("1_1j2ci")

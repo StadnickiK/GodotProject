@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cv8b0w3a6ggox"]
+
+[ext_resource type="Script" uid="uid://dyfaxc0ywflpc" path="res://Units/Base/Squad3D.cs" id="1_6iykk"]
+[ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_dgva1"]
+[ext_resource type="PackedScene" uid="uid://dtwjs6kflab87" path="res://Units/health_bar.tscn" id="3_etbp0"]
+
+[node name="Squad3D" type="Node3D" unique_id=1310928131]
+script = ExtResource("1_6iykk")
+
+[node name="StatManager" type="Node" parent="." unique_id=1150909047]
+script = ExtResource("2_dgva1")
+
+[node name="HealthBar" parent="." unique_id=1544712200 instance=ExtResource("3_etbp0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.73916, 0)
+visible = false

@@ -50,6 +50,15 @@ public partial class State<T>
 {
     protected T Body;
 
+    public delegate void MoveStateExitedEventHandler(OrderQueue.Target target);
+
+    public event MoveStateExitedEventHandler MoveStateExited;
+
+    protected void InvokwMoveStateExited(OrderQueue.Target target)
+    {
+        MoveStateExited?.Invoke(target);
+    }
+
     /// <summary>
     /// Called when the state is entered.
     /// </summary>

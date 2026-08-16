@@ -89,11 +89,15 @@ public partial class GuidedMissile : Area3D, IProjectile
 
     void Death()
     {
-        // ar explosion = packedScene.Instantiate<Node3D>();
-        // var transform = explosion.Transform;
-        // transform.Origin = GlobalPosition;
-        // explosion.Transform = transform;
-        // GetParent().AddChild(explosion);
+        var explosion = packedScene.Instantiate<Explosion>();
+        var transform = explosion.Transform;
+        transform.Origin = GlobalPosition;
+        explosion.Transform = transform;
+        explosion.Emitting = true;
+        explosion.OneShot = true;
+        explosion.Restart();
+        explosion.Finished += explosion._on_finished;
+        GetParent().AddChild(explosion);
         InvokeSaveNode();
         Hide();
     }

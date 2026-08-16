@@ -60,6 +60,7 @@ public partial class CustomBattlePlayerContainer : VBoxContainer
 
     public void _on_AddUnit(Unit unit)
     {
+        //var duplicate = unit.Duplicate();
         Combatant.UnitController.AddUnit(unit);
         ArmyView.ArmyInterfaceContainer.ArmyPanel.UpdateArmyList(Combatant.UnitController.UnitsList, true);
     }

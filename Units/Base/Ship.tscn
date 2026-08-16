@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://bdcl5y1xnxhkk"]
+[gd_scene format=3 uid="uid://bdcl5y1xnxhkk"]
 
 [ext_resource type="Script" uid="uid://bbn26cq23wctd" path="res://Units/Base/Ship.cs" id="1_hq6pt"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_dgjf5"]
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="5"]
-[ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="6"]
 [ext_resource type="PackedScene" uid="uid://bqtsvnnv84l0p" path="res://Units/StateMachine/state_machine.tscn" id="7_1l317"]
 [ext_resource type="PackedScene" uid="uid://davhcatexq1x2" path="res://Units/Base/unit_controller.tscn" id="7_hq6pt"]
 [ext_resource type="Script" uid="uid://b4qnswakxcbwi" path="res://Units/StateMachine/StateMachine.cs" id="8_bc3ov"]
@@ -31,44 +30,41 @@ shader_parameter/CricleWidth = 0.03
 material = SubResource("ShaderMaterial_1km8s")
 size = Vector2(10, 10)
 
-[node name="Ship" type="CharacterBody3D" groups=["EndTurnListener", "Selectable", "Targetable"]]
+[node name="Ship" type="CharacterBody3D" unique_id=1315517201 groups=["EndTurnListener", "Selectable", "Targetable"]]
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("1_hq6pt")
 
-[node name="VelocityController" type="Node" parent="."]
-script = ExtResource("6")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1464917637]
 transform = Transform3D(-1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0)
 shape = SubResource("1")
 
-[node name="VisibilityConroller" parent="." instance=ExtResource("3_dgjf5")]
+[node name="VisibilityConroller" parent="." unique_id=2087167487 instance=ExtResource("3_dgjf5")]
 
-[node name="Area3D" parent="." instance=ExtResource("3")]
+[node name="Area3D" parent="." unique_id=2072722165 instance=ExtResource("3")]
 
-[node name="SimpleFireControl" type="Node3D" parent="."]
+[node name="SimpleFireControl" type="Node3D" parent="." unique_id=520819527]
 script = ExtResource("5")
 
-[node name="UnitController" parent="." instance=ExtResource("7_hq6pt")]
+[node name="UnitController" parent="." unique_id=1992368634 instance=ExtResource("7_hq6pt")]
 
-[node name="StateMachine" parent="." instance=ExtResource("7_1l317")]
+[node name="StateMachine" parent="." unique_id=335021345 instance=ExtResource("7_1l317")]
 script = ExtResource("8_bc3ov")
 
-[node name="RecruitmentComponent" type="Node" parent="."]
+[node name="RecruitmentComponent" type="Node" parent="." unique_id=1027353268]
 script = ExtResource("11_dgjf5")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=967253246]
 mesh = SubResource("BoxMesh_dgjf5")
 
-[node name="Selection" parent="." instance=ExtResource("12_hq6pt")]
+[node name="Selection" parent="." unique_id=375099238 instance=ExtResource("12_hq6pt")]
 mesh = SubResource("PlaneMesh_pmimd")
 
-[node name="InputController" type="Node" parent="."]
+[node name="InputController" type="Node" parent="." unique_id=1060631552]
 script = ExtResource("13_s27ef")
 
-[node name="MoveToTargetAction" type="Node" parent="InputController"]
+[node name="MoveToTargetAction" type="Node" parent="InputController" unique_id=2067725803]
 script = ExtResource("13_pmimd")
 
-[node name="ControllerComponent" type="Node" parent="."]
+[node name="ControllerComponent" type="Node" parent="." unique_id=722312264]
 script = ExtResource("13_d2hlb")

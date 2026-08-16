@@ -1,0 +1,481 @@
+version=1
+
+# This file caches language service data to improve the performance of C# Dev Kit.
+# It is not intended for manual editing. It can safely be deleted and will be
+# regenerated automatically. For more information, see https://aka.ms/lscache
+#
+# To control where cache files are stored, use the following VS Code setting:
+#   "dotnet.projectsystem.cacheInProjectFolder": true
+
+[project]
+language=C#
+primary
+lastDtbSucceeded
+
+[properties]
+AssemblyName=Projects
+CommandLineArgsForDesignTimeEvaluation=-langversion:12.0 -define:TRACE
+CompilerGeneratedFilesOutputPath=
+MaxSupportedLangVersion=12.0
+ProjectAssetsFile=<PATH>.godot/mono/temp/obj/project.assets.json
+RootNamespace=Projects
+RunAnalyzers=
+RunAnalyzersDuringLiveAnalysis=
+SolutionPath=<PATH>Projects.sln
+TargetFrameworkIdentifier=.NETCoreApp
+TargetPath=<PATH>.godot/mono/temp/bin/Debug/Projects.dll
+TargetRefPath=<PATH>.godot/mono/temp/obj/Debug/ref/Projects.dll
+TemporaryDependencyNodeTargetIdentifier=net8.0
+
+[commandLineArguments]
+/noconfig
+/unsafe-
+/checked-
+/nowarn:1701,1702,1701,1702
+/fullpaths
+/nostdlib+
+/errorreport:prompt
+/warn:8
+/define:GODOT;GODOT_WINDOWS;GODOT_PC;GODOT4;GODOT4_6;GODOT4_6_0;GODOT4_OR_GREATER;GODOT4_0_OR_GREATER;GODOT4_1_OR_GREATER;GODOT4_2_OR_GREATER;GODOT4_3_OR_GREATER;GODOT4_4_OR_GREATER;GODOT4_5_OR_GREATER;GODOT4_6_OR_GREATER;GODOT4_6_0_OR_GREATER;TRACE;DEBUG;NET;NET8_0;NETCOREAPP;TOOLS;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+/highentropyva+
+/debug+
+/debug:portable
+/filealign:512
+/optimize-
+/out:<PATH>.godot/mono/temp/obj/Debug/Projects.dll
+/refout:<PATH>.godot/mono/temp/obj/Debug/refint/Projects.dll
+/target:library
+/warnaserror-
+/utf8output
+/deterministic-
+/langversion:12.0
+/warnaserror+:NU1605,SYSLIB0011
+
+[sourceFiles]
+.godot/mono/temp/obj/Debug/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+Army.cs
+Behaviour Tree/
+ ActionTN.cs
+ BehaviourTree.cs
+ Inverter.cs
+ Parallel.cs
+ Selector.cs
+ Sequence.cs
+ Timer.cs
+ TreeNode.cs
+Camera.cs
+CameraGimbal.cs
+Cannon.cs
+ColorProviderSingleton.cs
+Controllers/VelocityController.cs
+CursorManager/
+ SelectManager.cs
+ TargetManager.cs
+CustomMesh3d.cs
+Data/
+ Building.cs
+ Construct.cs
+ Data.cs
+ DataLoader.cs
+ GuidedMissile.cs
+ ModelLoader.cs
+ ScenePaths.cs
+ Technology.cs
+ TurretModel.cs
+ Turrets.cs
+ WorldGenParams.cs
+Dev/
+ A.cs
+ MovingTarget.cs
+Effects/
+ Explosion.cs
+ FireEmitter.cs
+ExplosionParticles.cs
+Game.cs
+GameLogger.cs
+Ground.cs
+InnerGimbal.cs
+KinematicBody.cs
+KinematicCube.cs
+Map/Battle/
+ BattleUi.cs
+ BoxSelectController.cs
+ DamageCalculator.cs
+ DeathController.cs
+ DeployZone.cs
+ DrawingLines3DController.cs
+ EndLaserParticles.cs
+ InputController.cs
+ InputEventController.cs
+ Laser.cs
+ ManualBattleScene.cs
+ OrderQueue.cs
+ ProjectileFactory.cs
+ SelectionCircleControler.cs
+ Shield.cs
+ SimpleAttackBattery.cs
+ TurretControl.cs
+ Unit3D.cs
+ UnitFactory.cs
+Map/
+ BuildingManager.cs
+ Combat.cs
+ Combatant.cs
+ ConstructionManager.cs
+ Galaxy.cs
+ Generator.cs
+ IMap/
+  IBuildCost.cs
+  IBuildTime.cs
+  ICollider3D.cs
+  IConstruct.cs
+  IDamagable.cs
+  IEnterCombat.cs
+  IEnterMapObject.cs
+  IExitMapObject.cs
+  IGetTotalProdCost.cs
+  IGetTotalUpkeep.cs
+  IInputController.cs
+  IMapObject.cs
+  IMapObjectController.cs
+  IMapObjectControllerChanger.cs
+  IMergable.cs
+  IMovable.cs
+  INode.cs
+  INode3D.cs
+  IProjectile.cs
+  IProjectileFactory.cs
+  IRequirements.cs
+  IResourceManager.cs
+  ISelectCircle.cs
+  ISelectMapObject.cs
+  IStatChangedNotifier.cs
+  IStatManager.cs
+  ITargetable.cs
+  ITargetSpottedListener.cs
+  IUnit3D.cs
+  IUpkeep.cs
+ Line3d.cs
+ Planet/
+  Orbit.cs
+  Planet.cs
+  Population.cs
+  Populations.cs
+  RecruitmentManager.cs
+  ResourceProductionComponent.cs
+  UpkeepComponent.cs
+ Resource.cs
+ ResourceManager.cs
+ SpaceBattle.cs
+ Starsystem/
+  Star.cs
+  StarSystem.cs
+ Tile.cs
+Menu/
+ ExitButton.cs
+ MainMenu.cs
+ MainMenuButton.cs
+ MenuPlanet.cs
+ PlayButton.cs
+NavAgent3d.cs
+PlayerBT/
+ GetIdleShip.cs
+ ScoutSystem.cs
+Properties/AssemblyInfo.cs
+Select.cs
+Target.cs
+Tools.cs
+UI/
+ ArmyInterface.cs
+ ArmyInterfaceContainer.cs
+ ArmyPanel.cs
+ ArmyRecruitment.cs
+ ArmyTransferPanel.cs
+ ArmyView.cs
+ Battle/
+  ArmyContainer.cs
+  ArmyVievContainer.cs
+  BattlefieldSettingsMenu.cs
+  CustomBattlePlayerContainer.cs
+  CustomBattlePlayerInfoContainer.cs
+  CustomBatttleMenu.cs
+  PlayerContainerControler.cs
+ BattleArmyContainerHandler.cs
+ BattlePanel.cs
+ BuildButton.cs
+ BuildingInterface.cs
+ BuildingLabel.cs
+ BuildingPanel.cs
+ BuildMenu.cs
+ Center/AlertBox.cs
+ CenterBattlePanel.cs
+ CmdPanel.cs
+ EndTurnPanel.cs
+ Header.cs
+ Icon3D.cs
+ InfoPanel.cs
+ ListPanel.cs
+ MapObjectLabel.cs
+ MenuPanel.cs
+ NodeFactoryBase.cs
+ OrbitFleetInterface.cs
+ OverviewPanel.cs
+ PlanetInfoLabel.cs
+ PlanetInterface.cs
+ PlanetInterfaceBuildQueue.cs
+ ResourceLabel.cs
+ ResourcePanel.cs
+ RightPanel.cs
+ SmallList.cs
+ TabsOrganizer.cs
+ Text3.cs
+ TopLeftPanel/
+  TechnologyInterface.cs
+  TechnologyPanel.cs
+  TopLeftPanel.cs
+ TransferLabel.cs
+ UI.cs
+ UnitCard.cs
+ UnitCardFactory.cs
+ UnitInfoPanel.cs
+ ValueSlider.cs
+Units/Base/
+ Barrel.cs
+ ControllerComponent.cs
+ IVisible.cs
+ IVision.cs
+ MoveToTargetAction.cs
+ ObstacleAvoidanceComponent.cs
+ Projectile.cs
+ RBullet.cs
+ RecruitmentComponent.cs
+ Ship.cs
+ ShipBT.cs
+ SimpleFireControl.cs
+ Squad.cs
+ Squad3D.cs
+ Turret.cs
+ Turretjoint.cs
+ Unit.cs
+ UnitController.cs
+ VisionComponent.cs
+Units/
+ HealthBar.cs
+ HealthBar3D.cs
+ StateMachine/
+  GenericStateMachine.cs
+  IdleState.cs
+  MoveState.cs
+  OrbitState.cs
+  PhysicsMoveState.cs
+  PhysicsPlacementState.cs
+  RecruitmentState.cs
+  StateMachine.cs
+ Stats/
+  BaseStat.cs
+  GlobalStatNames.cs
+  IUpdateStat.cs
+  StatManager.cs
+  StatModifier.cs
+ VisibilityConroller.cs
+World/
+ AIPLayer.cs
+ CampaignScene.cs
+ Diplomacy/
+  DiplomacyHandler.cs
+  DiplomaticEvent.cs
+  DiplomaticRelation.cs
+ Map.cs
+ MapArmyManager.cs
+ MapObjects.cs
+ Node2DPool.cs
+ Node3DPool.cs
+ Player.cs
+ World.cs
+ WorldCursorControl.cs
+
+[metadataReferences]
+<DOTNET>/packs/Microsoft.NETCore.App.Ref/8.0.15/ref/net8.0/
+ Microsoft.CSharp.dll
+ Microsoft.VisualBasic.Core.dll
+ Microsoft.VisualBasic.dll
+ Microsoft.Win32.Primitives.dll
+ Microsoft.Win32.Registry.dll
+ mscorlib.dll
+ netstandard.dll
+ System.AppContext.dll
+ System.Buffers.dll
+ System.Collections.Concurrent.dll
+ System.Collections.dll
+ System.Collections.Immutable.dll
+ System.Collections.NonGeneric.dll
+ System.Collections.Specialized.dll
+ System.ComponentModel.Annotations.dll
+ System.ComponentModel.DataAnnotations.dll
+ System.ComponentModel.dll
+ System.ComponentModel.EventBasedAsync.dll
+ System.ComponentModel.Primitives.dll
+ System.ComponentModel.TypeConverter.dll
+ System.Configuration.dll
+ System.Console.dll
+ System.Core.dll
+ System.Data.Common.dll
+ System.Data.DataSetExtensions.dll
+ System.Data.dll
+ System.Diagnostics.Contracts.dll
+ System.Diagnostics.Debug.dll
+ System.Diagnostics.DiagnosticSource.dll
+ System.Diagnostics.FileVersionInfo.dll
+ System.Diagnostics.Process.dll
+ System.Diagnostics.StackTrace.dll
+ System.Diagnostics.TextWriterTraceListener.dll
+ System.Diagnostics.Tools.dll
+ System.Diagnostics.TraceSource.dll
+ System.Diagnostics.Tracing.dll
+ System.dll
+ System.Drawing.dll
+ System.Drawing.Primitives.dll
+ System.Dynamic.Runtime.dll
+ System.Formats.Asn1.dll
+ System.Formats.Tar.dll
+ System.Globalization.Calendars.dll
+ System.Globalization.dll
+ System.Globalization.Extensions.dll
+ System.IO.Compression.Brotli.dll
+ System.IO.Compression.dll
+ System.IO.Compression.FileSystem.dll
+ System.IO.Compression.ZipFile.dll
+ System.IO.dll
+ System.IO.FileSystem.AccessControl.dll
+ System.IO.FileSystem.dll
+ System.IO.FileSystem.DriveInfo.dll
+ System.IO.FileSystem.Primitives.dll
+ System.IO.FileSystem.Watcher.dll
+ System.IO.IsolatedStorage.dll
+ System.IO.MemoryMappedFiles.dll
+ System.IO.Pipes.AccessControl.dll
+ System.IO.Pipes.dll
+ System.IO.UnmanagedMemoryStream.dll
+ System.Linq.dll
+ System.Linq.Expressions.dll
+ System.Linq.Parallel.dll
+ System.Linq.Queryable.dll
+ System.Memory.dll
+ System.Net.dll
+ System.Net.Http.dll
+ System.Net.Http.Json.dll
+ System.Net.HttpListener.dll
+ System.Net.Mail.dll
+ System.Net.NameResolution.dll
+ System.Net.NetworkInformation.dll
+ System.Net.Ping.dll
+ System.Net.Primitives.dll
+ System.Net.Quic.dll
+ System.Net.Requests.dll
+ System.Net.Security.dll
+ System.Net.ServicePoint.dll
+ System.Net.Sockets.dll
+ System.Net.WebClient.dll
+ System.Net.WebHeaderCollection.dll
+ System.Net.WebProxy.dll
+ System.Net.WebSockets.Client.dll
+ System.Net.WebSockets.dll
+ System.Numerics.dll
+ System.Numerics.Vectors.dll
+ System.ObjectModel.dll
+ System.Reflection.DispatchProxy.dll
+ System.Reflection.dll
+ System.Reflection.Emit.dll
+ System.Reflection.Emit.ILGeneration.dll
+ System.Reflection.Emit.Lightweight.dll
+ System.Reflection.Extensions.dll
+ System.Reflection.Metadata.dll
+ System.Reflection.Primitives.dll
+ System.Reflection.TypeExtensions.dll
+ System.Resources.Reader.dll
+ System.Resources.ResourceManager.dll
+ System.Resources.Writer.dll
+ System.Runtime.CompilerServices.Unsafe.dll
+ System.Runtime.CompilerServices.VisualC.dll
+ System.Runtime.dll
+ System.Runtime.Extensions.dll
+ System.Runtime.Handles.dll
+ System.Runtime.InteropServices.dll
+ System.Runtime.InteropServices.JavaScript.dll
+ System.Runtime.InteropServices.RuntimeInformation.dll
+ System.Runtime.Intrinsics.dll
+ System.Runtime.Loader.dll
+ System.Runtime.Numerics.dll
+ System.Runtime.Serialization.dll
+ System.Runtime.Serialization.Formatters.dll
+ System.Runtime.Serialization.Json.dll
+ System.Runtime.Serialization.Primitives.dll
+ System.Runtime.Serialization.Xml.dll
+ System.Security.AccessControl.dll
+ System.Security.Claims.dll
+ System.Security.Cryptography.Algorithms.dll
+ System.Security.Cryptography.Cng.dll
+ System.Security.Cryptography.Csp.dll
+ System.Security.Cryptography.dll
+ System.Security.Cryptography.Encoding.dll
+ System.Security.Cryptography.OpenSsl.dll
+ System.Security.Cryptography.Primitives.dll
+ System.Security.Cryptography.X509Certificates.dll
+ System.Security.dll
+ System.Security.Principal.dll
+ System.Security.Principal.Windows.dll
+ System.Security.SecureString.dll
+ System.ServiceModel.Web.dll
+ System.ServiceProcess.dll
+ System.Text.Encoding.CodePages.dll
+ System.Text.Encoding.dll
+ System.Text.Encoding.Extensions.dll
+ System.Text.Encodings.Web.dll
+ System.Text.Json.dll
+ System.Text.RegularExpressions.dll
+ System.Threading.Channels.dll
+ System.Threading.dll
+ System.Threading.Overlapped.dll
+ System.Threading.Tasks.Dataflow.dll
+ System.Threading.Tasks.dll
+ System.Threading.Tasks.Extensions.dll
+ System.Threading.Tasks.Parallel.dll
+ System.Threading.Thread.dll
+ System.Threading.ThreadPool.dll
+ System.Threading.Timer.dll
+ System.Transactions.dll
+ System.Transactions.Local.dll
+ System.ValueTuple.dll
+ System.Web.dll
+ System.Web.HttpUtility.dll
+ System.Windows.dll
+ System.Xml.dll
+ System.Xml.Linq.dll
+ System.Xml.ReaderWriter.dll
+ System.Xml.Serialization.dll
+ System.Xml.XDocument.dll
+ System.Xml.XmlDocument.dll
+ System.Xml.XmlSerializer.dll
+ System.Xml.XPath.dll
+ System.Xml.XPath.XDocument.dll
+ WindowsBase.dll
+<NUGET>/
+ godotsharp/4.6.0/lib/net8.0/GodotSharp.dll
+ godotsharpeditor/4.6.0/lib/net8.0/GodotSharpEditor.dll
+
+[analyzerReferences]
+<DOTNET>/packs/Microsoft.NETCore.App.Ref/8.0.15/analyzers/dotnet/cs/
+ Microsoft.Interop.ComInterfaceGenerator.dll
+ Microsoft.Interop.JavaScript.JSImportGenerator.dll
+ Microsoft.Interop.LibraryImportGenerator.dll
+ Microsoft.Interop.SourceGeneration.dll
+ System.Text.Json.SourceGeneration.dll
+ System.Text.RegularExpressions.Generator.dll
+<DOTNET>/sdk/9.0.203/Sdks/Microsoft.NET.Sdk/analyzers/
+ Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
+ Microsoft.CodeAnalysis.NetAnalyzers.dll
+<NUGET>/godot.sourcegenerators/4.6.0/analyzers/dotnet/cs/Godot.SourceGenerators.dll
+
+[analyzerConfigFiles]
+.godot/mono/temp/obj/Debug/Projects.GeneratedMSBuildEditorConfig.editorconfig
+<DOTNET>/sdk/9.0.203/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_8_default.globalconfig

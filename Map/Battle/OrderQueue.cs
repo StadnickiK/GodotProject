@@ -6,15 +6,16 @@ public partial class OrderQueue : Node
 {
     public class Target
     {
-        public Target(Vector3 vector3, Node3D obj = default) { TargetNode = obj; Point = vector3; }
+        public Target(INode3D obj) { TargetNode = obj; Point = obj.Position; }
+        public Target(Vector3 vector3, INode3D obj = default) { TargetNode = obj; Point = vector3; }
         public Vector3 Point { get; set; }
 
-        public Node3D TargetNode { get; set; }
+        public INode3D TargetNode { get; set; }
     }  
 
     public Target currentTarget;  
 
-    public delegate void AtTargetEventHandeler(Node3D node);
+    public delegate void AtTargetEventHandeler(INode3D node);
 
     public event AtTargetEventHandeler AtTarget;
 

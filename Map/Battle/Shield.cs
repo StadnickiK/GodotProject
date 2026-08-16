@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public partial class Shield : Area3D, IUpdateStat, IDamagable
 {
-    public HashSet<string> StatNames { get; set; }
-
     MeshInstance3D MeshInstance3D { get; set; }
 
     CollisionShape3D CollisionShape3D { get; set; }
@@ -26,6 +24,8 @@ public partial class Shield : Area3D, IUpdateStat, IDamagable
 
     Node INode.GetAsNode => GetAsNode;
 
+    public Godot.Collections.Array<string> StatNames { get; set; }
+    public System.Collections.Generic.Dictionary<string, IStat> Stats { get; set; }
 
     public override void _Ready()
     {

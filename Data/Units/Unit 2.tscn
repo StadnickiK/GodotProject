@@ -1,25 +1,628 @@
-[gd_scene load_steps=4 format=3 uid="uid://daxca4hnb7lj"]
+[gd_scene format=3 uid="uid://daxca4hnb7lj"]
 
 [ext_resource type="Script" uid="uid://bsrhsarq63iqu" path="res://Units/Base/Unit.cs" id="1"]
-[ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/BaseStat.cs" id="2"]
+[ext_resource type="Script" uid="uid://1qlot1o2jmrv" path="res://Units/Base/Squad.cs" id="1_1o0cb"]
+[ext_resource type="Script" uid="uid://bswyek1kebi3l" path="res://Units/Stats/StatT.cs" id="2"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="2_f2tmq"]
+[ext_resource type="Script" uid="uid://cscnmrf6rhai1" path="res://Data/Turrets.cs" id="4_1o0cb"]
 
-[node name="Unit 2" type="Node"]
-script = ExtResource("1")
+[node name="Unit 2" type="Node" unique_id=1052003180]
+script = ExtResource("1_1o0cb")
+ModelName = "UFO-1"
 BuildTime = 10
 
-[node name="StatManager" type="Node" parent="."]
+[node name="StatManager" type="Node" parent="." unique_id=542616606]
 script = ExtResource("2_f2tmq")
 
-[node name="Attack" type="Node" parent="StatManager"]
-script = ExtResource("2")
-_baseValue = 20.0
-
-[node name="Defence" type="Node" parent="StatManager"]
+[node name="Attack" type="Node" parent="StatManager" unique_id=50191418]
 script = ExtResource("2")
 _baseValue = 10.0
 
-[node name="HitPoints" type="Node" parent="StatManager"]
+[node name="Defence" type="Node" parent="StatManager" unique_id=139461633]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="StatManager" unique_id=1483606241]
+script = ExtResource("2")
+_baseValue = 1000.0
+
+[node name="Shield" type="Node" parent="StatManager" unique_id=691083752]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="StatManager" unique_id=1749029636]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="StatManager" unique_id=1248511065]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="StatManager" unique_id=511745783]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="StatManager" unique_id=167985246]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="StatManager" unique_id=1792377295]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="StatManager" unique_id=1459297941]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="StatManager" unique_id=33143584]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="StatManager" unique_id=2050104067]
+script = ExtResource("2")
+_baseValue = 5.0
+HasMaxValue = true
+_maxValue = 5.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="StatManager" unique_id=1800970838]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="StatManager" unique_id=53540952]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="StatManager" unique_id=657577948]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="StatManager" unique_id=493206133]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="StatManager" unique_id=2009385412]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="StatManager" unique_id=1890614165]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Turrets" type="Node" parent="." unique_id=1193118805]
+script = ExtResource("4_1o0cb")
+
+[node name="Units" type="Node" parent="." unique_id=191105928]
+
+[node name="Unit" type="Node" parent="Units" unique_id=695555321]
+script = ExtResource("1")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+
+[node name="StatManager" type="Node" parent="Units/Unit" unique_id=1277174566]
+script = ExtResource("2_f2tmq")
+
+[node name="Attack" type="Node" parent="Units/Unit/StatManager" unique_id=2066248025]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="Units/Unit/StatManager" unique_id=1908121122]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="Units/Unit/StatManager" unique_id=1285387784]
 script = ExtResource("2")
 _baseValue = 200.0
-_maxValue = 200
+HasMaxValue = true
+_maxValue = 200.0
+
+[node name="Shield" type="Node" parent="Units/Unit/StatManager" unique_id=1656584333]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="Units/Unit/StatManager" unique_id=449595959]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="Units/Unit/StatManager" unique_id=569227658]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="Units/Unit/StatManager" unique_id=39350839]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="Units/Unit/StatManager" unique_id=1611052253]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="Units/Unit/StatManager" unique_id=2051374625]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="Units/Unit/StatManager" unique_id=1055393173]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="Units/Unit/StatManager" unique_id=1598439833]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="Units/Unit/StatManager" unique_id=1949259110]
+script = ExtResource("2")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="Units/Unit/StatManager" unique_id=966721943]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="Units/Unit/StatManager" unique_id=1073487934]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="Units/Unit/StatManager" unique_id=229070842]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="Units/Unit/StatManager" unique_id=2116088171]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="Units/Unit/StatManager" unique_id=194956697]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="Units/Unit/StatManager" unique_id=1581923743]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Unit2" type="Node" parent="Units" unique_id=1715327994]
+script = ExtResource("1")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+
+[node name="StatManager" type="Node" parent="Units/Unit2" unique_id=919875849]
+script = ExtResource("2_f2tmq")
+
+[node name="Attack" type="Node" parent="Units/Unit2/StatManager" unique_id=1831454256]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="Units/Unit2/StatManager" unique_id=1976081364]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="Units/Unit2/StatManager" unique_id=375797675]
+script = ExtResource("2")
+_baseValue = 200.0
+HasMaxValue = true
+_maxValue = 200.0
+
+[node name="Shield" type="Node" parent="Units/Unit2/StatManager" unique_id=287560628]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="Units/Unit2/StatManager" unique_id=1520144133]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="Units/Unit2/StatManager" unique_id=1990177850]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="Units/Unit2/StatManager" unique_id=82097865]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="Units/Unit2/StatManager" unique_id=254273997]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="Units/Unit2/StatManager" unique_id=1065831949]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="Units/Unit2/StatManager" unique_id=950221011]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="Units/Unit2/StatManager" unique_id=1766634772]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="Units/Unit2/StatManager" unique_id=650055597]
+script = ExtResource("2")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="Units/Unit2/StatManager" unique_id=1800631139]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="Units/Unit2/StatManager" unique_id=155372655]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="Units/Unit2/StatManager" unique_id=2057045568]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="Units/Unit2/StatManager" unique_id=663383821]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="Units/Unit2/StatManager" unique_id=1930086761]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="Units/Unit2/StatManager" unique_id=1819491490]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Unit3" type="Node" parent="Units" unique_id=192658958]
+script = ExtResource("1")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+
+[node name="StatManager" type="Node" parent="Units/Unit3" unique_id=1283190865]
+script = ExtResource("2_f2tmq")
+
+[node name="Attack" type="Node" parent="Units/Unit3/StatManager" unique_id=351871003]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="Units/Unit3/StatManager" unique_id=869269906]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="Units/Unit3/StatManager" unique_id=1251028469]
+script = ExtResource("2")
+_baseValue = 200.0
+HasMaxValue = true
+_maxValue = 200.0
+
+[node name="Shield" type="Node" parent="Units/Unit3/StatManager" unique_id=807245837]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="Units/Unit3/StatManager" unique_id=46550180]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="Units/Unit3/StatManager" unique_id=2013813778]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="Units/Unit3/StatManager" unique_id=1755837546]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="Units/Unit3/StatManager" unique_id=440030063]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="Units/Unit3/StatManager" unique_id=1825436921]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="Units/Unit3/StatManager" unique_id=1498659221]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="Units/Unit3/StatManager" unique_id=348076575]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="Units/Unit3/StatManager" unique_id=1722166635]
+script = ExtResource("2")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="Units/Unit3/StatManager" unique_id=837354748]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="Units/Unit3/StatManager" unique_id=637099656]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="Units/Unit3/StatManager" unique_id=1968449470]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="Units/Unit3/StatManager" unique_id=1201877978]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="Units/Unit3/StatManager" unique_id=602916598]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="Units/Unit3/StatManager" unique_id=818941262]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Unit4" type="Node" parent="Units" unique_id=545451694]
+script = ExtResource("1")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+
+[node name="StatManager" type="Node" parent="Units/Unit4" unique_id=344567171]
+script = ExtResource("2_f2tmq")
+
+[node name="Attack" type="Node" parent="Units/Unit4/StatManager" unique_id=2099293627]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="Units/Unit4/StatManager" unique_id=494755014]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="Units/Unit4/StatManager" unique_id=1287139543]
+script = ExtResource("2")
+_baseValue = 200.0
+HasMaxValue = true
+_maxValue = 200.0
+
+[node name="Shield" type="Node" parent="Units/Unit4/StatManager" unique_id=1803788760]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="Units/Unit4/StatManager" unique_id=1338852708]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="Units/Unit4/StatManager" unique_id=1439663348]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="Units/Unit4/StatManager" unique_id=845390617]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="Units/Unit4/StatManager" unique_id=1979389498]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="Units/Unit4/StatManager" unique_id=438482270]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="Units/Unit4/StatManager" unique_id=111452196]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="Units/Unit4/StatManager" unique_id=31039913]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="Units/Unit4/StatManager" unique_id=2018068236]
+script = ExtResource("2")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="Units/Unit4/StatManager" unique_id=609336868]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="Units/Unit4/StatManager" unique_id=1261649812]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="Units/Unit4/StatManager" unique_id=641218155]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="Units/Unit4/StatManager" unique_id=2046597522]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="Units/Unit4/StatManager" unique_id=953640079]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="Units/Unit4/StatManager" unique_id=599445770]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Unit5" type="Node" parent="Units" unique_id=220919804]
+script = ExtResource("1")
+ModelName = "UFO-1"
+ExportBatteries = Array[Vector3]([Vector3(0, 0, 0)])
+
+[node name="StatManager" type="Node" parent="Units/Unit5" unique_id=1553805226]
+script = ExtResource("2_f2tmq")
+
+[node name="Attack" type="Node" parent="Units/Unit5/StatManager" unique_id=1987394975]
+script = ExtResource("2")
+_baseValue = 10.0
+
+[node name="Defence" type="Node" parent="Units/Unit5/StatManager" unique_id=198261669]
+script = ExtResource("2")
+_baseValue = 5.0
+
+[node name="Health" type="Node" parent="Units/Unit5/StatManager" unique_id=1867248161]
+script = ExtResource("2")
+_baseValue = 200.0
+HasMaxValue = true
+_maxValue = 200.0
+
+[node name="Shield" type="Node" parent="Units/Unit5/StatManager" unique_id=425594756]
+script = ExtResource("2")
+
+[node name="Speed" type="Node" parent="Units/Unit5/StatManager" unique_id=128963204]
+script = ExtResource("2")
+_baseValue = 30.0
+
+[node name="Range" type="Node" parent="Units/Unit5/StatManager" unique_id=1077540614]
+script = ExtResource("2")
+_baseValue = 50.0
+
+[node name="Vision Range" type="Node" parent="Units/Unit5/StatManager" unique_id=1229623794]
+script = ExtResource("2")
+_baseValue = 400.0
+
+[node name="Rotation Speed" type="Node" parent="Units/Unit5/StatManager" unique_id=755154700]
+script = ExtResource("2")
+_baseValue = 40.0
+
+[node name="Tolerance" type="Node" parent="Units/Unit5/StatManager" unique_id=556625021]
+script = ExtResource("2")
+_baseValue = 1.0
+
+[node name="Rotation Tolerance" type="Node" parent="Units/Unit5/StatManager" unique_id=725423417]
+script = ExtResource("2")
+_baseValue = 0.05
+
+[node name="FireLifetime" type="Node" parent="Units/Unit5/StatManager" unique_id=649904263]
+script = ExtResource("2")
+_baseValue = 2.0
+
+[node name="Model count" type="Node" parent="Units/Unit5/StatManager" unique_id=834441423]
+script = ExtResource("2")
+_baseValue = 1.0
+HasMaxValue = true
+_maxValue = 1.0
+HasMinValue = true
+_minValue = 1.0
+
+[node name="Separation Radius" type="Node" parent="Units/Unit5/StatManager" unique_id=1635079279]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Separation Strength" type="Node" parent="Units/Unit5/StatManager" unique_id=647194794]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Strength" type="Node" parent="Units/Unit5/StatManager" unique_id=654752478]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Strength" type="Node" parent="Units/Unit5/StatManager" unique_id=1278042919]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 5.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Cohesion Radius" type="Node" parent="Units/Unit5/StatManager" unique_id=1176271059]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0
+
+[node name="Alignment Radius" type="Node" parent="Units/Unit5/StatManager" unique_id=1986488319]
+script = ExtResource("2")
+Visibility = 0
+_baseValue = 20.0
+_maxValue = 1.0
+_minValue = 1.0

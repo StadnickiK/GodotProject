@@ -3,7 +3,7 @@ using System;
 //using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisible, IBuildingManager, IPlanetInterface, ISelection, IEnterCombat
+public partial class Planet : StaticBody3D, INode3D,  IMapObjectControllerChanger, IVisible, IBuildingManager, IPlanetInterface, ISelection, IEnterCombat
 // IEnterMapObject, IExitMapObject,
 //, IResourceManager
 //, IGetTotalUpkeep, IGetTotalProdCost
@@ -100,6 +100,7 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     public SelectionCircleControler Selection { get; set; }
 
     public InputController InputController { get; set; }
+    public OrderQueue OrderQueue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 
 
@@ -382,4 +383,14 @@ public partial class Planet : StaticBody3D,  IMapObjectControllerChanger, IVisib
     }
 
     public void ClearTargets() {}
+
+    public void Select()
+    {
+        Selection?.Show();
+    }
+
+    public void Deselect()
+    {
+        Selection?.Hide();
+    }
 }

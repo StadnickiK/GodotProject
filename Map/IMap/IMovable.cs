@@ -8,16 +8,15 @@ public enum IMovableState
     Drag
 }
 
-public interface IMovable : ISelection, IStatManager, IMapObjectController
+public interface IMovable : INode3D, ISelection, IStatManager, IMapObjectController
 {
     public IMovableState MovableState { get; set; }
-    public OrderQueue OrderQueue { get; set; }
 
-    public Basis GlobalBasis { get; set; }
-
-    public Transform3D GlobalTransform { get; set; }
+    public MeshInstance3D MeshInstance3D { get; set; }
 
     public Godot.Vector3 Velocity { get; set; }
+
+    public VelocityController VelocityController { get; }
 
     public Godot.Vector3 AngularVelocity { get; set; }
 
@@ -26,4 +25,9 @@ public interface IMovable : ISelection, IStatManager, IMapObjectController
     public void LookAt(Godot.Vector3 target, Nullable<Godot.Vector3> up = null, bool useModelFront = false);
 
     public void SetPosition(Godot.Vector3 Vector3);
+}
+
+public interface IMovable3D : IMovable, ICollider3D
+{
+    
 }

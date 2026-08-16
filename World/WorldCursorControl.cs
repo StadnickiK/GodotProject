@@ -1,11 +1,12 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 
-public interface ISelection : INode, ISelectCircle
+public interface ISelection : INode3D, ISelectCircle
 {
-    public Vector3 GlobalPosition { get; set; }
-
+    public OrderQueue OrderQueue { get; set; }
     public void MoveToPosition(Godot.Vector3 position);
     public void MoveToTarget(OrderQueue.Target target);
     public void ClearTargets();
@@ -22,8 +23,12 @@ public partial class WorldCursorControl : Node3D
 
     Select select = null;
 
+    public Select Select { get => select; set => select = value; }
+
     public int LocalPlayerID { get; set; }
     public Camera3D camera = null;
+
+    bool Drag = false;
 
     [Signal]
     public delegate void DeselectEventHandler();
@@ -36,7 +41,13 @@ public partial class WorldCursorControl : Node3D
 
     Callable _AddTargetCallable;
 
+    public Vector3 MousePosition { get; set; } = Vector3.Zero;
+
+    public Vector3 MousePositionRounded { get {return new Vector3(Mathf.Round(MousePosition.X), Mathf.Round(MousePosition.Y), Mathf.Round(MousePosition.Z));} }
+
     public Callable OnGroundInputCallable { get; private set; }
+
+    HashSet<Node> Markers { get; set; } = new HashSet<Node>();
 
     private static WorldCursorControl _instance;
     public static WorldCursorControl Instance
@@ -48,39 +59,23 @@ public partial class WorldCursorControl : Node3D
         private set { _instance = value; }
     } 
 
-    // public void ConnectToSelectUnit(IInputController controller)
-    // {
-    //     controller.InputController.SelectUnit -= _SelectUnit;
-    //     controller.InputController.SelectUnit += _SelectUnit;
-    // }
-
-    // public void ConnectToDeselectUnit(IInputController controller)
-    // {
-    //     controller.InputController.DeselectUnit -= _DeselectUnit;
-    //     controller.InputController.DeselectUnit += _DeselectUnit;
-    // }
-
-    // public void ConnectToAddUnit(IInputController controller)
-    // {
-    //     controller.InputController.AddUnit -= _AddUnit;
-    //     controller.InputController.AddUnit += _AddUnit;
-    // }
-
-    // public void ConnectToSelectTarget(IInputController controller)
-    // {
-    //     controller.InputController.SelectTarget -= _SelectTarget;
-    //     controller.InputController.SelectTarget += _SelectTarget;
-    // }
-
-    // public void ConnectToAddTarget(Node node)
-    // {
-    //     if (!node.IsConnected(InputController.SignalName.AddTarget, _AddTargetCallable))
-    //         node.Connect(InputController.SignalName.AddTarget, _AddTargetCallable);
-    // }
+    PhysicsRayQueryParameters3D _querry = new PhysicsRayQueryParameters3D()
+    {
+        CollideWithBodies = true,
+        CollideWithAreas = true
+    };
+    
+    [Export]
+    public float ray_length { get; set; } = 1000f;
 
     void GetNodes()
     {
-        select = GetNode<Select>("Select");
+        Select = GetNode<Select>("Select");
+    }
+
+    public void OnDrag()
+    {
+        Drag = !Drag;
     }
 
     public override void _Ready()
@@ -90,96 +85,115 @@ public partial class WorldCursorControl : Node3D
         _SelectUnitCallable = new Callable(this, nameof(_SelectUnit));
         _AddUnitCallable = new Callable(this, nameof(_AddUnit));
         _SelectTargetCallable = new Callable(this, nameof(_SelectTarget));
-        //_SelectTargetCallable = new Callable(this, nameof(_AddTarget));
         OnGroundInputCallable = new Callable(this, nameof(_on_Ground_input_event));
-        /*
-        foreach(Node n in GetTree().GetNodesInGroup("Selectable")){
-            n.Connect("SelectUnit", new Callable(this, nameof(_SelectUnit)));
-        }
-        foreach(Node n in GetTree().GetNodesInGroup("Targetable")){
-            n.Connect("SelectTarget", new Callable(this, nameof(_SelectTarget)));
-        }
-        //GetNode<Ship>("/root/World/Ship").Connect("SelectUnit", this, nameof(_SelectUnit)); 
-        //*/
     }
 
+    
     public void _SelectUnit(ISelection unit)
     {
-        select.SelectUnit(unit);
+        Select.SelectUnit(unit);
+        //SpawnMarkers(unit);
         //if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
         //GD.Print("Selected node " + unit.Name);
     }
 
+    void SpawnMarkers(ISelection unit)
+    {
+
+        if(unit.OrderQueue != null)
+        {
+            Vector3 target = unit.Position;
+            foreach (var item in unit.OrderQueue.Targets)
+            {
+                var mesh = new Line3d();
+                mesh.LineWithPoint(target, item.Point);
+                AddChild(mesh);
+                Markers.Add(mesh);
+                target = item.Point;
+            }
+        }
+    }
+
+    void SpawnMarkers()
+    {
+        ClearMarkers();
+        foreach (var item in Select.SelectedUnits)
+            SpawnMarkers(item);
+    }
+
+    void ClearMarkers()
+    {
+        foreach (var item in Markers)
+        {
+            item.QueueFree();
+        }
+        Markers.Clear();
+    }
+
     public void _DeselectUnit(ISelection unit)
     {
-        select.DeselectUnit(unit);
+        Select.DeselectUnit(unit);
+        //ClearMarkers();
         //if (Logging) gameLogger.LogInfo("Selected node " + unit.Name);
         //GD.Print("Selected node " + unit.Name);
     }
 
     public void _AddUnit(ISelection unit)
     {
-        select.AddSelectedUnit(unit);
+        Select.AddSelectedUnit(unit);
+        //SpawnMarkers(unit);
     }
 
-    public void _SelectTarget(CollisionObject3D target)
+    public void _SelectTarget(INode3D target)
     {
-        select.AddTarget(target);
+        Select.AddTarget(target);
     }
 
-    public void SetTask(CollisionObject3D target, CmdPanel.CmdPanelOption task)
+    public void SetTask(INode3D target, CmdPanel.CmdPanelOption task)
     {
         ;
-        select.AddTarget(target, task);
+        Select.AddTarget(target, task);
     }
 
     public Vector3 GetMouseWorldPosition()
     {
-        var ray_length = 1000;
-        var mousePos = GetViewport().GetMousePosition();
-        var from = camera.ProjectRayOrigin(mousePos);
-        var to = from + camera.ProjectRayNormal(mousePos) * ray_length;
-        Vector3 p = Vector3.Zero;
-        var space_state = GetWorld3D().DirectSpaceState;
-        var state = space_state.IntersectRay(new PhysicsRayQueryParameters3D()
-        {
-            From = from,
-            To = to
-        });
-        if (state.ContainsKey("position"))
-        {
-            p = (Vector3)state["position"];
-        }
-        return p;
+        return Tools.GetMouseWorldPosition(this, camera, _querry, ray_length);
     }
 
     void _on_Ground_input_event(Node camera, InputEvent inputEvent, Vector3 click_position, Vector3 click_normal, int shape_idx)
     {
+        //MousePosition = click_position;
         if (inputEvent is InputEventMouseButton button)
         {
             if (HasSelected())
             { // mouse
                 if (button.ButtonIndex == MouseButton.Right)
                 {   // right click
-                    select.MoveToPosition(click_position);
+                    Select.MoveToPosition(click_position);
+                    //SpawnMarkers();
                 }
-                if (button.ButtonIndex == MouseButton.Left && select != null && inputEvent.IsPressed())
+                if (button.ButtonIndex == MouseButton.Left && Select != null && inputEvent.IsPressed()) // && inputEvent.IsReleased()
                 {    // left click
-                    select.ClearSelection();
+                    Select.ClearSelection();
                     EmitSignal(nameof(SignalName.Deselect));
                 }
             }
         }
     }
 
+    // void _on_Mouse_input_event(Node camera, InputEvent inputEvent, Vector3 click_position, Vector3 click_normal, int shape_idx)
+    // {
+    //     MousePosition = click_position;
+    // }
+
     public bool HasSelected()
     {
-        return select.HasSelected();
+        return Select.HasSelected();
     }
 
     public void ClearSelection()
     {
-        select.ClearSelection();
+        Select.ClearSelection();
     }
 
     internal void ConnectUnit3D(Unit3D unit3D)
@@ -188,8 +202,8 @@ public partial class WorldCursorControl : Node3D
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
+     public override void _Process(double delta)
+     {
+         MousePosition = GetMouseWorldPosition();
+     }
 }

@@ -8,35 +8,40 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
     public WorldCursorControl WorldCursorControl { get; set; }
     public ProjectileFactory ProjectileFactory { get; set; }
 
+    public DrawingLines3DController DrawingLines3D { get; set; }
+
+    PackedScene packedScene;
+
     public Data Data { get; set; }
+    public UnitDragHandler UnitDragHandler { get; internal set; }
+
 
     public override void _Ready()
     {
         base._Ready();
         ArmyPool = GetNode<Node3DPool>("UnitPool");
+        packedScene = (PackedScene)ResourceLoader.Load(ScenePaths.Instance.Squad3DPath);
     }
 
-    public Unit3D CreateUnit(Node parent, Vector3 position, Player controller, Unit unit)
+    public IUnit3D CreateUnit(Node parent, Vector3 position, Player controller, Unit unit)
     {
-        var Unit3D = CreateUnit(parent, position, controller);
-        ConnectSignals(Unit3D);
-        Unit3D.LoadUnit(unit);
-        Unit3D.ProjectileFactory = ProjectileFactory;
-        Unit3D.UpdateModel(unit);
+        IUnit3D Unit3D;
+        if (unit.StatManager.GetStat(GlobalStatNames.ModelCount).CurrentValue > 1)
+        {
+            Unit3D = packedScene.Instantiate<Squad3D>();
+            parent.AddChild(Unit3D.GetAsNode);
+        }
+        else
+        {
+            Unit3D = CreateUnit(parent, position, controller);
+        }        
+        Unit3D.Initialize(this, parent, position, controller, unit);
         return Unit3D;
     }
 
-    public Unit3D CreateUnit(Node parent, Vector3 position, string name)
-    {
-        var Unit3D = (Unit3D)ArmyPool.GetNode3D(parent, position, name);
-        ConnectSignals(Unit3D);
-        return Unit3D;
-    }
-
-    public Unit3D CreateUnit(Node parent, Vector3 position, Player controller)
+    public IUnit3D CreateUnit(Node parent, Vector3 position, Player controller)
     {
         var Unit3D = (Unit3D)ArmyPool.GetNode3D(parent, position);
-        ConnectSignals(Unit3D);
         UpdateVisibility(
             Unit3D,
             new VisibilityConroller.VisibilityStruct()
@@ -56,9 +61,16 @@ public partial class UnitFactory : NodeFactoryBase<Unit3D>, IProjectileFactory
         unit.VisibilityConroller.UpdateVisible(visibilityStruct, PlayerID, visible);
     }
 
-    void ConnectSignals(Unit3D Unit3D)
+    public void ConnectSignals(IUnit3D Unit3D)
     {
+        DrawingLines3D.ConnectUnit3D(Unit3D);
         Unit3D.InputController.ConnectWCC(WorldCursorControl);
-        ArmyPool.ConnectSaveNode(Unit3D);
+        
+        ConnectSaveNode(Unit3D);
+    }
+
+    public void ConnectSaveNode(ISavingNode savingNode)
+    {
+        ArmyPool.ConnectSaveNode(savingNode);
     }
 }

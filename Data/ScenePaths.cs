@@ -34,4 +34,8 @@ public partial class ScenePaths
     public string TurretPath { get; set; } = "res://Units/Base/turret.tscn";
 
     public string ExplosionPath { get; set; } = "res://Effects/explosion.tscn";
+
+    public string Squad3DPath { get; set; } = "res://Units/Base/squad_3d.tscn";
+
+     public string Line3DPath { get; set; } = "res://Map/line_3d.tscn";
 }

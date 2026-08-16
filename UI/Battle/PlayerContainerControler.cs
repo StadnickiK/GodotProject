@@ -103,8 +103,10 @@ public partial class PlayerContainerControler : VBoxContainer
         BuildMenu.InitAllUnits(data.Units);
         foreach (var label in BuildMenu.buildingLabels)
         {
-            label.BButton.ButtonUp += () => EditedContainer._on_AddUnit(label.RefUnit.Duplicate());
+            label.BButton.ButtonUp += () => EditedContainer._on_AddUnit(label.RefUnit);
             label.BButton.ButtonUp += () => _on_AddUnit(label.RefUnit);
+            label.MouseEntered += () => BuildingInterface._on_ShowUnitInfo(label.RefUnit, false);;
+            label.MouseExited +=  BuildingInterface.Hide;
                 // label.MouseEntered += () => CustomBatttleMenu.PlayerContainerControler.ArmyView.ArmyInterfaceContainer.ArmyRecruitment.UpdateRecruitment(_planet.RecruitmentComponent, IsLocalPlayer);
 				// label.MouseExited += _on_mouse_exited;
 				// label.MouseExited += uI._mouseLeftBuildingLabel;

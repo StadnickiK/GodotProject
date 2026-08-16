@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public partial class DeathController : Node3D, IUpdateStat
 {
-    public HashSet<string> StatNames { get; set; }
+    [Export]
+    public Godot.Collections.Array<string> StatNames { get; set; } = new Godot.Collections.Array<string>() { GlobalStatNames.Health };
+    public Dictionary<string, IStat> Stats { get; set; } = new Dictionary<string, IStat>();
 
     public delegate void OnDeathEventHandler(object sender);
 
@@ -16,7 +18,6 @@ public partial class DeathController : Node3D, IUpdateStat
     {
         switch (stat.Name)
         {
-
             case GlobalStatNames.Health:
                 if (stat.CurrentValue <= 0)
                     savingNode.InvokeSaveNode();

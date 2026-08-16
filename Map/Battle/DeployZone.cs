@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class DeployZone : Area3D
 {
@@ -50,11 +51,12 @@ public partial class DeployZone : Area3D
         GlobalPosition = pos;
     }
 
-    public void PlaceUnits(List<Unit3D> units, Vector3 center, float yRotation = 0)
+    public void PlaceUnits(List<IUnit3D> units, Vector3 center, float yRotation = 0)
     {
         int rows = (int)Mathf.Ceil(Mathf.Sqrt(units.Count));
         int cols = rows;
         int unitIndex = 0;
+        Vector3 maxSize = GetMaximumSize(units);
 
         for (int x = 0; x < cols; x++)
         {
@@ -64,15 +66,27 @@ public partial class DeployZone : Area3D
                     return;
 
                 var unit = units[unitIndex];
-                var size = unit.GetUnitSize();
-                Vector3 offset = new Vector3(x * (FormationSpacing + size.X + (size.Z/2)), center.Y, z * (FormationSpacing + size.Z + size.X));
+                var unitSize = unit.GetUnitSize();
+                Vector3 offset = new Vector3(x * (FormationSpacing + maxSize.X/2 + unitSize.X/2), center.Y, z * (FormationSpacing + maxSize.Z + unitSize.Z));
                 Vector3 position = center + offset + (GlobalPosition * Vector3.Up);
 
-                unit.GlobalTransform = new Transform3D(GlobalBasis, position);
-                unit.GlobalRotation = new Vector3(0, yRotation, 0);
-
+                // unit.GlobalTransform = new Transform3D(GlobalBasis, position);
+                // unit.GlobalRotation = new Vector3(0, yRotation, 0);
+                unit.UpdatePosition(position, yRotation);
                 unitIndex++;
             }
         }
     }
+
+    private Vector3 GetMaximumSize(List<IUnit3D> units)
+    {
+        Vector3 max = Vector3.Zero;
+        foreach (var item in units)
+        {
+            if(item.GetUnitSize() > max)
+                max = item.GetUnitSize();
+        }
+        return max; 
+    }
+
 }

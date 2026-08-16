@@ -92,7 +92,7 @@ public partial class Data : Node
             unit.Upkeep = LoadResourceCost(unit.ExportUpkeep);
             if(unit.ModelName != null)
             {
-                unit.ModelData = ModelLoader.Models[unit.ModelName];
+                unit.LoadModelData(ModelLoader);
             }
             else
             {

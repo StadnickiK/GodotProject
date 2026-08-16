@@ -17,6 +17,11 @@ public partial class Explosion : GpuParticles3D, ISavingNode
         base._Ready();
         particleProcessMaterial = (ParticleProcessMaterial)ProcessMaterial;
         sphereMesh = (SphereMesh)DrawPass1;
+        // OneShot = true;
+        // Finished += _on_finished;
+        // Restart();
+
+        // Emitting = true;
 
     }
 

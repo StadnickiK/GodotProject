@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://dhrixcoh80u0p" path="res://Map/Battle/Unit3D.cs" id="1_nnrop"]
 [ext_resource type="PackedScene" uid="uid://dkcnoybahr1p" path="res://Units/Base/VisionComponent.tscn" id="3_a02ob"]
 [ext_resource type="PackedScene" uid="uid://orskboynr3eu" path="res://Units/VisibilityConroller.tscn" id="3_onp1n"]
-[ext_resource type="Script" uid="uid://bkl0a7pl08jnr" path="res://Map/Battle/InputEventController.cs" id="4_onp1n"]
 [ext_resource type="Script" uid="uid://b3522ltmyrkx2" path="res://Map/Battle/Shield.cs" id="5_5rpic"]
 [ext_resource type="Script" uid="uid://cmgvvqr16vbqx" path="res://Map/Battle/InputController.cs" id="5_vl4dh"]
 [ext_resource type="Script" uid="uid://dwxbs0oqd1ac3" path="res://Map/Battle/OrderQueue.cs" id="6_72exn"]
@@ -15,6 +14,8 @@
 [ext_resource type="Script" uid="uid://5h2lmoh27mxu" path="res://Units/Base/SimpleFireControl.cs" id="15_4btxt"]
 [ext_resource type="Script" uid="uid://eimwejbwyv6h" path="res://Units/Stats/StatManager.cs" id="15_k73rr"]
 [ext_resource type="Script" uid="uid://car3sroqjwc7l" path="res://Map/Battle/TurretControl.cs" id="16_4btxt"]
+[ext_resource type="Script" uid="uid://dj5h203snt1yp" path="res://Controllers/VelocityController.cs" id="17_kg7xa"]
+[ext_resource type="PackedScene" uid="uid://bf3gd0e3vlb" path="res://nav_agent_3d.tscn" id="18_2l4sx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_onp1n"]
 size = Vector3(5, 5, 5)
@@ -35,9 +36,6 @@ script = ExtResource("1_nnrop")
 
 [node name="Area3D" parent="." unique_id=2078174617 instance=ExtResource("3_a02ob")]
 collision_layer = 0
-
-[node name="InputEventController" type="Node" parent="." unique_id=1483636222]
-script = ExtResource("4_onp1n")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1798110588]
 shape = SubResource("BoxShape3D_onp1n")
@@ -84,3 +82,8 @@ script = ExtResource("15_4btxt")
 
 [node name="TurretControl" type="Node3D" parent="." unique_id=1366420257]
 script = ExtResource("16_4btxt")
+
+[node name="VelocityController" type="Node3D" parent="." unique_id=1991201789]
+script = ExtResource("17_kg7xa")
+
+[node name="NavigationAgent3D" parent="." unique_id=1947295488 instance=ExtResource("18_2l4sx")]

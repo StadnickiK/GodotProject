@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System.Collections.Generic;
 
 
@@ -27,12 +28,13 @@ public partial class VisionComponent : Area3D, IUpdateStat
 
     public event TargetSpottedEventHandler TargetLost;
 
-    public HashSet<string> StatNames { get; set; } = new HashSet<string>() { GlobalStatNames.VisionRange };
     public Player Controller { get; set; }
+    public Array<string> StatNames { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public System.Collections.Generic.Dictionary<string, IStat> Stats { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public void UpdateVisionRange()
     {
-        var s = new CylinderShape3D();
+        var s = new SphereShape3D();
         s.Radius = VisionRange;
         _shape.Shape = s;
     }
@@ -61,7 +63,9 @@ public partial class VisionComponent : Area3D, IUpdateStat
         foreach (var item in parent.GetChildren())
             if (item is IVisionComponentListener listener)
             {
+                //BodyEntered -= listener._on_area_body_Entered;
                 BodyEntered += listener._on_area_body_Entered;
+                //BodyExited -= listener._on_area_body_Exited;
                 BodyExited += listener._on_area_body_Exited;
             }
     }
@@ -71,7 +75,9 @@ public partial class VisionComponent : Area3D, IUpdateStat
         foreach (var child in parent.GetChildren())
             if (child is ITargetSpottedListener listener)
             {
+                TargetSpotted -= listener.OnTargetSpotted;
                 TargetSpotted += listener.OnTargetSpotted;
+                TargetLost -= listener.OnTargetLost;
                 TargetLost += listener.OnTargetLost;
             }
     }

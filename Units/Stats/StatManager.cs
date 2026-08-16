@@ -14,9 +14,9 @@ public partial class StatManager : Node, IStatChangedNotifier
 
     public event IStat.StatChangedEventHandler StatChanged;
 
-    public void AddStat(BaseStat stat)
+    public void AddStat(IStat stat)
     {
-        AddChild(stat);
+        AddChild(stat.GetAsNode);
         Stats.Add(stat.Name, stat);
         stat.StatChanged += StatChangedInvoke;
     }
@@ -30,12 +30,12 @@ public partial class StatManager : Node, IStatChangedNotifier
     {
         foreach (Node node in stats.GetChildren())
         {
-            if (node is BaseStat stat)
+            if (node is IStat stat)
             {
-                var statCopy = new BaseStat(stat);
+                var statCopy = stat.CloneStat();
                 stat.StatChanged += StatChangedInvoke;
                 Stats.Add(statCopy.Name, statCopy);
-                AddChild(statCopy);
+                AddChild(statCopy.GetAsNode);
             }
         }
     }
@@ -47,36 +47,48 @@ public partial class StatManager : Node, IStatChangedNotifier
 
     public void CloneStats(StatManager statManager)
     {
-        for (int i = Stats.Count; i < statManager.Stats.Count; i++)
-        {
-            var stat = new BaseStat();
-            stat.CloneStat(statManager.Stats.ElementAt(i).Value);
-            AddStat(stat);
-        }
-        for (var i = 0; i < Stats.Count; i++)
-        {
-            Stats.ElementAt(i).Value.CloneStat(statManager.Stats.ElementAt(i).Value);
-        }
+        foreach (var item in statManager.Stats)
+            if (!Stats.ContainsKey(item.Key))
+            {
+                var stat = item.Value.CloneStat();
+                AddStat(stat);
+            }else
+                 AddStat(item.Value.CloneStat());
     }
 
-    public void AddStatModifier(string statName, StatModifier modifier)
+    public void AddStatModifier(string statName, IStatModifier modifier)
     {
         Stats[statName].AddModifier(modifier);
     }
 
-    public void RemoveStatModifier(string statName, StatModifier modifier)
+    public void RemoveStatModifier(string statName, IStatModifier modifier)
     {
         Stats[statName].RemoveModifier(modifier);
     }
 
-    public IStat GetStat(string statName)
+    // public IStat GetStat(string statName)
+    // {
+    //     return Stats[statName];
+    // }
+
+    public IStat<T> GetStat<T>(StringName name)
     {
-        return Stats[statName];
+        if (!Stats.TryGetValue(name, out IStat stat))
+            throw new KeyNotFoundException($"Stat '{name}' not found.");
+
+        if (stat is not IStat<T> typedStat)
+        {
+            throw new InvalidCastException(
+                $"Stat '{name}' is {stat.ValueType.Name}, " +
+                $"not {typeof(T).Name}.");
+        }
+
+        return typedStat;
     }
 
-    public float GetStatCurrentValue(string statName)
+    public T GetStatCurrentValue<T>(string statName)
     {
-        return GetStat(statName).CurrentValue;
+        return GetStat<T>(statName).CurrentValue;
     }
 
     public bool HasStat(string statName)
@@ -103,7 +115,7 @@ public partial class StatManager : Node, IStatChangedNotifier
         int i = 0;
         foreach (var item in GetChildren())
         {
-            if (item is BaseStat stat)
+            if (item is IStat stat)
             {
                 stat.Index = i;
                 stat.StatChanged += StatChangedInvoke;
@@ -143,7 +155,7 @@ public partial class StatManager : Node, IStatChangedNotifier
     {
         var str = new StringBuilder();
         foreach (var stat in Stats.Values)
-            str.Append(stat.Name + " " + stat.CurrentValue + "\n");
+            str.Append(stat.Name + " " + stat.ToString() + "\n");
         return str.ToString();
     }
 }

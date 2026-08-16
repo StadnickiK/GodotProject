@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -6,12 +7,14 @@ public partial class HealthBar3D : Node3D, IUpdateStat
 {
     public HealthBar Health { get; set; }
     public HealthBar Shield { get; set; }
-    public HashSet<string> StatNames { get; set; }
 
     public SubViewport SubViewport { get; set; }
 
     [Export]
     public Vector2I Size { get; set; } = new Vector2I(4096, 400);
+    Array<string> IUpdateStat.StatNames { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public System.Collections.Generic.Dictionary<string, IStat> Stats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
 
     public void UpdateStat(IStat stat)
     {

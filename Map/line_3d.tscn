@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://de43yrhmjcjyt"]
+
+[ext_resource type="Script" uid="uid://blkwxmxvaa06v" path="res://Map/Line3d.cs" id="1_bdm5a"]
+
+[node name="Line3D" type="Node3D" unique_id=1714893058]
+script = ExtResource("1_bdm5a")

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -20,10 +21,11 @@ public partial class UnitCard : Control, IUpdateStat
 	public Label Label { get; set; }
 
 	public Button button { get; set; }
-	public HashSet<string> StatNames { get; set; } = new HashSet<string>();
+    public Array<string> StatNames { get; set; }
+    public System.Collections.Generic.Dictionary<string, IStat> Stats { get; set; }
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
 		var c = GetChildren()[0];
 		Health = c.GetNode<ProgressBar>("Health");
